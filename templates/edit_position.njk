@@ -1,0 +1,77 @@
+{% extends "base.njk" %}
+{% block title %}
+  {{ __('form.title_edit') }}
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet" href="/styles/dialog.css">
+{% endblock head %}
+{% block key_nav %}{% endblock %}
+{% block back_link %}
+  <button class="modern-back-btn" onclick="window.history.back()">
+  {% endblock %}
+  {% block content %}
+    <form action="post" class='full-form'>
+      <p id="orderId" class='d-none'>{{orderId}}</p>
+      <div class='content'>
+        <h1>
+          {{ __('form.edit_h1') }}
+          {{position.name}}</h1>
+        <div class='container d-flex col-12 p-3'>
+
+          <div class='commission-space d-flex mb-4 col-12'>
+            <div class="comm-input d-grid col-3">
+              <label for="commision-input" class='p-1 fw-bold'>Commission</label>
+              <input type="text" id="commission-name" class="p-1" value="{{position.commision}}">
+            </div>
+          </div>
+        </div>
+
+        <div class="container">
+          <h3>{{ __('form.reminder') }}</h3>
+          <div id="dynamic-form"></div>
+          <div id="file-error-message" class="alert alert-danger d-none col-12" role="alert"></div>
+          <div id="buttons-space" class='justify-content-center'>
+            <button class="btn btn-outline-success form-button" type='button' id='show-button'>
+              {{ __('form.save_button') }}
+            </button>
+            <button class="btn btn-outline-danger form-button mt-3" type='button' id='reset-button'>
+              {{ __('form.reset_button') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <dialog id="color-dialog">
+      <div id="dialog-toast-container"></div>
+      <div id="dialog-container" class="d-grid">
+        <h3 id="dialog-title" class="text-center">{{ __('form.dialog_title') }}</h3>
+        <p class="text-center">{{ __('form.dialog_subtitle') }}</p>
+        <div id="dynamic-options-list" class="options-scrollable"></div>
+        <div class="bottom mt-3">
+          <div class="button-wrapper">
+            <button id="dialog-confirm" class="btn btn-success me-2" type="button">
+              {{ __('form.apply_button') }}
+            </button>
+            <button id="dialog-close" class="btn btn-secondary" type="button">
+              {{ __('form.cancel_button') }}
+            </button>
+          </div>
+          <div class="obj-counter">
+            <label for="object-count">{{ __('form.object_count') }}:</label>
+            <span id="object-count">sdassd</span>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="image-preview-dialog" class="image-preview-dialog">
+      <button id="close-dialog-btn" class="close-dialog-btn" type='button'>✖</button>
+      <img id="preview-image" src="" alt="{{ __('form.preview_alt') }}"/>
+    </dialog>
+    <div id='version-space'>{{position.ver}}</div>
+  {% endblock content %}
+
+  {% block scripts %}
+    <script type='module' src="/scripts/edit_form.js"></script>
+  {% endblock scripts %}

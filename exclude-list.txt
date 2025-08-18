@@ -1,0 +1,7 @@
+update.sh
+git-instrukcje.txt
+git_auto_commit.sh
+Dockerfile
+docker-compose.yml
+.env_dev
+.env

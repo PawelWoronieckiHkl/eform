@@ -1,0 +1,182 @@
+{% extends "base.njk" %}
+
+{% block title %}
+  {{ __('order.title') }}
+  {{ orderDetails.id }}
+{% endblock title %}
+
+{% block head %}
+  <link rel="stylesheet" href="/styles/order_details.css">
+  <link rel="stylesheet" href="/styles/dialog.css">
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+{% endblock head %}
+{% block key_nav %}
+  window.history.back()
+{% endblock %}
+{% block back_link %}
+  <button class="modern-back-btn" onclick="window.history.back()">
+  {% endblock %}
+
+  {% block content %}
+
+    <div class="content center-content col-10 ">
+      <div id='order-nav' class='bg-white'>
+        <div id="order-buttons">
+          <!--{% block order_del_btn %} <button class="btn btn-outline-danger " id="delete-order-btn" data-href='/orders/order/{{ orderDetails.id }}/delete' type='button'> {{ __('order.delete_order') }} </button> {% endblock %}-->
+          {% block new_pos_btn %}
+            <a href="/orders/order/{{ orderDetails.id }}/new-position/" class="btn btn-outline-success" id="new-order-button" type="button">
+              {{ __('order.add_position_btn') }}
+            </a>
+          {% endblock %}
+        </div>
+        {% block order_space %}
+          <div class="floating-order w-50">
+          {% endblock %}
+          <h2 class="fw-bold header text-center p-4">
+            {{ __('order.title') }}
+            {{ orderDetails.id }}
+            <br/>
+
+            {% if orderDetails.commision %}
+              <p id='commission-name' data-name='{{ orderDetails.commision }}'>"{{ orderDetails.commision }}"</p>
+            {% endif %}
+          </h2>
+          <div class="comment-space d-flex align-items-center justify-content-center w-100">
+            <h3 id='comment' class='h3 fw-bold btn' data-id="{{ orderDetails.id }}">
+              {% if orderDetails.comment %}
+                {{ __('order.comment') }}:
+                {{ orderDetails.comment }}
+              {% endif %}
+            </h3>
+          </div>
+        </div>
+
+        {% block print_space %}
+          <div id="generate-container" class='me-3'>
+            <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'><img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
+            <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip')}}"><img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
+
+          </div>
+        {% endblock %}
+
+      </div>
+      <div class="container my-5">
+
+        <div class="position-relative mb-4 static-head"></div>
+
+        {% if cleanOrderItems.length > 0 %}
+          <div class="order-table-container" style="overflow-x: auto;">
+            {% set globalIndex = 1 %}
+
+            {% for table in cleanOrderItems %}
+              <div class="table-scroll mb-5">
+                {% block table_style %}
+                  <table class="table align-left table-bordered order-table">
+                    <thead>
+                    {% endblock %}
+                    <tr>
+                      {% block btns_head %}
+
+                        <th class="edit-buttons">{{ __('order.action') }}</th>
+                      {% endblock %}
+                      <th class="edit-buttons">#</th>
+                      
+                        <th class="edit-buttons">{{ __('order.department') }}</th>
+
+                        <th class="edit-buttons">{{ __('order.group_name') }}</th>
+                      <!--<th class="edit-buttons">{{ __('order.amount') }}</th>-->
+                      <th class="edit-buttons">{{ __('order.name') }}</th>
+                      {% for header in table.headers %}
+                        <th class="th-field">{{ header }}</th>
+                      {% endfor %}
+                      <th class="edit-buttons">{{ __('order.comment') }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for rowObj in table.rows %}
+                      {% block item_redirect %}
+                        <tr style="cursor: pointer" onclick="window.location.href='/position/{{ rowObj.item.id }}'">
+                        {% endblock %}
+                        {% block pos_btns %}
+                          <td>
+                            <button class="btn btn-outline-secondary me-1 p-1 duplicate-btn has-tooltip" data-tooltip="{{ __('order.duplicate_pos') }}" data-id='{{ rowObj.item.id }}' onclick="event.stopPropagation()">
+                              <img src="/img/duplicate.png" class='icon' alt="{{ __('order.edit') }}">
+                            </button>
+                            <a class="btn btn-outline-secondary me-1 p-1 edit-position-btn has-tooltip" data-tooltip="{{ __('order.edit_pos') }}" href="/position/{{ rowObj.item.id }}/edit?id={{ rowObj.item.id }}" onclick="event.stopPropagation()">
+                              <img src="/img/edit-text.png" alt="{{ __('order.edit') }}">
+                            </a>
+                            <button class="btn btn-outline-danger p-2 delete-position-btn has-tooltip" data-tooltip="{{ __('order.delete_pos') }}" type="button" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
+                              <img src="/img/delete.png" alt="{{ __('order.delete') }}" style="height: 24px;"/>
+                            </button>
+                          {% endblock %}
+                        </td>
+                        <th scope="row">{{ globalIndex }}</th>
+                          <td>{{ rowObj.item.department or '-'}} </td>
+                        
+                          <td>{{ rowObj.item.group_name or '-'}} </td>
+                        
+
+                        
+                        <!--<td>{{ rowObj.item.amount or "-" }}</td>-->
+                        <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-"   }}</td>
+                        {% for header in table.headers %}
+                          <td class="td-val">{{ rowObj.row[header] or '-' }} </td>
+                        {% endfor %}
+                        <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
+
+                      </tr>
+                      {% set globalIndex = globalIndex + 1 %}
+                    {% endfor %}
+
+                  </tbody>
+                </table>
+              </div>
+
+            {% endfor %}
+            {% block send_order_btn %}
+
+              <button class="btn btn-outline-success p-1 stop-propagation send-order-btn me-3" type="button" id='send-order' data-id="{{ orderDetails.id }}">
+                <p>
+                  {{ __('order.send_order_btn') }}</p>
+              </button>
+            {% endblock %}
+          </div>
+
+        {% else %}
+          <div class="text-center py-5">
+            <h3 class="mb-4">{{ __('order.no_positions') }}</h3>
+            <p class="lead">{{ __('order.add_position') }}</p>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <div id='dialog-container'>
+      <dialog id='dialog-space'></dialog>
+      <dialog id="delete-dialog">
+        <h3 class="text-center" id='dialog-title'>{{ __('order.delete_element') }}</h3>
+        <p class="text-center" id='for-sure'>{{ __('order.delete_confirm') }}</p>
+        <div class="alert" id='status-info'></div>
+        <div class="confirmattion-buttons">
+          <button id="cancel-btn" class="btn btn-secondary me-1" type="button">{{ __('order.cancel') }}</button>
+          <button id="confirm-btn" class="btn btn-danger ms-1" type="button">{{ __('order.confirm') }}</button>
+        </div>
+      </dialog>
+    </div>
+
+    <div id="print-template-container" style="display:none;!important">
+      {% include 'order_to_print.njk' %}
+    </div>
+
+  </div>
+{% endblock %}
+</div>
+
+{% block scripts %}
+<script type='module' src="/scripts/order.js"></script>
+{% endblock scripts %}

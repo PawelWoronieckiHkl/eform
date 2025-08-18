@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+
+    <title>{{ __('mail.subject') }}</title>
+    <style>
+      body {
+        background: #f7f7fa;
+        font-family: "Segoe UI", "Roboto", Arial, Helvetica, sans-serif;
+        color: #222;
+        padding: 0;
+        margin: 0;
+      }
+      .main-container {
+        max-width: 520px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 22px;
+        box-shadow: 0 3px 32px 0 rgba(46, 54, 80, 0.08), 0 1.5px 6px 0 rgba(46, 54, 80, 0.04);
+        border: 1px solid #ececf2;
+        overflow: hidden;
+      }
+      .header {
+        text-align: center;
+        padding: 36px 24px 12px;
+        background: #fff;
+      }
+      .header img {
+        height: 48px;
+        margin-bottom: 10px;
+      }
+      .header h1 {
+        font-size: 1.35rem;
+        color: #41464d;
+        font-weight: 700;
+        margin: 0 0 6px;
+        letter-spacing: 0.2px;
+      }
+      .header .order-id {
+        color: #474b50ff;
+        font-size: 15px;
+        margin-bottom: 0;
+        font-weight:600;
+        letter-spacing: 1px;
+      }
+      .content {
+        padding: 28px 28px 20px;
+        background: #fff;
+      }
+      .details-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        margin-bottom: 15px;
+      }
+      .details-table td {
+        background: #fafbfc;
+        border-radius: 8px;
+        padding: 14px 18px;
+        font-size: 15px;
+        color: #0048ffff;
+        vertical-align: top;
+        border: 1px solid #f1f2f7;
+      }
+      .details-table .label {
+        font-weight: 500;
+        color: #484a4eff;
+        width: 120px;
+      }
+      .details-table .value {
+        font-weight: 400;
+      }
+      .comment-box {
+
+        width: 200px !important;
+        max-width: 600px;
+        margin-top: 16px;
+        margin-bottom: 18px;
+        background: #f7f7fa;
+        border-radius: 10px;
+        padding: 18px 20px;
+        border: 1px solid #ececf2;
+        font-size: 16px;
+        color: #333;
+        text-align: center;
+        letter-spacing: 0.01em;
+        font-weight: 500;
+        display: grid;
+      }
+      .status-badge {
+        display: inline-block;
+        background: #e8f5e9;
+        color: #3d6652;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 6px 24px;
+        border-radius: 12px;
+        border: 1px solid #d6eedd;
+        margin-top: 4px;
+      }
+      .actions {
+        text-align: center;
+        margin-top: 32px;
+        margin-bottom: 10px;
+      }
+      .btn {
+        display: inline-block;
+        padding: 18px 44px;
+        border-radius: 999px;
+        background: #565867;
+        color: #fff !important;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 17px;
+        letter-spacing: 0.02em;
+        margin: 0 8px;
+        border: none;
+        box-shadow: 0 1px 10px rgba(86, 88, 103, 0.05);
+        transition: background 0.16s, box-shadow 0.15s;
+      }
+      .btn:hover {
+        background: #44454d;
+      }
+      .footer {
+        background: #fff;
+        color: #b0b6be;
+        font-size: 12px;
+        text-align: center;
+        padding: 18px 20px 20px;
+        border-top: 1px solid #ececf2;
+      }
+      #logo {
+        margin: 35px 20px 20px;
+      }
+      @media (max-width: 600px) {
+        .main-container {
+          margin: 10px;
+        }
+        .content,
+        .header {
+
+          padding: 35px 18px 8px;
+        }
+        #logo {
+          margin: 35px 20px 20px;
+        }
+        .footer {
+          padding: 10px 5px;
+        }
+        .btn {
+          width: 90%;
+          margin: 14px auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="header">
+        <img src="cid:logo_cid" alt="Logo firmy" id='logo' style="height: 120px; margin-bottom: 120px"/>
+        <h1>{{ __('mail.order_confirm') }}</h1>
+<h2>
+          {{klient}}</h2>
+        <div class="order-id">{{ __('order.title') }}
+          {{orderNr}}</div>
+      </div>
+      <div class="content">
+        <div class="comment-box">
+          <p>{{ __('mail.sent_confirmation_1') }}</p>
+          <p>{{ __('mail.sent_confirmation_2_1') }} "{{orderNr}}" {{ __('mail.sent_confirmation_2_2') }} "{{orderDetails.commission}}". {{ __('mail.sent_confirmation_2_3') }}</p>
+          <p>{{ __('mail.sent_confirmation_3') }}</p>
+        </div>
+      </div>
+      <div class="footer">
+        {{ __('mail.footer_1') }}<br/>
+        {{ __('mail.footer_2') }}
+      </div>
+    </div>
+  </body>
+</html>

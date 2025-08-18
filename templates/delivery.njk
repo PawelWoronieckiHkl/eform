@@ -1,0 +1,24 @@
+{% extends "base.njk" %}
+{% block key_nav %}
+  window.history.back()
+{% endblock %}
+{% block content %}
+    <div class="content center-content col-5">
+        <div class="container my-5 col-5">
+            <div class="delivery-terms-table-wrapper">
+            <h2 class='pb-5 my-5'> {{ __('termin.delivery_time') }} </h2>
+                <table class="table table-striped table-bordered delivery-terms-table col-4">
+                    </thead>
+                    <tbody >
+                        {% for x in deliveryTimes %}
+                            <tr >
+                                <td class='text-start'>{{ __(x.product_code) }}</td>
+                                <td>{{x.lead_time}} {{__('termin.days') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
