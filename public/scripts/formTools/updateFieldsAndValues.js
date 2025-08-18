@@ -276,8 +276,6 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                                 console.log(key, 'RABAT SPRAWDZAM')
                                 let strVal;
                                 if (key.includes('_RABAT')) {
-
-                                    console.log(key, 'sprawdzam')
                                     strVal = `${parseInt(val * 100)}%`;
                                     inputs[paramName].value = `${parseInt(val * 100)}%`;
                                 }
