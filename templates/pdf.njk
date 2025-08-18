@@ -1,0 +1,94 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+    }
+    h2,
+    h3 {
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 40px;
+    }
+    td,
+    th {
+        border: 1px solid #444;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background: #f0f0f0;
+    }
+    .comment {
+        font-style: italic;
+        margin-bottom: 20px;
+    }
+    .commission {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+</style>
+<h2>
+    {{ __('order.title') }}
+    {{ orderDetails.id }}
+    {% if orderDetails.commision %}
+        <div class="commission">"{{ orderDetails.commision }}"</div>
+    {% endif %}
+</h2>
+
+{% if orderDetails.comment %}
+    <div class="comment">
+        {{ __('order.comment') }}:
+        {{ orderDetails.comment }}
+    </div>
+{% endif %}
+
+{% if cleanOrderItems.length > 0 %}
+    {% set globalIndex = 1 %}
+    {% for table in cleanOrderItems %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{{ __('order.name') }}</th>
+                    {% for header in table.headers %}
+                        <th>{{ header }}</th>
+                    {% endfor %}
+                    <th>{{ __('order.comment') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rowObj in table.rows %}
+                    <tr>
+                        <td>{{ globalIndex }}</td>
+                        <td>{{ rowObj.item.commision or "-" }}</td>
+                        {% for header in table.headers %}
+                            <td>{{ rowObj.row[header] or '-' }}</td>
+                        {% endfor %}
+                        <td>{{ rowObj.item.comment or "-" }}</td>
+                    </tr>
+                    {% set globalIndex = globalIndex + 1 %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+    <button onclick="eksportujDoExcel()">Eksportuj do Excel</button>
+
+{% else %}
+    <div class="text-center py-5">
+        <h3>{{ __('order.no_positions') }}</h3>
+        <p>{{ __('order.add_position') }}</p>
+    </div>
+{% endif %}
+
+<script>
+    function eksportujDoExcel() {
+        var tabela = document.getElementById('tabela');
+        var wb = XLSX
+            .utils
+            .table_to_book(tabela, {sheet: "Arkusz1"});
+        XLSX.writeFile(wb, 'tabela.xlsx');
+    }
+</script>

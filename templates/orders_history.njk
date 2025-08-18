@@ -1,0 +1,46 @@
+{% extends "orders.njk" %}
+
+{% block title %}
+    {{ __('orders.sent_orders') }}
+{% endblock title%}
+
+{% block head %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="/styles/orders.css">
+    <link rel="stylesheet" href="/styles/dialog.css">
+{% endblock %}
+{% block site_title %}
+    <h2 class="fw-bold header">{{ __('orders.sent_orders') }}</h2>
+{% endblock site_title %}
+{% block site_buttons %}
+    <a href="/delivery-time" class='btn btn-light' id='delivery-btn'>
+        <img src="/img/fast-delivery.png" alt="delivery bus button" style='height:50px;width:50px; border:0px white solid !important'>
+    </a>
+{% endblock %}
+
+{% block extra_heads%}
+    <th scope="col">
+        {{ __('orders.sent_date') }}</th>
+
+{% endblock %}
+
+{% block order_item_link %}
+    <tr onclick="window.location.href='/orders/history/order/{{ order.id }}'" class="order-row">
+    {% endblock %}
+
+    {% block action_th %}{% endblock %}
+
+    {% block extra_rows%}
+        <td>{{ order.sent_date }}</td>
+        <td><button class='btn btn-outline-secondary w-50 copy-order-btn' data-id='{{order.id}}' onclick="event.stopPropagation()">{{ __('orders.reorder') }}</button></td>
+        
+    {% endblock %}
+
+    {% block buttons_space %}{% endblock buttons_space %}
+
+    {% block empty %}
+        <div class="text-center py-5">
+            <h3 class="mb-4">{{ __('orders.nothing_here') }}</h3>
+            <p class="lead">{{ __('orders.you_dont_have_any_sent_order_yet') }}</p>
+        </div>
+    {% endblock empty %}
