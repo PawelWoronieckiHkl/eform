@@ -3,6 +3,7 @@ import { createDialog } from './dialogUtils_copy.js'
 import { isEnabled } from '../components/htmlManipulator.js';
 import { SourceWindow } from './slope.js';
 
+
 export function processCommissionInput(labelValue = false) {
     logFunctionName('processCommissionInput')
 
@@ -27,12 +28,12 @@ export async function getPossibleValues(dictValues, values) {
         let row_number = row.ROW_NUM;
         possibleElements.push(row);
     }
-   
+
     return { possibleElements };
 }
 
 export function createInputField(param, options, groupNumber, filters, allOptions, values) {
-  
+
     logFunctionName('createInputField')
     options = options.possibleElements;
     if (param.SOURCE == param.NAME) {
@@ -49,7 +50,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
         return btn;
     }
 
-    if (param.GRAPHICS == 'true' && Array.isArray(options) && (param.TYPE !='link')) {
+    if (param.GRAPHICS == 'true' && Array.isArray(options) && (param.TYPE != 'link')) {
         let btn = document.createElement("button");
         btn.classList.add("btn", 'color-dialog-btn');
         btn.id = param.NAME;
@@ -132,10 +133,20 @@ export function fillFields(displayValues, inputs, values) {
     for (let input of Object.values(inputs)) {
         const tag = input.tagName
         const labelData = displayValues.get(input.name)
+        // console.log(input.name, labelData)
+        if (values[input.name] == "<NONE>" ) {
+            labelData.option_value = '      '
+            let description = input.name + '___DESCRIPTION'
+            labelData.option_description = values[description]
+        }
         switch (tag) {
             case "BUTTON":
                 if (labelData?.option_value) {
                     input.textContent = `${labelData.option_value} - ${labelData.option_description}`
+                }
+                if (labelData?.option_value == ' ') {
+                    input.textContent = `${labelData.option_description}`
+
                 }
                 else { continue }
             case "INPUT":
@@ -169,4 +180,44 @@ export function saveOrderPositionToJson(data, filename) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+export function checkIfParamHidden(formula, values, param) {
+    let isEnabled = false;
+    try {
+        isEnabled = window.FormulaHandler.evaluateFormula(
+            formula,
+            values,
+            "param",
+            param
+        );
+
+    }
+    catch (error) {
+
+        console.log('mamy error')
+
+        showToast('error', `Error:  ${error.message}`)
+    }
+    return isEnabled;
+}
+
+
+export function hideLocked(inputs,displayValues){
+    for (let param of window.lockedParams){
+        let input = inputs[param]
+        // console.log(input,'ukrywam lub nie')
+        input.parentElement.style.display = 'none'
+    }
+    for (const [key, value] of displayValues){
+        if (window.lockedParams.includes(key)){
+            
+            // console.log(value,'locked')
+            value['locked'] = true
+        }
+        else{
+            value['locked']= false
+        }
+    }
+    return displayValues
 }

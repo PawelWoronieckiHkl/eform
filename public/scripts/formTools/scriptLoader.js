@@ -8,7 +8,6 @@ export function loadScript(scriptFile, values, displayValues, groupNumber, callb
     script.src = scriptPath;
 
     const scriptInput = prepareValuesForScript(values, displayValues);
-    console.log(scriptInput, 'doplate sprawdzam script', scriptPath);
 
     // Flaga czy callback już wywołany
     let finished = false;
@@ -31,7 +30,7 @@ export function loadScript(scriptFile, values, displayValues, groupNumber, callb
                 const result = f(scriptInput);
                 finished = true;
                 callback(result);
-                console.log('Wynik funkcji f:', result);
+           
             } else {
                 console.error('Funkcja f nie została znaleziona!');
                 finished = true;
@@ -68,7 +67,7 @@ function prepareValuesForScript(values, displayValues) {
 }
 
 function errorShield(scriptPath) {
-    console.log('TARCZA WŁĄCzONA', scriptPath)
+
     if (scriptPath.includes("DOPLATA_RABAT")) {
         return { 'DOPLATA-RABAT': 0 };
     }

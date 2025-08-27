@@ -49,7 +49,7 @@ router.post("/auth/login", async (req, res, next) => {
             console.log(isFirst, 'first logon check result')
 
             const userId = await db.getUserId(pin)
-            req.session.user = { userId, pin, password };
+            req.session.user = { userId, pin, password, showPrices: false };
 
 
             langVer.checkTranslateLegacy(localesDir)
@@ -94,11 +94,15 @@ router.post("/logout", (req, res) => {
 });
 
 
+
+router.get('/no-permission', requireLogin, async (req, res) => {
+    return res.render('no-permission.njk');
+});
 router.get('/rodo', requireLogin, async (req, res) => {
     const pin = req.session.user.pin;
 
-        return res.render('rodo.njk');
-    });
+    return res.render('rodo.njk');
+});
 
 router.get('/owner/', async (req, res) => {
     const pin = req.session.user.pin
@@ -136,5 +140,35 @@ router.get('/name', async (req, res) => {
         })
     }
 });
+
+router.post("/auth/check-password", async (req, res, next) => {
+    try {
+        const { password, remember, orderId } = req.body;
+        const pin = req.session.user.pin;
+        const isValid = await authService.checkPassword(pin, password);
+
+        let redirectUrl;
+
+        if (isValid) {
+            if (remember) {
+                req.session.user.showPrices = true;
+            } else {
+                req.session.user.showPrices = false;
+                req.session.user.showPricesOnce = true;  // lub można też delete req.session.user.showPrices
+
+            }
+            return res.status(200).json({
+                success: true
+            });
+        } else {
+            return res.status(200).json({
+                success: false
+            })
+        }
+    } catch (err) {
+        return next(err);
+    }
+});
+
 
 module.exports = router;

@@ -6,6 +6,7 @@ import {
     searchForParameter,
     resetSelectValues,
     setDescription,
+    normalizeFilename,
     setWar
 } from './formTools.js';
 
@@ -21,6 +22,7 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
 
     if (tagName != "INPUT") {
         let selectedValue = allOptionsByParameter[actualParameter].find(v => v.VALUE == value);
+        
         window.actualParam = actualParameter;
         window.actualValue = value;
 
@@ -112,6 +114,7 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                 const input = inputs[param];
 
                 let currentParam = searchForParameter(functions.DOM, allOptionsByParameter, param);
+                console.log(currentParam, 'currentParam');
                 if (!currentParam && input && input.tagName != "INPUT") {
                     if (typeof functions.DOM === 'string') {
                         functions.DOM = 'Puste pole'
@@ -119,7 +122,7 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                     return;
                 }
                 if ('DOM' in functions && functions.DOM) {
-
+                    console.log(values, 'values');
                     const domValue = functions.DOM;
                     values[param] = domValue;
                     setDescription(values, domValue, allOptionsByParameter, param)
@@ -128,6 +131,7 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
 
                         // Ustawianie wartości DOM w UI
                         if (input.tagName === 'INPUT') {
+
                             input.value = domValue;
                         }
                         else if (input.tagName === 'BUTTON') {
@@ -146,6 +150,7 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                             }
                             input.innerHTML = buttonLabel;
                             input.value = buttonVal
+
                         }
                         else if (input.tagName === "SELECT") {
                             const options = input.options;
@@ -188,6 +193,7 @@ export function validateFormInput(values, actualInput) {
 
     let flag;
     const validatorList = findAllValidatorsForInput(actualInput, values);
+
     if (validatorList.length === 0 && actualInput.value != '') {
         setInputValid(actualInput, true);
         return;
@@ -219,7 +225,7 @@ export function validateFormInput(values, actualInput) {
 }
 
 
-function findAllValidatorsForInput(actualInput, values) {
+export function findAllValidatorsForInput(actualInput, values) {
     logFunctionName('findAllValidatorsForInput');
     const result = [];
     for (const [param, models] of Object.entries(inputsValidators)) {
@@ -303,6 +309,7 @@ export function validateAllFieldsOnSubmit(inputs, values) {
             delete inputFlags[key];
         }
     }
+
 
 
     for (const param of Object.keys(enabledParams)) {

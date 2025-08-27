@@ -11,10 +11,15 @@ const { group } = require('console');
 
 function normalizeFilename(filename) {
   if (filename) {
-    return filename.split('.')[0].replace(/\s+/g, '').replace(/_+/g, '').toLowerCase();
+    return filename
+      .split('.')[0]                        // usuń rozszerzenie
+      .replace(/~\d+$/, '')                 // usuń końcowe _123 jeśli jest
+      .replace(/\s+/g, '')                  // usuń spacje
+      .replace(/_+/g, '')                   // usuń podkreślenia
+      .toLowerCase();                      // zamień na małe litery
   }
+  return '';
 }
-
 
 
 
@@ -210,7 +215,13 @@ router.get('/:positionId', async (req, res) => {
   const parametersDesc = JSON.parse(result.json_parameters_desc);
   const values = result.json_parameters
   if (result) {
-    return res.render('position_sent.njk', { position: result, parameters: parametersDesc, values: values })
+    console.log('SPRAWDZAMY POZYCJE', req.session.user?.showPrices)
+    if (!req.session.user?.showPrices) {
+      return res.render('position_sent.njk', { position: result, parameters: parametersDesc, values: values })
+    }
+    else {
+      return res.render('position_sent-prices.njk', { position: result, parameters: parametersDesc, values: values })
+    }
   }
   else {
     return res.status(400).json({
@@ -282,7 +293,7 @@ router.post('/check-images', requireLogin, async (req, res) => {
 
 router.get('/version/:groupNr/', async (req, res) => {
   const lang = req.getLocale();
-  let version = await db.getAppVersion(req.params.groupNr,process.env.NODE_ENV || 'dev');
+  let version = await db.getAppVersion(req.params.groupNr, process.env.NODE_ENV || 'dev');
 
   return res.status(200).json({ version: version })
 })

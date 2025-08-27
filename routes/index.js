@@ -5,6 +5,7 @@ const db = require("../db/db_helper.js");
 const path = require('path')
 const fs = require('fs');
 const langManager = require('../services/setLanguage')
+const verManager= require('../services/versionManager.js')
 const { dataDir,localesDir,availabeLanguages } = require('../config');
 router.get('/translations', (req, res) => {
   const lang = req.getLocale(); 
@@ -79,5 +80,19 @@ router.get("/privacy", (req, res) => {
 	res.render("privacy.njk");
 });
 
-
+router.get('/config-num', async (req, res) => {
+    const num =  await verManager.getConfigNum()
+    if (num) {
+        return res.status(200).json({
+            success: true,
+            name: num
+        });
+    }
+    else {
+        return res.status(400).json({
+            success: false,
+            message: `Nie znaleziono konfiguracji`
+        })
+    }
+});
 module.exports = router;

@@ -5,28 +5,46 @@ import { isEnabled } from '../components/htmlManipulator.js';
 import { validateFormInput, setInputValid } from './validateUtils.js';
 import { showToast } from '../components/toast.js';
 import { loadScript } from './scriptLoader.js';
+import { findAllValidatorsForInput } from './validateUtils.js'
 
 export function resetDependences([params, display], name, inputs, values, allOptionsByParameter) {
-    logFunctionName('resetDependences')
+    logFunctionName('resetDependences');
 
     let param = params.find((obj) => obj.NAME === name);
     if (param && param.DEPENDENCES && typeof param.DEPENDENCES === "string") {
 
-        let paramsToReset = param.DEPENDENCES.split(",");
-        for (let depParam of paramsToReset) {
-            let valueToReset = values[depParam]
+        // Rozdzielenie stringa na kopię tablicy (na której nie iterujemy bezpośrednio w pętli)
+        let paramsToCheck = param.DEPENDENCES.split(",");
+        let paramsToReset = [...paramsToCheck]; // kopiujemy listę
 
-            let x = searchForParameter(valueToReset, allOptionsByParameter, depParam)
+        for (let depParam of paramsToCheck) {
+            let valueToReset = values[depParam];
+
+            let x = searchForParameter(valueToReset, allOptionsByParameter, depParam);
+
+            // Usuwanie, jeśli warunki spełnione
             if (x && isEnabled(x.ENABLE, values)) {
                 paramsToReset = paramsToReset.filter(p => p !== depParam);
             }
 
+            if (inputs[depParam].tagName == 'INPUT' && typeof valueToReset == 'number') {
+                let allValidators = (findAllValidatorsForInput(depParam, values))[0];
+                let validators = allValidators && allValidators[depParam];
+                if (
+                    validators &&
+                    parseInt(validators.MIN) < values[depParam] &&
+                    values[depParam] < parseInt(validators.MAX)
+                ) {
+                    paramsToReset = paramsToReset.filter(param => param !== depParam);
+                }
+
+            }
         }
 
         resetSelectValues([paramsToReset, display], inputs, values);
-
     }
 }
+
 
 
 //tu zajrzyj 
@@ -37,7 +55,7 @@ export function resetSelectValues([parameters, display], inputs, values) {
     for (let idx = 0; idx < parameters.length; idx++) {
         let paramName = parameters[idx];
         const param = params.find(obj => obj.NAME === paramName);
-
+        console.log('reset input', paramName)
         if (inputs[paramName]) {
             inputs[paramName].selectedIndex = 0;
             values[paramName] = "";
@@ -50,6 +68,7 @@ export function resetSelectValues([parameters, display], inputs, values) {
             }
             if (inputs[paramName].tagName == 'INPUT') {
                 inputs[paramName].value = '';
+
             }
         } else {
             console.warn(`Pole ${paramName} nie istnieje w inputs`);
@@ -93,6 +112,7 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
             if (dictValues[fieldName]) {
                 const match = dictValues[fieldName].find(v => v.VALUE === fieldVal);
                 if (match) {
+                    // console.log('match', match)
                     if (match.ALIAS) {
                         descParts.push(match.ALIAS_DESCRIPTION ?? '');
                     } else {
@@ -273,7 +293,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                             if (inputs && inputs[paramName]) {
                                 let key = Object.keys(scriptResult)[0]
                                 let val = Object.values(scriptResult)[0]
-                                console.log(key, 'RABAT SPRAWDZAM')
+
                                 let strVal;
                                 if (key.includes('_RABAT')) {
                                     strVal = `${parseInt(val * 100)}%`;
@@ -299,17 +319,27 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
 
         if (param.FORMULA != "<NULL>") {
             setTimeout(() => {
-                console.log(param.FORMULA, 'siema eniu')
+                if (param.FORMULA.includes('RABAT')) {
+                    console.log(values[key], 'RABAT')
+                    console.log(param.FORMULA, inputs[key].value, 'FORMULA RABAT')
+                }
                 try {
                     const result = window.FormulaHandler.evaluateFormula(
                         param.FORMULA,
                         values,
                         "formula"
                     );
-                    if (result === false || result === null) {
+                    // if (param.FORMULA.includes('CENA_UZNANIOWA')
+                    // || param.FORMULA.includes('CENA_SUMA')) {
+                    // console.log(param.FORMULA, 'FORMULA', result)
+                    // }
+
+                    if (result === false || result === null || result < 0) {
                         inputs[key].value = '0';
+                        values[key] = 0;
                     } else {
                         inputs[key].value = result.toFixed(2);
+                        values[key] = parseFloat(result.toFixed(2));
                         buildValuesToDisplay(allOptionsByParameter, result.toFixed(2), param.NAME, displayValues, 'INPUT ');
                     }
                     validateFormInput(values, inputs[key]);
@@ -317,7 +347,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                     console.log('mamy error');
                     showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`);
                 }
-            }, 300); // tutaj ustawiasz liczbę milisekund opóźnienia
+            }, 500); // tutaj ustawiasz liczbę milisekund opóźnienia
         }
 
 
@@ -413,4 +443,39 @@ export function resetAllDOM() {
             delete window.inputsDefaults[category];
         }
     }
+}
+export function convertIntoPercent(values, name, value, inputs,params) {
+    logFunctionName('convertIntoPercent')
+    const param = params.find((obj) => obj.NAME === name);
+    
+    if (name.includes('RABAT')) {
+        if (typeof value === 'string') {
+            value = value.replace(',', '.');
+        }
+        if (!isNaN(value)) {
+            value = parseFloat(value)
+        }
+        if (typeof value === 'string' && value.endsWith('%')) {
+            let numericPart = parseFloat(value.slice(0, -1));
+            if (!isNaN(numericPart) && numericPart <=100) {
+                values[name] = numericPart / 100;
+                inputs[name].value = `${numericPart}%`;
+            } else {
+                values[name] = 0;
+                inputs[name].value = '0%';
+            }
+        } else if (typeof value === 'number' && value >= 1 && value <=100) {
+            values[name] = value / 100;
+            inputs[name].value = `${value}%`;
+        } else if (typeof value === 'number' && value < 1 && value >= 0) {
+            values[name] = value;
+            inputs[name].value = `${value * 100}%`;
+        }
+        else {
+            values[name] = 0;
+            inputs[name].value = '0%';
+        }
+    }
+    return values;
+
 }

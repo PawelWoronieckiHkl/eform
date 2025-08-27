@@ -16,7 +16,8 @@ import {
 	updateFieldStates,
 	checkRelated,
 	resetAllDOM,
-	setWar
+	setWar,
+	convertIntoPercent
 } from './updateFieldsAndValues.js';
 
 import {
@@ -38,7 +39,7 @@ export function logFunctionName(functionName) {
 
 export function findParamFromValues(values, paramDict) {
 	const valuesWithParameters = {};
-	console.log()
+
 	for (const [paramName, value] of Object.entries(values)) {
 
 		const foundItem = searchForParameter(value, paramDict, paramName)
@@ -55,8 +56,12 @@ export function searchForParameter(value, paramDict, paramName) {
 	const paramArray = paramDict[paramName] ?? false;
 
 	if (paramArray) {
+		console.log('searching for', value, 'in', paramName, paramArray);
 		return paramArray.find(item => {
-			const itemVal = typeof item.VALUE === 'string' ? item.VALUE : '';
+			let itemVal = typeof item.VALUE === 'string' ? item.VALUE : '';
+
+			itemVal = itemVal.replace(/~\d+$/, '')
+			console.log('itemval', itemVal);
 			const searchVal = typeof value === 'string' ? value : '';
 			return itemVal.toUpperCase() === searchVal.toUpperCase();
 		});
@@ -65,13 +70,36 @@ export function searchForParameter(value, paramDict, paramName) {
 	}
 }
 
+export function searchForParameterByAlias(value, paramDict, paramName) {
+
+	const paramArray = paramDict[paramName] ?? false;
+
+	if (paramArray) {
+		return paramArray.find(item => {
+			const itemVal = typeof item.ALIAS === 'string' ? item.ALIAS : '';
+			const searchVal = typeof value === 'string' ? value : '';
+			return itemVal.toUpperCase() === searchVal.toUpperCase();
+		});
+	} else {
+		return false;
+	}
+}
+export function normalizeFilename(filename) {
+	if (filename) {
+		return filename
+			.split('.')[0]                        // usuń rozszerzenie
+			.replace(/~\d+$/, '')                 // usuń końcowe _123 jeśli jest
+	}
+	return '';
+}
+
 export function setDescription(values, value, allOptionsByParameter, name) {
 
 	const valObj = searchForParameter(value, allOptionsByParameter, name)
 	const description = `${name}___DESCRIPTION`
-	console.log(valObj)
+
 	if (valObj?.ALIAS_DESCRIPTION || valObj?.ALIAS) {
-		console.log(valObj)
+
 		const prodAliasName = `${name}_ALIAS`
 		const prodAliasComment = `${name}_ALIAS___DESCRIPTION`
 		values[prodAliasName] = valObj.ALIAS
@@ -103,6 +131,7 @@ export {
 	createDialog,
 	getInfoFromDialog,
 	resetAllDOM,
-	fillFields
+	fillFields,
+	convertIntoPercent
 
 }

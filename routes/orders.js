@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { requireLogin } = require('../middleware/loginMixture');
+const { requireLogin, requirePermission, checkOrderOwnership } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
 const orderService = require('../services/orderService.js')
 const mailBot = require('../services/mailBot/mailBot')
@@ -27,8 +27,8 @@ router.get("/", requireLogin, async (req, res) => {
     const offset = (page - 1) * limit;
 
     const [orders, totalOrders] = await Promise.all([
-        db.getUserOrders(user.id, limit, offset),
-        db.countUserOrders(user.id)
+        db.getUserOrders(req.session.user.userId, limit, offset),
+        db.countUserOrders(req.session.user.userId)
     ]);
 
     const totalPages = Math.ceil(totalOrders / limit);
@@ -64,18 +64,25 @@ router.get("/history", requireLogin, async (req, res) => {
     });
 });
 
-router.get('/history/order/:orderId', requireLogin, async (req, res) => {
+router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
 
     if (orderItems) {
         const heads = Object.keys(orderItems[0].json_parameters);
-        let cleanOrderItems = await orderService.jsonTextBackToMap(orderItems);
-
-        return res.render("order_sent.njk",
-            { orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems }
-        );
+        let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
+        if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
+            console.log('WITHOUT PRICES')
+            res.render("order_sent_prices.njk",
+                { orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total }
+            );
+            req.session.user.showPricesOnce = false; 
+            return ;
+        } else {
+            return res.render("order_sent.njk",
+                { orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total }
+            );
+        }
     }
-
     else {
         return res.render('order.njk', { orderDetails: orderDetails[0] });
     }
@@ -92,23 +99,37 @@ router.get("/add-order", requireLogin, async (req, res) => {
 });
 
 
-router.get('/order/:orderId', requireLogin, async (req, res) => {
-
+router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwnership, async (req, res) => {
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
-    console.log(orderDetails, 'ORDER DETAILS AND ITEMS')
+
     if (orderItems) {
         const heads = Object.keys(orderItems[0].json_parameters);
-        let cleanOrderItems = await orderService.jsonTextBackToMap(orderItems);
-
-        return res.render('order.njk',
-            { orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems }
-        );
+        let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
+        console.log(req.session.user?.showPrices, 'show prices in session', req.session.user?.showPricesOnce, 'show prices once in session');
+        console.log(total, 'order')
+        if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
+            res.render('order_prices.njk', {
+                orderDetails,
+                orderItems,
+                heads,
+                cleanOrderItems,
+                total
+            });
+            req.session.user.showPricesOnce = false; // Reset after first access
+            return;  // zakończ obsługę
+        } else {
+            res.render('order.njk', {
+                orderDetails,
+                orderItems,
+                heads,
+                cleanOrderItems
+            });
+            return;
+        }
+    } else {
+        res.render('order.njk', { orderDetails });
     }
-
-    else {
-        return res.render('order.njk', { orderDetails: orderDetails });
-    }
-})
+});
 
 
 router.get("/order/:orderId/new-position/", requireLogin, (req, res) => {
@@ -116,7 +137,7 @@ router.get("/order/:orderId/new-position/", requireLogin, (req, res) => {
     res.render("form.njk", { orderId: req.params.orderId });
 });
 
-router.post('/send/:orderId', async (req, res) => {
+router.post('/send/:orderId', checkOrderOwnership, async (req, res) => {
     try {
         const id = req.params.orderId;
         const { status } = req.body;
@@ -128,18 +149,18 @@ router.post('/send/:orderId', async (req, res) => {
             const sendData = sender.init()
             const user = await db.getUserData(req.session.user?.pin ?? '0000')
             const clientName = user.client_name
-            console.log('user and username', user,clientName)
+            console.log('user and username', user, clientName)
             const photoFile = await db.getUserLogo(req.session.user?.pin ?? '0000')
             const logoPath = path.join(__dirname, '../img/', photoFile)
 
             const heads = Object.keys(orderItems[0].json_parameters);
-            let cleanOrderItems = await orderService.jsonTextBackToMap(orderItems);
+            let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
             // { orderDetails: orderDetails[0], orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems }
             const lang = req.getLocale();
             const mail = await db.getUserMail(req.session.user?.pin ?? '0000')
-            
-            
-            const pdf = await generatePdf(orderDetails, cleanOrderItems, lang,logoPath,sendData)
+
+
+            const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData)
             console.log(sendData, 'siema')
             mailBot.sendMail(
                 [mail.user_email, mail.organization_email, mail.organization_email2],
@@ -149,7 +170,7 @@ router.post('/send/:orderId', async (req, res) => {
                     klient: clientName,
                     orderNr: `${req.params.orderId}`,
                     logoPath: logoPath,
-                    orderDetails:sendData
+                    orderDetails: sendData
                 }
             );
 
@@ -167,7 +188,7 @@ router.post('/send/:orderId', async (req, res) => {
         console.error(err);
     }
 });
-router.post('/copy/:orderId', async (req, res) => {
+router.post('/copy/:orderId', checkOrderOwnership, async (req, res) => {
     let orderAddress = null;
     let sendAddress = null;
 
@@ -240,7 +261,7 @@ router.post('/save-order', requireLogin, async (req, res) => {
     }
 });
 
-router.put('/update-order/:orderId', async (req, res) => {
+router.put('/update-order/:orderId', checkOrderOwnership, async (req, res) => {
     try {
         const { commission, orderContactInfo, orderSendAddress, comment } = req.body;
         const { orderId } = req.params;
@@ -262,7 +283,7 @@ router.put('/update-order/:orderId', async (req, res) => {
     }
 })
 
-router.delete('/order/:orderId/delete/', async (req, res) => {
+router.delete('/order/:orderId/delete/', checkOrderOwnership, async (req, res) => {
     // console.log(req.params.orderId);
     let response = await db.deleteOrder(req.params.orderId);
     if (response) {

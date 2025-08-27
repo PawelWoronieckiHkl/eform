@@ -1,6 +1,7 @@
 import { showToast } from "./components/toast.js";
-import { createInfoDialog } from "./components/htmlManipulator.js";
-import { generateExcel, generatePdf } from "./components/generators.js" 
+import { createInfoDialog, createElement } from "./components/htmlManipulator.js";
+import { generateExcel, generatePdf } from "./components/generators.js"
+import { createDialog } from "./formTools/dialogUtils_copy.js";
 
 const closeBtn = document.getElementById('cancel-btn');
 const confirmBtn = document.getElementById('confirm-btn');
@@ -20,7 +21,7 @@ export async function deleteItem(path) {
   });
   if (!res.ok) throw new Error(`${t('order.error_word')}: ${res.statusText}`);
   const data = await res.json();
-  document.getElementById('for-sure').style.display='none';
+  document.getElementById('for-sure').style.display = 'none';
   statusInfo.innerHTML = t(`${data.message}`) + `. ${t('order.redirecting_word')}`;
   statusInfo.classList.add(data.success ? 'alert-success' : 'alert-danger');
   if (data.success) {
@@ -28,7 +29,7 @@ export async function deleteItem(path) {
     setTimeout(() => {
       if (path.includes('position')) location.reload();
       else window.location.href = '/orders';
-    }, 2500);
+    }, 300);
   }
 }
 
@@ -80,8 +81,9 @@ function createDuplicateDiag(btn) {
       }
     ]
   });
+  const acceptBtn = buttons[1]
+  acceptBtn.focus()
 
-  diag.show();
 }
 
 async function duplicate(btn) {
@@ -95,10 +97,10 @@ async function duplicate(btn) {
     const result = await response.json();
 
     if (response.ok) {
-      showToast('success', `${t('orders.item_copied')}`);
+      // showToast('success', `${t('orders.item_copied')}`);
       setTimeout(() => {
         window.location.href = result.redirect;
-      }, 1500);
+      }, 300);
     } else {
       showToast('error', result.error || "Błąd podczas duplikowania");
     }
@@ -109,62 +111,63 @@ async function duplicate(btn) {
 
 
 function buildAndShowDialog(btn) {
-	const parent = document.getElementById('dialog-container');
-	const { buttons, dialog } = createInfoDialog({
-		title: `${t('orders.send_order')}`,
-		message: `${t('orders.are_you_sure')}`,
-		buttons: [
-			{
-				label: `${t('orders.abort')}`,
-				action: () => console.log("Anulowano"),
-				className: "btn btn-secondary me-1",
-				id: "cancel-btn"
-			},
-			{
-				label: `${t('orders.send_word')}`,
-				action: () => sendOrder(btn),
-				className: "btn btn-success ms-1",
-				id: "confirm-btn"
-			}
-		],
-		parent
-	});
+  const parent = document.getElementById('dialog-container');
+  const { buttons, dialog } = createInfoDialog({
+    title: `${t('orders.send_order')}`,
+    message: `${t('orders.are_you_sure')}`,
+    buttons: [
+      {
+        label: `${t('orders.abort')}`,
+        action: () => console.log("Anulowano"),
+        className: "btn btn-secondary me-1",
+        id: "cancel-btn"
+      },
+      {
+        label: `${t('orders.send_word')}`,
+        action: () => sendOrder(btn),
+        className: "btn btn-success ms-1",
+        id: "confirm-btn"
+      }
+    ],
+    parent
+  });
 }
 
 async function sendOrder(sendBtn) {
-	const orderId = sendBtn.dataset.id
-	try {
-		const response = await fetch(`/orders/send/${orderId}`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ status: 'sent' })
-		});
-		const result = await response.json();
-		console.log(response)
-		if (result.status === "success") {
-			showToast('success',`${t('orders.send_success_label')}`);
-			setTimeout(() => {
-				window.location.href = result.redirect;
-			}, 1500);
+  const orderId = sendBtn.dataset.id
+  try {
+    const response = await fetch(`/orders/send/${orderId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: 'sent' })
+    });
+    const result = await response.json();
+    console.log(response)
+    if (result.status === "success") {
+      showToast('success', `${t('orders.send_success_label')}`);
+      setTimeout(() => {
+        window.location.href = result.redirect;
+      }, 600);
 
-		}
-		else {
-			showToast('error', result.message);
-		}
-	}
-	catch (error) {
-		showToast('error', error);
-	}
+    }
+    else {
+      showToast('error', result.message);
+    }
+  }
+  catch (error) {
+    showToast('error', error);
+  }
 }
 
 const sendBtn = document.querySelector('.send-order-btn')
-if (sendBtn){
-sendBtn.addEventListener('click', async (event) => {
-		event.stopPropagation();
-		buildAndShowDialog(sendBtn)
-	});}
+if (sendBtn) {
+  sendBtn.addEventListener('click', async (event) => {
+    event.stopPropagation();
+    buildAndShowDialog(sendBtn)
+  });
+}
 // commentBtn.addEventListener('click', editComment);
 // editIcon.addEventListener('click', editComment);
 
@@ -233,4 +236,65 @@ window.addEventListener('scroll', function () {
   } else {
     navbar.classList.remove('navbar-scrolled');
   }
+});
+
+
+async function unlock(password) {
+  try {
+    const title = document.getElementById('order-title')
+    const checkBoxRes = document.getElementById('checkbox-remember').checked
+    const response = await fetch(`/user/auth/check-password`, {
+      method: "POST",
+      body: JSON.stringify({ password: password.value, remember: checkBoxRes, orderId: title.dataset.id }),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    } else {
+      const diagInput = document.getElementById('diag-input-container')
+      createElement('div', {
+        class: ['alert', 'alert-danger', 'mt-3', 'me-4', 'p-2', 'text-center'], role: 'alert', text: 'Hasło nieprawidłowe',
+
+      }, diagInput)
+      console.log('HASLO NIEPRAWIDLOWE')
+    }
+  } catch (error) {
+    console.log('error', error.message || error);
+  }
+
+
+
+}
+
+const unlockBtn = document.getElementById('unlockBtn')
+unlockBtn.addEventListener('click', function () {
+  const parent = document.getElementById('dialog-container');
+
+  const { buttons, diag } = createInfoDialog({
+    title: `${t('order.unlock')}`,
+    buttons: [
+      {
+        label: `${t('orders.abort')}`,
+        action: () => diag.close(),
+        className: "btn btn-secondary me-1",
+        id: "cancel-btn"
+      },
+      {
+        enter: true,
+        label: `${t('order.unlock')}`,
+        action: async () => await unlock(password),
+        className: "btn btn-success ms-1",
+        id: "confirm-btn"
+      }
+    ],
+    parent,
+    input: { name: `${t('login.password_label')}`, id: "password-input", type: 'password' },
+    checkbox: { name: `${t('order.remember')}`, id: 'checkbox-remember' }
+  });
+  const password = document.getElementById('password-input')
 });

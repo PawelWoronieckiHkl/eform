@@ -93,6 +93,17 @@ function contains(params) {
 parser.setFunction("WSROD", function (params) {
     return inList(params);
 });
+
+parser.setFunction("HASLO", function (params) {
+    window.paramPassword = 'tak mam password'
+    // Do cofnięcia
+    // console.log('HASLO',params)
+    if (params.length > 0) {
+        return false;
+    }
+    return false;
+});
+
 parser.setFunction("NIEWSROD", function (params) {
     return !inList(params);
 });
@@ -160,7 +171,7 @@ parser.setFunction("USTAW", function (params) {
     const field = String(params[0]).toUpperCase();
     const parameter = String(params[1]).toUpperCase();
     if (window.ignoreDom && parameter == "DOM") { return false }
-    const value = params.length >= 3 ? String(params[2]) : undefined;
+    let value = params.length >= 3 ? String(params[2]) : undefined;
 
 
     const validatorModel = window.inputsValidators[window.actualParam][window.actualValue];
@@ -183,7 +194,7 @@ parser.setFunction("USTAW", function (params) {
     }
     if (value === undefined || value === '-') {
         if (parameter === "DOM") {
-
+            value = String(value)
             delete defaultsModel[field][parameter];
             delete window.formulaContext[field];
             parser.setVariable(field, undefined);
@@ -210,7 +221,7 @@ parser.setFunction("USTAW", function (params) {
             result = currentValue ? Number(currentValue) <= Number(value) : true;
             break;
         case "DOM":
-            console.log(params)
+            value = String(value)
             defaultsModel[field][parameter] = value;
             parser.setVariable(field, value.toString());
             window.formulaContext[field] = value;
@@ -251,7 +262,7 @@ parser.setFunction("CEILING", function (params) {
     return null;
 });
 
-function evaluateFormula(expression, context, type) {
+function evaluateFormula(expression, context, type, param = null) {
     if (!expression || expression === "<NULL>") {
         return true;
     }
@@ -285,10 +296,20 @@ function evaluateFormula(expression, context, type) {
     if (type == 'PROCEDURE') {
         window.inputsDefaults = {}
     }
+    window.paramPassword = ''
+
+    // if (expression.includes('CENA_UZNANIOWA')
+    // || expression.includes('CENA_SUMA')) {
+    // console.log('formula context', context)
+    // }
 
     let result = parser.parse(expression);
 
 
+    if (param && expression.includes('HASLO') && result.result == false) {
+
+        window.lockedParams.push(param)
+    }
 
     if (result.result == "0") {
         result.result = false;
@@ -296,12 +317,11 @@ function evaluateFormula(expression, context, type) {
     if (result.error) {
         error_count++;
 
-        console.warn(context, result.error, error_count, expression)
+        // console.warn(context, result.error, error_count, expression)
         return false;
     }
     else if (type === 'formula' || type === 'PROCEDURE') {
 
-        console.log('SIEMA ENIU', result, context.CENA, context.CENA_RABAT, context.DOPLATA_RABAT, context.DOPLATA)
         return result.result;
     }
     else {

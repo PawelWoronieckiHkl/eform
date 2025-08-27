@@ -110,7 +110,7 @@ async function deleteItem(path) {
 		setTimeout(() => {
 			if (path.includes('position')) location.reload();
 			else window.location.href = '/orders';
-		}, 2500);
+		}, 300);
 	}
 }
 
@@ -225,28 +225,33 @@ if (updateOrderButton) {
 }
 
 else if (newOrderButton) {
-	newOrderButton.addEventListener('click', () => {
-
+	const runCreateOrder = () => {
 		if (validate('.validate')) {
 			createOrder();
-		}
-		else {
-			console.log('no nie true')
+		} else {
+			console.log('no nie true');
 			return;
 		}
+	};
 
+	newOrderButton.addEventListener('click', runCreateOrder);
+
+	document.addEventListener('keydown', (event) => {
+		// Sprawdzamy, czy Enter został wciśnięty
+		if (event.key === 'Enter') {
+			event.preventDefault(); // opcjonalnie, by nie submitować formularza domyślnie
+			runCreateOrder();
+		}
 	});
 }
 
-
-const sendBtns = document.querySelectorAll('.send-order-btn')
+const sendBtns = document.querySelectorAll('.send-order-btn');
 sendBtns.forEach(btn => {
 	btn.addEventListener('click', async (event) => {
 		event.stopPropagation();
 		buildAndShowDialog(btn, 'sendOrder');
 	});
 });
-
 
 
 

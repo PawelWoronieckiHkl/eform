@@ -9,7 +9,8 @@
 {% endblock commision_input %}
 address_id
 {% block checkbox_label %}
-  Edytuj dane klienta
+  {{__('edit_order.edit_client_data') }}
+
 {% endblock %}
 {% block client_select %}
   <select id="address-select" name="selected_address" class="form-select mb-2">
@@ -29,7 +30,7 @@ address_id
 {% endblock email_input %}
 
 {% block phone_input %}
-  <input type="text" class="form-control" id="phone" placeholder="{{__('edit_order.phone_placeholder') }}" value='{{orderData.phone}}'/>
+  <input type="number" class="form-control" id="phone" placeholder="{{__('edit_order.phone_placeholder') }}" value='{{orderData.phone}}'/>
 {% endblock phone_input %}
 
 {% block street_input %}
@@ -42,10 +43,11 @@ address_id
   <input type="text" class="form-control" id="zip" placeholder="{{__('edit_order.zip_placeholder') }}" value='{{orderData.zip}}'/>
 {% endblock zip_input %}
 {% block country_input %}
-  <input type="text" class="form-control" id="country" placeholder="{{__('edit_order.country_placeholder') }}" value='{{orderData.country}}'/>
+  <input type="text" class="form-control" id="country" value='{{orderData.country}}'/>
 {% endblock country_input %}
 
-{% block checkbox_address2 %}Edytuj / dodaj adres dostawy
+{% block checkbox_address2 %}{{__('edit_order.edit_send_data') }}
+
 {% endblock %}
 
 {% block send_name_input %}
@@ -56,7 +58,7 @@ address_id
   <input type="text" class="form-control" id="sendEmail" placeholder="{{ __('new-order.email_placeholder') }}" value='{{orderData.send_email}}'/>
 {% endblock send_email_input %}
 {% block send_phone_input %}
-  <input type="text" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value='{{orderData.send_phone}}'/>
+  <input type="number" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value='{{orderData.send_phone}}'/>
 {% endblock send_phone_input %}
 
 {% block send_street_input %}
@@ -69,7 +71,8 @@ address_id
   <input type="text" class="form-control" id="sendZip" placeholder="{{ __('new-order.zip_placeholder') }}" value='{{orderData.send_zip}}'/>
 {% endblock send_zip_input %}
 {% block send_country_input %}
-  <select class="form-control" id="sendCountry" placeholder="{{ __('new-order.country_placeholder') }}" value='{{orderData.send_country}}'></select>
+  <input type='text' class="form-control" id="sendCountry" value='{{orderData.send_country}}'/>
+
 {% endblock send_country_input %}
 
 {% block comment_input %}

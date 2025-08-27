@@ -14,7 +14,6 @@ export class DataLoader {
 
   checkEnv() {
     const envString = document.getElementById('env-info')
-    console.log(envString, 'ENVV')
     if (envString?.value) {
       this.versionFile = -1
     }
@@ -33,7 +32,7 @@ export class DataLoader {
 
 
   async loadData(file) {
-    console.log(file, 'siema eniu')
+
     try {
       const response = await fetch(file);
       if (!response.ok) throw new Error("Błąd ładowania- " + response.status);
@@ -241,12 +240,11 @@ export class DataLoader {
   }
 
   async selectPrices(params) {
-   console.log(params, 'jestem w selectprices')
     const [path, scripts] = await formsManager.getClientScripts()
-    console.log(scripts, path)
+
     for (const param of params) {
       let scriptPath = scripts.find(script => script.param == param.NAME)
-      console.log(scriptPath, 'foundScripts')
+
       if (param?.SCRIPTS == 'true' && scriptPath) {
         param.SOURCE = `${path}${scriptPath.file}`
       }
@@ -254,34 +252,61 @@ export class DataLoader {
     return params
   }
 
-  async selectCollections(values) {
-    const aliases = await formsManager.loadDataPerClient(this.groupNumber)
 
-    const result = JSON.parse(JSON.stringify(values))
+
+  async selectCollections(values) {
+    const seen = new Set();
+    const aliases = await formsManager.loadDataPerClient(this.groupNumber);
+
+    const result = JSON.parse(JSON.stringify(values));
+
 
     for (const [param, aliasList] of Object.entries(aliases)) {
       if (result[param]?.length) {
-        result[param] = result[param].filter(valueEntry => {
-          const matchedAlias = aliasList.find(
-            alias => alias.VALUE === valueEntry.VALUE
-          );
+        const exploded = [];
 
-          if (matchedAlias) {
-            valueEntry.ALIAS = matchedAlias.ALIAS;
-            valueEntry.ALIAS_DESCRIPTION = matchedAlias.DESCRIPTION?.replace(/\r/g, '').trim();
-            return true;
+        result[param].forEach(valueEntry => {
+          const matchedAliases = aliasList.filter(alias => alias.VALUE === valueEntry.VALUE);
+          console.log(matchedAliases, 'siema');
+          if (matchedAliases.length === 0) {
+            // brak aliasów, nie dodajemy
+            return;
+          } else if (matchedAliases.length === 1) {
+
+
+            const newEntry = { ...valueEntry };
+            newEntry.ALIAS = matchedAliases[0].ALIAS;
+            newEntry.ALIAS_DESCRIPTION = matchedAliases[0].DESCRIPTION?.replace(/\r/g, '').trim();
+
+            exploded.push(newEntry);
+          } else {
+            // wielu aliasów - dla każdego aliasu nowy wpis z modyfikacją name
+            matchedAliases.forEach((aliasData, idx) => {
+              const newEntry = { ...valueEntry };
+              newEntry.ALIAS = aliasData.ALIAS;
+              newEntry.ALIAS_DESCRIPTION = aliasData.DESCRIPTION?.replace(/\r/g, '').trim();
+              if (newEntry.VALUE) {
+                newEntry.VALUE = `${newEntry.VALUE}~${idx + 1}`;
+              }
+
+
+              exploded.push(newEntry);
+            });
+
           }
-          return false;
         });
 
-        if (result[param].length === 0) {
+        if (exploded.length === 0) {
           delete result[param];
+        } else {
+          result[param] = exploded;
         }
       }
     }
 
     return result;
   }
+
 
   getFiltersForParameter(paramName) {
     if (!this.parameterFilters) return {};

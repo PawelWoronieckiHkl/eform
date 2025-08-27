@@ -89,5 +89,23 @@ async function getUserName(){
     }, 100);
 }
 
+async function getConfigNum(){
+    const user = await fetch('/config-num', {
+        method: 'GET',
+
+    });
+    const data = await user.json();
+    if (!data.success) {
+        throw new Error('Błąd pobierania nazwy użytkownika: ' + data.message);
+    }
+
+        console.log('wersja', data);
+        document.getElementById('config-number-info').innerHTML = 
+         `Numer konfiguracji <br> ${data.name}`;
+
+}
+
+getConfigNum()
+
 getUserName()
     .catch(err => console.error('getUserName Error:', err));

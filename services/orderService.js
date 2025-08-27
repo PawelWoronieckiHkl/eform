@@ -1,13 +1,14 @@
 const _ = require("n_");
 
 async function jsonTextBackToMap(orderItems) {
-  let tables = [];
+  let total = {}
+  let cleanOrderItems = [];
   let prevHeaderKeys = [];
-
   let table = {
     headers: [],
     displayHeaders: [], // do ekranu
-    rows: []
+    rows: [],
+    locked: []
   };
 
   for (let item of orderItems) {
@@ -27,6 +28,7 @@ async function jsonTextBackToMap(orderItems) {
     for (const [key, param] of jsonParameters.entries()) {
       const display = param && param.param_description ? param.param_description : key;
       const headerKey = display + "||" + key; // rozróżnia nawet powtarzalne "MODEL"
+
       currentHeaderKeys.push(headerKey);
       displayHeaders.push(display);
     }
@@ -34,20 +36,24 @@ async function jsonTextBackToMap(orderItems) {
     // Jeśli nagłówki się zmieniły, zamknij poprzednią tabelę
     if (!areArraysEqual(prevHeaderKeys, currentHeaderKeys)) {
       if (table.rows.length > 0) {
-        tables.push(removeEmptyColumns({
+        cleanOrderItems.push(removeEmptyColumns({
           headers: table.displayHeaders,
           headerKeys: table.headers,
-          rows: table.rows
+          rows: table.rows,
+          locked: table.locked
         }));
       }
       table = {
         headers: currentHeaderKeys,
         displayHeaders: displayHeaders,
-        rows: []
+        rows: [],
+        locked: table.locked
+
       };
     }
 
     // Tworzymy wiersz jako obiekt: [headerKey] => wartość, plus na display mapujemy nagłówek po kolei
+    item.lockedParams = []
     let rowObj = {};
     let i = 0;
     for (const [key, param] of jsonParameters.entries()) {
@@ -57,30 +63,48 @@ async function jsonTextBackToMap(orderItems) {
       if (param) {
         if (!('option_value' in param)) {
           value = "-";
-        } else if ('option_description' in param && (param['option_description'] !='')) {
+        } else if ('option_description' in param && (param['option_description'] != '')) {
 
           value = `${param.option_value} - ${param.option_description}`;
         } else {
           value = param.option_value;
         }
+        if ('locked' in param && 'param_description' in param) {
+          if (param.locked) {
+            if (!isNaN(param.option_value) && param?.option_value != undefined) {
+              console.log(param.option_value)
+              total[key] = (total[key] || 0) + Number(param.option_value || 0);
+            }
+            if (!table.locked.includes(param.param_description)) {
+              table.locked.push(param.param_description)
+            }
+
+            item.lockedParams.push(param.param_description)
+          }
+        }
       }
+
       rowObj[headerKey] = value;
       i++;
+
     }
 
     table.rows.push({ item, row: rowObj });
+
     prevHeaderKeys = currentHeaderKeys;
   }
 
   if (table.rows.length > 0) {
-    tables.push(removeEmptyColumns({
+    cleanOrderItems.push(removeEmptyColumns({
       headers: table.displayHeaders,
       headerKeys: table.headers,
-      rows: table.rows
+      rows: table.rows,
+      locked: table.locked
+
     }));
   }
-
-  return tables;
+  console.log(total)
+  return {cleanOrderItems,total};
 }
 
 function areArraysEqual(arrA, arrB) {
@@ -106,12 +130,12 @@ function removeEmptyColumns(table) {
       }
     }
     if (allEmpty) {
-      columnsToRemove.push(idx); 
+      columnsToRemove.push(idx);
     }
   }
 
   if (columnsToRemove.length === 0) return {
-    headers, // to są displayHeaders
+    headers,
     rows: rows.map(r => ({
       item: r.item,
       row: headers.reduce((acc, display, idx) => {
@@ -119,7 +143,8 @@ function removeEmptyColumns(table) {
         acc[display] = r.row[headerKey];
         return acc;
       }, {})
-    }))
+    })),
+    locked: table.locked // dodaj locked
   };
 
   // Filtrujemy po pozycjach
@@ -138,7 +163,8 @@ function removeEmptyColumns(table) {
 
   return {
     headers: newHeaders,
-    rows: newRows
+    rows: newRows,
+    locked: table.locked // dodaj przekazanie locked z oryginalnej tabeli
   };
 }
 

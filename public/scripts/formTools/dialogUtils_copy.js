@@ -43,6 +43,7 @@ export class DialogManager {
     this.options = options;
     this.groupNumber = groupNumber;
     this.filters = filters
+ 
     this.isMultiChoice = param?.MULTI == 'true' ?? false;
     this.selectedValues = [];
     this.confirmButton.style.display = this.isMultiChoice ? 'inline-block' : 'none';
@@ -137,7 +138,7 @@ export class DialogManager {
 
     const sortingContainer = createElement('div', {
       class: ['sorting-controls', 'mb-2'],
-      
+
     });
 
     // Label - TYLKO TEKST, bez zdarzeń!
@@ -198,7 +199,7 @@ export class DialogManager {
     const filterControls = createElement('div', {
       class: ['filter-controls', 'mb-2'],
       style: { border: '1px solid gray' },
-      existingControls 
+      existingControls
     });
 
     const isFilters = Object.keys(this.filters).length > 0;
@@ -262,9 +263,17 @@ export class DialogManager {
         }, li);
       });
 
+      
       // Obsługa zmian (delegacja zdarzeń)
       dropdownMenu.addEventListener('change', (e) => this.handleFilter(e, filterName));
     }
+      const clearFiltersBtn = createElement('button', {
+        class: ['btn', 'btn-outline-secondary'],
+        type: 'button',
+        id: `clear-filters-btn`,
+        'aria-expanded': 'false',
+        text: `${t("form.reset_filters")}`
+      }, filterControls);
 
     return filterControls;
   }
@@ -313,7 +322,7 @@ export class DialogManager {
       }
     }
     const counter = document.getElementById('object-count');
-    
+
     counter.textContent = this.options.length;
 
     for (const option of favoriteOptions) {
@@ -496,7 +505,10 @@ export class DialogManager {
 
   // Tworzenie wrappera dla obrazu
   createImageWrapper(option, filename) {
+    
     let normalizedValue = option.VALUE
+
+    // console.log(normalizedValue, 'normalizedValue')
     const imageSrc = `/photos/${this.groupNumber}/${this.param.NAME}/${filename}`;
     const colorImage = document.createElement('img');
     colorImage.classList.add('diag-image');
@@ -523,7 +535,7 @@ export class DialogManager {
 
   // Obsługa kliknięcia opcji
   handleOptionClick(clickedElement) {
-    console.log('handleOptionClick', clickedElement);
+
     if (this.isMultiChoice) {
       // TRYB WIELOKROTNEGO WYBORU
       // 1. Toggle zaznaczenia
@@ -539,7 +551,7 @@ export class DialogManager {
       } else {
         this.selectedValues.splice(index, 1);
       }
-      console.log(this.selectedValues)
+
     }
     else {
       document.querySelectorAll('.image-box').forEach(e => e.classList.remove('active'));
@@ -632,10 +644,10 @@ export class DialogManager {
 
   handleConfirm() {
 
-    console.log(this.selectedValues, 'selValues')
+
 
     const selectedData = this.getSelectedValue();
-    console.log(selectedData, 'selectedData')
+
     if (!selectedData) {
       showToastInContainer(this.dialog, 'warning', t('form.empty_select_warning'));
       return;
@@ -645,9 +657,9 @@ export class DialogManager {
     if (typeof window.dialogConfirmHandler === 'function') {
 
       window.dialogConfirmHandler(selectedData);
-      console.log('if')
+
     } else {
-      console.log('else')
+
       // Domyślna obsługa, jeśli handler nie jest zdefiniowany
       const values = window.formValues || {};
       const inputs = window.formInputs || {};
@@ -684,7 +696,7 @@ export class DialogManager {
 
 // Funkcja pomocnicza do aktualizacji formularza
 function updateFormWithSelectedValue(values, inputs, selectedData, options) {
-  console.log('SELECTEEED DATA', selectedData.length);
+
   let valuesString = false;
   let { value, paramName, paramDescription } = selectedData;
   if (selectedData.length > 1) {

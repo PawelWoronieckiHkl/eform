@@ -16,7 +16,13 @@ async function getOrderWithItems(orderId) {
     return { orderDetails, orderItems }
 }
 
-
+async function checkOwner(orderId, userId) {
+    console.log('Checking ownership for orderId:', orderId, 'and userId:', userId);
+    const query = 'SELECT id FROM \`order\` WHERE id = ? AND user_id = ?';
+    const order = await selectQuery(query, [orderId, userId]);
+    console.log(order.length)
+    return order.length > 0;
+}
 
 async function getOrderDetails(orderId) {
     const orderDetailsQuery = `SELECT 
@@ -379,5 +385,6 @@ module.exports = {
     updateOrderComment,
     changeOrderStatus,
     insertSendAddress,
-    getOrderWithItems
+    getOrderWithItems,
+    checkOwner
 }

@@ -73,6 +73,8 @@ async function updateUserPasswordByPin(pin, hash) {
     return response
 }
 
+
+
 async function getDbPassword(pin) {
 
     const query = `SELECT password FROM user WHERE pin LIKE ?`;

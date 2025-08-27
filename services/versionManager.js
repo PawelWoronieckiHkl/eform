@@ -1,27 +1,58 @@
 const fs = require('fs');
 const path = require('path');
 const dbHelper = require('../db/db_helper.js');
-const { dataDir } = require('../config.js');
+const { dataDir, availabeLanguages } = require('../config.js');
 const { json } = require('stream/consumers');
 
 class VersionManagerLocal {
     constructor() {
         this.filesToUpdate = ['param.txt', 'paramdict.txt'];
         this.versionFileName = 'version_control.json';
+        this.langPaths = {};
+    }
+
+    async checkOkFileAndRemove(group) {
+        const okFilePath = path.join(dataDir, `${group}.ok`);
+        try {
+            await fs.promises.access(okFilePath, fs.constants.F_OK);
+            // Plik istnieje, usuwamy go po przetworzeniu
+            await fs.promises.unlink(okFilePath);
+            return true;
+        } catch (err) {
+            // Plik .ok nie istnieje
+            return false;
+        }
     }
 
     async init(groupsArray) {
         // Spłaszcz tablicę obiektów do pojedynczego obiektu
         const groups = groupsArray.reduce((acc, groupObj) => {
-            const [group, paths] = Object.entries(groupObj)[0];
+
+            let [group, paths] = Object.entries(groupObj)[0];
+            const pathlist = [];
+            for (let language of availabeLanguages) {
+                pathlist.push(`/${group}/data/${language}`);
+            }
+            paths = pathlist
             acc[group] = paths;
             return acc;
         }, {});
+        groups['WYMIAROWANIE_SLOPOW'] = ['/WYMIAROWANIE_SLOPOW/data/pl', '/WYMIAROWANIE_SLOPOW/data/en', '/WYMIAROWANIE_SLOPOW/data/de', '/WYMIAROWANIE_SLOPOW/data/fr', '/WYMIAROWANIE_SLOPOW/data/nl']
+        for (let [group, langPaths] of Object.entries(groups)) {
+            let pathlist = [];
+            for (let language of availabeLanguages) {
+                pathlist.push(`/${group}/data/${language}`);
+            }
+            langPaths = pathlist
+            const okFileExists = await this.checkOkFileAndRemove(group);
+            if (!okFileExists) {
+                // Jeśli plik .ok nie istnieje, pomijamy aktualizację dla tej grupy
+                console.log(`Brak pliku ${group}.ok – pomijam aktualizację`);
+                continue;
+            }
 
-        for (const [group, langPaths] of Object.entries(groups)) {
-            console.log(dataDir, 'datadir@@@@@@@@@@@@@')
+            console.log('SPRAWDZAM WERSJE', group);
             const groupDataPath = path.join(dataDir, group, 'data');
-            const versionPath = path.join(groupDataPath, this.versionFileName);
 
             const currentMetadata = {};
             for (const langDir of langPaths) {
@@ -30,13 +61,12 @@ class VersionManagerLocal {
                 currentMetadata[lang] = await this.getRemoteMetadataForDir(fullPath);
             }
 
-            const lastMetadata = await this.getLastVersionForGroup(versionPath);
-            console.log(versionPath)
-            const { changed, files } = this.compareGroupVersions(lastMetadata, currentMetadata);
+            // Rezygnujemy z getLastVersionForGroup i pliku version_control.json
+            // Pobieramy wersję z bazy i wyliczamy nową wewnątrz processGroupChanges
 
-            if (changed) {
-                await this.processGroupChanges(group, groupDataPath, currentMetadata, files);
-            }
+            // Zaznaczamy wersję jako zmienioną i wywołujemy proces aktualizacji
+            await this.processGroupChanges(group, groupDataPath, currentMetadata);
+
         }
         return this;
     }
@@ -75,7 +105,7 @@ class VersionManagerLocal {
         let changed = false;
         const changes = {};
 
-        for (const [lang, files] of Object.entries(newData)) {
+        for (let [lang, files] of Object.entries(newData)) {
             const oldFiles = oldData[lang] || [];
             const langChanges = [];
 
@@ -95,21 +125,20 @@ class VersionManagerLocal {
         return { changed, files: changes };
     }
 
-    async processGroupChanges(group, groupPath, currentMetadata, changes) {
-        // Pobierz i zaktualizuj wersję
-        console.log(process.env, 'dev')
+    async processGroupChanges(group, groupPath, currentMetadata) {
+
         const currentVersion = await dbHelper.getAppVersion(group, process.env.NODE_ENV || 'dev');
         const [major, minor, patch] = currentVersion.split('.').map(Number);
         const newVersion = `${major}.${minor}.${patch + 1}`;
 
-        await dbHelper.updateAppVersion(newVersion, group,process.env.NODE_ENV || 'dev');
+        await dbHelper.updateAppVersion(newVersion, group, process.env.NODE_ENV || 'dev');
 
         // Utwórz katalog wersji
         const versionDir = path.join(groupPath, 'versions', newVersion);
         await fs.promises.mkdir(versionDir, { recursive: true, mode: 0o775 });
 
         // Skopiuj WSZYSTKIE języki dla grupy
-        for (const [lang, files] of Object.entries(currentMetadata)) {
+        for (let [lang, files] of Object.entries(currentMetadata)) {
             const langVersionDir = path.join(versionDir, lang);
             await fs.promises.mkdir(langVersionDir, { recursive: true });
 
@@ -125,12 +154,7 @@ class VersionManagerLocal {
             }
         }
 
-        // Zaktualizuj plik wersji
-        await fs.promises.writeFile(
-            path.join(groupPath, this.versionFileName),
-            JSON.stringify(currentMetadata, null, 2),
-            'utf-8'
-        );
+        // Nie zapisujemy już pliku version_control.json
     }
 }
 
@@ -141,4 +165,11 @@ async function checkVersion(paths) {
     return manager;
 }
 
-module.exports = { checkVersion };
+async function getConfigNum() {
+    const numFile = path.join(dataDir, 'eform.num')
+    const data = await fs.promises.readFile(numFile, 'utf-8');
+    return data.trim()
+
+}
+
+module.exports = { checkVersion, getConfigNum };

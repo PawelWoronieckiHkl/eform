@@ -89,7 +89,7 @@
                 </div>
                 <div class="col-md-9">
                   {% block phone_input %}
-                    <input type="text" class="form-control" id="phone" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/>
+                    <input type="number" class="form-control" id="phone" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/>
                   {% endblock phone_input %}
                 </div>
               </div>
@@ -128,7 +128,7 @@
               </div>
 
               <div class="row mb-3 align-items-center new-addr d-none">
-                <div class="col-md-3 text-start fw-semibold">Country</div>
+                <div class="col-md-3 text-start">{{ __('new-order.country') }}</div>
                 <div class="col-md-9">
                   {% block country_input %}
                     <input class="form-control" type="text" id="country"/>
@@ -176,7 +176,7 @@
                 </div>
                 <div class="col-md-9">
                   {% block send_phone_input %}
-                    <input type="text" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/>
+                    <input type="number" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/>
                   {% endblock send_phone_input %}
                 </div>
               </div>
@@ -239,42 +239,47 @@
                 </div>
               </div>
 
-              <div class="d-flex justify-content-center gap-3">
-                {% block sendBbtn %}
-                  <button class="btn btn-outline-secondary p-2 col-3" type="button" id="save-order-btn" data-href="/orders/save-order">
-                    {{ __('new-order.save_button') }}
-                  </button>
-                {% endblock sendBbtn %}
-              </div>
+              <div class="d-flex justify-content-center gap-3 text-center ms-5">
 
+
+                  <a href="/" class='btn btn-outline-danger p-2 col-3'>
+                    {{ __('form.cancel_button') }}</a>
+
+                  {% block sendBbtn %}
+                    <button class="btn btn-outline-secondary p-2 col-3" type="button" id="save-order-btn" data-href="/orders/save-order">
+                      {{ __('new-order.save_button') }}
+                    </button>
+                  {% endblock sendBbtn %}
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  {% endblock content %}
+    {% endblock content %}
 
-  {% block scripts %}
-    <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
+    {% block scripts %}
+      <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
 
-    <script>
-      $(function () {
-        $("#country").countrySelect({
-          preferredCountries: [
-            "pl", "de", "gb", 'nl', 'fr'
-          ],
-          defaultCountry: "pl"
+      <script>
+        $(function () {
+          $("#country").countrySelect({
+            preferredCountries: [
+              "pl", "de", "gb", 'nl', 'fr'
+            ],
+            defaultCountry: "pl"
+          });
         });
-      });
-      $(function () {
-        $("#sendCountry").countrySelect({
-          preferredCountries: [
-            "pl", "de", "gb", 'nl', 'fr'
-          ],
-          defaultCountry: "pl"
+        $(function () {
+          $("#sendCountry").countrySelect({
+            preferredCountries: [
+              "pl", "de", "gb", 'nl', 'fr'
+            ],
+            defaultCountry: "pl"
+          });
         });
-      });
-    </script>
+      </script>
 
-    <script type="module" src="/scripts/orders.js"></script>
-  {% endblock scripts %}
+      <script type="module" src="/scripts/orders.js"></script>
+    {% endblock scripts %}

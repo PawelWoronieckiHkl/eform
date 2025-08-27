@@ -47,7 +47,7 @@ export class SourceWindow {
     }
 
     async loadData() {
-        console.log('loading data for slope', this.param.SOURCE)
+    
         const slopeLoader = new DataLoader();
         await slopeLoader.init('0.3.2', this.param.SOURCE, document.documentElement.lang);
         this.data = await slopeLoader.parseData();
@@ -74,7 +74,7 @@ export class SourceWindow {
         return this.sourceValues;
     }
     renderModal(photoFile) {
-        console.log(this.param, 'pararararam')
+        
         this.modal = createElement('div', { id: 'slope-modal', class: ['modal', 'show'], style: 'display: block;', tabindex: '-1' }, document.body);
 
 
@@ -98,7 +98,7 @@ export class SourceWindow {
         const values = {};
         const enabledParams = {};
         this.data.params.forEach((param, idx) => {
-            console.log(param, 'slope_fields')
+            
             if (idx % 2 === 0) {
                 row = createElement('div', { class: ['row', 'mb-3'] }, form);
             }
@@ -113,7 +113,7 @@ export class SourceWindow {
                 }
                 // Only show/hide and enable if col is defined (i.e., param.DESCRIPTION exists)
 
-                console.log(!isEnabled(param.ENABLE, this.sourceValues))
+                
                 if (!isEnabled(param.ENABLE, this.sourceValues, 'param')) {
                     col.style.display = 'none';
                 } else {

@@ -69,3 +69,12 @@ input[type="number"]:focus {
 body{
 	overflow-x: auto !important;
 }
+#config-div{
+	position:relative;
+
+	
+	z-index: 999999;
+	text-align: center;
+	color: #666666b0;
+	font-weight: 600;
+}

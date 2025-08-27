@@ -25,6 +25,7 @@ export class FormsManager {
         this.departments = objects;
         this.paths = await this.getPaths();
         this.postAllPaths()
+        
         this.clientData = await this.getOwner();
         return objects;
     }
@@ -76,7 +77,7 @@ export class FormsManager {
                 entry.organization.trim().toUpperCase() === this.clientData.orgIdent.trim().toUpperCase() &&
                 entry.client.trim().toUpperCase() === this.clientData.userIdent.trim().toUpperCase()
             );
-
+ 
             if (!foundAliases.length) {
                 console.warn('Brak pasujących aliasów dla:', this.clientData);
                 return {};
@@ -116,7 +117,7 @@ export class FormsManager {
         const groupDetails = this.groupsDetails.find(group=>group.code == window.tempGroupNumber)
         this.scriptsArr = groupDetails.param_scripts
         let foundScripts = []
-        console.log(this.scriptsArr, 'scripts arr')
+        
         if (this.scriptsArr) {
 
             foundScripts = this.scriptsArr.filter(entry =>
@@ -129,7 +130,7 @@ export class FormsManager {
             console.warn('Brak pasujących aliasów dla:', this.clientData);
             return false;
         }
-        console.log(foundScripts, 'foundScripts')
+       
         let path = this.currentRootPath
         return [path, foundScripts]
 
@@ -185,7 +186,7 @@ export class FormsManager {
                 if (object.param_scripts) {
                     this.scriptsArr = await this.prepareData(object.param_scripts) ?? []
                     object.param_scripts = this.scriptsArr
-                    console.log(object, object.param_scripts, 'test skryptów 2')
+                   
                 }
                 this.paths.push(path);
                 objects.push(object);
@@ -202,7 +203,7 @@ export class FormsManager {
 
     setCurrentGroup(groupNumber) {
         this.currentGroup = this.groupsDetails.find(group => group.code == groupNumber)
-        console.log(this.currentGroup,groupNumber,'Test Skryptów 2')
+       
 
     }
 

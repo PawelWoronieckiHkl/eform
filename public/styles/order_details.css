@@ -7,18 +7,13 @@
 }
 
 #order-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    /* Rozsuwa dzieci na boki */
-    margin-top: 60px;
+
     position: fixed;
-
-    margin-left: 3px;
-    z-index: 1000;
-    max-width: 93%;
-    min-width: 63% !important;
-
+    justify-content: space-between;
+    margin-top: 60px;
+    position: fixed !important;
+    left: 249px;
+    z-index: 9999 !important;
     min-width: calc(100% - 269px) !important;
     max-width: calc(100% - 269px) !important;
 }
@@ -29,11 +24,27 @@
 
 }
 
+.diag-input-container {
+    margin-left: 7% !important;
+    margin-top: 15px !important;
+}
+
+.dialog-label {
+    margin-top: 20px !important;
+
+}
+
+.dialog-input {
+    padding: 20px;
+
+}
+
 #order-buttons {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-left: 25px;
+    width: 380px !important;
 }
 
 .static-head {
@@ -41,10 +52,11 @@
 }
 
 .floating-order {
- margin-right: 2%;
+    margin-right: 14vw;
 }
-.floating-history-order{
- margin-left:3%
+
+.floating-history-order {
+    margin-left: 3%
 }
 
 .navbar-scrolled {
@@ -140,11 +152,85 @@
 #comment-input {
     border: 1px solid rgb(228, 228, 228) !important;
 }
+
 #generate-excel-btn.has-tooltip:hover::after {
-  left: auto;
-  right: -200%;   /* Delikatne przesunięcie w lewo */
+    left: auto;
+    right: -200%;
+    /* Delikatne przesunięcie w lewo */
 }
+
 /* Jeśli tooltip ma strzałkę (opcjonalnie dostosuj jej pozycję): */
 #generate-excel-btn.has-tooltip:hover::before {
-  left: auto;
-  right: 10px;   }
+    left: auto;
+    right: 10px;
+}
+
+.duplicate-btn {
+    z-index: 0 !important;
+}
+
+.edit-position-btn {
+    z-index: 0 !important;
+}
+
+.delete-position-btn {
+    z-index: 0 !important;
+}
+
+.price {
+    background: #f8f9fa;
+    font-weight: bold;
+    color: #3d3d3d;
+    border-top: 2px solid #dedede;
+    box-shadow: 0 2px 8px rgba(42, 122, 226, 0.08);
+    font-size: 1rem;
+    padding: 10px 16px;
+    text-align: left;
+    letter-spacing: 1px;
+    
+    border: 0px solid #0e0e0e !important;
+
+    border-radius: 20px !important;
+}
+
+.price strong,
+.price b {
+    color: #0f0f0f;
+}
+#price-row{
+       border: 1px solid #00000018 !important;
+       
+}
+.price-label {
+    background: #eaf4fd;
+    color: #5a5a5a;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-right: 6px;
+    font-size: 0.96em;
+    font-weight: 500;
+    display: inline-block;
+}
+.total-price {
+  margin-top: 20px;
+  padding: 12px 20px;
+
+
+  max-width: 1000px;
+  margin-left: auto; /* wyrównanie do prawej */
+  color: #004085;
+  font-weight: 600;
+  font-size: 1.1rem;
+
+  gap: 30px; /* odstęp pomiędzy elementami */
+  margin-bottom: 30px;
+}
+
+.total-price span {
+
+  min-width:180px;
+  text-align: left;
+
+  font-weight: 700;
+  font-size: 1.15rem;
+}

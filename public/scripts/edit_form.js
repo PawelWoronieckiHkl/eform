@@ -38,6 +38,7 @@ async function getPositionInfo(id) {
 async function init() {
     const id = getPositionIdFromUrl();
     const position = await getPositionInfo(id);
+
     const version = position.ver;
     const values = position.json_parameters;
     const valuesToDisplayList = JSON.parse(position.json_parameters_desc)

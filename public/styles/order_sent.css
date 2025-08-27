@@ -24,7 +24,7 @@
 }
 
 
-.floating-order{
+.floating-order {
     margin-left: 15% !important;
 }
 
@@ -49,9 +49,55 @@
 
 
 @media print {
-  .container {
-    margin: 0 !important;
-    padding: 0 !important;
-    min-height: unset !important;
-  }
+    .container {
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: unset !important;
+    }
 }
+.price{
+    --bs-table-bg-type: #f8f9fa !important;
+}
+.price-label {
+    background: #eaf4fd;
+    color: #5a5a5a;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-right: 6px;
+    font-size: 0.96em;
+    font-weight: 500;
+    display: inline-block;
+}
+thead tr{
+    --bs-table-bg-type: #f8f9fa !important;
+}
+tr{
+    --bs-table-bg-type: #e6cbbb77;
+}
+
+.total-price {
+    margin-top: 20px;
+    padding: 12px 20px;
+
+
+    max-width: 1000px;
+    margin-left: auto;
+    /* wyrównanie do prawej */
+    color: #004085;
+    font-weight: 600;
+    font-size: 1.1rem;
+
+    gap: 30px;
+    /* odstęp pomiędzy elementami */
+    margin-bottom: 30px;
+}
+
+.total-price span {
+
+    min-width: 180px;
+    text-align: left;
+
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+

@@ -4,7 +4,7 @@ import {
   createInputField,
   validateFormInput,
   updateFieldInputs,
-
+  convertIntoPercent,
   updateFieldStates,
   resetDependences,
   buildValuesToDisplay,
@@ -18,7 +18,7 @@ import { validateAllFieldsOnSubmit, clearDisabledValues } from "./formTools/vali
 import { SourceWindow } from './formTools/slope.js';
 import { showToast } from "./components/toast.js";
 import { createElement, isEnabled } from "./components/htmlManipulator.js";
-
+import { hideLocked } from './formTools/createForm.js'
 
 
 
@@ -39,9 +39,9 @@ export async function generateForm(
   window.enabledParams = {};
   window.afterSend = false;
   window.validParams = {};
-  window.constValues = {}
+  window.constValues = {};
+  window.lockedParams = [];
   const loader = new DataLoader();
-  console.log(groupNumber,version,lang, 'siema eniu')
   loader.init(version, groupNumber, lang)
   const data = await loader.parseData();
   const dictValues = data.dictValues;
@@ -50,7 +50,7 @@ export async function generateForm(
   const calculatedParams = {};
   if (!data) return;
   allOptionsByParameter = await loader.selectCollections(allOptionsByParameter)
-  console.log(allOptionsByParameter,'test')
+
   data.params = await loader.selectPrices(data.params)
   window.params = data.params;
   window.actualParam = '';
@@ -66,7 +66,6 @@ export async function generateForm(
 
   for (let i = 0; i < params.length; i++) {
     let param = params[i];
-    console.log(param.MULTI, 'multitulti')
     options = await getPossibleValues(allOptionsByParameter[param.NAME], values);
     await buildHtml(options, param, filters);
 
@@ -154,8 +153,12 @@ export async function generateForm(
 
     if (!editFlag) {
       if (param?.DEFAULT != '<NULL>' && param.DEFAULT) {
-        
-        values[param.NAME] = param.DEFAULT;
+        if (param.TYPE === "numeric") {
+          values[param.NAME] = parseInt(param.DEFAULT);
+        }
+        else {
+          values[param.NAME] = param.DEFAULT;
+        }
         inputs[param.NAME].value = param.DEFAULT;
         buildValuesToDisplay(allOptionsByParameter, param.DEFAULT, param.NAME, displayValues, 'INPUT ');
       } else {
@@ -178,6 +181,8 @@ export async function generateForm(
         input.value = 0
       } else {
         input.value = values[param.NAME]
+
+
       }
     }
 
@@ -188,9 +193,10 @@ export async function generateForm(
     }
 
 
-    if (!isEnabled(param.ENABLE, values)) {
+    if (!isEnabled(param.ENABLE, values, paramName)) {
       div.style.display = 'none'
-    } else {
+    }
+    else {
       enabledParams[paramName] = true;
       div.style.display = 'grid'
       if (editFlag) {
@@ -200,8 +206,15 @@ export async function generateForm(
     }
 
     if (isEnabled && editFlag) {
+      if (values[param.NAME] != '') {
+        input.value = values[param.NAME]
+      }
+      else {
+        input.value = 'ffff'
+      }
 
     }
+
   }
 
 
@@ -216,33 +229,28 @@ export async function generateForm(
 
     inputs[key].addEventListener("input", function () {
       if (this.tagName === "INPUT") {
-
+        console.log('select 1 @@@@@@@@@@@@@@@@@@@@@@@@@')
         values[this.name] = parseFloat(this.value);
       }
 
-      // TU MIE SIE RESTEJUEM
-      // updateProcedure({ ...COMMON_PARAMS, name: this.name, value: this.value, tagName: this.tagName, flags: { resetDeps: true, buildValues: true } });
-      // console.log(values.WYMIAROWANIE_SLOPOW, 'wariacie 1,5')
     });
 
     if (inputs[key].tagName === "INPUT") {
-
-
       inputs[key].addEventListener('blur', function () {
-
+        console.log('select 2 @@@@@@@@@@@@@@@@@@@@@@@@@')
         updateProcedure({
           ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
-          flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true }
+          flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true }
         });
       });
 
     } else {
       inputs[key].addEventListener('change', function () {
-
+        console.log('select 3 @@@@@@@@@@@@@@@@@@@@@@@@@')
         values[this.name] = this.value;
         updateProcedure({
           ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
-          flags: { updateInputs: true, updateStates: true }
+          flags: { buildValues: true, updateInputs: true, updateStates: true }
         });
       });
     }
@@ -262,6 +270,7 @@ export async function generateForm(
       valueToUpdate = selectedValue
     }
 
+    console.log('select 4 @@@@@@@@@@@@@@@@@@@@@@@@@')
     updateProcedure({
       ...COMMON_PARAMS, options, name: paramName, value: valueToUpdate, tagName: 'BUTTON', filters,
       flags: { resetDeps: true, buildValues: true, updateInputs: true, updateStates: true }
@@ -280,7 +289,8 @@ export function updateProcedure({
     buildValues = false,
     updateInputs = false,
     validate = false,
-    updateStates = false
+    updateStates = false,
+    percent = false
   } = flags;
 
   for (let [param, input] of Object.entries(calculatedParams)) {
@@ -290,7 +300,9 @@ export function updateProcedure({
 
   setDescription(values, value, allOptionsByParameter, name)
 
+  if (percent) values = convertIntoPercent(values, name,value , inputs,params)
 
+  displayValues = hideLocked(inputs, displayValues)
 
 
   if (buildValues) buildValuesToDisplay(allOptionsByParameter, value, name, displayValues, tagName);
@@ -301,16 +313,16 @@ export function updateProcedure({
 
   if (validate) validateFormInput(values, inputs[name]);
 
-  if (updateStates) updateFieldStates(params, inputs, values, displayValues, groupNumber,allOptionsByParameter);
+  if (updateStates) updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter);
 
   window.checkedParams = findParamFromValues(values, allOptionsByParameter);
 
   if (afterSend) validateAllFieldsOnSubmit(inputs, values)
   if (resetDeps) resetDependences([params, displayValues], name, inputs, values, allOptionsByParameter);
-  console.log(values, 'wartosci')
+
 
   values = clearDisabledValues(values, displayValues)
-  console.log(displayValues, 'SPRAWDZAM DOPLATE')
+
 
 }
 
