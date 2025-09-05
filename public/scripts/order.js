@@ -3,6 +3,7 @@ import { createInfoDialog, createElement } from "./components/htmlManipulator.js
 import { generateExcel, generatePdf } from "./components/generators.js"
 import { createDialog } from "./formTools/dialogUtils_copy.js";
 
+
 const closeBtn = document.getElementById('cancel-btn');
 const confirmBtn = document.getElementById('confirm-btn');
 const deletePositionBtns = document.querySelectorAll('.delete-position-btn');
@@ -11,7 +12,11 @@ const confirmationDialog = document.getElementById('delete-dialog');
 const statusInfo = document.getElementById('status-info');
 const commentBtn = document.getElementById('comment-btn');
 const editIcon = document.getElementById('edit-comment-btn');
-
+const unlockBtn = document.getElementById('unlockBtn')
+const lockBtn = document.getElementById('lock-btn')
+const sendBtn = document.querySelector('.send-order-btn')
+const excelBtn = document.getElementById('generate-excel-btn')
+const printBtn = document.getElementById('print-button')
 
 // DELETE dialog
 export async function deleteItem(path) {
@@ -161,13 +166,58 @@ async function sendOrder(sendBtn) {
   }
 }
 
-const sendBtn = document.querySelector('.send-order-btn')
-if (sendBtn) {
-  sendBtn.addEventListener('click', async (event) => {
-    event.stopPropagation();
-    buildAndShowDialog(sendBtn)
-  });
+async function unlock(password) {
+  try {
+    const title = document.getElementById('order-title')
+    const checkBoxRes = document.getElementById('checkbox-remember').checked
+    const response = await fetch(`/user/auth/check-password`, {
+      method: "POST",
+      body: JSON.stringify({ password: password.value, remember: checkBoxRes, orderId: title.dataset.id }),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    } else {
+      const diagInput = document.getElementById('diag-input-container')
+      createElement('div', {
+        class: ['alert', 'alert-danger', 'mt-3', 'me-4', 'p-2', 'text-center'], role: 'alert', text: 'Hasło nieprawidłowe',
+
+      }, diagInput)
+      console.log('HASLO NIEPRAWIDLOWE')
+    }
+  } catch (error) {
+    console.log('error', error.message || error);
+  }
+
 }
+
+async function lock(){  
+  try {
+    console.log('lock lock lock')
+    const response = await fetch(`/orders/lock`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({status: false})
+    });
+    const result = await response.json();
+    if(result.status == 'success'){
+          console.log('lock lock lock', result)
+      window.location.reload(response.refresh)
+    }
+  }
+  catch(err){
+    console.warn(err)
+    window.location.href = '/'
+  }
+}
+
 // commentBtn.addEventListener('click', editComment);
 // editIcon.addEventListener('click', editComment);
 
@@ -218,10 +268,19 @@ if (sendBtn) {
 //   acceptBtn.addEventListener('click', save);
 // }
 
-const excelBtn = document.getElementById('generate-excel-btn')
+
+if (sendBtn) {
+  sendBtn.addEventListener('click', async (event) => {
+    event.stopPropagation();
+    buildAndShowDialog(sendBtn)
+  });
+}
+
+if (lockBtn) lockBtn.addEventListener('click', async ()=> await lock())
+
 excelBtn.addEventListener('click', () => generateExcel())
 
-const printBtn = document.getElementById('print-button')
+
 printBtn.addEventListener('click', () => {
   generatePdf()
 });
@@ -239,40 +298,8 @@ window.addEventListener('scroll', function () {
 });
 
 
-async function unlock(password) {
-  try {
-    const title = document.getElementById('order-title')
-    const checkBoxRes = document.getElementById('checkbox-remember').checked
-    const response = await fetch(`/user/auth/check-password`, {
-      method: "POST",
-      body: JSON.stringify({ password: password.value, remember: checkBoxRes, orderId: title.dataset.id }),
-      headers: { "Content-Type": "application/json" }
-    });
 
-    const result = await response.json();
-
-    if (result.success) {
-      setTimeout(() => {
-        window.location.reload();
-      }, 300);
-    } else {
-      const diagInput = document.getElementById('diag-input-container')
-      createElement('div', {
-        class: ['alert', 'alert-danger', 'mt-3', 'me-4', 'p-2', 'text-center'], role: 'alert', text: 'Hasło nieprawidłowe',
-
-      }, diagInput)
-      console.log('HASLO NIEPRAWIDLOWE')
-    }
-  } catch (error) {
-    console.log('error', error.message || error);
-  }
-
-
-
-}
-
-const unlockBtn = document.getElementById('unlockBtn')
-unlockBtn.addEventListener('click', function () {
+if (unlockBtn) unlockBtn.addEventListener('click', function () {
   const parent = document.getElementById('dialog-container');
 
   const { buttons, diag } = createInfoDialog({

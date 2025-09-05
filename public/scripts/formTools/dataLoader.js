@@ -62,7 +62,7 @@ export class DataLoader {
     }
 
     console.log("CSV przetworzone");
-    this.params = this.convertDataToObjects(paramsData);
+    this.params = this.convertDataToObjects(paramsData,'param');
     this.dictValues = this.convertDataToObjects(dictData);
     return {
       params: this.params,
@@ -70,7 +70,7 @@ export class DataLoader {
     };
   }
 
-  convertDataToObjects(csvData) {
+  convertDataToObjects(csvData, type='paramdict') {
     let headers = csvData[0];
 
     for (let header_idx = 0; header_idx < headers.length; header_idx++) {
@@ -85,15 +85,14 @@ export class DataLoader {
 
       for (let col = 0; col < headers.length; col++) {
         obj[headers[col]] = csvData[row][col] ? csvData[row][col] : null;
-        // ostatnia kolumna - fix nowej linii
-        if (obj.hasOwnProperty("FORMULA") && obj.FORMULA != null) {
-          obj.FORMULA = obj.FORMULA.replace(/\r/g, "");
-        }
-        if (obj.hasOwnProperty("DEFAULT") && obj.DEFAULT != null) {
-          obj.DEFAULT = obj.DEFAULT.replace(/\r/g, "");
-        }
-        if (obj.hasOwnProperty("MULTI") && obj.MULTI != null) {
-          obj.MULTI = obj.MULTI.replace(/\r/g, "");
+        if (type == 'param') {
+          for (let [param, property] of Object.entries(obj)) {
+
+            if (obj[param]) {
+              obj[param] = (obj[param]).replace(/\r/g, "");
+
+            }
+          }
         }
       }
       objects.push(obj);
@@ -240,8 +239,10 @@ export class DataLoader {
   }
 
   async selectPrices(params) {
-    const [path, scripts] = await formsManager.getClientScripts()
 
+    if (!await formsManager.getClientScripts()) { return params }
+    const [path, scripts] = await formsManager.getClientScripts()
+    // console.log("Ścieżka do skryptów:", path);
     for (const param of params) {
       let scriptPath = scripts.find(script => script.param == param.NAME)
 
@@ -267,7 +268,7 @@ export class DataLoader {
 
         result[param].forEach(valueEntry => {
           const matchedAliases = aliasList.filter(alias => alias.VALUE === valueEntry.VALUE);
-          console.log(matchedAliases, 'siema');
+
           if (matchedAliases.length === 0) {
             // brak aliasów, nie dodajemy
             return;

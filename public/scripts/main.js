@@ -47,7 +47,7 @@ export function buildMainSelect(files) {
 	createChecboxField(inputContainer);
 
 	departmentSelect.innerHTML = `<option value="" disabled selected>${t("form.department_label")}</option>`;
-	console.log('buildMainSelect', files)
+	// console.log('buildMainSelect', files)
 	for (let department of files) {
 		createElement("option", { value: department.num, text: department.description }, departmentSelect);
 	}
@@ -55,7 +55,7 @@ export function buildMainSelect(files) {
 	departmentSelect.addEventListener("change", async () => {
 		const selectedDepartment = departmentSelect.value;
 		await buildGroupSelect(selectedDepartment, asortmentGroupSelect);
-		
+
 	});
 
 	return { asortmentGroupSelect, departmentSelect };
@@ -146,6 +146,7 @@ async function buildDynamicForm(version, groupNumber) {
 function setupShowButton(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber) {
 	console.log('setupShowButton')
 	const showButton = document.getElementById('show-button');
+
 	showButton.onclick = async function () {
 		if (!await validateForm(inputs, values)) {
 			showToast('error', t("form.incorrect_data"));
@@ -203,7 +204,7 @@ async function sendData(inputs, values, valuesToDisplay, orderId, comment, versi
 	const jsonValuesToDisplay = JSON.stringify(Array.from(valuesToDisplay.entries()));
 	const postBody = buildOrderItemStructure(
 		parseInt(orderId), {}, 0, 0, 0, 0,
-		commission, commission, values, jsonValuesToDisplay, 1, comment.value, version, groupNumber, document.documentElement.lang,selectedDepartment,selectedGroup
+		commission, commission, values, jsonValuesToDisplay, 1, comment.value, version, groupNumber, document.documentElement.lang, selectedDepartment, selectedGroup
 	);
 	const json = JSON.stringify(postBody);
 
@@ -322,7 +323,7 @@ async function getAppVersion(groupNumber) {
 async function refreshFormBehaviour() {
 	const lastCommission = localStorage.getItem('commission');
 	processCommissionInput(lastCommission)
-	loadJsonConfig();
+
 	let lastConfig = JSON.parse(localStorage.getItem('lastChoice'))
 
 	await resumeForm(lastConfig);

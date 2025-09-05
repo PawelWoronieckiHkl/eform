@@ -22,7 +22,7 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
 
     if (tagName != "INPUT") {
         let selectedValue = allOptionsByParameter[actualParameter].find(v => v.VALUE == value);
-        
+
         window.actualParam = actualParameter;
         window.actualValue = value;
 
@@ -114,7 +114,6 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                 const input = inputs[param];
 
                 let currentParam = searchForParameter(functions.DOM, allOptionsByParameter, param);
-                console.log(currentParam, 'currentParam');
                 if (!currentParam && input && input.tagName != "INPUT") {
                     if (typeof functions.DOM === 'string') {
                         functions.DOM = 'Puste pole'
@@ -122,7 +121,7 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                     return;
                 }
                 if ('DOM' in functions && functions.DOM) {
-                    console.log(values, 'values');
+
                     const domValue = functions.DOM;
                     values[param] = domValue;
                     setDescription(values, domValue, allOptionsByParameter, param)
@@ -144,11 +143,15 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                                 buttonVal = currentParam?.ALIAS ?? '';
                             }
                             else {
-
-                                buttonLabel = `${domValue} - ${currentParam?.DESCRIPTION ?? ""}`;
+                                if (domValue === '<NONE>') {
+                                    buttonLabel = currentParam?.DESCRIPTION ?? ""
+                                }
+                                else {
+                                    buttonLabel = `${domValue} - ${currentParam?.DESCRIPTION ?? ""}`;
+                                }
                                 buttonVal = domValue;
                             }
-                            input.innerHTML = buttonLabel;
+                            input.textContent = buttonLabel;
                             input.value = buttonVal
 
                         }
@@ -383,8 +386,8 @@ export function clearDisabledValues(values, displayValues) {
             const isDescription = key.endsWith('___DESCRIPTION');
             const displayKey = isDescription ? baseParam : key;
             const displayParam = displayValues.get(displayKey);
-
-            if (displayParam) {
+            // console.log(displayKey, displayParam, 'displayParam przed oczyszczeniem', (displayParam && displayParam.locked !== true) );
+            if (displayParam && displayParam.locked !== true) {
                 isDescription
                     ? delete displayParam.option_description
                     : delete displayParam.option_value;

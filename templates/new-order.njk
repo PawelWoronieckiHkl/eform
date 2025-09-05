@@ -241,45 +241,44 @@
 
               <div class="d-flex justify-content-center gap-3 text-center ms-5">
 
-
-                  <a href="/" class='btn btn-outline-danger p-2 col-3'>
-                    {{ __('form.cancel_button') }}</a>
-
-                  {% block sendBbtn %}
-                    <button class="btn btn-outline-secondary p-2 col-3" type="button" id="save-order-btn" data-href="/orders/save-order">
-                      {{ __('new-order.save_button') }}
-                    </button>
-                  {% endblock sendBbtn %}
-                </div>
+                {% block sendBbtn %}
+                  <button class="btn btn-outline-secondary p-2 col-3" type="button" id="save-order-btn" data-href="/orders/save-order">
+                    {{ __('new-order.save_button') }}
+                  </button>
+                {% endblock sendBbtn %}
+                <a href="/" class='btn btn-outline-danger p-2 col-3'>
+                  {{ __('form.cancel_button') }}</a>
 
               </div>
+
             </div>
           </div>
         </div>
       </div>
-    {% endblock content %}
+    </div>
+  {% endblock content %}
 
-    {% block scripts %}
-      <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
+  {% block scripts %}
+    <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
 
-      <script>
-        $(function () {
-          $("#country").countrySelect({
-            preferredCountries: [
-              "pl", "de", "gb", 'nl', 'fr'
-            ],
-            defaultCountry: "pl"
-          });
+    <script>
+      $(function () {
+        $("#country").countrySelect({
+          preferredCountries: [
+            "pl", "de", "gb", 'nl', 'fr'
+          ],
+          defaultCountry: "pl"
         });
-        $(function () {
-          $("#sendCountry").countrySelect({
-            preferredCountries: [
-              "pl", "de", "gb", 'nl', 'fr'
-            ],
-            defaultCountry: "pl"
-          });
+      });
+      $(function () {
+        $("#sendCountry").countrySelect({
+          preferredCountries: [
+            "pl", "de", "gb", 'nl', 'fr'
+          ],
+          defaultCountry: "pl"
         });
-      </script>
+      });
+    </script>
 
-      <script type="module" src="/scripts/orders.js"></script>
-    {% endblock scripts %}
+    <script type="module" src="/scripts/orders.js"></script>
+  {% endblock scripts %}

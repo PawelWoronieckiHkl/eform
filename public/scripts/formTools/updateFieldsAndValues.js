@@ -55,7 +55,7 @@ export function resetSelectValues([parameters, display], inputs, values) {
     for (let idx = 0; idx < parameters.length; idx++) {
         let paramName = parameters[idx];
         const param = params.find(obj => obj.NAME === paramName);
-        console.log('reset input', paramName)
+        // console.log('reset input', paramName)
         if (inputs[paramName]) {
             inputs[paramName].selectedIndex = 0;
             values[paramName] = "";
@@ -90,11 +90,16 @@ export function resetDisplayEntry(param, display) {
 }
 
 export function buildValuesToDisplay(dictValues, value, paramName, displayValues, tagName) {
+    if (paramName == 'PROWADZENIE') {
+        // console.log('build Prowadzenie', dictValues, value, paramName, displayValues, tagName)
+    }
+
     logFunctionName('buildValuesToDisplay');
+
 
     // Pobieramy aktualny obiekt z displayValues lub tworzymy pusty
     let currentValue = displayValues.get(paramName) || {};
-
+    // console.log(value, currentValue, 'build')
     currentValue['option_value'] = String(currentValue['option_value'])
 
     // 1. Obsługa wartości jako OBIEKTU (SourceWindow)
@@ -103,7 +108,11 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
         const descParts = [];
 
         for (let [fieldName, fieldVal] of Object.entries(value)) {
-            if (!fieldVal || fieldVal === '<NONE>') continue;
+            if (!fieldVal || value === '<NONE>') {
+                // console.log('build mamy none', paramName)
+                delete displayValues[paramName];
+                continue
+            };
 
             // zapisz surową wartość do valueParts
             valueParts.push(fieldVal);
@@ -153,7 +162,7 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
 }
 
 
-export async function updateFieldInputs(params, inputs, values, displayValues, allOptionsByParameter, options, actualParameter, value, tagName, filters) {
+export async function updateFieldInputs(params, inputs, values, displayValues, allOptionsByParameter, options, actualParameter, value, tagName, filters,attrVals) {
 
     enabledParams = {}
     logFunctionName('updateFieldInputs')
@@ -220,7 +229,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
         if (currentSelect.tagName === 'BUTTON' & !(param.SOURCE == param.NAME)) {
 
             currentSelect.onclick = function () {
-                createDialog(param, allowedParameters[paramName], tempGroupNumber, filters[paramName]);
+                createDialog(param, allowedParameters[paramName], tempGroupNumber, filters[paramName],attrVals);
             };
         }
 
@@ -295,7 +304,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                                 let val = Object.values(scriptResult)[0]
 
                                 let strVal;
-                                if (key.includes('_RABAT')) {
+                                if (param.FORMAT == 'n%') {
                                     strVal = `${parseInt(val * 100)}%`;
                                     inputs[paramName].value = `${parseInt(val * 100)}%`;
                                 }
@@ -320,8 +329,6 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
         if (param.FORMULA != "<NULL>") {
             setTimeout(() => {
                 if (param.FORMULA.includes('RABAT')) {
-                    console.log(values[key], 'RABAT')
-                    console.log(param.FORMULA, inputs[key].value, 'FORMULA RABAT')
                 }
                 try {
                     const result = window.FormulaHandler.evaluateFormula(
@@ -355,6 +362,20 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
     }
 }
 
+export function setListRow(params, displayValues) {
+    for (let param of params) {
+        let displayParam = displayValues.get(param.NAME)
+        let listRow = param?.LISTROW ?? '1'
+        if (displayParam) {
+            displayParam['row'] = listRow
+            if (param.LISTSUM == 'true') {
+                displayParam['listsum'] = true
+            }
+        }
+    }
+        
+    return displayValues;
+}
 
 export function setWar(values, params, inputs) {
 
@@ -371,7 +392,7 @@ export function setWar(values, params, inputs) {
             current = current[keys[i]];
         }
         if (param.NAME == param.SOURCE) {
-            param.modal.TYP = value;
+            param.modal.setTyp(value);
 
         }
         else if (param.TYPE == 'link') {
@@ -444,11 +465,11 @@ export function resetAllDOM() {
         }
     }
 }
-export function convertIntoPercent(values, name, value, inputs,params) {
+export function convertIntoPercent(values, name, value, inputs, params) {
     logFunctionName('convertIntoPercent')
     const param = params.find((obj) => obj.NAME === name);
-    
-    if (name.includes('RABAT')) {
+
+    if (param.FORMAT == 'n%') {
         if (typeof value === 'string') {
             value = value.replace(',', '.');
         }
@@ -457,14 +478,14 @@ export function convertIntoPercent(values, name, value, inputs,params) {
         }
         if (typeof value === 'string' && value.endsWith('%')) {
             let numericPart = parseFloat(value.slice(0, -1));
-            if (!isNaN(numericPart) && numericPart <=100) {
+            if (!isNaN(numericPart) && numericPart <= 100) {
                 values[name] = numericPart / 100;
                 inputs[name].value = `${numericPart}%`;
             } else {
                 values[name] = 0;
                 inputs[name].value = '0%';
             }
-        } else if (typeof value === 'number' && value >= 1 && value <=100) {
+        } else if (typeof value === 'number' && value >= 1 && value <= 100) {
             values[name] = value / 100;
             inputs[name].value = `${value}%`;
         } else if (typeof value === 'number' && value < 1 && value >= 0) {

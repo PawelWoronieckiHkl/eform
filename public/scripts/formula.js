@@ -307,7 +307,7 @@ function evaluateFormula(expression, context, type, param = null) {
 
 
     if (param && expression.includes('HASLO') && result.result == false) {
-
+        
         window.lockedParams.push(param)
     }
 

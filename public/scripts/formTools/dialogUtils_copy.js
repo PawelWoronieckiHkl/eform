@@ -13,6 +13,8 @@ import { createElement } from '../components/htmlManipulator.js'
 export class DialogManager {
   constructor() {
     this.isMultiChoice = false; // Nowa flaga
+    this.isLink;
+    this.isInfo;
     this.selectedValues = [];
     this.currentSort = 'favorites';
     this.dialog = document.getElementById('color-dialog');
@@ -21,6 +23,7 @@ export class DialogManager {
     this.dialogTitle = document.getElementById('dialog-title');
     this.confirmButton = document.getElementById('dialog-confirm');
     this.closeButton = document.getElementById('dialog-close');
+    this.extraInfo = document.getElementById('additional-info');
     this.options = [];
     this.param = null;
     this.groupNumber = null;
@@ -37,14 +40,19 @@ export class DialogManager {
   }
 
 
-  async initialize(param, options, groupNumber, filters) {
+  async initialize(param, options, groupNumber, filters, attrs) {
     logFunctionName('DialogManager.initialize');
     this.param = param;
     this.options = options;
     this.groupNumber = groupNumber;
     this.filters = filters
- 
+    this.attrValues = attrs
     this.isMultiChoice = param?.MULTI == 'true' ?? false;
+    // do zmiany oficjalnie
+    this.isLink = param?.LINK == 'true' ?? false;
+    // do zmiany oficjalnie
+    this.isInfo = param?.INFO == 'true' ?? false;
+
     this.selectedValues = [];
     this.confirmButton.style.display = this.isMultiChoice ? 'inline-block' : 'none';
     if (this.dialogTitle) {
@@ -58,7 +66,9 @@ export class DialogManager {
     // Przygotowanie interfejsu
     this.setupUI();
 
-    // Renderowanie opcji
+    if (this.attrValues && this.attrValues != undefined && Object.keys(this.attrValues).length > 0) {
+      this.getUniqueCategories()
+    }    // Renderowanie opcji
     await this.renderOptions(imageMap);
 
     // Pokazanie dialogu
@@ -92,6 +102,56 @@ export class DialogManager {
 
     // Dodanie pola wyszukiwania i filtrów przed listą opcji
     this.addSearchAndFilters();
+
+    this.setupExtraInfo('Istnieją normy dotyczące ChildSafety',
+      "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1");
+
+  }
+
+
+  setupExtraInfo(text, link) {
+    // Ensure we have a container reference; if missing, create and attach it inside dialog
+    let container = this.extraInfo;
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'additional-info';
+      // place it near the top of dialog (after title if present)
+      if (this.dialogTitle && this.dialogTitle.parentElement) {
+        this.dialogTitle.parentElement.insertBefore(container, this.dialogTitle.nextSibling);
+      } else if (this.dialogContainer) {
+        this.dialogContainer.insertBefore(container, this.dialogContainer.firstChild);
+      } else {
+        document.body.appendChild(container);
+      }
+      this.extraInfo = container;
+    }
+
+    // Reset container
+    container.className = 'additional-info mb-2 dialog-extra-info';
+    container.innerHTML = '';
+
+    // If neither info nor link is enabled, hide the container
+    if (!this.isInfo && !this.isLink) {
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'block';
+
+    // Create two clearly separated inner blocks (if present) with small titles
+    if (this.isInfo && text) {
+      const infoBlock = createElement('div', { class: ['extra-block', 'extra-info-block'] }, container);
+      createElement('div', { class: ['extra-title'], text: 'UWAGA' }, infoBlock);
+      createElement('div', { class: ['extra-content'], text: text, style: { wordBreak: 'break-word' } }, infoBlock);
+    }
+
+    if (this.isLink && link) {
+      const linkBlock = createElement('div', { class: ['extra-block', 'extra-link-block'] }, container);
+      createElement('div', { class: ['extra-title'], text: 'LINK DO INSTRUKCJI' }, linkBlock);
+      const linkContent = createElement('div', { class: ['extra-content'] }, linkBlock);
+      // anchor via createElement so attributes are set through helper
+      createElement('a', { href: link, target: '_blank', rel: 'noopener noreferrer', text: link, style: { wordBreak: 'break-word' } }, linkContent);
+    }
   }
 
   // Usunięcie wcześniejszych elementów UI
@@ -229,8 +289,9 @@ export class DialogManager {
       }, dropdown);
 
       const dropdownMenu = createElement('ul', {
-        class: ['dropdown-menu', 'p-2'],
-        'aria-labelledby': `${filterName}-dropdown`
+        class: ['dropdown-menu', 'p-2', 'dropdown-scroll'],
+        'aria-labelledby': `${filterName}-dropdown`,
+        style: { maxHeight: '320px', overflowY: 'auto' }
       }, dropdown);
 
       // "Wszystkie"
@@ -247,8 +308,12 @@ export class DialogManager {
         for: `${filterName}-all`
       }, allLi);
 
-      // Pozostałe opcje
-      filterValues.forEach(value => {
+      // Pozostałe opcje (posortowane)
+      const sortedValues = Array.isArray(filterValues)
+        ? Array.from(filterValues).sort((a, b) => String(a).localeCompare(String(b), undefined, { sensitivity: 'base' }))
+        : [];
+
+      sortedValues.forEach(value => {
         const li = createElement('li', {}, dropdownMenu);
         const checkbox = createElement('input', {
           type: 'checkbox',
@@ -263,17 +328,40 @@ export class DialogManager {
         }, li);
       });
 
-      
+
       // Obsługa zmian (delegacja zdarzeń)
       dropdownMenu.addEventListener('change', (e) => this.handleFilter(e, filterName));
     }
-      const clearFiltersBtn = createElement('button', {
-        class: ['btn', 'btn-outline-secondary'],
-        type: 'button',
-        id: `clear-filters-btn`,
-        'aria-expanded': 'false',
-        text: `${t("form.reset_filters")}`
-      }, filterControls);
+    const clearFiltersBtn = createElement('button', {
+      class: ['btn', 'btn-outline-secondary', 'clear-filters-btn'],
+      type: 'button',
+      id: `clear-filters-btn`,
+      'aria-expanded': 'false',
+      text: `${t("form.reset_filters")}`,
+      style: { float: 'right', backgroundColor: '#fff', color: '#000' }
+    }, filterControls);
+
+    // Clear all filters: uncheck specific checkboxes, check the "-all" ones,
+    // reset activeFilters object and refresh visible options.
+    clearFiltersBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      // reset checkbox states inside filterControls
+      const checkboxes = filterControls.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(cb => {
+        if (cb.id && cb.id.endsWith('-all')) {
+          cb.checked = true;
+        } else {
+          cb.checked = false;
+        }
+      });
+
+      // reset active filters state
+      this.activeFilters = {};
+
+      // refresh displayed options (keep current search term)
+      const searchTerm = this.searchInput ? this.searchInput.value.toLowerCase() : '';
+      this.filterAndDisplayOptions(searchTerm, this.activeFilters);
+    });
 
     return filterControls;
   }
@@ -291,11 +379,20 @@ export class DialogManager {
 
   // Pobranie unikalnych kategorii z opcji
   getUniqueCategories() {
+    const attrVals = this.attrValues.ATTR_VALUE
+    const attrDesc = this.attrValues.ATTR_DESCRIPTION
     const categories = new Set();
     this.options.forEach(option => {
 
-      if (option.ATTRIBUTES) {
-        categories.add(option.ATTRIBUTES);
+      const foundEntry = attrVals.find(entry => Object.keys(entry)[0] === option.VALUE);
+      if (foundEntry) {
+        const value = foundEntry[option.VALUE];
+        option.ATTR_VALUE = value
+      }
+      const foundDesc = attrDesc.find(entry => Object.keys(entry)[0] === option.VALUE);
+      if (foundDesc) {
+        const value = foundDesc[option.VALUE];
+        option.ATTR_DESC = value
       }
     });
     return Array.from(categories);
@@ -321,9 +418,9 @@ export class DialogManager {
         otherOptions.push(option);
       }
     }
-    const counter = document.getElementById('object-count');
+    this.counter = document.getElementById('object-count');
 
-    counter.textContent = this.options.length;
+    this.counter.textContent = this.options.length;
 
     for (const option of favoriteOptions) {
       const optionElement = this.createOptionElement(option, imageMap, true);
@@ -334,6 +431,8 @@ export class DialogManager {
       const optionElement = this.createOptionElement(option, imageMap, false);
       this.listContainer.appendChild(optionElement);
     }
+
+
     if (this.currentSort) {
       this.applySorting(this.currentSort);
     }
@@ -405,6 +504,47 @@ export class DialogManager {
         await this.favouriteBehavior(e.currentTarget, option);
       }
     }, colorBox);
+
+    // stock status indicator based on option.ATTR_VALUE (ZERO, SAFE, LOW)
+    // create a small colored dot on the option box (no text)
+    if (option?.ATTR_VALUE) {
+      try {
+        const raw = String(option?.ATTR_VALUE || '');
+        const match = raw.match(/ZERO|SAFE|LOW/i);
+        const status = match ? match[0].toUpperCase() : null;
+        if (status) {
+          const map = {
+            ZERO: { class: 'stock-zero' },
+            SAFE: { class: 'stock-safe' },
+            LOW: { class: 'stock-low' }
+          };
+          const info = map[status] || { class: 'stock-unknown' };
+
+          // create a tiny dot badge and append it to the option box (color via CSS)
+          if (status == "ZERO") {
+            colorBox.classList.add("unavailable")
+          }
+          if (option?.ATTR_DESC) {
+            let circleElem = createElement('span', {
+              class: ['stock-badge', info.class, 'has-tooltip'],
+              'aria-hidden': 'true'
+            }, colorBox);
+            circleElem.dataset.tooltip = option.ATTR_DESC
+          }
+
+          else {
+            let circleElem = createElement('span', {
+              class: ['stock-badge', info.class],
+              'aria-hidden': 'true'
+            }, colorBox);
+          }
+        }
+      } catch (err) {
+        console.error('Error creating stock badge', err);
+      }
+    }
+
+
     if (isFav) { colorBox.classList.add('favorite'); }
 
     colorBox.appendChild(colorName);
@@ -505,7 +645,7 @@ export class DialogManager {
 
   // Tworzenie wrappera dla obrazu
   createImageWrapper(option, filename) {
-    
+
     let normalizedValue = option.VALUE
 
     // console.log(normalizedValue, 'normalizedValue')
@@ -576,6 +716,7 @@ export class DialogManager {
   handleSearch(searchInput) {
     const searchTerm = searchInput.value.toLowerCase();
     this.filterAndDisplayOptions(searchTerm, this.activeFilters);
+
   }
 
   // Obsługa filtrowania
@@ -610,6 +751,7 @@ export class DialogManager {
 
   filterAndDisplayOptions(searchTerm, filters) {
     if (!this.listContainer) return;
+    let numberOfOptions = 0;
     const optionElements = this.listContainer.querySelectorAll('.image-box');
 
     // Upewnij się, że searchTerm to string i zamień na małe litery
@@ -639,7 +781,9 @@ export class DialogManager {
       }
 
       element.style.display = (matchesSearch && matchesFilters) ? 'block' : 'none';
+      if (element.style.display == "block") { numberOfOptions++ }
     });
+    this.counter.textContent = numberOfOptions
   }
 
   handleConfirm() {
@@ -734,9 +878,10 @@ function updateFormWithSelectedValue(values, inputs, selectedData, options) {
 const dialogManager = new DialogManager();
 
 // Funkcja do tworzenia dialogu - wywoływana z createInputField
-export async function createDialog(param, options, grNr, filters) {
+export async function createDialog(param, options, grNr, filters, attrs) {
   logFunctionName('createDialog');
-  await dialogManager.initialize(param, options, grNr, filters);
+
+  await dialogManager.initialize(param, options, grNr, filters, attrs);
 
   // Przechwyć aktualne options w closure
   window.dialogConfirmHandler = (selectedData) => {

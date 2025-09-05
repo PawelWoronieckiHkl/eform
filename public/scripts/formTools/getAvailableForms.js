@@ -25,7 +25,7 @@ export class FormsManager {
         this.departments = objects;
         this.paths = await this.getPaths();
         this.postAllPaths()
-        
+
         this.clientData = await this.getOwner();
         return objects;
     }
@@ -72,12 +72,11 @@ export class FormsManager {
 
         if (this.aliases?.[group]) {
 
-
             const foundAliases = this.aliases[group].filter(entry =>
                 entry.organization.trim().toUpperCase() === this.clientData.orgIdent.trim().toUpperCase() &&
                 entry.client.trim().toUpperCase() === this.clientData.userIdent.trim().toUpperCase()
             );
- 
+
             if (!foundAliases.length) {
                 console.warn('Brak pasujących aliasów dla:', this.clientData);
                 return {};
@@ -113,11 +112,12 @@ export class FormsManager {
     }
 
     async getClientScripts() {
-        console.log('jestem w skryptach')
-        const groupDetails = this.groupsDetails.find(group=>group.code == window.tempGroupNumber)
+
+        // console.log(this.groupsDetails)
+        const groupDetails = this.groupsDetails.find(group => group.code == window.tempGroupNumber)
         this.scriptsArr = groupDetails.param_scripts
         let foundScripts = []
-        
+
         if (this.scriptsArr) {
 
             foundScripts = this.scriptsArr.filter(entry =>
@@ -125,12 +125,13 @@ export class FormsManager {
                 entry.client.trim().toLowerCase() === this.clientData.userIdent.trim().toLowerCase()
             );
         }
-
+        // console.log('jestem w skryptach3',foundScripts)
         if (!foundScripts.length) {
             console.warn('Brak pasujących aliasów dla:', this.clientData);
             return false;
         }
-       
+
+
         let path = this.currentRootPath
         return [path, foundScripts]
 
@@ -186,7 +187,7 @@ export class FormsManager {
                 if (object.param_scripts) {
                     this.scriptsArr = await this.prepareData(object.param_scripts) ?? []
                     object.param_scripts = this.scriptsArr
-                   
+
                 }
                 this.paths.push(path);
                 objects.push(object);
@@ -203,7 +204,7 @@ export class FormsManager {
 
     setCurrentGroup(groupNumber) {
         this.currentGroup = this.groupsDetails.find(group => group.code == groupNumber)
-       
+
 
     }
 

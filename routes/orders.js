@@ -122,7 +122,8 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 orderDetails,
                 orderItems,
                 heads,
-                cleanOrderItems
+                cleanOrderItems,
+                total
             });
             return;
         }
@@ -236,6 +237,17 @@ router.post('/copy/:orderId', checkOrderOwnership, async (req, res) => {
     return res.json({ status: "success", message: "Zamówienie skopiowane poprawnie", redirect: `/orders/order/${newOrderId}` });
 });
 
+
+router.post('/lock', requireLogin, async (req, res) => {
+    try {
+        let {status} = req.body;
+        if (req.session) req.session.user.showPrices = status;
+        return res.json({status:'success', refresh:true})
+    }
+    catch (err) {
+        console.error(err);
+    }
+});
 router.post('/save-order', requireLogin, async (req, res) => {
     try {
         let { commission, orderContactInfo, comment, orderSendAddress } = req.body;

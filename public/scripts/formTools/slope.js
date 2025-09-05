@@ -20,6 +20,7 @@ import { createElement, isEnabled } from "../components/htmlManipulator.js";
 
 
 
+
 export class SourceWindow {
     constructor(typ, onSaveCallback) {
         this.TYP = typ;
@@ -47,15 +48,20 @@ export class SourceWindow {
     }
 
     async loadData() {
-    
+
         const slopeLoader = new DataLoader();
-        await slopeLoader.init('0.3.2', this.param.SOURCE, document.documentElement.lang);
+        const ver = await this.getLegacySlopeVer()
+        await slopeLoader.init(ver, this.param.SOURCE, document.documentElement.lang);
         this.data = await slopeLoader.parseData();
         this.allOptionsByParameter = slopeLoader.convertDictValues(this.data.dictValues);
         this.createObject();
     }
-
-
+    async getLegacySlopeVer(){
+        
+            const response = await fetch(`/position/version/${this.param.NAME}`);
+            const data = await response.json();
+            return data.version
+        }
     getPhotoPath() {
         // Buduje ścieżkę do obrazka według this.TYP
         return `/photos/${this.catalog}/TYP/${this.TYP}.jpg`;
@@ -74,7 +80,7 @@ export class SourceWindow {
         return this.sourceValues;
     }
     renderModal(photoFile) {
-        
+
         this.modal = createElement('div', { id: 'slope-modal', class: ['modal', 'show'], style: 'display: block;', tabindex: '-1' }, document.body);
 
 
@@ -83,11 +89,19 @@ export class SourceWindow {
 
         // Header
         const header = createElement('div', { class: ['modal-header'] }, content);
-        createElement('h3', { text: `${this.param.NAME}`, class: ['modal-title'] }, header);
+        createElement('h3', { text: `${this.param.DESCRIPTION}`, class: ['modal-title'] }, header);
 
         // Body
         const body = createElement('div', { class: ['modal-body'] }, content);
-        createElement('img', { src: photoFile, alt: 'SLOPE', class: ['img-fluid', 'mb-4'] }, body);
+        createElement('img', {
+            src: photoFile,
+            alt: 'SLOPE',
+            class: ['img-fluid', 'mb-4'],
+            onerror: (e) => {
+                e.target.onerror = null; // zapobiega zapętleniu
+                e.target.src = `/photos/${this.catalog}/TYP/${this.TYP}.png`;
+            }
+        }, body);
 
         // Form
         const form = createElement('form', { id: 'slope-form', class: ['slope-form'] }, body);
@@ -98,7 +112,7 @@ export class SourceWindow {
         const values = {};
         const enabledParams = {};
         this.data.params.forEach((param, idx) => {
-            
+
             if (idx % 2 === 0) {
                 row = createElement('div', { class: ['row', 'mb-3'] }, form);
             }
@@ -113,8 +127,9 @@ export class SourceWindow {
                 }
                 // Only show/hide and enable if col is defined (i.e., param.DESCRIPTION exists)
 
-                
+
                 if (!isEnabled(param.ENABLE, this.sourceValues, 'param')) {
+                    console.log(param.ENABLE, this.sourceValues)
                     col.style.display = 'none';
                 } else {
                     enabledParams[param.NAME] = true;
@@ -189,6 +204,7 @@ export class SourceWindow {
     }
     setTyp(typ) {
         this.TYP = typ;
+        this.sourceValues['TYP']=typ
     }
     // Możesz dodać metodę validate(values) jeśli chcesz wydzielić walidację!
 }

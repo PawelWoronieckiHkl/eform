@@ -2,7 +2,7 @@
 
 {% block print_space %}
   <div id="generate-container" class='me-3'>
-
+    <button id="lock-btn" class="btn"><img src="/img/open-padlock.png" alt="padlock icon" class='icon'></button>
     <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'><img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
     <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip')}}"><img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
 
@@ -29,7 +29,7 @@
             <!--<th class="edit-buttons">{{ __('order.amount') }}</th>-->
             <th class="edit-buttons">{{ __('order.name') }}</th>
 
-            {% for header in table.headers %}
+            {% for header in table.headers1 %}
 
               {% if not(header in table.locked) %}
                 <th class="th-field">{{ header }}</th>
@@ -68,58 +68,91 @@
               <!--<td>{{ rowObj.item.amount or "-" }}</td>-->
               <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-"   }}</td>
 
-              {% for header in table.headers %}
-                {% if not(header in rowObj.item.lockedParams) %}
-                  <td class="td-val">{{ rowObj.row[header] or '-' }}</td>
+              {% for header in table.headers1 %}
+                {% if (not(header in rowObj.item.lockedParams)) %}
+
+                  <td class="td-val">{{ rowObj.row.row1[header] or '-' }}</td>
                 {% endif %}
               {% endfor %}
-
               <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
 
             </tr>
-            <tr>
+
+            <tr id='price-row'>
+              {% set idx = 0 %}
+              {% for header in table.headers2 %}
+                {% if (not(header in rowObj.item.lockedParams)) %}
+                  {% if idx == 0 %}
+                    <td class="price" colspan="1">
+                    {% endif %}
+                    <td class="price" colspan="2">
+                      <span class="price-label">{{ header }}:</span>
+                      <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                    </td>
+                    {% set idx = idx + 1 %}
+                  {% endif %}
+                {% endfor %}
+              </tr>
               {% if total %}
 
                 <tr id='price-row'>
-                  <td colspan="1" class="price"></td>
-                  {% for header in table.headers %}
+                  {% set idx = 0 %}
+                  {% for header in table.headers1 %}
                     {% if (header in rowObj.item.lockedParams) %}
-                      <td class="price" colspan="2">
-                        <span class="price-label">{{ header }}:</span>
-                        <b>{{ rowObj.row[header] or '-' }}</b>
-                      </td>
-                    {% endif %}
-                  {% endfor %}
-                </tr>
-              {% endif %}
-              {% set globalIndex = globalIndex + 1 %}
+                      {% if idx == 0 %}
+                        <td class="price" colspan="1">
+                        {% endif %}
+                        <td class="price" colspan="2">
+                          <span class="price-label gold">{{ header }}:</span>
+                          <b>{{ rowObj.row.row1[header] or  rowObj.row.row2[header]  or '-'  }}</b>
+                        </td>
+                        {% set idx = idx + 1 %}
+                      {% endif %}
+                    {% endfor %}
+                    {% for header in table.headers2 %}
+                      {% if (header in rowObj.item.lockedParams) %}
+                        {% if idx == 0 %}
+                          <td class="price" colspan="1">
+                          {% endif %}
+                          <td class="price" colspan="2">
+                            <span class="price-label gold">{{ header }}:</span>
+                            <b>{{ rowObj.row.row1[header] or  rowObj.row.row2[header]  or '-'  }}</b>
+                          </td>
+                          {% set idx = idx + 1 %}
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                  {% endif %}
+                  {% set globalIndex = globalIndex + 1 %}
 
-            {% endfor %}
+                {% endfor %}
 
-          </tbody>
-        </table>
-      </div>
+              </tbody>
+            </table>
+          </div>
 
-    {% endfor %}
-    {% if total and total.CENA_KONCOWA%}
+        {% endfor %}
+        {% if total %}
+          <div class='container' id='total-container'>
+            <div class="total-price d-flex justify-content-end align-items-center row col-12">
+              {% for key, value in total %}
 
-      <div class="total-price d-flex justify-content-end align-items-center">
+                {% if value.locked == false %}
+                  <span class='price-label col-4'>{{key}}:
+                    {{value.price.toFixed(2)}}
+                    &#8364;</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <div class="total-price d-flex justify-content-end align-items-center row col-12">
+              {% for key, value in total %}
 
-        {% if total.CENA %}
-          <span class='price-label'>{{ __('order.total_price') }}:
-            {{ total.CENA.toFixed(2) }}
-            &#8364;</span>
-        {% endif %}
-        {% if total.CENA and total.CENA_KONCOWA %}
-          <span class='price-label'>{{ __('order.total_rabat') }}:
-            {{ (total.CENA - total.CENA_KONCOWA).toFixed(2) }}
-            &#8364;</span>
-        {% endif %}
-        {% if total.WARTOSC_KONCOWA %}
-          <span class='price-label'>{{ __('order.total_end_price') }}:
-            <b>{{ total.WARTOSC_KONCOWA.toFixed(2)}}</b>
-            &#8364;</span>
-        </div>
-      {% endif %}
-    {% endif %}
-  {% endblock %}
+                {% if value.locked %}
+                  <span class='price-label gold col-4'>{{key}}:
+                    {{value.price.toFixed(2)}}
+                    &#8364;</span>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endblock %}

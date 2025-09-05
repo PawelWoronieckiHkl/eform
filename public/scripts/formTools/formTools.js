@@ -17,7 +17,8 @@ import {
 	checkRelated,
 	resetAllDOM,
 	setWar,
-	convertIntoPercent
+	convertIntoPercent,
+	setListRow
 } from './updateFieldsAndValues.js';
 
 import {
@@ -56,12 +57,10 @@ export function searchForParameter(value, paramDict, paramName) {
 	const paramArray = paramDict[paramName] ?? false;
 
 	if (paramArray) {
-		console.log('searching for', value, 'in', paramName, paramArray);
+
 		return paramArray.find(item => {
 			let itemVal = typeof item.VALUE === 'string' ? item.VALUE : '';
-
 			itemVal = itemVal.replace(/~\d+$/, '')
-			console.log('itemval', itemVal);
 			const searchVal = typeof value === 'string' ? value : '';
 			return itemVal.toUpperCase() === searchVal.toUpperCase();
 		});
@@ -94,8 +93,9 @@ export function normalizeFilename(filename) {
 }
 
 export function setDescription(values, value, allOptionsByParameter, name) {
-
+	if (value === '<NONE>') console.log('NONE VALUE');
 	const valObj = searchForParameter(value, allOptionsByParameter, name)
+
 	const description = `${name}___DESCRIPTION`
 
 	if (valObj?.ALIAS_DESCRIPTION || valObj?.ALIAS) {
@@ -132,6 +132,6 @@ export {
 	getInfoFromDialog,
 	resetAllDOM,
 	fillFields,
-	convertIntoPercent
-
+	convertIntoPercent,
+	setListRow
 }

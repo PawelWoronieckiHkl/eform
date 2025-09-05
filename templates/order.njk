@@ -39,7 +39,7 @@
         {% block order_space %}
           <div class="floating-order w-50">
           {% endblock %}
-          <h2 class="fw-bold header text-center p-4" id='order-title'data-id="{{ orderDetails.id }}">
+          <h2 class="fw-bold header text-center p-4" id='order-title' data-id="{{ orderDetails.id }}">
             {{ __('order.title') }}
             {{ orderDetails.id }}
             <br/>
@@ -75,10 +75,9 @@
         {% if cleanOrderItems.length > 0 %}
           <div class="order-table-container" style="overflow-x: auto;">
             {% set globalIndex = 1 %}
-                {% block table %}
-            {% for table in cleanOrderItems %}
-              <div class="table-scroll mb-5">
-
+            {% block table %}
+              {% for table in cleanOrderItems %}
+                <div class="table-scroll mb-5">
 
                   {% block table_style %}
                     <table class="table align-left table-bordered order-table">
@@ -97,10 +96,11 @@
                         <!--<th class="edit-buttons">{{ __('order.amount') }}</th>-->
                         <th class="edit-buttons">{{ __('order.name') }}</th>
 
-                        {% for header in table.headers %}
+                        {% for header in table.headers1 %}
 
                           {% if not(header in table.locked) %}
                             <th class="th-field">{{ header }}</th>
+
                           {% endif %}
 
                         {% endfor %}
@@ -136,15 +136,26 @@
                           <!--<td>{{ rowObj.item.amount or "-" }}</td>-->
                           <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-"   }}</td>
 
-                          {% for header in table.headers %}
-                            {% if not(header in rowObj.item.lockedParams) %}
-                              <td class="td-val">{{ rowObj.row[header] or '-' }}</td>
+                          {% for header in table.headers1 %}
+                            {% if (not(header in rowObj.item.lockedParams)) %}
+
+                              <td class="td-val">{{ rowObj.row.row1[header] or '-' }}</td>
                             {% endif %}
                           {% endfor %}
                           <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
 
                         </tr>
-
+                        <tr id='price-row'>
+                          <td colspan="1" class="price"></td>
+                          {% for header in table.headers2 %}
+                            {% if (not(header in rowObj.item.lockedParams)) %}
+                              <td class="price" colspan="2">
+                                <span class="price-label">{{ header }}:</span>
+                                <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                              </td>
+                            {% endif %}
+                          {% endfor %}
+                        </tr>
                         {% set globalIndex = globalIndex + 1 %}
 
                       {% endfor %}
@@ -155,47 +166,59 @@
                 </div>
 
               {% endfor %}
-            {% endblock %}
-            {% block send_order_btn %}
 
-              <button class="btn btn-outline-success p-1 stop-propagation send-order-btn me-3" type="button" id='send-order' data-id="{{ orderDetails.id }}">
-                <p>
-                  {{ __('order.send_order_btn') }}</p>
-              </button>
-            {% endblock %}
-          </div>
+              {% if total %}
+                <div class='container' id='total-container'>
+                  <div class="total-price d-flex justify-content-end align-items-center">
+                    {% for key, value in total %}
+                      {% if value.locked == false %}
+                        <span class='price-label'>{{key}}:
+                          {{value.price.toFixed(2)}}
+                          &#8364;</span>
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                {% endblock %}
+                {% block send_order_btn %}
+                </div>
+                <button class="btn btn-outline-success p-1 stop-propagation send-order-btn me-3" type="button" id='send-order' data-id="{{ orderDetails.id }}">
+                  <p>
+                    {{ __('order.send_order_btn') }}</p>
+                </button>
+              {% endblock %}
+            </div>
 
-        {% else %}
-          <div class="text-center py-5">
-            <h3 class="mb-4">{{ __('order.no_positions') }}</h3>
-            <p class="lead">{{ __('order.add_position') }}</p>
+          {% else %}
+            <div class="text-center py-5">
+              <h3 class="mb-4">{{ __('order.no_positions') }}</h3>
+              <p class="lead">{{ __('order.add_position') }}</p>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+
+      <div id='dialog-container'>
+        <dialog id='dialog-space'></dialog>
+        <dialog id="delete-dialog">
+          <h3 class="text-center" id='dialog-title'>{{ __('order.delete_element') }}</h3>
+          <p class="text-center" id='for-sure'>{{ __('order.delete_confirm') }}</p>
+          <div class="alert" id='status-info'></div>
+          <div class="confirmattion-buttons">
+            <button id="cancel-btn" class="btn btn-secondary me-1" type="button">{{ __('order.cancel') }}</button>
+            <button id="confirm-btn" class="btn btn-danger ms-1" type="button">{{ __('order.confirm') }}</button>
           </div>
-        {% endif %}
+        </dialog>
+      </div>
+
+      <div id="print-template-container" style="display:none;!important">
+        {% include 'order_to_print.njk' %}
       </div>
 
     </div>
-
-    <div id='dialog-container'>
-      <dialog id='dialog-space'></dialog>
-      <dialog id="delete-dialog">
-        <h3 class="text-center" id='dialog-title'>{{ __('order.delete_element') }}</h3>
-        <p class="text-center" id='for-sure'>{{ __('order.delete_confirm') }}</p>
-        <div class="alert" id='status-info'></div>
-        <div class="confirmattion-buttons">
-          <button id="cancel-btn" class="btn btn-secondary me-1" type="button">{{ __('order.cancel') }}</button>
-          <button id="confirm-btn" class="btn btn-danger ms-1" type="button">{{ __('order.confirm') }}</button>
-        </div>
-      </dialog>
-    </div>
-
-    <div id="print-template-container" style="display:none;!important">
-      {% include 'order_to_print.njk' %}
-    </div>
-
-  </div>
-{% endblock %}
+  {% endblock %}
 </div>
 
 {% block scripts %}
-<script type='module' src="/scripts/order.js"></script>
+  <script type='module' src="/scripts/order.js"></script>
 {% endblock scripts %}

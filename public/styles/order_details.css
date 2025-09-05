@@ -23,7 +23,10 @@
     float: right;
 
 }
-
+#total-container{
+    border: none !important;
+    box-shadow: none !important;
+}
 .diag-input-container {
     margin-left: 7% !important;
     margin-top: 15px !important;
@@ -210,6 +213,9 @@
     font-size: 0.96em;
     font-weight: 500;
     display: inline-block;
+}
+.gold {
+    background: #ffe677;
 }
 .total-price {
   margin-top: 20px;

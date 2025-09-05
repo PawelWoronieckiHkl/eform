@@ -32,8 +32,8 @@ export async function getPossibleValues(dictValues, values) {
     return { possibleElements };
 }
 
-export function createInputField(param, options, groupNumber, filters, allOptions, values) {
-
+export function createInputField(param, options, groupNumber, filters, allOptions, values, attrs) {
+    
     logFunctionName('createInputField')
     options = options.possibleElements;
     if (param.SOURCE == param.NAME) {
@@ -58,7 +58,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
         btn.innerHTML = `${t('form.check_word')}`;
 
         btn.onclick = function () {
-            createDialog(param, options, groupNumber, filters[param.NAME]);
+            createDialog(param, options, groupNumber, filters[param.NAME],attrs);
         };
         return btn;
     }
@@ -134,7 +134,7 @@ export function fillFields(displayValues, inputs, values) {
         const tag = input.tagName
         const labelData = displayValues.get(input.name)
         // console.log(input.name, labelData)
-        if (values[input.name] == "<NONE>" ) {
+        if (values[input.name] == "<NONE>") {
             labelData.option_value = '      '
             let description = input.name + '___DESCRIPTION'
             labelData.option_description = values[description]
@@ -203,21 +203,32 @@ export function checkIfParamHidden(formula, values, param) {
 }
 
 
-export function hideLocked(inputs,displayValues){
-    for (let param of window.lockedParams){
-        let input = inputs[param]
-        // console.log(input,'ukrywam lub nie')
-        input.parentElement.style.display = 'none'
-    }
-    for (const [key, value] of displayValues){
-        if (window.lockedParams.includes(key)){
-            
+export function hideLocked(inputs, displayValues) {
+
+    for (const [key, value] of displayValues) {
+        if (window.lockedParams.includes(key)) {
+
             // console.log(value,'locked')
             value['locked'] = true
         }
-        else{
-            value['locked']= false
+        else {
+            value['locked'] = false
         }
     }
     return displayValues
 }
+
+
+export function hideParams(params, inputs) {
+    for (let param of params) {
+
+        let input = inputs[param.NAME]
+        // console.log(param, 'parametry do ukrycia', input)
+        if (param.FORMROW == '0') {
+            input.parentElement.style.display = 'none'
+        }
+        // console.log(input,'ukrywam lub nie')
+
+    }
+}
+
