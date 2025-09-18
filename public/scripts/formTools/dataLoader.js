@@ -119,7 +119,7 @@ export class DataLoader {
           }
 
           let paramName = key.replace("_VALUE", "");
-
+          paramName= paramName.trim()
           let value = row[key];
           let description = row[paramName + "_DESCRIPTION"];
 

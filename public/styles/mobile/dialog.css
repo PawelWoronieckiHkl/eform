@@ -1,0 +1,45 @@
+@media (max-width: 767.98px) {
+    .dialog {
+        width: 100% !important;
+        max-width: 720px;
+        margin: 0 auto;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .dialog .dialog-title {
+        padding: 14px;
+        font-weight: 700;
+        background: transparent;
+        color: var(--text);
+    }
+
+    .dialog .dialog-body {
+        padding: 12px;
+        background: var(--bg);
+    }
+
+    /* Extra info block inside dialog */
+    .dialog-extra-info {
+        margin-top: 10px;
+    }
+
+    .dialog-extra-info .extra-block {
+        background: var(--surface);
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+    }
+
+    .dialog-extra-info .extra-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--muted-text);
+        margin-bottom: 6px;
+    }
+
+    .dialog-extra-info .extra-content {
+        font-size: 0.95rem;
+        color: var(--text);
+    }
+}

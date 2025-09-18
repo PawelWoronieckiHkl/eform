@@ -7,6 +7,9 @@
     <title>{{ __('login.title') }}</title>
     <link rel="stylesheet" href="/styles/main.css">
     <link rel="stylesheet" href="/styles/login.css">
+    <link rel="stylesheet" href="/styles/mobile/login.css">
+    <link rel="stylesheet" href="/styles/mobile/main.css">
+    <link rel="stylesheet" href="/styles/mobile/components.css">
     <link rel="stylesheet" href="/styles/components.css">
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
@@ -16,33 +19,33 @@
 
   <body class="image-background">
 
-      <!-- <header class="languages"> <div class="language-switcher"> <a href="?lang=pl" {% if locale == 'pl' %}class="active"{% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28"></a> <a href="?lang=en" {% if locale == 'en' %}class="active"{% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30" height="28"></a> <a href="?lang=de" {% if locale == 'de' %}class="active"{% endif %}><img src="/img/germany.png" alt="Germany flag" width="30" height="28"></a> <a href="?lang=nl" {% if locale == 'nl' %}class="active"{% endif %}><img src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28"></a> <a href="?lang=fr" {% if locale == 'fr' %}class="active"{% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28"></a> </div> </header> -->
-      <form action="/user/auth/login" method="POST">
-        <div class="login-box">
+    <!-- <header class="languages"> <div class="language-switcher"> <a href="?lang=pl" {% if locale == 'pl' %}class="active"{% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28"></a> <a href="?lang=en" {% if locale == 'en' %}class="active"{% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30" height="28"></a> <a href="?lang=de" {% if locale == 'de' %}class="active"{% endif %}><img src="/img/germany.png" alt="Germany flag" width="30" height="28"></a> <a href="?lang=nl" {% if locale == 'nl' %}class="active"{% endif %}><img src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28"></a> <a href="?lang=fr" {% if locale == 'fr' %}class="active"{% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28"></a> </div> </header> -->
+    <form action="/user/auth/login" method="POST">
+      <div class="login-box">
 
-          <h3 >{{ __('login.header') }}</h3>
-          <div id='node-div'>
-            <p id='env-info'></p>
-          </div>
-          <div class="input-space">
-            <label for='pin' id='pin'>{{ __('login.pin_label') }}</p>
-            <input type="text" name="pin" placeholder="{{ __('login.pin_placeholder') }}">
-          </div>
-          <div class="input-space">
-            <label for='password' id='password'>{{ __('login.password_label') }}</p>
-            <input type="password" name="password" placeholder="{{ __('login.password_placeholder') }}">
-          </div>
-          {% if message %}
-            <p class="alert alert-danger mt-4 p-2 w-75 ms-5">{{ message }}
-            </p>
-          {% endif %}
-          <button class="btn btn-secondary" type="submit">{{ __('login.login_button') }}</button>
+        <h3 >{{ __('login.header') }}</h3>
+        <div id='node-div'>
+          <p id='env-info'></p>
         </div>
-      </form>
+        <div class="input-space">
+          <label for='pin' id='pin'>{{ __('login.pin_label') }}</p>
+          <input type="text" name="pin" placeholder="{{ __('login.pin_placeholder') }}">
+        </div>
+        <div class="input-space">
+          <label for='password' id='password'>{{ __('login.password_label') }}</p>
+          <input type="password" name="password" placeholder="{{ __('login.password_placeholder') }}">
+        </div>
+        {% if message %}
+          <p class="alert alert-danger mt-4 p-2 w-75 ms-5">{{ message }}
+          </p>
+        {% endif %}
+        <button class="btn btn-secondary" type="submit">{{ __('login.login_button') }}</button>
+      </div>
+    </form>
 
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-      <script type="module" src="/scripts/getEnv.js"></script>
-      <script type="module" src="/scripts/checkJsVer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type="module" src="/scripts/getEnv.js"></script>
+    <script type="module" src="/scripts/checkJsVer.js"></script>
 
   </body>
 </html>

@@ -7,6 +7,7 @@ import { showToast } from '../components/toast.js';
 import { loadScript } from './scriptLoader.js';
 import { findAllValidatorsForInput } from './validateUtils.js'
 
+
 export function resetDependences([params, display], name, inputs, values, allOptionsByParameter) {
     logFunctionName('resetDependences');
 
@@ -27,7 +28,7 @@ export function resetDependences([params, display], name, inputs, values, allOpt
                 paramsToReset = paramsToReset.filter(p => p !== depParam);
             }
 
-            if (inputs[depParam].tagName == 'INPUT' && typeof valueToReset == 'number') {
+            if (inputs[depParam]?.tagName == 'INPUT' && typeof valueToReset == 'number') {
                 let allValidators = (findAllValidatorsForInput(depParam, values))[0];
                 let validators = allValidators && allValidators[depParam];
                 if (
@@ -100,7 +101,13 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
     // Pobieramy aktualny obiekt z displayValues lub tworzymy pusty
     let currentValue = displayValues.get(paramName) || {};
     // console.log(value, currentValue, 'build')
-    currentValue['option_value'] = String(currentValue['option_value'])
+    console.log(currentValue, 'display sprawdzam')
+    
+    if (currentValue['option_value'] || currentValue['option_value'] != undefined
+    ) {
+        currentValue['option_value'] = String(currentValue['option_value'])
+    }
+
 
     // 1. Obsługa wartości jako OBIEKTU (SourceWindow)
     if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -162,7 +169,7 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
 }
 
 
-export async function updateFieldInputs(params, inputs, values, displayValues, allOptionsByParameter, options, actualParameter, value, tagName, filters,attrVals) {
+export async function updateFieldInputs(params, inputs, values, displayValues, allOptionsByParameter, options, actualParameter, value, tagName, filters, attrVals) {
 
     enabledParams = {}
     logFunctionName('updateFieldInputs')
@@ -182,6 +189,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
     }
     // sprawdzenie enable za pomoca formuly
     for (const paramName in allOptionsByParameter) {
+
         const paramArray = allOptionsByParameter[paramName];
         if (!inputs[paramName]) continue;
 
@@ -192,8 +200,11 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
                 isEnabled = await window.FormulaHandler.evaluateFormula(
                     param.ENABLE,
                     values,
-                    "paramdict"
+                    "paramdict",
+                    param,
+                    paramName
                 );
+                let expression = param
 
             }
 
@@ -229,7 +240,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
         if (currentSelect.tagName === 'BUTTON' & !(param.SOURCE == param.NAME)) {
 
             currentSelect.onclick = function () {
-                createDialog(param, allowedParameters[paramName], tempGroupNumber, filters[paramName],attrVals);
+                createDialog(param, allowedParameters[paramName], tempGroupNumber, filters[paramName], attrVals);
             };
         }
 
@@ -269,7 +280,8 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
             shouldEnable = window.FormulaHandler.evaluateFormula(
                 param.ENABLE,
                 values,
-                "param"
+                "param",
+                param.NAME
             );
 
 
@@ -298,6 +310,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
             try {
                 loadScript(param.SOURCE, values, displayValues, groupNumber, function (scriptResult) {
                     if (scriptResult) {
+
                         for (const [paramName, value] of Object.entries(scriptResult)) {
                             if (inputs && inputs[paramName]) {
                                 let key = Object.keys(scriptResult)[0]
@@ -354,7 +367,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                     console.log('mamy error');
                     showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`);
                 }
-            }, 500); // tutaj ustawiasz liczbę milisekund opóźnienia
+            }, 1000); // tutaj ustawiasz liczbę milisekund opóźnienia
         }
 
 
@@ -373,7 +386,7 @@ export function setListRow(params, displayValues) {
             }
         }
     }
-        
+
     return displayValues;
 }
 

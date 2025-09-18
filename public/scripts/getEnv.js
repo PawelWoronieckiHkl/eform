@@ -1,4 +1,4 @@
-async function getEnvVersion() {
+export async function getEnvVersion() {
   try {
     const response = await fetch('/env');
     const data = await response.json();

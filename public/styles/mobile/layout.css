@@ -1,0 +1,122 @@
+@media (max-width: 767.98px) {
+
+    /* Top app bar */
+    .app-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        background: transparent;
+    }
+
+    .app-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .back-btn {
+        background: var(--surface);
+        padding: 8px;
+        border-radius: 10px;
+        border: 1px solid var(--muted);
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .site-footer {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100% !important;
+        display: flex;
+        gap: 8px;
+        padding: 10px;
+        background: var(--surface);
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .footer-links {
+        margin-right: 0% !important;
+    }
+
+    .navbar {
+        position: sticky !important;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .mobile-nav {
+        flex-direction: column;
+        background: var(--surface);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+    }
+
+    .mobile-nav .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .mobile-nav .navbar-toggler {
+        border: none;
+        background: var(--muted);
+        padding: 8px;
+        border-radius: 6px;
+    }
+
+    .mobile-nav .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .mobile-nav .nav-link {
+
+        color: var(--text);
+        font-size: 1rem;
+        padding: 8px 12px;
+        border-radius: 6px;
+        background: var(--bg);
+        text-decoration: none;
+    }
+
+    .mobile-nav .nav-link:hover {
+        background: var(--muted);
+    }
+
+    .logo {
+        height: 7vh !important;
+        width: 100% !important;
+        margin-top: 1vh !important;
+        margin-left: 1vh !important;
+    }
+
+    .language-switcher {
+        position: relative !important;
+        display: flex !important;
+        top: 10px;
+        right: 18vh;
+        z-index: 20;
+        gap: 2px;
+        width: fit-content;
+    }
+    .order-date{
+        display: none !important;
+    }
+    .footer-links a {
+        margin: 0 5px;
+    }
+    .arrow{
+        display: none;
+    }
+    .back-text{
+        display: none;
+    }
+}

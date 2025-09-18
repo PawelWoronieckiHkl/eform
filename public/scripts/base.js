@@ -1,11 +1,13 @@
+
+import { getEnvVersion } from "./getEnv.js";
 async function getLogo() {
     try {
-        const response = await fetch('/user/logo', { 
+        const response = await fetch('/user/logo', {
             method: 'GET',
             credentials: 'include'
         });
         if (!response.ok) throw new Error('Status nieok: ' + response.status);
-        
+
         const blob = await response.blob();
         const images = document.querySelectorAll('.logo');
         if (images.length === 0) throw new Error('Brak .logo w DOM');
@@ -27,7 +29,7 @@ async function getLogo() {
 
     } catch (err) {
         console.error('getLogo Error:', err);
-        throw err; 
+        throw err;
     }
 }
 
@@ -71,7 +73,7 @@ export function validate(validateClass) {
     return allValid;
 }
 
-async function getUserName(){
+async function getUserName() {
     const user = await fetch('/user/name', {
         method: 'GET',
         credentials: 'include'
@@ -85,25 +87,35 @@ async function getUserName(){
     }
     setTimeout(() => {
         console.log(t('base.user'), data.name);
-        document.getElementById('user-info').innerHTML =  `${t('base.user')}: </br> ${data.name}`;
+        document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${data.name}`;
     }, 100);
 }
 
-async function getConfigNum(){
+async function getConfigNum() {
+    const version = await getEnvVersion();
     const user = await fetch('/config-num', {
         method: 'GET',
 
     });
     const data = await user.json();
+
     if (!data.success) {
+
         throw new Error('Błąd pobierania nazwy użytkownika: ' + data.message);
+
     }
 
-        console.log('wersja', data);
-        document.getElementById('config-number-info').innerHTML = 
-         `Numer konfiguracji <br> ${data.name}`;
+
+
+    console.log('wersja', data);
+    if (version) {
+        document.getElementById('config-number-info').innerHTML =
+
+            `Numer konfiguracji <br> ${data.name}`;
+    }
 
 }
+
 
 getConfigNum()
 

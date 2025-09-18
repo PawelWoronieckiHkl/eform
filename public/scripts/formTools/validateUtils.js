@@ -388,7 +388,7 @@ export function clearDisabledValues(values, displayValues) {
             const displayParam = displayValues.get(displayKey);
             // console.log(displayKey, displayParam, 'displayParam przed oczyszczeniem', (displayParam && displayParam.locked !== true) );
             if (displayParam && displayParam.locked !== true) {
-                isDescription
+                isDescription || displayParam.option_value !='undefined' || !displayParam.option_value
                     ? delete displayParam.option_description
                     : delete displayParam.option_value;
             }

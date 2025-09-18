@@ -56,12 +56,12 @@ export class SourceWindow {
         this.allOptionsByParameter = slopeLoader.convertDictValues(this.data.dictValues);
         this.createObject();
     }
-    async getLegacySlopeVer(){
-        
-            const response = await fetch(`/position/version/${this.param.NAME}`);
-            const data = await response.json();
-            return data.version
-        }
+    async getLegacySlopeVer() {
+
+        const response = await fetch(`/position/version/${this.param.NAME}`);
+        const data = await response.json();
+        return data.version
+    }
     getPhotoPath() {
         // Buduje ścieżkę do obrazka według this.TYP
         return `/photos/${this.catalog}/TYP/${this.TYP}.jpg`;
@@ -98,8 +98,56 @@ export class SourceWindow {
             alt: 'SLOPE',
             class: ['img-fluid', 'mb-4'],
             onerror: (e) => {
-                e.target.onerror = null; // zapobiega zapętleniu
-                e.target.src = `/photos/${this.catalog}/TYP/${this.TYP}.png`;
+                // Safely handle image load errors without creating an infinite loop.
+                // Some helpers add event listeners that won't be removed by setting onerror=null,
+                // so we replace the node with a clone (which doesn't carry JS listeners) and
+                // attempt a single PNG fallback. If that also fails, replace with a simple placeholder.
+                try {
+                    const img = e.target;
+
+                    // If we've already attempted fallback for this element, show placeholder and stop.
+                    if (img.dataset._fallbackAttempted) {
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'img-placeholder img-fluid mb-4';
+                        placeholder.textContent = 'Brak zdjęcia';
+                        img.parentNode.replaceChild(placeholder, img);
+                        return;
+                    }
+
+                    // Mark that we've tried fallback to avoid repeating.
+                    img.dataset._fallbackAttempted = '1';
+
+                    // Create a clone without event listeners and attributes preserved.
+                    const clone = img.cloneNode(true);
+                    // Ensure the clone has no error listener attached.
+                    clone.onerror = null;
+                    clone.removeAttribute('onerror');
+
+                    // If PNG fallback fails, replace clone with a placeholder (one-time handler)
+                    clone.onerror = () => {
+                        // remove handler to prevent any possible loop
+                        clone.onerror = null;
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'img-placeholder img-fluid mb-4';
+                        placeholder.textContent = 'Brak zdjęcia';
+                        if (clone.parentNode) clone.parentNode.replaceChild(placeholder, clone);
+                    };
+
+                    // Try PNG fallback
+                    clone.src = `/photos/${this.catalog}/TYP/${this.TYP}.png`;
+
+                    // Replace original with the clone (preserves layout, removes old listeners)
+                    if (img.parentNode) img.parentNode.replaceChild(clone, img);
+                } catch (err) {
+                    // On any unexpected error, remove handler and don't retry endlessly.
+                    try {
+                        const target = e && e.target;
+                        if (target) {
+                            target.onerror = null;
+                            target.removeAttribute && target.removeAttribute('onerror');
+                        }
+                    } catch (ignore) { }
+                }
             }
         }, body);
 
@@ -204,7 +252,7 @@ export class SourceWindow {
     }
     setTyp(typ) {
         this.TYP = typ;
-        this.sourceValues['TYP']=typ
+        this.sourceValues['TYP'] = typ
     }
     // Możesz dodać metodę validate(values) jeśli chcesz wydzielić walidację!
 }

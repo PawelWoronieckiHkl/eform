@@ -1,8 +1,8 @@
 {% extends "base.njk" %}
 {% block head %}
     <link rel="stylesheet" href="/styles/home.css">
+    <link rel="stylesheet" href="/styles/mobile/home.css">
 {% endblock head %}
-
 
 {% block content %}
     {% if mustAcceptRODO %}
@@ -81,7 +81,7 @@
                             <!-- Treść karty pozostaje bez zmian -->
                             <div class="order-card-row">
                                 <div class="order-id">
-                                    <span class="order-label">#{{ order.id }}</span>
+                                    <span class="order-label">#{{ order.order_idx }}</span>
                                 </div>
                                 <div class="order-info">
                                     <div class="order-commission">
@@ -120,7 +120,7 @@
                             <div class="history-order-card" onclick="window.location.href='/orders/history/order/{{ order.id }}'">
                                 <div class="order-card-row">
                                     <div class="history-order-id">
-                                        <span class="history-order-label">#{{ order.id }}</span>
+                                        <span class="history-order-label">#{{ order.order_idx }}</span>
                                     </div>
                                     <div class="order-info">
                                         <div class="order-commission">

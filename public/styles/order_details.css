@@ -23,10 +23,7 @@
     float: right;
 
 }
-#total-container{
-    border: none !important;
-    box-shadow: none !important;
-}
+
 .diag-input-container {
     margin-left: 7% !important;
     margin-top: 15px !important;
@@ -41,7 +38,9 @@
     padding: 20px;
 
 }
-
+.gold{
+  background-color: rgba(236, 212, 76, 0.651) !important ;
+}
 #order-buttons {
     display: flex;
     align-items: center;
@@ -190,7 +189,7 @@
     padding: 10px 16px;
     text-align: left;
     letter-spacing: 1px;
-    
+
     border: 0px solid #0e0e0e !important;
 
     border-radius: 20px !important;
@@ -200,10 +199,12 @@
 .price b {
     color: #0f0f0f;
 }
-#price-row{
-       border: 1px solid #00000018 !important;
-       
+
+#price-row {
+    border: 1px solid #00000018 !important;
+
 }
+
 .price-label {
     background: #eaf4fd;
     color: #5a5a5a;
@@ -214,29 +215,29 @@
     font-weight: 500;
     display: inline-block;
 }
-.gold {
-    background: #ffe677;
-}
+
 .total-price {
-  margin-top: 20px;
-  padding: 12px 20px;
+    margin-top: 20px;
+    padding: 12px 20px;
 
 
-  max-width: 1000px;
-  margin-left: auto; /* wyrównanie do prawej */
-  color: #004085;
-  font-weight: 600;
-  font-size: 1.1rem;
+    max-width: 100%;
 
-  gap: 30px; /* odstęp pomiędzy elementami */
-  margin-bottom: 30px;
+    /* wyrównanie do prawej */
+    color: #004085;
+    font-weight: 600;
+    font-size: 1.1rem;
+
+    gap: 30px;
+    /* odstęp pomiędzy elementami */
+    margin-bottom: 30px;
 }
 
 .total-price span {
 
-  min-width:180px;
-  text-align: left;
+    min-width: 180px;
+    text-align: left;
 
-  font-weight: 700;
-  font-size: 1.15rem;
+    font-weight: 700;
+    font-size: 1.15rem;
 }

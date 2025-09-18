@@ -1,0 +1,29 @@
+@media (max-width: 767.98px) {
+    .form-wrapper {
+        padding: 6px 0;
+    }
+
+    .form-section {
+        background: var(--surface);
+        padding: 12px;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 12px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .form-label {
+        width: 38%;
+        color: var(--muted-text);
+        font-weight: 600;
+    }
+
+    .form-field {
+        width: 62%;
+    }
+}

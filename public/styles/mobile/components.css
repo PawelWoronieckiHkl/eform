@@ -1,0 +1,33 @@
+@media (max-width: 767.98px) {
+
+    /* Badge */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--muted);
+        color: var(--text);
+        padding: 6px 8px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    /* List item */
+    .list-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        background: var(--surface);
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+    }
+
+    .avatar-sm {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: var(--muted);
+    }
+}

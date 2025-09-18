@@ -10,17 +10,24 @@
     {% endblock %}
     {% block head %}
         <link rel="stylesheet" href="/styles/new-order.css">
+        <link rel="stylesheet" href="/styles/dialog.css">
+        <link rel="stylesheet" href="/styles/mobile/new-order.css">
+        <link rel="stylesheet" href="/styles/mobile/dialog.css">
     {% endblock head %}
     {% block content %}
         <div class="content center-content">
-            <div class="container my-5 col-12 w-100 ">
+            <div class="container my-5 col-7 p-5 text-start">
                 <div class="row justify-content-center">
                     <h2 class="p-3">
                         {% block order_title %}{{ __('site.terms') }}
                         {% endblock order_title %}
                     </h2>
 
-                    <div class="row justify-content-center"></div>
+                    <div class="row justify-content-center">
+                        <div class="privacy-content">
+                            {{ contentHtml | safe }}
+                        </div>
+                    </div>
                 </div>
             </div>
         {%endblock content%}

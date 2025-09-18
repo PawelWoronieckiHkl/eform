@@ -133,12 +133,12 @@
 
         {% endfor %}
         {% if total %}
-          <div class='container' id='total-container'>
+          <div id='total-container'>
             <div class="total-price d-flex justify-content-end align-items-center row col-12">
               {% for key, value in total %}
 
                 {% if value.locked == false %}
-                  <span class='price-label col-4'>{{key}}:
+                  <span class='price-label col-3'>{{key}}:
                     {{value.price.toFixed(2)}}
                     &#8364;</span>
                 {% endif %}
@@ -148,7 +148,7 @@
               {% for key, value in total %}
 
                 {% if value.locked %}
-                  <span class='price-label gold col-4'>{{key}}:
+                  <span class='price-label gold col-3'>{{key}}:
                     {{value.price.toFixed(2)}}
                     &#8364;</span>
                 {% endif %}

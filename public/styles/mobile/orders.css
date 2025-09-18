@@ -1,0 +1,42 @@
+@media (max-width: 767.98px) {
+    .orders-list .order-card {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 12px;
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: var(--card-shadow);
+    }
+
+    .orders-list .order-meta {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .orders-list .order-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .content {
+        all: unset;
+        margin-left: 1% !important;
+        width: 100% !important;
+    }
+
+    .container {
+        padding: 0% !important;
+        width: 100% !important;
+        margin-top: 0 !important;
+    }
+
+    .pagination {
+        margin-left: 3% !important;
+        padding: 0 !important;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}

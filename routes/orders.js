@@ -30,7 +30,7 @@ router.get("/", requireLogin, async (req, res) => {
         db.getUserOrders(req.session.user.userId, limit, offset),
         db.countUserOrders(req.session.user.userId)
     ]);
-
+    
     const totalPages = Math.ceil(totalOrders / limit);
 
     res.render("orders.njk", {
@@ -138,7 +138,7 @@ router.get("/order/:orderId/new-position/", requireLogin, (req, res) => {
     res.render("form.njk", { orderId: req.params.orderId });
 });
 
-router.post('/send/:orderId', checkOrderOwnership, async (req, res) => {
+router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
     try {
         const id = req.params.orderId;
         const { status } = req.body;
@@ -148,17 +148,17 @@ router.post('/send/:orderId', checkOrderOwnership, async (req, res) => {
         if (orderItems || orderItems.length > 0) {
             const sender = new OrderSender.OrderSender(orderDetails, orderItems);
             const sendData = sender.init()
-            const user = await db.getUserData(req.session.user?.pin ?? '0000')
+            const user = await db.getUserData(req.session.user?.pin)
             const clientName = user.client_name
             console.log('user and username', user, clientName)
-            const photoFile = await db.getUserLogo(req.session.user?.pin ?? '0000')
+            const photoFile = await db.getUserLogo(req.session.user?.pin)
             const logoPath = path.join(__dirname, '../img/', photoFile)
 
             const heads = Object.keys(orderItems[0].json_parameters);
             let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
             // { orderDetails: orderDetails[0], orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems }
             const lang = req.getLocale();
-            const mail = await db.getUserMail(req.session.user?.pin ?? '0000')
+            const mail = await db.getUserMail(req.session.user?.pin)
 
 
             const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData)
@@ -189,7 +189,7 @@ router.post('/send/:orderId', checkOrderOwnership, async (req, res) => {
         console.error(err);
     }
 });
-router.post('/copy/:orderId', checkOrderOwnership, async (req, res) => {
+router.post('/copy/:orderId', checkOrderOwnership,requireLogin, async (req, res) => {
     let orderAddress = null;
     let sendAddress = null;
 
@@ -273,7 +273,7 @@ router.post('/save-order', requireLogin, async (req, res) => {
     }
 });
 
-router.put('/update-order/:orderId', checkOrderOwnership, async (req, res) => {
+router.put('/update-order/:orderId',requireLogin, checkOrderOwnership, async (req, res) => {
     try {
         const { commission, orderContactInfo, orderSendAddress, comment } = req.body;
         const { orderId } = req.params;
@@ -295,7 +295,7 @@ router.put('/update-order/:orderId', checkOrderOwnership, async (req, res) => {
     }
 })
 
-router.delete('/order/:orderId/delete/', checkOrderOwnership, async (req, res) => {
+router.delete('/order/:orderId/delete/', requireLogin,checkOrderOwnership, async (req, res) => {
     // console.log(req.params.orderId);
     let response = await db.deleteOrder(req.params.orderId);
     if (response) {

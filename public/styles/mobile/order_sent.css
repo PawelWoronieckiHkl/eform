@@ -1,0 +1,11 @@
+@media (max-width: 767.98px) {
+
+    /* Order sent confirmation mobile */
+    .sent-card {
+        background: var(--surface);
+        padding: 12px;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+    }
+}

@@ -94,7 +94,7 @@ else {
 			secure: false,
 			httpOnly: true,
 			sameSite: "lax",
-			maxAge: 1000 * 60 * 60,
+			maxAge: 1000 * 60 * 60*8,
 			// domain: "eform.tkproject.eu" 
 		}
 	}));

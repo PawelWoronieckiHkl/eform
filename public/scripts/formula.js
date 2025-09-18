@@ -91,6 +91,7 @@ function contains(params) {
 }
 
 parser.setFunction("WSROD", function (params) {
+
     return inList(params);
 });
 

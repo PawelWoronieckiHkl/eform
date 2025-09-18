@@ -168,7 +168,7 @@
       <div class="content">
         <div class="comment-box">
           <p>{{ __('mail.sent_confirmation_1') }}</p>
-          <p>{{ __('mail.sent_confirmation_2_1') }} "{{orderNr}}" {{ __('mail.sent_confirmation_2_2') }} "{{orderDetails.commission}}". {{ __('mail.sent_confirmation_2_3') }}</p>
+          <p>{{ __('mail.sent_confirmation_2_1') }} "{{orderDetails.order_idx}}" {{ __('mail.sent_confirmation_2_2') }} "{{orderDetails.commission}}". {{ __('mail.sent_confirmation_2_3') }}</p>
           <p>{{ __('mail.sent_confirmation_3') }}</p>
         </div>
       </div>
@@ -179,3 +179,7 @@
     </div>
   </body>
 </html>
+
+
+
+

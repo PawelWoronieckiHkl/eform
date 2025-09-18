@@ -30,6 +30,7 @@
 		"i18next-fs-backend": "^2.6.0",
 		"i18next-http-middleware": "^3.7.4",
 		"lodash": "^4.17.21",
+		"mammoth": "^1.10.0",
 		"mysql": "^2.18.1",
 		"mysql2": "^3.13.0",
 		"n_": "^4.0.1",

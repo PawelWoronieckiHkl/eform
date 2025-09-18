@@ -10,6 +10,8 @@ import {
   showToastInContainer
 } from '../components/index.js';
 import { createElement } from '../components/htmlManipulator.js'
+import { stopSpin, startSpin } from "../components/hourglass.js";
+
 export class DialogManager {
   constructor() {
     this.isMultiChoice = false; // Nowa flaga
@@ -41,6 +43,7 @@ export class DialogManager {
 
 
   async initialize(param, options, groupNumber, filters, attrs) {
+    startSpin()
     logFunctionName('DialogManager.initialize');
     this.param = param;
     this.options = options;
@@ -51,8 +54,10 @@ export class DialogManager {
     // do zmiany oficjalnie
     this.isLink = param?.LINK == 'true' ?? false;
     // do zmiany oficjalnie
-    this.isInfo = param?.INFO == 'true' ?? false;
 
+    this.isInfo = param?.INFO != '<NULL>' ?? false;
+    this.extraInfoText = param?.INFO;
+    console.log(param, this.isLink, this.isInfo, 'dialog')
     this.selectedValues = [];
     this.confirmButton.style.display = this.isMultiChoice ? 'inline-block' : 'none';
     if (this.dialogTitle) {
@@ -73,6 +78,7 @@ export class DialogManager {
 
     // Pokazanie dialogu
     this.dialog.showModal();
+    stopSpin()
   }
 
   // Pobranie mapy obrazów z serwera
@@ -103,54 +109,75 @@ export class DialogManager {
     // Dodanie pola wyszukiwania i filtrów przed listą opcji
     this.addSearchAndFilters();
 
-    this.setupExtraInfo('Istnieją normy dotyczące ChildSafety',
-      "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1");
+    this.setupExtraInfo();
 
   }
 
 
   setupExtraInfo(text, link) {
-    // Ensure we have a container reference; if missing, create and attach it inside dialog
-    let container = this.extraInfo;
-    if (!container) {
-      container = document.createElement('div');
-      container.id = 'additional-info';
-      // place it near the top of dialog (after title if present)
-      if (this.dialogTitle && this.dialogTitle.parentElement) {
-        this.dialogTitle.parentElement.insertBefore(container, this.dialogTitle.nextSibling);
-      } else if (this.dialogContainer) {
-        this.dialogContainer.insertBefore(container, this.dialogContainer.firstChild);
-      } else {
-        document.body.appendChild(container);
-      }
-      this.extraInfo = container;
-    }
+    // render a modern extra-info panel inside this.extraInfo container
+    const container = this.extraInfo;
+    if (!container) return;
 
-    // Reset container
-    container.className = 'additional-info mb-2 dialog-extra-info';
+    // clear previous content
     container.innerHTML = '';
 
-    // If neither info nor link is enabled, hide the container
-    if (!this.isInfo && !this.isLink) {
-      container.style.display = 'none';
-      return;
-    }
+    // decide content and link
+    const infoHtml = text || this.extraInfoText || '';
+    const href = link || this.param?.LINK_URL || this.param?.LINK || null;
 
-    container.style.display = 'block';
+    if (this.isInfo && infoHtml) {
+      const panel = createElement('div', {
+        class: ['extra-info-panel', 'mb-3'],
+        role: 'region',
+        'aria-label': 'additional information'
+      }, container);
 
-    // Create two clearly separated inner blocks (if present) with small titles
-    if (this.isInfo && text) {
-      const infoBlock = createElement('div', { class: ['extra-block', 'extra-info-block'] }, container);
-      createElement('div', { class: ['extra-title'], text: 'UWAGA' }, infoBlock);
-      createElement('div', { class: ['extra-content'], text: text, style: { wordBreak: 'break-word' } }, infoBlock);
-    }
+      // icon
+      const iconWrap = createElement('div', { class: ['extra-info-icon'] }, panel);
+      // simple info icon (SVG) for crispness
+      iconWrap.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.12"></circle>
+          <path d="M11 17h2v-6h-2v6zm0-8h2V7h-2v2z" fill="currentColor"></path>
+        </svg>`;
 
-    if (this.isLink && link) {
-      const linkBlock = createElement('div', { class: ['extra-block', 'extra-link-block'] }, container);
-      createElement('div', { class: ['extra-title'], text: 'LINK DO INSTRUKCJI' }, linkBlock);
-      const linkContent = createElement('div', { class: ['extra-content'] }, linkBlock);
-      // anchor via createElement so attributes are set through helper
-      createElement('a', { href: link, target: '_blank', rel: 'noopener noreferrer', text: link, style: { wordBreak: 'break-word' } }, linkContent);
+      // content
+      const content = createElement('div', { class: ['extra-info-content'] }, panel);
+      // normalize escaped newlines ("\\n") to real newlines, then replace newlines with <br>
+      let normalized = String(infoHtml || '');
+      normalized = normalized.replace(/\\n/g, '\n');
+      // convert actual newlines to <br> so browser displays line breaks
+      const htmlWithBreaks = normalized.replace(/\n/g, '<br>');
+      content.innerHTML = htmlWithBreaks;
+
+      // optional link/button
+      if (this.isLink || href) {
+        const linkHref = href || '#';
+        const btn = createElement('a', {
+          class: ['extra-info-cta', 'btn', 'btn-sm'],
+          href: linkHref,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          text: t?.('form.more_info') || 'Więcej'
+        }, panel);
+      }
+    } else if (this.isLink && (this.param || link)) {
+      // If only a link is present, render a small link box
+      const panel = createElement('div', {
+        class: ['extra-info-panel', 'mb-3'],
+        role: 'region',
+        'aria-label': 'link'
+      }, container);
+      const content = createElement('div', { class: ['extra-info-content'] }, panel);
+      const linkHref = href || '#';
+      createElement('a', {
+        class: ['extra-info-cta', 'btn', 'btn-sm'],
+        href: linkHref,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        text: t?.('form.open_link') || 'Otwórz'
+      }, content);
     }
   }
 

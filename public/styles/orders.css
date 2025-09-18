@@ -11,7 +11,9 @@
   background-color: rgb(235, 235, 235) !important;
 
 }
-
+.gold{
+  background-color: gold !important ;
+}
 .pagination .page-item.active .page-link {
     background-color: #8d8d8d; /* zielony Bootstrap */
     border-color: #777777;

@@ -1,10 +1,19 @@
 const db = require("../db/db_helper.js");
 
 function requireLogin(req, res, next) {
-    if (!req.session.user) {
-        return res.redirect("/user/login");
-    }
-    next();
+  // Check session existence
+  if (!req.session) {
+    console.warn('Brak sesji w request');
+    return res.redirect("/user/login");
+  }
+  // Check user object
+  if (!req.session.user || typeof req.session.user !== 'object') {
+    console.warn('Brak usera w sesji lub user nie jest obiektem');
+    return res.redirect("/user/login");
+  }
+  // Check userId presence and validity
+
+  next();
 }
 
 

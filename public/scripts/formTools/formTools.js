@@ -53,17 +53,15 @@ export function findParamFromValues(values, paramDict) {
 }
 
 export function searchForParameter(value, paramDict, paramName) {
-
 	const paramArray = paramDict[paramName] ?? false;
-
 	if (paramArray) {
-
-		return paramArray.find(item => {
+		let found = paramArray.find(item => {
 			let itemVal = typeof item.VALUE === 'string' ? item.VALUE : '';
 			itemVal = itemVal.replace(/~\d+$/, '')
 			const searchVal = typeof value === 'string' ? value : '';
-			return itemVal.toUpperCase() === searchVal.toUpperCase();
+			return itemVal.toUpperCase() == searchVal.toUpperCase();
 		});
+		return found
 	} else {
 		return false;
 	}

@@ -47,9 +47,10 @@ router.post("/auth/login", async (req, res, next) => {
         if (isValid) {
             const isFirst = await authService.checkFirstLogon(pin)
             console.log(isFirst, 'first logon check result')
-
+            let owner = await db.getOwner(pin);
+            console.log(owner, 'siema')
             const userId = await db.getUserId(pin)
-            req.session.user = { userId, pin, password, showPrices: false };
+            req.session.user = { userId, pin, password, showPrices: false, organization: (owner.orgIdent).toUpperCase() };
 
 
             langVer.checkTranslateLegacy(localesDir)
@@ -83,7 +84,7 @@ router.get('/logo', requireLogin, async (req, res) => {
     res.sendFile(photoPath);
 })
 
-router.post("/logout", (req, res) => {
+router.post("/logout", requireLogin, (req, res) => {
     req.session.destroy((err) => {
         if (err) return res.redirect("/");
         if (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'archive' || process.env.NODE_ENV === 'test') {
@@ -104,7 +105,7 @@ router.get('/rodo', requireLogin, async (req, res) => {
     return res.render('rodo.njk');
 });
 
-router.get('/owner/', async (req, res) => {
+router.get('/owner/',requireLogin, async (req, res) => {
     const pin = req.session.user.pin
 
     let response = await db.getOwner(pin);
@@ -122,7 +123,7 @@ router.get('/owner/', async (req, res) => {
     }
 })
 
-router.get('/name', async (req, res) => {
+router.get('/name',requireLogin, async (req, res) => {
     const pin = req.session.user.pin;
     console.log(pin, 'pin in getUserName')
     let response = await db.getUserName(pin);

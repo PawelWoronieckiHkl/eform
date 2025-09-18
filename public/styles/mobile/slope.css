@@ -1,0 +1,9 @@
+@media (max-width: 767.98px) {
+    .slope-note {
+        background: var(--surface);
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: var(--card-shadow);
+        font-size: 0.95rem;
+    }
+}

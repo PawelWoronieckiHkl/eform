@@ -4,6 +4,7 @@
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="/styles/dialog.css">
+  <link rel="stylesheet" href="/styles/mobile/dialog.css">
 {% endblock head %}
 {% block key_nav %}{% endblock %}
 {% block back_link %}
@@ -70,6 +71,8 @@
       <img id="preview-image" src="" alt="{{ __('form.preview_alt') }}"/>
     </dialog>
     <div id='version-space'>{{position.ver}}</div>
+    <div class="hourglass"></div>
+    <div class="overlay"></div>
   {% endblock content %}
 
   {% block scripts %}

@@ -1,4 +1,4 @@
-import { logFunctionName } from './formTools.js';
+import { logFunctionName, searchForParameter } from './formTools.js';
 import { createDialog } from './dialogUtils_copy.js'
 import { isEnabled } from '../components/htmlManipulator.js';
 import { SourceWindow } from './slope.js';
@@ -33,7 +33,7 @@ export async function getPossibleValues(dictValues, values) {
 }
 
 export function createInputField(param, options, groupNumber, filters, allOptions, values, attrs) {
-    
+
     logFunctionName('createInputField')
     options = options.possibleElements;
     if (param.SOURCE == param.NAME) {
@@ -55,10 +55,17 @@ export function createInputField(param, options, groupNumber, filters, allOption
         btn.classList.add("btn", 'color-dialog-btn');
         btn.id = param.NAME;
         btn.type = 'button';
-        btn.innerHTML = `${t('form.check_word')}`;
+        if (param.DEFAULT !='<NULL>') {
+            let val = options.find(val => val.VALUE ==param.DEFAULT)
+            btn.textContent = `${val.VALUE}-${val.DESCRIPTION}`
+        }
+        else {
+            btn.innerHTML = `${t('form.check_word')}`;
+        }
+
 
         btn.onclick = function () {
-            createDialog(param, options, groupNumber, filters[param.NAME],attrs);
+            createDialog(param, options, groupNumber, filters[param.NAME], attrs);
         };
         return btn;
     }
@@ -135,10 +142,11 @@ export function fillFields(displayValues, inputs, values) {
         const labelData = displayValues.get(input.name)
         // console.log(input.name, labelData)
         if (values[input.name] == "<NONE>") {
-            labelData.option_value = '      '
             let description = input.name + '___DESCRIPTION'
             labelData.option_description = values[description]
+            input.textContent = `${labelData.option_description}`
         }
+
         switch (tag) {
             case "BUTTON":
                 if (labelData?.option_value) {

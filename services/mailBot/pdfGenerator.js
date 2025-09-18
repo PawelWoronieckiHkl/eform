@@ -20,7 +20,7 @@ async function generateExcel(orderData) {
   return buffer;
 }
 
-async function generatePdf(orderData, cleanOrderItems, lang, logoPath,sendData) {
+async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData) {
   console.log('zaczynam', logoPath)
   const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
   const logoDataUri = `data:image/png;base64,${logoBase64}`;
@@ -44,7 +44,7 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath,sendData) 
     orderDetails: orderData,
     cleanOrderItems: cleanOrderItems,
     logoPath: logoDataUri,
-    sendData:data
+    sendData: data
   });
   let browser;
   if (process.env.NODE_ENV == 'live-dev') {
@@ -84,7 +84,7 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath,sendData) 
       /* Ustawienia globalne */
       body {
         font-family: "Courier", monospace !important;
-        width: 400mm;  /* Szerokość zgodna z A3 w landscapie */
+    width: 297mm;  /* Szerokość zgodna z A4 w landscapie */
         margin: 0;
         padding: 0;
       }
@@ -96,7 +96,7 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath,sendData) 
       }
       
       @page {
-        size: A3 landscape;
+        size: A4 landscape;
         margin: 0;
       }
     </style>
@@ -115,10 +115,10 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath,sendData) 
 
   // 7. Generowanie PDF
   const pdfBuffer = await page.pdf({
-    format: 'A3',
+    format: 'A4',
     landscape: true,
     printBackground: true,
-    scale: 0.33,
+    scale: 0.44,
     margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
   });
 

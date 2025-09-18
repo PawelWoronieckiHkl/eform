@@ -22,6 +22,7 @@ import { createElement, isEnabled } from "./components/htmlManipulator.js";
 import { hideLocked, hideParams } from './formTools/createForm.js'
 import { AttrLoader } from "./formTools/storage.js";
 import { Translator } from "./formTools/fileTranslator.js"
+import { stopSpin, startSpin } from "./components/hourglass.js";
 
 export async function generateForm(
   version = null,
@@ -52,11 +53,12 @@ export async function generateForm(
   const data = await loader.parseData();
   const dictValues = data.dictValues;
   let allOptionsByParameter = loader.convertDictValues(dictValues);
+
   const filters = loader.getAllFilters();
   const calculatedParams = {};
   if (!data) return;
   allOptionsByParameter = await loader.selectCollections(allOptionsByParameter)
-  // console.log('przed selectPrices', data.params)
+
   data.params = await loader.selectPrices(data.params)
   window.params = data.params;
   window.actualParam = '';
@@ -66,7 +68,7 @@ export async function generateForm(
   linkContainer.id = "link-buttons-container"; // pozycjonowanie CSS
   let labelNumber = 1;
   const inputs = {};
-  
+
   let options = {};
   form.innerHTML = "";
 
@@ -142,7 +144,7 @@ export async function generateForm(
     }
 
     else {
-      
+
       input = createInputField(param, options, groupNumber, filters, allOptionsByParameter[param.NAME], values, semafor.attrValues);
     }
 
@@ -241,7 +243,7 @@ export async function generateForm(
         values[this.name] = parseFloat(this.value);
         updateProcedure({
           ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
-          flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true, attrValues:semafor.attrValues }
+          flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true, attrValues: semafor.attrValues }
         });
       }
 
@@ -252,7 +254,7 @@ export async function generateForm(
         console.log('select 2 @@@@@@@@@@@@@@@@@@@@@@@@@')
         updateProcedure({
           ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
-          flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true, attrValues:semafor.attrValues }
+          flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true, attrValues: semafor.attrValues }
         });
       });
 
@@ -261,7 +263,7 @@ export async function generateForm(
         console.log('select 3 @@@@@@@@@@@@@@@@@@@@@@@@@')
         values[this.name] = this.value;
         updateProcedure({
-          ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,attrValues:semafor.attrValues,
+          ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters, attrValues: semafor.attrValues,
           flags: { buildValues: true, updateInputs: true, updateStates: true }
         });
       });
@@ -284,7 +286,7 @@ export async function generateForm(
 
     console.log('select 4 @@@@@@@@@@@@@@@@@@@@@@@@@')
     updateProcedure({
-      ...COMMON_PARAMS, options, name: paramName, value: valueToUpdate, tagName: 'BUTTON', filters, attrValues:semafor.attrValues,
+      ...COMMON_PARAMS, options, name: paramName, value: valueToUpdate, tagName: 'BUTTON', filters, attrValues: semafor.attrValues,
       flags: { resetDeps: true, buildValues: true, updateInputs: true, updateStates: true }
     });
   };
@@ -294,7 +296,7 @@ export async function generateForm(
 
 export function updateProcedure({
   params, inputs, values, displayValues, allOptionsByParameter, options, name, value, groupNumber,
-  tagName, filters, calculatedParams, flags = {},attrValues={}
+  tagName, filters, calculatedParams, flags = {}, attrValues = {}
 }) {
   const {
     resetDeps = false,
@@ -304,7 +306,7 @@ export function updateProcedure({
     updateStates = false,
     percent = false
   } = flags;
-
+  startSpin()
   for (let [param, input] of Object.entries(calculatedParams)) {
 
     values[param] = input.value
@@ -321,8 +323,8 @@ export function updateProcedure({
   // console.log('displayValues po setListRow', displayValues)
   // console.log('displayValues wejscie', allOptionsByParameter, value, name, displayValues, tagName)
   // problem z resetowaniem sterowania jest w updateFieldInputs
-  
-  if (updateInputs) updateFieldInputs(params, inputs, values, displayValues, allOptionsByParameter, options, name, value, tagName, filters,attrValues);
+
+  if (updateInputs) updateFieldInputs(params, inputs, values, displayValues, allOptionsByParameter, options, name, value, tagName, filters, attrValues);
 
   if (validate) validateFormInput(values, inputs[name]);
 
@@ -336,8 +338,9 @@ export function updateProcedure({
 
   values = clearDisabledValues(values, displayValues)
   hideParams(params, inputs)
-
-  // console.log('displayValues po hideLocked', displayValues)
+  console.log(window.formulaContext, 'window.formulaContext')
+  console.log('displayValues po hideLocked', displayValues)
+  stopSpin()
 }
 
 export function buildCommentSpace(destinationNode, comment = '') {

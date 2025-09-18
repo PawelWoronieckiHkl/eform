@@ -18,7 +18,7 @@ import { validate } from './base.js'
 
 const asortmentGroupSelect = document.getElementById("asortment-group-select");
 const departmentSelect = document.getElementById("department-select");
-
+let sentState = false;
 function initialize() {
 	console.log('initialize')
 	window.formsManager = new FormsManager();
@@ -152,7 +152,11 @@ function setupShowButton(inputs, values, valuesToDisplay, orderId, comment, vers
 			showToast('error', t("form.incorrect_data"));
 			return;
 		}
-		await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
+		if (!sentState) {
+			await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
+			sentState = true;
+		}
+
 	};
 }
 

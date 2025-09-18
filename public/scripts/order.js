@@ -58,7 +58,9 @@ const duplicateBtns = document.querySelectorAll('.duplicate-btn')
 duplicateBtns.forEach((btn) => {
 
   btn.addEventListener('click', async () => {
-    createDuplicateDiag(btn)
+    // createDuplicateDiag(btn)
+    await duplicate(btn)
+
   })
 });
 
@@ -123,7 +125,7 @@ function buildAndShowDialog(btn) {
     buttons: [
       {
         label: `${t('orders.abort')}`,
-        action: () => console.log("Anulowano"),
+        action: () => dialog.close(),
         className: "btn btn-secondary me-1",
         id: "cancel-btn"
       },
