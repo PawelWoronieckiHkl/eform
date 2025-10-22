@@ -1,0 +1,28 @@
+/* Desktop new-order styling */
+
+/* Ensure proper textarea layout on desktop - keep label and textarea in same row */
+.row.mb-3.align-items-center {
+    display: flex;
+    align-items: center;
+}
+
+/* Remove extra left margin from textarea container on desktop */
+@media (min-width: 768px) {
+    .col-md-9.ms-2 {
+        margin-left: 0 !important;
+    }
+}
+
+/* Textarea should align properly with other form elements */
+textarea.form-control {
+    width: 100%;
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Character counter styling */
+small#charCount {
+    color: #6c757d;
+    font-size: 0.875rem;
+}

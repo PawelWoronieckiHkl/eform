@@ -18,7 +18,10 @@ import { validate } from './base.js'
 
 const asortmentGroupSelect = document.getElementById("asortment-group-select");
 const departmentSelect = document.getElementById("department-select");
+const formContainer = document.getElementById("dynamic-form");
 let sentState = false;
+let isPreparingForm = false; // Flag to prevent duplicate calls
+
 function initialize() {
 	console.log('initialize')
 	window.formsManager = new FormsManager();
@@ -38,24 +41,25 @@ async function loadJsonConfig() {
 	console.log('loadJsonConfig')
 	const departments = await fetchDepartments();
 	const { asortmentGroupSelect, departmentSelect } = buildMainSelect(departments);
-	setupMainSelectListener(asortmentGroupSelect, departmentSelect);
-
 }
 
-export function buildMainSelect(files) {
+export async function buildMainSelect(files) {
 	const inputContainer = document.querySelector(".asortment-inputs");
 	createChecboxField(inputContainer);
 
 	departmentSelect.innerHTML = `<option value="" disabled selected>${t("form.department_label")}</option>`;
 	// console.log('buildMainSelect', files)
 	for (let department of files) {
-		createElement("option", { value: department.num, text: department.description }, departmentSelect);
+		const groups = await window.formsManager.getGroups(department.num);
+		if (groups.length > 0) {
+			createElement("option", { value: department.num, text: department.description }, departmentSelect);
+		}
 	}
 
 	departmentSelect.addEventListener("change", async () => {
+		formContainer.innerHTML = "";
 		const selectedDepartment = departmentSelect.value;
 		await buildGroupSelect(selectedDepartment, asortmentGroupSelect);
-
 	});
 
 	return { asortmentGroupSelect, departmentSelect };
@@ -63,7 +67,7 @@ export function buildMainSelect(files) {
 
 
 async function buildGroupSelect(selectedDepartment, asortmentGroupSelect) {
-	const groups = await formsManager.getGroups(selectedDepartment);
+	const groups = await window.formsManager.getGroups(selectedDepartment);
 
 	asortmentGroupSelect.innerHTML = `<option value="" disabled selected>${t("form.group_label")}</option>`;
 
@@ -74,52 +78,72 @@ async function buildGroupSelect(selectedDepartment, asortmentGroupSelect) {
 			text: group.description
 		}, asortmentGroupSelect);
 
-
 		if (groups.length === 1) {
 			option.selected = true;
 			await prepareForm(group.code, selectedDepartment);
 		}
-
 	}
+
+	// Dodaj listener dla wyboru grupy
+	asortmentGroupSelect.addEventListener("change", async () => {
+		await prepareForm(asortmentGroupSelect.value, selectedDepartment);
+	});
 
 	return asortmentGroupSelect;
 }
 
 async function fetchDepartments() {
 	console.log('fetchDepartments')
-	const departments = await formsManager.getAvailableForms();
+	const departments = await window.formsManager.getAvailableForms();
 	return departments;
 }
 
-function saveChoiceToLocalStorage(department, group) {
+function saveChoiceToLocalStorage() {
 	console.log('saveChoiceToLocalStorage')
 	const choice = {
-		department: department,
-		group: group
+		department: departmentSelect.value,
+		group: asortmentGroupSelect.value
 	};
 	localStorage.setItem("lastChoice", JSON.stringify(choice));
 }
 
 function setupMainSelectListener(asortmentGroupSelect, departmentSelect) {
-	console.log('setupMainSelectListener')
-	asortmentGroupSelect.addEventListener("input", async () => {
-		await prepareForm(asortmentGroupSelect.value,
-			departmentSelect.value)
-	})
-};
+	console.log('setupMainSelectListener');
+	if (!departmentSelect || !asortmentGroupSelect) return;
+
+	departmentSelect.addEventListener("change", async () => {
+		// Clear the dynamic form container when department changes
+		formContainer.innerHTML = "";
+		const selectedDepartment = departmentSelect.value;
+		await buildGroupSelect(selectedDepartment, asortmentGroupSelect);
+	});
+
+	asortmentGroupSelect.addEventListener("change", async () => {
+		await prepareForm(asortmentGroupSelect.value, departmentSelect.value);
+	});
+}
+
 
 async function prepareForm(asortmentGroup, department) {
+	if (isPreparingForm) {
+		console.warn("prepareForm is already in progress. Skipping duplicate call.");
+		return;
+	}
 
-	formsManager.setCurrentRootPath(asortmentGroup);
-	formsManager.setCurrentGroup(asortmentGroup);
-	saveChoiceToLocalStorage(department, asortmentGroup);
-	const groupNumber = asortmentGroup
-	let version = await getAppVersion(groupNumber)
-	showOrderReminder();
+	isPreparingForm = true; // Set the flag
+
 	try {
+		window.formsManager.setCurrentRootPath(asortmentGroup);
+		window.formsManager.setCurrentGroup(asortmentGroup);
+		saveChoiceToLocalStorage();
+		const groupNumber = asortmentGroup;
+		let version = await getAppVersion(groupNumber);
+		showOrderReminder();
 		await buildDynamicForm(version, groupNumber);
 	} catch (err) {
 		handleFormLoadError(err);
+	} finally {
+		isPreparingForm = false; // Reset the flag
 	}
 }
 function showOrderReminder() {
@@ -132,7 +156,7 @@ async function buildDynamicForm(version, groupNumber) {
 	console.log('buildDynamicForm')
 
 	showVersion(version)
-	const formContainer = document.getElementById("dynamic-form");
+
 	const [inputs, values, valuesToDisplay] = await generateForm(version, groupNumber);
 
 	const orderId = document.getElementById('orderId').textContent;
@@ -299,7 +323,7 @@ async function handleImagePreviewClick(e) {
 async function resumeForm(choice) {
 	const depSelect = document.getElementById("department-select");
 	const asortSelect = document.getElementById("asortment-group-select");
-	await formsManager.getAvailableForms();
+	await window.formsManager.getAvailableForms();
 	depSelect.value = choice.department;
 	await buildGroupSelect(choice.department, asortSelect);
 	asortSelect.value = choice.group;
@@ -325,13 +349,80 @@ async function getAppVersion(groupNumber) {
 }
 
 async function refreshFormBehaviour() {
+
 	const lastCommission = localStorage.getItem('commission');
+
 	processCommissionInput(lastCommission)
 
 	let lastConfig = JSON.parse(localStorage.getItem('lastChoice'))
-
-	await resumeForm(lastConfig);
+	console.log('lastConfig', lastConfig)
+	setTimeout(async () => {
+		await resumeForm(lastConfig);
+	}, 1500);
 }
 
+// Mobile filter controls collapsible functionality
+function initMobileFilterControls() {
+	// Obserwator dla dodawanych filtrów
+	const observer = new MutationObserver((mutations) => {
+		mutations.forEach((mutation) => {
+			mutation.addedNodes.forEach((node) => {
+				if (node.nodeType === 1 && node.classList && node.classList.contains('filter-controls')) {
+					setupCollapsibleFilter(node);
+				}
+			});
+		});
+	});
+
+	// Obserwuj zmiany w dokumencie
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true
+	});
+
+	// Sprawdź istniejące filtry
+	document.querySelectorAll('.filter-controls').forEach(setupCollapsibleFilter);
+}
+
+function setupCollapsibleFilter(filterElement) {
+	if (filterElement.hasAttribute('data-mobile-setup')) return;
+	filterElement.setAttribute('data-mobile-setup', 'true');
+
+	// Dodaj header z przyciskiem toggle
+	const header = document.createElement('div');
+	header.className = 'filter-controls-header';
+	header.innerHTML = `
+		<span class="filter-controls-title">Filtry</span>
+		<span class="filter-controls-toggle">▼</span>
+	`;
+
+	// Przenieś zawartość do content
+	const content = document.createElement('div');
+	content.className = 'filter-controls-content';
+	while (filterElement.firstChild) {
+		content.appendChild(filterElement.firstChild);
+	}
+
+	// Dodaj header i content
+	filterElement.appendChild(header);
+	filterElement.appendChild(content);
+
+	// Ustaw domyślnie zwinięte
+	filterElement.classList.add('collapsed');
+
+	// Obsługa kliknięcia
+	header.addEventListener('click', () => {
+		if (filterElement.classList.contains('collapsed')) {
+			filterElement.classList.remove('collapsed');
+			filterElement.classList.add('expanded');
+		} else {
+			filterElement.classList.remove('expanded');
+			filterElement.classList.add('collapsed');
+		}
+	});
+}
+
+// Inicjalizuj po załadowaniu
+document.addEventListener('DOMContentLoaded', initMobileFilterControls);
 
 initialize();

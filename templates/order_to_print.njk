@@ -1,71 +1,281 @@
 {% block title %}{% endblock title %}
 
 {% block head %}
-  <link rel="stylesheet" href="/styles/order_details.css">
-  <link rel="stylesheet" href="/styles/mobile/order_details.css">
-  <link rel="stylesheet" href="/styles/dialog.css">
-  <link rel="stylesheet" href="/styles/mobile/dialog.css">
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    .logo {
-      width: 400px;
-      margin-top: 60px;
-      margin-left: 60px;
+    .order-print {
+      font-family: 'Segoe UI', 'DejaVu Sans', Arial, 'Liberation Sans', sans-serif;
+      padding: 0;
+      margin: 0;
+    }
+    .margin {
+      height: 10px !important;
+      /* Odstęp między wierszami tabeli */
+    }
+    .print-logo {
+      width: 200px;
+      margin: 0;
+      display: block;
+    }
 
+    .print-header {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin: 0 0 10px;
+      padding: 0;
+    }
+
+    .print-header-subtitle {
+      font-size: 16px;
+      text-align: center;
+      margin: 0 0 5px;
+    }
+
+    .print-header-comment {
+      text-align: center;
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    .print-table-container {
+      margin-bottom: 40px !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #000;
+      font-size: 14px;
+      margin-bottom: 20px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .print-table td,
+    .print-table th {
+      border: 1px solid #000;
+      padding: 4px 6px;
+      text-align: left;
+      vertical-align: top;
+      word-break: normal;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .print-table th {
+      background-color: #e0e0e0;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .print-table td {
+      font-size: 14px;
+    }
+
+    /* Zapobieganie dzieleniu wierszy na stronie */
+    .print-table tr {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Grupowanie wierszy pozycji razem (główny wiersz + ceny) */
+    .print-table tbody tr:not(.print-price-row) {
+      page-break-after: avoid;
+    }
+
+    .print-price-row td {
+      background-color: #f5f5f5;
+      font-size: 14px;
+      padding: 2px 4px 10px !important;
+    }
+    .print-price {
+      padding-bottom: 10px !important;
+      font-size: 14px;
+    }
+
+    .print-price-label {
+      font-weight: bold;
+      margin-right: 3px;
+    }
+    .print-hidden-price {
+      background-color: #b7b8a8ff !important;
+      font-size: 14px !important;
+      padding-bottom: 10px !important;
+
+    }
+    .print-total-price {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 20px;
+      padding: 10px;
+    }
+
+    /* Usuń marginesy Bootstrap */
+    .mb-4,
+    .p-4,
+    .position-relative {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .d-flex {
+      display: flex;
+    }
+
+    .justify-content-end {
+      justify-content: flex-end;
+    }
+
+    .align-items-center {
+      align-items: center;
+    }
+
+    /* Reguły page-break dla PDF */
+    @media print {
+      .print-table-container {
+        page-break-inside: avoid !important;
+      }
+
+      .print-table {
+        page-break-inside: avoid !important;
+      }
+
+      .print-table tr {
+        page-break-inside: avoid !important;
+      }
     }
   </style>
 {% endblock head %}
 
-<div class="position-relative  mb-4">
-  <img alt="logo " class="logo">
-  <h2 class="fw-bold header text-center p-4">
-    {{ __('order.title') }}
-    {{ orderDetails.id }}
-    <br/>
-
-    {% if orderDetails.commision %}
-      <h2 style="text-align: center; margin: 20px 0">"{{ orderDetails.commision }}"</h2>
+<div class="order-print">
+  <div class="position-relative mb-4">
+    <!-- Debug: logoPath = {{ logoPath }} -->
+    {% if logoPath %}
+      <img alt="logo" class="print-logo" src="{{ logoPath }}">
+    {% else %}
+      <img alt="logo" class="print-logo" src="/img/logo.png">
     {% endif %}
-
+    <h2 class="fw-bold print-header text-center p-4">
+      {{ __('order.title') }}
+      {{ orderDetails.order_idx}}
+    </h2>
+    {% if orderDetails.commision %}
+      <h2 class="print-header-subtitle">"{{ orderDetails.commision }}"</h2>
+    {% endif %}
     {% if orderDetails.comment %}
-      <div style="text-align: center; margin-bottom: 30px">
+      <div class="print-header-comment">
         <strong>{{ __('order.comment') }}:</strong>
         {{ orderDetails.comment }}
       </div>
     {% endif %}
-    {% set globalIndex = 1 %}
-    {% for table in cleanOrderItems %}
-      <table style="width: 100%; margin-left:40px; border-collapse: collapse; margin-bottom: 40px; page-break-inside: avoid">
-        <thead style='background-color:rgb(209, 209, 209);;'>
+  </div>
+
+  {% set globalIndex = 1 %}
+  {% for table in cleanOrderItems %}
+    <div class="print-table-container">
+      <table class="print-table table align-left table-bordered">
+        <thead>
           <tr>
-            <th style="border: 1px solid #000; padding: 8px; text-align: left; white-space: nowrap">#</th>
-            <th style="border: 1px solid #000; padding: 8px; text-align: left; white-space: nowrap">{{ __('order.name') }}</th>
-            {% for header in table.headers %}
-              <th style="border: 1px solid #000; padding: 8px; text-align: left; white-space: nowrap; min-width: 120px">{{ header }}</th>
+            <th>#</th>
+
+            {% for header in table.headers1 %}
+              {% if not(header in table.locked) %}
+                <th class="print-th-field">{{ header }}</th>
+              {% endif %}
             {% endfor %}
-            <th style="border: 1px solid #000; padding: 8px; text-align: left; white-space: nowrap">{{ __('order.comment') }}</th>
+            <th>{{ __('order.department') }}</th>
+            <th>{{ __('order.group_name') }}</th>
+            <th>{{ __('order.name') }}</th>
+            <th>{{ __('order.comment') }}</th>
           </tr>
         </thead>
         <tbody>
-
           {% for rowObj in table.rows %}
             <tr>
-              <td style="border: 1px solid #000; padding: 8px">{{ globalIndex }}</td>
-              <td style="border: 1px solid #000; padding: 8px">{{ rowObj.item.commision or "-" }}</td>
-              {% for header in table.headers %}
-                <td style="border: 1px solid #000; padding: 8px; white-space: nowrap">{{ rowObj.row[header] or '-' }}</td>
+              <td>{{ globalIndex }}</td>
+
+              {% for header in table.headers1 %}
+                {% if not(header in rowObj.item.lockedParams) %}
+                  {% block values_representation %}
+                    <td class="print-td-val">{{ rowObj.row.row1[header] or '-' }}</td>
+                  {% endblock %}
+                {% endif %}
               {% endfor %}
-              <td style="border: 1px solid #000; padding: 8px">{{ rowObj.item.comment or "-" }}</td>
+              <td>{{ rowObj.item.department or '-' }}</td>
+              <td>{{ rowObj.item.group_name or '-' }}</td>
+              <td>{{ rowObj.item.commision or '-' }}</td>
+              <td>{{ rowObj.item.comment or '-' }}</td>
+
             </tr>
-            {% set globalIndex  = globalIndex  + 1 %}
+            <tr class="print-price-row">
+              {% for header in table.headers2 %}
+                {% if not(header in rowObj.item.lockedParams) %}
+                  <td class="print-price" colspan="2">
+                    <span class="print-price-label">{{ header }}:</span>
+                    <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                  </td>
+                {% endif %}
+              {% endfor %}
+            </tr>
+            {% if prices %}
+              <tr class="print-price-row">
+                {% for header in table.headers1 %}
+                  {% if header in rowObj.item.lockedParams %}
+                    <td class="print-price" colspan="2">
+                      <span class="print-price-label">{{ header }}:</span>
+                      <b>{{ rowObj.row.row1[header] or rowObj.row.row2[header] or '-' }}</b>
+                    </td>
+                  {% endif %}
+                {% endfor %}
+                {% for header in table.headers2 %}
+                  {% if header in rowObj.item.lockedParams %}
+                    <td class="print-hidden-price" colspan="2">
+                      <span class="print-price-label">{{ header }}:</span>
+                      <b>{{ rowObj.row.row1[header] or rowObj.row.row2[header] or '-' }}</b>
+                    </td>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            {% endif %}
+            {% set globalIndex = globalIndex + 1 %}
           {% endfor %}
         </tbody>
       </table>
-    {% endfor %}
-  </div>
-  {% block scripts %}
-    <script type='module' src='/scripts/base.js'></script>
-  {% endblock %}
+    </div>
+  {% endfor %}
+
+  {% if total %}
+    <div id="print-total-container">
+      <div class="print-total-price d-flex justify-content-end align-items-center">
+        {% for key, value in total %}
+          {% if value.locked == false %}
+            <span class="print-price-label">{{ key }}:
+              {{ value.price.toFixed(2) }}
+              &#8364;</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% if prices %}
+        <div class="print-total-price d-flex justify-content-end align-items-center">
+          {% for key, value in total %}
+            {% if value.locked %}
+              <span class="print-price-label">{{ key }}:
+                {{ value.price.toFixed(2) }}
+                &#8364;</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% block scripts %}
+  <script type='module' src='/scripts/base.js'></script>
+{% endblock %}

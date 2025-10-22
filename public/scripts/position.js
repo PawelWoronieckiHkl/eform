@@ -12,6 +12,7 @@ async function checkPhoto(photoName, groupNumber, folderName) {
 
 // Funkcja do aktualizacji zdjęć na stronie
 async function updatePhotoFields() {
+
   const images = document.querySelectorAll('img.param-img[data-photo-name]');
   for (const img of images) {
     const photoName = img.getAttribute('data-photo-name');

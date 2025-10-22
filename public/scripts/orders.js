@@ -144,7 +144,6 @@ function buildAndShowDialog(btn, functionName) {
 		buttons: [
 			{
 				label: `${t('orders.abort')}`,
-				action: () => console.log("Anulowano"),
 				className: "btn btn-secondary me-1",
 				id: "cancel-btn"
 			},

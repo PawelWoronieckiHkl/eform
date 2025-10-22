@@ -1,45 +1,309 @@
 @media (max-width: 767.98px) {
-    .dialog {
+    dialog {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        max-height: none !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        transform: none !important;
+        overflow-y: auto !important;
+        background: white !important;
+        z-index: 9999 !important;
+        inset: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    dialog::backdrop {
+        display: none !important;
+        background: transparent !important;
+    }
+
+    dialog[open] {
+        display: flex !important;
+        background: white !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+
+    #dialog-title {
+        padding: 20px !important;
+        font-weight: 700 !important;
+        background: white !important;
+        color: #333 !important;
+        text-align: center !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        margin: 0 !important;
+        font-size: 1.3rem !important;
+    }
+
+    #dialog-container {
+        padding: 0 !important;
+        background: white !important;
         width: 100% !important;
-        max-width: 720px;
-        margin: 0 auto;
-        border-radius: 14px;
-        overflow: hidden;
+        height: 100% !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
 
-    .dialog .dialog-title {
-        padding: 14px;
-        font-weight: 700;
-        background: transparent;
-        color: var(--text);
+    .options-scrollable {
+        overflow-y: auto !important;
+        padding: 15px !important;
+        display: flex !important;
+
+        gap: 15px !important;
+        flex: 1 !important;
+        width: 100% !important;
     }
 
-    .dialog .dialog-body {
-        padding: 12px;
-        background: var(--bg);
+    .color-dialog-btn {
+        display: block !important;
+        width: 100% !important;
+        background-color: white !important;
+        color: #333 !important;
+        font-weight: 600 !important;
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 12px !important;
+        padding: 15px !important;
+        transition: background-color 0.3s, border-color 0.3s !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        text-align: left !important;
+        box-shadow: none !important;
+        margin-bottom: 10px !important;
     }
 
-    /* Extra info block inside dialog */
-    .dialog-extra-info {
-        margin-top: 10px;
+    .color-dialog-btn:hover {
+        background-color: #f8f9fa !important;
+        border-color: #007bff !important;
+        color: #007bff !important;
     }
 
-    .dialog-extra-info .extra-block {
-        background: var(--surface);
-        padding: 10px;
-        border-radius: 10px;
-        margin-bottom: 8px;
+    .diag-image {
+        width: 100% !important;
+        height: 200px !important;
+        border-radius: 12px !important;
+        object-fit: contain !important;
+        background-color: #f8f9fa !important;
+        padding: 10px !important;
+        border: 2px solid #e0e0e0 !important;
+        transition: transform 0.3s ease !important;
+        box-shadow: none !important;
     }
 
-    .dialog-extra-info .extra-title {
-        font-size: 0.75rem;
-        font-weight: 700;
-        color: var(--muted-text);
-        margin-bottom: 6px;
+    .image-box {
+        display: flex !important;
+        flex-direction: column !important;
+        position: relative !important;
+        width: 100% !important;
+        margin-bottom: 10px !important;
     }
 
-    .dialog-extra-info .extra-content {
-        font-size: 0.95rem;
-        color: var(--text);
+    .image-name {
+        width: 100% !important;
+        text-decoration: none !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        color: #333 !important;
+        margin-top: 10px !important;
+        text-align: center !important;
+        padding: 0 10px !important;
+        word-wrap: break-word !important;
     }
+
+    .bottom {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        padding: 20px !important;
+        background: white !important;
+        border-top: 1px solid #e0e0e0 !important;
+        position: sticky !important;
+        bottom: 0 !important;
+        margin-top: auto !important;
+    }
+
+    .button-wrapper {
+        display: flex !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+
+
+    .btn-success {
+        background: #28a745 !important;
+        color: white !important;
+    }
+
+    .btn-secondary {
+        background: #6c757d !important;
+        color: white !important;
+    }
+
+    .btn:hover {
+        opacity: 0.9 !important;
+        transform: scale(1.02) !important;
+    }
+
+    .btn:active {
+        transform: scale(0.98) !important;
+    }
+
+
+
+
+    #preview-image {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 100vh !important;
+        object-fit: contain !important;
+        border-radius: 0 !important;
+    }
+
+    .close-dialog-btn {
+        position: absolute !important;
+        top: 15px !important;
+        right: 15px !important;
+        background: #ff4444 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.8rem !important;
+        cursor: pointer !important;
+        z-index: 10000 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+        touch-action: manipulation !important;
+    }
+
+    .close-dialog-btn:hover {
+        background: #ff6666 !important;
+        transform: scale(1.1) !important;
+    }
+
+    .close-dialog-btn:active {
+        background: #cc0000 !important;
+        transform: scale(0.95) !important;
+    }
+
+    /* Universal close button styles for any dialog */
+    dialog button[type="button"]:contains("✖"),
+    dialog button[type="button"]:contains("×"),
+    dialog .btn-close,
+    dialog .close {
+        position: absolute !important;
+        top: 15px !important;
+        right: 15px !important;
+        background: #ff4444 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.8rem !important;
+        cursor: pointer !important;
+        z-index: 10000 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+        touch-action: manipulation !important;
+    }
+
+    #additional-info {
+        padding: 20px !important;
+        width: 100% !important;
+        background: white !important;
+    }
+
+.button-wrapper {
+    margin: 0 !important;
+}
+
+
+
+/* Filter controls - collapsible */
+.filter-controls {
+    background: white !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 12px !important;
+    margin: 15px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.filter-controls.collapsed {
+    max-height: 60px !important;
+}
+
+.filter-controls.expanded {
+    max-height: 400px !important;
+}
+
+.filter-controls-header {
+    background: #f8f9fa !important;
+    padding: 15px 20px !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    user-select: none !important;
+}
+
+.filter-controls-header:hover {
+    background: #e9ecef !important;
+}
+
+.filter-controls-title {
+    font-weight: 600 !important;
+    color: #333 !important;
+    font-size: 1.1rem !important;
+}
+
+.filter-controls-toggle {
+    font-size: 1.2rem !important;
+    color: #666 !important;
+    transition: transform 0.3s ease !important;
+}
+
+.filter-controls.expanded .filter-controls-toggle {
+    transform: rotate(180deg) !important;
+}
+
+.filter-controls-content {
+    padding: 15px !important;
+    display: none !important;
+}
+
+.filter-controls.expanded .filter-controls-content {
+    display: block !important;
+}
+#sortOptions{
+    margin-right: 15px !important;
+}
 }

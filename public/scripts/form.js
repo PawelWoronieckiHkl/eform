@@ -13,7 +13,9 @@ import {
   setDescription,
   fillFields,
   setWar,
-  setListRow
+  fillInputDescription,
+  setListRow,
+  checkIfOptionsExist
 } from "./formTools/formTools.js";
 import { validateAllFieldsOnSubmit, clearDisabledValues } from "./formTools/validateUtils.js";
 import { SourceWindow } from './formTools/slope.js';
@@ -24,6 +26,7 @@ import { AttrLoader } from "./formTools/storage.js";
 import { Translator } from "./formTools/fileTranslator.js"
 import { stopSpin, startSpin } from "./components/hourglass.js";
 
+
 export async function generateForm(
   version = null,
   groupNumber = full,
@@ -33,6 +36,7 @@ export async function generateForm(
   editFlag = false
 
 ) {
+  window.skipCountParams = [];
   window.editFlag = editFlag
   window.inputsValidators = {};
   window.inputsDefaults = {}
@@ -57,6 +61,7 @@ export async function generateForm(
   const filters = loader.getAllFilters();
   const calculatedParams = {};
   if (!data) return;
+
   allOptionsByParameter = await loader.selectCollections(allOptionsByParameter)
 
   data.params = await loader.selectPrices(data.params)
@@ -93,8 +98,8 @@ export async function generateForm(
 
     if (param.SOURCE == param.NAME) {
       param.modal = new SourceWindow(1, (sourceValues) => {
-        // 1. Przepisz do values
-        values[param.NAME] = sourceValues;
+        // 1. Przepisz do values - teraz z meta-polami z rzeczywistym stanem visibility
+        values[param.NAME] = param.modal.processSourceValues();
 
         // 2. Uaktualnij displayValues dla całego obiektu sourceWindow
         buildValuesToDisplay(allOptionsByParameter, sourceValues, param.NAME, displayValues, 'BUTTON');
@@ -133,14 +138,22 @@ export async function generateForm(
       try {
         await param.modal.init(param.SOURCE, param);
 
+        // W trybie edycji, jeśli mamy już wartości, ustaw je w source window
+        if (editFlag && values[param.NAME]) {
+          // Przepisz istniejące wartości do sourceValues w modal
+          Object.assign(param.modal.sourceValues, values[param.NAME]);
+
+          // Ustaw TYP jeśli istnieje
+          if (values[param.NAME].TYP) {
+            param.modal.setTyp(values[param.NAME].TYP);
+          }
+        }
+
         input = createInputField(param, options, groupNumber, filters, allOptionsByParameter[param.NAME], values);
       } catch (err) {
         console.error(err);
         return;
       }
-
-
-
     }
 
     else {
@@ -163,7 +176,7 @@ export async function generateForm(
 
     if (!editFlag) {
       if (param?.DEFAULT != '<NULL>' && param.DEFAULT) {
-        if (param.TYPE === "numeric") {
+        if (param.TYPE === "numeric" || !isNaN(param.DEFAULT)) {
           values[param.NAME] = parseInt(param.DEFAULT);
         }
         else {
@@ -174,15 +187,24 @@ export async function generateForm(
       } else {
         values[param.NAME] = "";
       }
-      values[param.NAME + '___DESCRIPTION'] = "";
-      values[param.NAME + '_ALIAS'] = "";
-    } else {
+      if (!isSource(param)) {
+        values[param.NAME + '___DESCRIPTION'] = "";
+        values[param.NAME + '_ALIAS'] = "";
+        values[param.NAME + '_ALIAS___DESCRIPTION'] = "";
+      } else {
+        // Dla parametrów SOURCE ustaw główne meta-pola
+        values[param.NAME + '___DESCRIPTION'] = "";
+        values[param.NAME + '_ALIAS'] = "";
+        values[param.NAME + '_ALIAS___DESCRIPTION'] = "";
+      }
+    }
+    else {
       // tryb edycji (jeśli potrzebny)
     }
 
-    if (param.SOURCE == param.NAME) {
-      values[param.NAME] = param.modal.getObject();
-
+    if (isSource(param)) {
+      // Wartości już ustawione wyżej w trybie edycji - teraz z meta-polami z rzeczywistym stanem visibility
+      values[param.NAME] = param.modal.processSourceValues();
     }
     else if (param.SCRIPTS != "<NULL>" || param.FORMULA != "<NULL>") {
       calculatedParams[param.NAME] = input;
@@ -191,11 +213,15 @@ export async function generateForm(
         input.value = 0
       } else {
         input.value = values[param.NAME]
+      }
 
-
+    }
+    if (editFlag) {
+      // Jeśli to nie jest SOURCE param, ustaw zwykłe wartości
+      if (param.SOURCE != param.NAME) {
+        // zwykłe obsłużenie dla innych typów parametrów
       }
     }
-
     labelNumber++;
     if (input.tagName === "INPUT") {
       inputFlags[paramName] = false;
@@ -224,7 +250,10 @@ export async function generateForm(
       }
 
     }
-
+    // Dla parametrów nie-SOURCE sprawdź opcje słownikowe
+    if (!isSource(param)) {
+      values = checkIfOptionsExist(allOptionsByParameter, param.NAME, values);
+    }
   }
 
 
@@ -270,21 +299,25 @@ export async function generateForm(
     }
 
   }
+  // console.log('przed onclick', values)
+  document.getElementById('dialog-confirm').onclick = async () => {
 
-  document.getElementById('dialog-confirm').onclick = () => {
-    let valueToUpdate = ''
-    let [selectedValue, paramName] = getInfoFromDialog(values, inputs, allOptionsByParameter);
+    let valueToUpdate = '';
+    // console.log('przed oknem dialogowym', values)
+    let [selectedValue, paramName] = await getInfoFromDialog(values, inputs, allOptionsByParameter);
+
+    values = setDescription(values, selectedValue, allOptionsByParameter, paramName)
     values[paramName] = selectedValue;
 
     if (selectedValue.includes('|') && params[paramName]?.MULTI) {
-
       valueToUpdate = (selectedValue.split("|"))[0];
-    }
-    else {
-      valueToUpdate = selectedValue
+    } else {
+      valueToUpdate = selectedValue;
     }
 
-    console.log('select 4 @@@@@@@@@@@@@@@@@@@@@@@@@')
+    // console.log(`Wartość do aktualizacji: ${valueToUpdate}`);
+    // console.log(`Wartości po aktualizacji:`, values);
+
     updateProcedure({
       ...COMMON_PARAMS, options, name: paramName, value: valueToUpdate, tagName: 'BUTTON', filters, attrValues: semafor.attrValues,
       flags: { resetDeps: true, buildValues: true, updateInputs: true, updateStates: true }
@@ -306,14 +339,15 @@ export function updateProcedure({
     updateStates = false,
     percent = false
   } = flags;
+
   startSpin()
   for (let [param, input] of Object.entries(calculatedParams)) {
 
     values[param] = input.value
   }
 
-  setDescription(values, value, allOptionsByParameter, name)
-
+  values = setDescription(values, value, allOptionsByParameter, name)
+  // console.log(values, 'po setDescription')
   if (percent) values = convertIntoPercent(values, name, value, inputs, params)
 
   displayValues = hideLocked(inputs, displayValues)
@@ -328,7 +362,8 @@ export function updateProcedure({
 
   if (validate) validateFormInput(values, inputs[name]);
 
-  if (updateStates) updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter);
+  values = setDescription(values, value, allOptionsByParameter, name)
+  if (updateStates) updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value);
 
   window.checkedParams = findParamFromValues(values, allOptionsByParameter);
 
@@ -336,18 +371,33 @@ export function updateProcedure({
   if (resetDeps) resetDependences([params, displayValues], name, inputs, values, allOptionsByParameter);
 
 
-  values = clearDisabledValues(values, displayValues)
+  ({ values, displayValues } = clearDisabledValues(values, displayValues))
+
   hideParams(params, inputs)
-  console.log(window.formulaContext, 'window.formulaContext')
-  console.log('displayValues po hideLocked', displayValues)
+
+  fillInputDescription(inputs, params, values, allOptionsByParameter)
   stopSpin()
+
+  // values = setDescription(values, value, allOptionsByParameter, name)
+  console.log('values po updateProcedure', values)
+}
+
+export function isSource(param) {
+  return param.SOURCE == param.NAME;
 }
 
 export function buildCommentSpace(destinationNode, comment = '') {
+  const showCommentButton = createElement('button', {
+    type: 'button',
+    text: `${t('form.add_comment_button')}`,
+    id: 'show-comment-button',
+    class: ['btn', 'btn-link'],
+  }, document.getElementById('buttons-space'))
+
   const MAX_LENGTH = 250;
 
   // Kontener na komentarz
-  const commentDiv = createElement('div', { class: ['comment-space', 'col-12'] }, destinationNode);
+  const commentDiv = createElement('div', { class: ['comment-space', 'col-12', 'd-none'] }, destinationNode);
 
   // Etykieta
   createElement('label', {
@@ -374,6 +424,16 @@ export function buildCommentSpace(destinationNode, comment = '') {
   // Obsługa zdarzenia input
   textarea.addEventListener('input', function () {
     counter.innerHTML = `${this.value.length}/${MAX_LENGTH}`;
+  });
+
+  showCommentButton.addEventListener('click', () => {
+    if (commentDiv.classList.contains('d-none')) {
+      commentDiv.classList.remove('d-none');
+      showCommentButton.textContent = `${t('form.hide_comment_button')}`;
+    } else {
+      commentDiv.classList.add('d-none');
+      showCommentButton.textContent = `${t('form.add_comment_button')}`;
+    }
   });
 
   return textarea;

@@ -5,7 +5,7 @@
 {% endblock order_title %}
 
 {% block commision_input %}
-  <input type="text" class="form-control validate" id="commission-input" value='{{orderData.commision}}' placeholder="{{__('edit_order.order_name_placeholder') }}"/>
+  <input type="text" class="form-control validate" maxlength="60" id="commission-input" value='{{orderData.commision}}' placeholder="{{__('edit_order.order_name_placeholder') }}"/>
 {% endblock commision_input %}
 address_id
 {% block checkbox_label %}
@@ -76,8 +76,9 @@ address_id
 {% endblock send_country_input %}
 
 {% block comment_input %}
-  <textarea type="text" class="form-control" id="comment" placeholder="{{__('edit_order.comment_placeholder') }}" cols="40" rows="5">
+  <textarea type="text" class="form-control" id="comment" placeholder="{{__('edit_order.comment_placeholder') }}" cols="40" rows="5" maxlength="250">
     {{orderData.comment}}</textarea>
+    <small id="charCount">0/250</small>
 {% endblock comment_input %}
 {% block sendBbtn %}
   <button class="btn btn-outline-secondary p-2 col-3" id="update-order" type="button" data-id="{{orderData.id}}">{{__('edit_order.save_button') }}</button>

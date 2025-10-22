@@ -1,26 +1,20 @@
 const db = require("../db/db_helper.js");
 
 function requireLogin(req, res, next) {
-  // Check session existence
-  if (!req.session) {
-    console.warn('Brak sesji w request');
+  if (!req.session.user) {
     return res.redirect("/user/login");
   }
-  // Check user object
-  if (!req.session.user || typeof req.session.user !== 'object') {
-    console.warn('Brak usera w sesji lub user nie jest obiektem');
-    return res.redirect("/user/login");
-  }
-  // Check userId presence and validity
-
   next();
 }
 
 
 function requirePermission(req, res, next) {
+  if (req.session.user?.isOwner) {
+    return next(); // Owners have all permissions
+  }
   const sessionShow = req.session.user?.showPrices;
-  const paramShow = req.session.user?.showPricesOnce ?? false; 
-console.log('sessionShow', sessionShow, 'paramShow', paramShow, "REQUIRE PERMISSION");
+  const paramShow = req.session.user?.showPricesOnce ?? false;
+  console.log('sessionShow', sessionShow, 'paramShow', paramShow, "REQUIRE PERMISSION");
   if (!sessionShow && !paramShow) {
     return res.redirect("/user/no-permission");
   }
@@ -30,13 +24,18 @@ console.log('sessionShow', sessionShow, 'paramShow', paramShow, "REQUIRE PERMISS
 
 async function checkOrderOwnership(req, res, next) {
   try {
+    if (req.session.user?.isOwner) {
+      return next(); // Owners have all permissions
+    }
+
     const userId = req.session.user?.userId;
     const orderId = req.params.orderId;
-
+    console.log(userId, orderId, 'in checkOrderOwnership middleware');
     if (!userId) {
       return res.redirect('/user/no-permission');
     }
     const order = await db.checkOwner(orderId, userId);
+    console.log(order, 'order ownership check result');
     if (!order) {
       return res.redirect('/user/no-permission');
     }
@@ -48,4 +47,34 @@ async function checkOrderOwnership(req, res, next) {
     next(err);
   }
 }
-module.exports = { requireLogin,requirePermission,checkOrderOwnership};
+
+async function isOwner(owner) {
+  try {
+    if (owner) {
+      console.warn("Missing identifiers: ident or ownerIdent");
+    }
+    console.log(owner, 'in isOwner function');
+    if (owner.orgIdent.toUpperCase() == owner.userIdent.toUpperCase()) {
+
+      return true;
+    } else {
+
+      return false;
+    }
+  } catch (error) {
+    console.error("Error in isOwner function:", error);
+    return false;
+  }
+}
+
+function requireOwner(req, res, next) {
+  if (!req.session.user?.isOwner) {
+    return res.status(403).json({
+      success: false,
+      message: "Access denied. Owner privileges required."
+    });
+  }
+  next();
+}
+
+module.exports = { requireLogin, requirePermission, checkOrderOwnership, isOwner, requireOwner };

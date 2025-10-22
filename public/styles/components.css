@@ -20,15 +20,6 @@
 	width: 300px;
 }
 
-.content {
-	max-width: 95%;
-	float: left;
-	margin-left: 225px;
-	min-width: 63% !important;
-	max-width: 90%;
-	float: left;
-	min-width: calc(100% - 220px) !important;
-}
 
 
 #save-btn {

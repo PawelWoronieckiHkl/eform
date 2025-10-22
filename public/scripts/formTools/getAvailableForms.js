@@ -112,29 +112,43 @@ export class FormsManager {
     }
 
     async getClientScripts() {
+        // Sprawdź czy this.groupsDetails istnieje i nie jest puste
+        if (!this.groupsDetails || !Array.isArray(this.groupsDetails)) {
+            console.warn('groupsDetails nie jest zdefiniowane lub nie jest tablicą');
+            return false;
+        }
 
-        // console.log(this.groupsDetails)
-        const groupDetails = this.groupsDetails.find(group => group.code == window.tempGroupNumber)
-        this.scriptsArr = groupDetails.param_scripts
-        let foundScripts = []
+        // Sprawdź czy window.tempGroupNumber istnieje
+        if (!window.tempGroupNumber) {
+            console.warn('window.tempGroupNumber nie jest zdefiniowane');
+            return false;
+        }
+
+        const groupDetails = this.groupsDetails.find(group => group.code == window.tempGroupNumber);
+
+        // Sprawdź czy grupa została znaleziona
+        if (!groupDetails) {
+            console.warn(`Nie znaleziono grupy z kodem: ${window.tempGroupNumber}`);
+            return false;
+        }
+
+        this.scriptsArr = groupDetails.param_scripts;
+        let foundScripts = [];
 
         if (this.scriptsArr) {
-
             foundScripts = this.scriptsArr.filter(entry =>
                 entry.organization.trim().toLowerCase() === this.clientData.orgIdent.trim().toLowerCase() &&
                 entry.client.trim().toLowerCase() === this.clientData.userIdent.trim().toLowerCase()
             );
         }
-        // console.log('jestem w skryptach3',foundScripts)
+
         if (!foundScripts.length) {
             console.warn('Brak pasujących aliasów dla:', this.clientData);
             return false;
         }
 
-
-        let path = this.currentRootPath
-        return [path, foundScripts]
-
+        let path = this.currentRootPath;
+        return [path, foundScripts];
     }
 
     async getPaths() {
@@ -159,6 +173,7 @@ export class FormsManager {
         const objects = []
         const department = this.departments.find(department => department.num === departmentNumber);
         const user = this.clientData.userIdent
+        
         for (const asortment of department.products) {
             const path = `${this.mainPath}/${asortment}/data/${this.language}/`
             const prodFilePath = `${path}${this.groupFileName}`;

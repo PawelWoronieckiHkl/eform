@@ -60,7 +60,7 @@ async function getUserMail(pin) {
 
 
 async function getOwner(pin) {
-    const query = `select o.ident as orgIdent,u.ident as userIdent from user u join organization o on u.organization_id = o.id
+    const query = `select o.ident as orgIdent, o.id as orgId, u.ident as userIdent from user u join organization o on u.organization_id = o.id
     where u.pin = ?`;
     let result = await selectQuery(query, pin)
     return result[0];
@@ -102,7 +102,28 @@ async function getUserId(pin) {
 
     return result[0].id;
 }
+async function getUserIdent(pin) {
+    const query = `SELECT ident FROM user WHERE pin LIKE ?`;
+    const result = await selectQuery(query, [pin])
 
+    return result[0].id;
+}
+
+async function getUserByIdent(ident) {
+    const query = `SELECT * FROM user WHERE ident = ?`;
+    const result = await selectQuery(query, [ident]);
+
+    if (result.length > 0) {
+        return result[0];
+    }
+    return null;
+}
+
+async function updateUserIdent(oldIdent, newIdent) {
+    const sql = `UPDATE eform.\`user\` SET ident = ? WHERE ident = ?`;
+    const result = await updateQuery(sql, [newIdent, oldIdent]);
+    return result;
+}
 async function getUserData(pin) {
     const query = `SELECT * FROM \`user\` WHERE pin LIKE ?`;
 
@@ -121,6 +142,7 @@ async function getUserData(pin) {
 async function getUsers() {
     const sql = `
         SELECT 
+            id,
             ident, 
             client_name AS name, 
             street AS address, 
@@ -202,12 +224,38 @@ async function updateUser(userPin, email = '', phone = '') {
     return result;
 }
 
+async function updateUserById(userId, updateData) {
+    const fields = [];
+    const values = [];
+
+    for (const [key, value] of Object.entries(updateData)) {
+        fields.push(`${key} = ?`);
+        values.push(value);
+    }
+
+    if (fields.length === 0) {
+        throw new Error('Brak danych do aktualizacji');
+    }
+
+    values.push(userId);
+
+    const sql = `UPDATE eform.\`user\` SET ${fields.join(', ')} WHERE id = ?`;
+    const result = await updateQuery(sql, values);
+    return result;
+}
+
 async function getUserAddresses(userId) {
 
     const query = 'select a.id,a.street,a.city,a.zip,a.country,a.phone,a.email,o.commision, o.user_id  from `order` o join order_address a on o.order_address_id  = a.id where o.user_id =?';
     const addresses = await selectQuery(query, userId);
 
     return { addresses }
+}
+
+async function updateUserOrganization(ident, organizationId) {
+    const sql = `UPDATE eform.\`user\` SET organization_id = ? WHERE ident = ?`;
+    const result = await updateQuery(sql, [organizationId, ident]);
+    return result;
 }
 
 module.exports = {
@@ -224,8 +272,13 @@ module.exports = {
     getUserId,
     getUserMail,
     updateUser,
+    updateUserById,
     getUserAddresses,
     getUserName,
     setUserAcceptedRODO,
-    uodateFirstLogonInfo
+    uodateFirstLogonInfo,
+    getUserIdent,
+    getUserByIdent,
+    updateUserIdent,
+    updateUserOrganization
 }

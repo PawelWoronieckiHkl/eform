@@ -1,0 +1,153 @@
+{% block title %}{% endblock title %}
+
+{% block head %}
+    <link rel="stylesheet" href="/styles/order-pdf.css">
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Logo wycentrowane */
+        .logo {
+            width: 300px;
+            margin: 60px auto 20px;
+            display: block;
+        }
+
+        /* Kontener główny wycentrowany - maksymalna szerokość */
+        .position-relative {
+            max-width: 99%;
+            margin: 0 auto;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        /* Header wycentrowany */
+        #header-space {
+            text-align: center;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Tabela wycentrowana - prawie pełna szerokość */
+        table#table {
+            width: 99% !important;
+            margin: 10px auto !important;
+            border-collapse: collapse !important;
+        }
+    </style>
+{% endblock head %}
+
+<div class="position-relative mb-4">
+    <img src="{{logoPath}}" alt="logo " class="logo">
+    <div id='header-space'>
+        <h2 class="fw-bold header">{{ __('history_order.title') }}{{ orderNr }}
+            {% if orderDetails.commision %}
+                "{{ orderDetails.commision }}"{% endif %}
+        </h2>
+        {% if orderDetails.comment %}
+            <div class='header' style="margin-bottom: 30px">
+                <strong>{{ __('order.comment') }}:</strong>
+                {{ orderDetails.comment }}
+            </div>
+        {% endif %}
+    </div>
+
+    {% set globalIndex = 1 %}
+    {% for table in cleanOrderItems %}
+        <table id='table' style="border-collapse: collapse; margin-bottom: 40px; page-break-inside: avoid">
+            <thead style='background-color:rgb(209, 209, 209);;'>
+                <tr>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: left; word-break: normal; overflow-wrap: break-word; hyphens: auto;">#</th>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: left; word-break: normal; overflow-wrap: break-word; hyphens: auto;">{{ __('order.department') }}</th>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: left; word-break: normal; overflow-wrap: break-word; hyphens: auto;">{{ __('order.group_name') }}</th>
+                    <th style="border: 1px solid #000; padding: 8px; text-align: left; word-break: normal; overflow-wrap: break-word; hyphens: auto;">{{ __('order.name') }}</th>
+                    {% for header in table.headers1 %}
+                        <th style="border: 1px solid #000; padding: 8px; text-align: left; word-break: normal; overflow-wrap: break-word; hyphens: auto;">{{ header }}</th>
+                    {% endfor %}
+                    <th style="border: 1px solid #000; padding: 8px; text-align: left; word-break: normal; overflow-wrap: break-word; hyphens: auto;">{{ __('order.comment') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rowObj in table.rows %}
+                    <tr>
+                        <td style="border: 1px solid #000; padding: 8px">{{ globalIndex }}</td>
+                        <td style="border: 1px solid #000; padding: 8px">{{ rowObj.item.department or '-' }}</td>
+                        <td style="border: 1px solid #000; padding: 8px">{{ rowObj.item.group_name or '-' }}</td>
+                        <td style="border: 1px solid #000; padding: 8px">{{ rowObj.item.commision | truncate(20, true, "...") or "-" }}</td>
+                        {% for header in table.headers1 %}
+                            {% if (not(header in rowObj.item.lockedParams)) %}
+                                <td style="border: 1px solid #000; padding: 8px">{{ rowObj.row.row1[header] or '-' }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td style="border: 1px solid #000; padding: 8px">{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
+                    </tr>
+                    <tr>
+                        {% set idx = 0 %}
+                        {% for header in table.headers2 %}
+                            {% if (not(header in rowObj.item.lockedParams)) %}
+                                {% if idx == 0 %}
+                                    <td class="price" colspan="1" style="border: 1px solid #000; padding: 8px"></td>
+                                {% endif %}
+                                <td class="price" colspan="2" style="border: 1px solid #000; padding: 8px">
+                                    <span class="price-label">{{ header }}:</span>
+                                    <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                                </td>
+                                {% set idx = idx + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% set globalIndex = globalIndex + 1 %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+    {% if total %}
+        <div id='total-container'>
+            <div class="total-price d-flex justify-content-end align-items-center row col-12">
+                {% for key, value in total %}
+                    {% if value.locked == false %}
+                        <span class='price-label col-3'>{{key}}:
+                            {{value.price.toFixed(2)}}
+                            &#8364;</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="total-price d-flex justify-content-end align-items-center row col-12">
+                {% for key, value in total %}
+                    {% if value.locked %}
+                        <span class='price-label gold col-3'>{{key}}:
+                            {{value.price.toFixed(2)}}
+                            &#8364;</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    <div class="order-details">
+        <h3 class='header-3'>{{ __('order.client_data') }}</h3>
+        <div class="order-details-line">{{ __('new-order.client_name') }}:
+            {{sendData.client}}</div>
+        <div class="order-details-line">{{ __('base.nip') }}:
+            {{sendData.tax}}</div>
+        <div class="order-details-line">{{ __('orders.sent_date') }}:
+            {{sendData.sendDate}}</div>
+    </div>
+    <div class="order-details">
+        <h3 class='header-3'>{{ __('order.send_data') }}</h3>
+        <div class="order-details-line">{{ __('new-order.street') }}:
+            {{sendData.address}}</div>
+        <div class="order-details-line">{{ __('new-order.city') }}:
+            {{sendData.zip}}
+            {{sendData.city}}</div>
+        <div class="order-details-line">{{ __('new-order.country') }}:
+            {{sendData.country}}</div>
+        <div class="order-details-line">{{ __('new-order.email_placeholder') }}:
+            {{sendData.email}}</div>
+        <div class="order-details-line">{{ __('new-order.phone') }}:
+            {{sendData.phone}}</div>
+    </div>
+</div>
+{% block scripts %}
+    <script type='module' src='/scripts/base.js'></script>
+{% endblock %}

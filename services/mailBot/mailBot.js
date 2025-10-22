@@ -26,7 +26,7 @@ function sendMail(to, lang, pdfBuffer, templateVars = {}) {
 
   const __ = (key) => i18n.__(key, { locale: lang });
 
-  const subject = `${__('mail.subject')} #${templateVars.orderNr} `;
+  const subject = `${__('mail.subject')} #${templateVars.orderNr} - ${templateVars.klient} `;
   nunjucks.configure(path.dirname(path.join(__dirname, 'mailTemplate.njk')), {
     autoescape: true
   });
@@ -39,7 +39,7 @@ function sendMail(to, lang, pdfBuffer, templateVars = {}) {
 
   const attachments = [
     {
-      filename: `zamowienie_${templateVars.orderNr}.pdf`,
+      filename: `${__('history_order.title')}${templateVars.orderNr}.pdf`,
       content: pdfBuffer,
       contentType: 'application/pdf'
     }

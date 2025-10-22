@@ -26,8 +26,18 @@
     margin-top: 40px;
 }
 
+.slope-image {
+    max-height: 45vh;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
 .slope-dialog img {
-    max-width: 240px;
+    max-width: 210px;
     display: block;
     margin: 16px auto;
 }
@@ -85,4 +95,10 @@
 
 .slope-form-buttons button.submit-btn:hover {
     background-color: #0056b3;
+}
+
+.modal-content {
+    max-width: 50vw;
+    max-height: 80% !important;
+
 }

@@ -34,8 +34,10 @@
 
     {% block extra_rows%}
         <td>{{ order.sent_date }}</td>
-        <td><button class='btn btn-outline-secondary w-50 copy-order-btn' data-id='{{order.id}}' onclick="event.stopPropagation()">{{ __('orders.reorder') }}</button></td>
-        
+        <td>
+            <button class='btn btn-outline-secondary w-50 copy-order-btn' data-id='{{order.id}}' onclick="event.stopPropagation()">{{ __('orders.reorder') }}</button>
+        </td>
+
     {% endblock %}
 
     {% block buttons_space %}{% endblock buttons_space %}
@@ -46,3 +48,15 @@
             <p class="lead">{{ __('orders.you_dont_have_any_sent_order_yet') }}</p>
         </div>
     {% endblock empty %}
+
+    {% block scripts %}
+        <script>
+            let orderHistoryNavBtn = document.getElementById('orders-history-nav-btn');
+            if (orderHistoryNavBtn) {
+                orderHistoryNavBtn
+                    .classList
+                    .add('active');
+            }
+        </script>
+        <script type="module" src="/scripts/orders.js"></script>
+    {% endblock scripts %}

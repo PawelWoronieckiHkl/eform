@@ -1,0 +1,4 @@
+{% extends "order_to_print.njk" %}
+{% block values_representation %}
+  <td class="print-td-val">{{ (rowObj.row.row1[header] | string).split('-')[0] }}</td>
+{% endblock %}

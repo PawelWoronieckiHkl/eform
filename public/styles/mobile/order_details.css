@@ -1,28 +1,707 @@
 @media (max-width: 767.98px) {
+
+    /* Mobile order details - white background, full height */
+    body {
+        background-color: white !important;
+    }
+
+    .content {
+        background-color: white !important;
+        padding: 1% !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Desktop generate-container już ma swoje style - tylko ukryj na mobile */
+    #generate-container.d-none.d-md-flex {
+        display: none !important;
+    }
+
+    main {
+        padding: 0 !important;
+    }
+
+    #order-nav {
+        padding: 0 !important;
+    }
+
+    /* Order navigation bar - UPORZĄDKOWANY LAYOUT */
+    #order-nav {
+        height: fit-content !important;
+        position: static !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        margin-top: 120px !important;
+        min-width: 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1) !important;
+        padding-bottom: 20px !important;
+        z-index: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+
+        overflow: hidden !important;
+    }
+
+    /* Mobile order-nav-main layout */
+    .order-nav-main {
+        display: flex !important;
+
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        gap: 15px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        flex-wrap: nowrap !important;
+        height: 100px !important;
+    }
+
+    /* Ukryj desktop order-buttons w mobile - ale nie floating-order */
+    .order-nav-main>#order-buttons.d-none.d-md-flex {
+        display: none !important;
+    }
+
+    /* Ukryj desktop generate-container w mobile */
+    .order-nav-main>#generate-container.d-none.d-md-flex {
+        display: none !important;
+    }
+
+    .desktop-nav.collapsed~.languages~main #order-nav,
+    .desktop-nav.collapsed+.languages+main #order-nav {
+        left: 0 !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        transition: none !important;
+    }
+
+    /* Top row - uporządkowane przyciski */
+    .mobile-top-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        gap: 15px !important;
+
+    }
+
+    /* Order buttons mobile - LEFT SIDE - only for visible elements */
+    #order-buttons:not(.d-none):not(.d-md-none) {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+        justify-content: flex-start !important;
+        flex-wrap: nowrap !important;
+        flex-shrink: 0 !important;
+    }
+
+    #order-buttons .btn {
+        padding: 6px !important;
+        border-radius: 8px !important;
+        font-size: 0 !important;
+        width: 62px !important;
+        height: 62px !important;
+        min-width: 62px !important;
+        max-width: 62px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+        background-color: transparent !important;
+        border: none !important;
+        overflow: visible !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.15) !important;
+    }
+
+    /* Style dla obrazków w przyciskach mobile-top-row */
+    #order-buttons .btn .ico {
+        width: 60px !important;
+        height: 60px !important;
+        object-fit: contain !important;
+        z-index: 2 !important;
+        position: relative !important;
+
+    }
+
+    #order-buttons .btn#edit-order-button .ico {
+        padding: 10% !important;
+    }
+
+    /* Ikony jako obrazki */
+    #order-buttons .btn-outline-success {
+        border-color: #28a745 !important;
+        background: white !important;
+    }
+
+    #order-buttons .btn-outline-success::before {
+        content: '' !important;
+        position: absolute !important;
+        width: 20px !important;
+        height: 20px !important;
+        background-image: url('/img/plus.png') !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        filter: hue-rotate(90deg) brightness(1.2) !important;
+    }
+
+    #order-buttons .btn-outline-secondary {
+        border-color: #6c757d !important;
+        background: white !important;
+    }
+
+    #order-buttons .btn-outline-secondary::before {
+        content: '' !important;
+        position: absolute !important;
+        width: 18px !important;
+        height: 18px !important;
+        background-image: url('/img/edit.png') !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        filter: grayscale(50%) !important;
+    }
+
+    /* Remove old icon styles */
+
+    /* Order title - UPORZĄDKOWANY LAYOUT */
+    .floating-order {
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+
+        flex-basis: auto !important;
+        flex-shrink: 0 !important;
+        background: #f8f9fa !important;
+
+
+        text-align: center !important;
+
+        order: 2 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+
+    }
+
+    /* Mobilny floating-order */
+    .floating-order.mobile {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Nadpisanie Bootstrap w-50 klasy w mobile */
+    .floating-order.w-50 {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+
+    #commission-name {
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        margin-top: 15px !important;
+        padding: 12px 18px !important;
+        display: block !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        white-space: normal !important;
+        box-shadow: 0 2px 4px rgba(0, 86, 179, 0.1) !important;
+    }
+
+
+
+    #generate-container button {
+        width: 55% !important;
+
+    }
+
+    /* Comment space mobile - UPORZĄDKOWANY DESIGN */
+    .comment-space {
+        width: 100% !important;
+
+        padding: 20px !important;
+        margin: 20px 0 !important;
+        justify-content: center !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 16px rgba(255, 152, 0, 0.15) !important;
+        border: none !important;
+        order: 3 !important;
+    }
+
+    #comment {
+        font-size: 1.05rem !important;
+        padding: 0 !important;
+        background: transparent !important;
+
+        text-align: center !important;
+        width: 100% !important;
+        margin: 0 !important;
+        line-height: 1.5 !important;
+        word-wrap: break-word !important;
+        border: none !important;
+        box-shadow: none !important;
+        font-weight: 600 !important;
+    }
+
+    /* Generate container MOBILE - UPORZĄDKOWANE PRZYCISKI */
+    #generate-container-mobile {
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 10px !important;
+        flex-shrink: 0 !important;
+
+        padding: 8px !important;
+
+
+    }
+
+    #generate-container-mobile .btn {
+
+        border-radius: 8px !important;
+        background: white !important;
+        border: none !important;
+        width: 69px !important;
+        height: 75px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.15) !important;
+    }
+
+    #generate-container-mobile .btn:hover {
+        background: #3c434b !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.25) !important;
+    }
+
+    #generate-container-mobile .icon {
+        width: 60px !important;
+        height: 60px !important;
+        object-fit: contain !important;
+    }
+
+    #generate-container-mobile .btn:hover .icon {
+        filter: brightness(0) saturate(100%) invert(100%) !important;
+    }
+
+    /* Order details container */
     .order-details {
-        padding: 10px;
+        padding: 0 !important;
+        background: white !important;
     }
 
-    .item-row {
-        display: flex;
-        gap: 10px;
+    .container.my-5 {
+        margin: 0 !important;
+        background: white !important;
+
     }
 
-    .item-qty {
-        min-width: 50px;
-        text-align: center;
+    .padding-top {
+        padding-top: 0 !important;
     }
 
+    /* Items table - convert to mobile cards */
+    .table {
+        display: none !important;
+        /* Hide desktop table */
+    }
+
+    .order-table-container {
+        margin-top: 50px !important;
+        background: white !important;
+        padding: 0 !important;
+
+        padding: 2% !important;
+        border-radius: 25px !important;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .table-scroll {
+        background: white !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* Mobile items list */
+    .mobile-items-list {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        margin-top: 15px !important;
+    }
+
+    .mobile-item-card {
+        background: white !important;
+        border: none !important;
+        border-radius: 16px !important;
+        padding: 20px !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+        margin-bottom: 15px !important;
+        border: #d1d1d1 solid 2px !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        cursor: pointer !important;
+        position: relative !important;
+    }
+
+    .mobile-item-card:active {
+        transform: scale(0.98) !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .mobile-item-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 10px !important;
+        border-bottom: 1px solid #f0f0f0 !important;
+        padding-bottom: 8px !important;
+        position: relative !important;
+    }
+
+    .mobile-item-basic {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        margin-left: 20% !important;
+    }
+
+    .mobile-item-name {
+        font-weight: 600 !important;
+        color: #333 !important;
+        font-size: 1rem !important;
+    }
+
+    .mobile-item-group {
+        color: #6c757d !important;
+        font-size: 0.875rem !important;
+        font-weight: 500 !important;
+    }
+
+    .mobile-item-number {
+        color: #6c757d !important;
+        font-size: 0.875rem !important;
+        font-weight: 500 !important;
+        margin-right: 30px !important;
+        /* Space for expand indicator */
+    }
+
+    /* Expand/Collapse indicator */
+    .mobile-item-header::after {
+        content: '▼' !important;
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        color: #6c757d !important;
+        position: absolute !important;
+        right: 0 !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        transition: transform 0.3s ease !important;
+    }
+
+    .mobile-item-card.expanded .mobile-item-header::after {
+        content: '▲' !important;
+        transform: translateY(-50%) !important;
+    }
+
+    .mobile-item-name {
+        font-weight: bold !important;
+        font-size: 1.1rem !important;
+        flex: 1 !important;
+        color: #6c757d !important;
+    }
+
+    .mobile-item-number {
+        background: #f8f9fa !important;
+        padding: 4px 8px !important;
+        border-radius: 4px !important;
+        font-weight: bold !important;
+        font-size: 0.9rem !important;
+        color: #666 !important;
+    }
+
+    /* Ukryj szczegóły domyślnie */
+    .mobile-item-details,
+    .mobile-item-specs,
+    .mobile-item-prices,
+    .mobile-item-comment {
+        display: none !important;
+        opacity: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+        transition: all 0.3s ease !important;
+    }
+
+    /* Pokaż szczegóły po kliknięciu */
+    .mobile-item-card.expanded .mobile-item-details,
+    .mobile-item-card.expanded .mobile-item-specs,
+    .mobile-item-card.expanded .mobile-item-prices,
+    .mobile-item-card.expanded .mobile-item-comment {
+        display: block !important;
+        opacity: 1 !important;
+        max-height: 1000px !important;
+        margin-top: 15px !important;
+    }
+
+    /* Mobile actions - zawsze widoczne */
+    .mobile-item-actions {
+        display: flex !important;
+        gap: 8px !important;
+        justify-content: flex-end !important;
+        margin-top: 15px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid #f0f0f0 !important;
+        opacity: 1 !important;
+    }
+
+    .mobile-item-specs {
+        background: #f8f9fa !important;
+        padding: 10px !important;
+        border-radius: 6px !important;
+        margin: 10px 0 !important;
+    }
+
+    .mobile-spec-item {
+        padding: 5px 0 !important;
+        border-bottom: 1px solid #eee !important;
+        font-size: 0.9rem !important;
+    }
+
+    .mobile-spec-item:last-child {
+        border-bottom: none !important;
+    }
+
+    .mobile-item-prices {
+        background: #c9c9c9 !important;
+        padding: 10px !important;
+        border-radius: 6px !important;
+        margin: 10px 0 !important;
+    }
+
+    .mobile-price-item {
+        padding: 5px 0 !important;
+        font-size: 0.95rem !important;
+        color: #333 !important;
+    }
+
+    .mobile-item-comment {
+
+        margin: 10px 0 !important;
+
+        font-size: 0.9rem !important;
+    }
+
+    .mobile-item-qty {
+        background: #f8f9fa !important;
+        padding: 4px 8px !important;
+        border-radius: 4px !important;
+        font-weight: bold !important;
+        min-width: 40px !important;
+        text-align: center !important;
+    }
+
+    .mobile-item-card.expanded .mobile-item-details {
+        display: block !important;
+        margin: 10px 0 !important;
+        opacity: 1 !important;
+        max-height: 1000px !important;
+    }
+
+    .mobile-item-detail {
+        font-size: 0.9rem !important;
+    }
+
+    .mobile-item-detail strong {
+        color: #666 !important;
+        font-size: 0.8rem !important;
+        text-transform: uppercase !important;
+    }
+
+    .mobile-item-actions .btn {
+        padding: 6px 12px !important;
+        font-size: 0.85rem !important;
+        border-radius: 6px !important;
+    }
+
+    /* Order metadata mobile */
     .order-metadata {
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        margin-top: 20px !important;
     }
 
+    /* Summary card */
     .summary-card {
-        background: var(--surface);
-        padding: 12px;
-        border-radius: 12px;
-        box-shadow: var(--card-shadow);
+        background: white !important;
+        padding: 20px !important;
+        border-radius: 10px !important;
+        border: 1px solid #e0e0e0 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        margin-top: 20px !important;
     }
+
+    .summary-card h3 {
+        font-size: 1.2rem !important;
+        margin-bottom: 15px !important;
+        text-align: center !important;
+        border-bottom: 1px solid #eee !important;
+        padding-bottom: 10px !important;
+    }
+
+    /* Hide unnecessary info on mobile */
+    .mobile-hide {
+        display: none !important;
+    }
+
+    /* Comments section mobile */
+    .comments-section {
+        background: white !important;
+        padding: 15px !important;
+        border-radius: 10px !important;
+        border: 1px solid #e0e0e0 !important;
+        margin-top: 20px !important;
+    }
+
+    .comments-section textarea {
+        width: 100% !important;
+        min-height: 100px !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+        border: 1px solid #ddd !important;
+        font-size: 16px !important;
+        resize: vertical !important;
+    }
+
+    /* PDF and print buttons mobile */
+    .pdf-print-buttons {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-top: 20px !important;
+    }
+
+    .pdf-print-buttons .btn {
+        width: 100% !important;
+        padding: 15px !important;
+        border-radius: 8px !important;
+        font-size: 1.1rem !important;
+    }
+
+    /* Responsive grid adjustments */
+    .col-9 {
+        width: 100% !important;
+    }
+
+    /* Form controls mobile */
+    .form-control,
+    .form-select {
+        font-size: 16px !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+    }
+
+    /* Total section mobile */
+    #total-container {
+        background: white !important;
+        padding: 20px 15px !important;
+        border-top: none !important;
+        margin-top: 20px !important;
+    }
+
+    .total-price {
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        gap: 10px !important;
+    }
+
+    .price-label {
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        color: #28a745 !important;
+        padding: 5px 10px !important;
+        background: #f8f9fa !important;
+        border-radius: 6px !important;
+        border: 1px solid #e0e0e0 !important;
+    }
+
+    /* Send order button mobile */
+    .send-order-btn {
+        width: 90% !important;
+        padding: 15px !important;
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        margin-bottom: 20px !important;
+        border-radius: 10px !important;
+        text-align: center !important;
+        display: block !important;
+        margin-left: 0 auto !important;
+
+
+        /* Empty state mobile - MODERN CARD */
+        .text-center.py-5 {
+            padding: 40px 20px !important;
+            background: white !important;
+            border-radius: 16px !important;
+            margin-top: 25px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+            border: none !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+
+        .text-center.py-5::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 4px !important;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+        }
+
+        .text-center.py-5 h3 {
+            font-size: 1.4rem !important;
+            color: #495057 !important;
+            margin-bottom: 15px !important;
+            font-weight: 600 !important;
+        }
+
+        .text-center.py-5 p {
+            font-size: 1rem !important;
+            color: #6c757d !important;
+            margin-bottom: 0 !important;
+            line-height: 1.5 !important;
+        }
+    }
+
+    #desktop-floating-order {
+        display: none !important;
+    }
+
+    #order-nav .floating-order {
+        margin: 0 !important;
+
+    }
+
+    .comment-space {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+
+    }
+
+    #comment {
+        margin-left: 5% !important;
+    }
+
 }

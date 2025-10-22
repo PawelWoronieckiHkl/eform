@@ -248,6 +248,7 @@ export class DataLoader {
 
       if (param?.SCRIPTS == 'true' && scriptPath) {
         param.SOURCE = `${path}${scriptPath.file}`
+
       }
     }
     return params
@@ -265,8 +266,9 @@ export class DataLoader {
     for (const [param, aliasList] of Object.entries(aliases)) {
       if (result[param]?.length) {
         const exploded = [];
-
+        // console.log(aliasList, aliasList.length);
         result[param].forEach(valueEntry => {
+          
           const matchedAliases = aliasList.filter(alias => alias.VALUE === valueEntry.VALUE);
 
           if (matchedAliases.length === 0) {
@@ -292,8 +294,10 @@ export class DataLoader {
 
 
               exploded.push(newEntry);
-            });
 
+
+            });
+            
           }
         });
 

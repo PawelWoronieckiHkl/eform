@@ -32,6 +32,7 @@ import {
 	createDialog, getInfoFromDialog,
 
 } from './dialogUtils_copy.js';
+import { isSource } from '../form.js';
 
 export function logFunctionName(functionName) {
 	const sep = '-'.repeat(10)
@@ -90,16 +91,20 @@ export function normalizeFilename(filename) {
 	return '';
 }
 
-export function setDescription(values, value, allOptionsByParameter, name) {
+export function setDescription(values, value, allOptionsByParameter, name, caller = '') {
+
 	if (value === '<NONE>') console.log('NONE VALUE');
+
 	const valObj = searchForParameter(value, allOptionsByParameter, name)
+	if (name == "KOLOR") console.log('KOLOR VALOBJ:', valObj);
+	let prodAliasName = ''
+	let prodAliasComment = ''
 
 	const description = `${name}___DESCRIPTION`
-
 	if (valObj?.ALIAS_DESCRIPTION || valObj?.ALIAS) {
 
-		const prodAliasName = `${name}_ALIAS`
-		const prodAliasComment = `${name}_ALIAS___DESCRIPTION`
+		prodAliasName = `${name}_ALIAS`
+		prodAliasComment = `${name}_ALIAS___DESCRIPTION`
 		values[prodAliasName] = valObj.ALIAS
 		values[prodAliasComment] = valObj.ALIAS_DESCRIPTION
 	}
@@ -107,6 +112,37 @@ export function setDescription(values, value, allOptionsByParameter, name) {
 
 		values[description] = valObj.DESCRIPTION
 	}
+	return values
+}
+
+export function fillInputDescription(inputs, params, values, allOptionsByParameter) {
+
+	for (const param of params) {
+		if (!param.NAME) continue;
+
+		if (!isSource(param)) {
+			values[param.NAME + "___TITLE"] = param.DESCRIPTION;
+		} else {
+			// Dla parametrów SOURCE meta-pola są już ustawione w processSourceValues
+			// Ale można ustawić główny ___TITLE
+			values[param.NAME + "___TITLE"] = param.DESCRIPTION;
+		}
+
+		if (!window.enabledParams || !window.enabledParams[param.NAME]) {
+			continue; // Pomiń wyłączone parametry
+		}
+
+	}
+}
+
+export function checkIfOptionsExist(allOptionsByParameter, paramName, values) {
+	// Dla normalnych parametrów (nie SOURCE) ustaw ___DICT na podstawie obecności opcji
+	if (allOptionsByParameter[paramName] && allOptionsByParameter[paramName].length > 0) {
+		values[paramName + '___DICT'] = true;
+	} else {
+		values[paramName + '___DICT'] = false;
+	}
+	return values;
 }
 
 export {

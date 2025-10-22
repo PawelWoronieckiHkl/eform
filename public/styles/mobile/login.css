@@ -8,12 +8,17 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: linear-gradient( var(--bg), #ffffff);
+		background: linear-gradient(var(--bg), #ffffff);
 		z-index: 1000;
 	}
 
+	.image-background {
+		flex: 1 !important;
+		background-color: white !important;
+	}
+
 	.login-box {
-        padding-top:60%;
+		padding-top: 60%;
 		width: 100%;
 		height: 100%;
 		max-width: 400px;
@@ -35,6 +40,13 @@
 		text-align: center;
 	}
 
+	.mobile-rm-card {
+		box-shadow: none !important;
+		border: none !important;
+		margin-top: 30rem !important;
+		padding: 5px !important;
+	}
+
 	.login-actions {
 		display: flex;
 		flex-direction: column;
@@ -42,11 +54,11 @@
 	}
 
 	.login-box .btn {
-		width: 100%;
+		width: 80%;
 		padding: 14px;
 		font-size: 1.1rem;
 		border-radius: 6px;
-		background: var(--primary);
+
 		color: var(--surface);
 		border: none;
 		cursor: pointer;

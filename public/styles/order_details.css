@@ -1,5 +1,5 @@
 .position-container {
-    border: 2px solid rgb(228, 228, 228);
+    border: 1px solid rgb(228, 228, 228);
     border-radius: 13px;
     padding: 10px;
     margin: 20px 10px 25px 10px;
@@ -7,21 +7,63 @@
 }
 
 #order-nav {
-
     position: fixed;
     justify-content: space-between;
     margin-top: 60px;
     position: fixed !important;
-    left: 249px;
-    z-index: 9999 !important;
-    min-width: calc(100% - 269px) !important;
-    max-width: calc(100% - 269px) !important;
+    left: 295px;
+    z-index: 500 !important;
+    min-width: calc(100% - 330px) !important;
+    transition: left 0.3s ease, min-width 0.3s ease;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    white-space: nowrap;
+    overflow: visible;
+    background: white !important;
+    border-bottom: 2px solid #e9ecef !important;
+    padding: 15px 20px !important;
+    min-height: 80px !important;
+    height: auto !important;
+}
+.mobile {
+    display: none;
+}
+/* Główny rząd z przyciskami */
+.order-nav-main {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    max-width: calc(100%) !important;
+    height: 50px !important;
+}
+
+/* Adjust order-nav when navbar is collapsed */
+html.nav-collapsed #order-nav {
+    left: 100px;
+    max-width: calc(100% - 160px) !important;
+}
+
+.desktop-nav.collapsed~.languages~main #order-nav,
+.desktop-nav.collapsed+.languages+main #order-nav {
+    left: 85px;
+    min-width: calc(100% - 120px) !important;
+    transition: all 0.3s ease !important;
 }
 
 #send-order {
 
     float: right;
 
+}
+
+
+.order-table-container {
+    margin-top: 100px !important;
+    overflow-x: auto;
+    width: 100%;
+    padding-top: 20px !important;
+    transition: margin-top 0.3s ease !important;
 }
 
 .diag-input-container {
@@ -38,37 +80,38 @@
     padding: 20px;
 
 }
-.gold{
-  background-color: rgba(236, 212, 76, 0.651) !important ;
+
+.gold {
+    background-color: rgba(236, 212, 76, 0.651) !important;
 }
+
 #order-buttons {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-left: 25px;
-    width: 380px !important;
+    gap: 12px;
+    margin-left: 0px !important;
+    width: auto !important;
+    flex-shrink: 0 !important;
+    z-index: 10 !important;
 }
 
 .static-head {
     padding-top: 10% !important;
 }
 
-.floating-order {
-    margin-right: 14vw;
-}
 
 .floating-history-order {
-    margin-left: 3%
+    margin-right: 12vw;
 }
 
 .navbar-scrolled {
     margin-top: 0 !important;
     top: 0;
     background: #fff;
+    min-height: 300px !important;
 
-    padding-top: 115px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    padding-bottom: 15px;
+    padding-bottom: 120px;
 }
 
 .btn-link {
@@ -126,21 +169,64 @@
 
 .comment-space {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 15px 0 0 0 !important;
+    padding: 15px 0 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-direction: column !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
 }
+
+/* Style for the comment text itself */
+#comment {
+    white-space: normal !important;
+    /* Allow text wrapping */
+    word-wrap: break-word !important;
+    /* Break long words */
+    overflow-wrap: break-word !important;
+    /* Modern property for word breaking */
+    max-width: 100% !important;
+    margin: 0 !important;
+    /* Respect container width */
+    line-height: 1.4 !important;
+    /* Better readability for multiline */
+    background: transparent !important;
+    border: none !important;
+
+    font-weight: 600 !important;
+    padding: 0 !important;
+    text-align: center !important;
+}
+
+/* Adjust comment-space when navbar is collapsed */
+html.nav-collapsed .comment-space {
+    width: calc(100vw - 30px) !important;
+    /* Full width minus margins when collapsed */
+}
+
+/* Collapsed navbar adjustments */
+.desktop-nav.collapsed~.languages~main .comment-space,
+.desktop-nav.collapsed+.languages+main .comment-space {
+    width: calc(100vw - 30px) !important;
+    max-width: 100% !important;
+    /* Adjust for collapsed navbar */
+}
+
 
 #comment-btn {
 
     border-radius: 1% !important;
 }
 
-.comment-space {
-    flex-direction: row;
-}
-
 #comment-input {
-    width: 80%
+    width: 100%;
+    max-width: 80%;
+    flex: 1;
+    min-width: 200px;
 }
 
 #edit-icon {
@@ -165,6 +251,34 @@
 #generate-excel-btn.has-tooltip:hover::before {
     left: auto;
     right: 10px;
+}
+
+/* Fix generate-container to prevent wrapping issues */
+#generate-container {
+    display: flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    gap: 8px !important;
+    margin-right: 0 !important;
+    z-index: 10 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    visibility: visible !important;
+}
+
+#generate-container .btn {
+    flex-shrink: 0 !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    padding: 8px !important;
+    margin: 0 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid #ddd !important;
+    background: white !important;
+    border-radius: 6px !important;
 }
 
 .duplicate-btn {
@@ -240,4 +354,77 @@
 
     font-weight: 700;
     font-size: 1.15rem;
+}
+
+/* Override content positioning for empty order message */
+.content .container .text-center.py-5 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+/* Ensure parent container doesn't interfere */
+.content .container {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: none !important;
+}
+
+/* Center order-title properly within order-nav */
+.order-nav-main .floating-order {
+
+    position: static !important;
+    flex: 1 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-right: 170px !important;
+
+    z-index: 1;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+#order-nav .floating-order {
+    position: static !important;
+    flex: 1 !important;
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 20px !important;
+    max-width: none !important;
+    z-index: 1;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+#order-title {
+    margin-right: 8rem !important;
+    padding: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#commission-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Adjust floating-order position when navbar is scrolled */
+#order-nav.navbar-scrolled .floating-order {
+    padding: 25px !important;
+
+    top: 54px;
+    /* Adjust for increased padding in scrolled state */
+
+    /* Remove translateY to use fixed top */
+}
+
+#order-nav.navbar-scrolled .comment-space {
+    top: 30px;
 }

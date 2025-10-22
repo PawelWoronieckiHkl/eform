@@ -1,4 +1,7 @@
-export function loadScript(scriptFile, values, displayValues, groupNumber, callback) {
+import {
+    setDescription
+} from "./formTools.js";
+export function loadScript(scriptFile, values, displayValues, groupNumber, allOptionsByParameter, callback) {
 
     const scriptPath = scriptFile;
     const script = document.createElement('script');
@@ -7,7 +10,7 @@ export function loadScript(scriptFile, values, displayValues, groupNumber, callb
     script.crossOrigin = 'anonymous';
     script.src = scriptPath;
 
-    const scriptInput = prepareValuesForScript(values, displayValues);
+    const scriptInput = prepareValuesForScript(values, displayValues,allOptionsByParameter);
 
     // Flaga czy callback już wywołany
     let finished = false;
@@ -30,7 +33,7 @@ export function loadScript(scriptFile, values, displayValues, groupNumber, callb
                 const result = f(scriptInput);
                 finished = true;
                 callback(result);
-           
+                
             } else {
                 console.error('Funkcja f nie została znaleziona!');
                 finished = true;
@@ -57,12 +60,13 @@ export function loadScript(scriptFile, values, displayValues, groupNumber, callb
     document.body.appendChild(script);
 }
 
-function prepareValuesForScript(values, displayValues) {
-    for (let paramName of Object.keys(values)) {
-        if ((displayValues.get(paramName))?.option_description) {
-            values[paramName + '___DESCRIPTION'] = displayValues.get(paramName).option_description;
-        }
+function prepareValuesForScript(values, displayValues, allOptionsByParameter) {
+    console.log('ALLLL:', allOptionsByParameter);
+    for (let [paramName, value] of Object.entries(values)) {
+        values = setDescription(values, value, allOptionsByParameter, paramName, 'scriptLoader');
+       
     }
+     console.log("SCRIPT VALUES:", values);
     return JSON.stringify(values, null, 2);
 }
 

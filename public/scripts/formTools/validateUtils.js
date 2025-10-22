@@ -114,14 +114,16 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                 const input = inputs[param];
 
                 let currentParam = searchForParameter(functions.DOM, allOptionsByParameter, param);
+
                 if (!currentParam && input && input.tagName != "INPUT") {
+
                     if (typeof functions.DOM === 'string') {
                         functions.DOM = 'Puste pole'
                     }
                     return;
                 }
                 if ('DOM' in functions && functions.DOM) {
-
+                    console.log("DOMOM", functions.DOM);
                     const domValue = functions.DOM;
                     values[param] = domValue;
                     setDescription(values, domValue, allOptionsByParameter, param)
@@ -375,26 +377,49 @@ export function validateAllFieldsOnSubmit(inputs, values) {
 
 }
 
-
+// POPRCUJ TUTAJ
 export function clearDisabledValues(values, displayValues) {
     const enabledParamsKeys = new Set(Object.keys(enabledParams));
-
+    console.log('CLEAR DISABLED VALUES')
     for (const key of Object.keys(values)) {
+
         const baseParam = key.replace(/___DESCRIPTION$/, '');
+        if (key.includes('___VISIBLE') || baseParam.includes('___TITLE')|| baseParam.includes('___DICT')) {
+            continue;
+        }
+
         if (!enabledParamsKeys.has(baseParam) && !baseParam.endsWith('_ALIAS')) {
-            values[key] = '';
+            const desc = `${baseParam}___DESCRIPTION`;
+            const visibleKey = `${baseParam}___VISIBLE`;
+
+    
+            values[visibleKey] = false;
+
+            // Usuń lub ustaw na pusty string zarówno dla klucza jak i desc
+            if (values[desc] !== undefined) {
+                values[desc] = '';
+            }
+            if (values[key] !== undefined && key !== desc) {
+                values[key] = '';
+            }
+
             const isDescription = key.endsWith('___DESCRIPTION');
             const displayKey = isDescription ? baseParam : key;
             const displayParam = displayValues.get(displayKey);
             // console.log(displayKey, displayParam, 'displayParam przed oczyszczeniem', (displayParam && displayParam.locked !== true) );
             if (displayParam && displayParam.locked !== true) {
-                isDescription || displayParam.option_value !='undefined' || !displayParam.option_value
+                isDescription || displayParam.option_value != 'undefined' || !displayParam.option_value
                     ? delete displayParam.option_description
                     : delete displayParam.option_value;
             }
 
+        } else if (enabledParamsKeys.has(baseParam)) {
+            // Ustawiamy ___VISIBLE na true dla enabled parametrów
+            const visibleKey = `${baseParam}___VISIBLE`;
+            values[visibleKey] = true;
         }
     }
-    return { values, displayValues };
-}
 
+    return { values, displayValues };
+
+}

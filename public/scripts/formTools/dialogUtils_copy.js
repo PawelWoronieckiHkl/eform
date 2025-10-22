@@ -11,6 +11,7 @@ import {
 } from '../components/index.js';
 import { createElement } from '../components/htmlManipulator.js'
 import { stopSpin, startSpin } from "../components/hourglass.js";
+import { getEnvVersion } from "../getEnv.js";
 
 export class DialogManager {
   constructor() {
@@ -18,7 +19,7 @@ export class DialogManager {
     this.isLink;
     this.isInfo;
     this.selectedValues = [];
-    this.currentSort = 'favorites';
+    this.currentSort = 'default';
     this.dialog = document.getElementById('color-dialog');
     this.dialogContainer = document.getElementById('dialog-container');
     this.listContainer = document.getElementById('dynamic-options-list');
@@ -57,7 +58,7 @@ export class DialogManager {
 
     this.isInfo = param?.INFO != '<NULL>' ?? false;
     this.extraInfoText = param?.INFO;
-    console.log(param, this.isLink, this.isInfo, 'dialog')
+    // console.log(param, this.isLink, this.isInfo, 'dialog')
     this.selectedValues = [];
     this.confirmButton.style.display = this.isMultiChoice ? 'inline-block' : 'none';
     if (this.dialogTitle) {
@@ -70,6 +71,8 @@ export class DialogManager {
 
     // Przygotowanie interfejsu
     this.setupUI();
+    this.env = await getEnvVersion();
+    console.log(this.env, 'env w dialogu')
 
     if (this.attrValues && this.attrValues != undefined && Object.keys(this.attrValues).length > 0) {
       this.getUniqueCategories()
@@ -122,19 +125,44 @@ export class DialogManager {
     // clear previous content
     container.innerHTML = '';
 
-    // decide content and link
-    const infoHtml = text || this.extraInfoText || '';
-    const href = link || this.param?.LINK_URL || this.param?.LINK || null;
+    // decide content and extract link from <> brackets
+    let infoHtml = text || this.extraInfoText || '';
+    let href = link || this.param?.LINK_URL || this.param?.LINK || null;
+
+    // Extract link/file from <> brackets in infoHtml
+    const bracketMatch = infoHtml.match(/<([^>]+)>/);
+    if (bracketMatch) {
+      const extractedPath = bracketMatch[1].trim();
+
+      // Remove the <> part from infoHtml
+      infoHtml = infoHtml.replace(/<[^>]+>/, '').trim();
+
+      // Determine if it's a URL or file path
+      if (extractedPath.startsWith('http:') || extractedPath.startsWith('https:')) {
+        href = extractedPath; // It's a URL
+      } else {
+        href = extractedPath; // It's a file path
+      }
+    }
 
     if (this.isInfo && infoHtml) {
       const panel = createElement('div', {
-        class: ['extra-info-panel', 'mb-3'],
+        class: ['extra-info-panel', 'mb-3', 'd-grid'],
         role: 'region',
-        'aria-label': 'additional information'
+        'aria-label': 'additional information',
+        style: { gap: '0.75rem' }
       }, container);
 
+      // Top row with icon and content
+      const topRow = createElement('div', {
+        class: ['d-flex', 'align-items-start'],
+        style: { gap: '0.5rem' }
+      }, panel);
+
       // icon
-      const iconWrap = createElement('div', { class: ['extra-info-icon'] }, panel);
+      const iconWrap = createElement('div', {
+        class: ['extra-info-icon', 'flex-shrink-0']
+      }, topRow);
       // simple info icon (SVG) for crispness
       iconWrap.innerHTML = `
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -143,7 +171,9 @@ export class DialogManager {
         </svg>`;
 
       // content
-      const content = createElement('div', { class: ['extra-info-content'] }, panel);
+      const content = createElement('div', {
+        class: ['extra-info-content', 'flex-grow-1']
+      }, topRow);
       // normalize escaped newlines ("\\n") to real newlines, then replace newlines with <br>
       let normalized = String(infoHtml || '');
       normalized = normalized.replace(/\\n/g, '\n');
@@ -151,16 +181,36 @@ export class DialogManager {
       const htmlWithBreaks = normalized.replace(/\n/g, '<br>');
       content.innerHTML = htmlWithBreaks;
 
-      // optional link/button
+      // Bottom row with button (always under text)
       if (this.isLink || href) {
+        const buttonRow = createElement('div', {
+          class: ['d-flex', 'justify-content-start', 'ms-1']// Align with text content
+        }, panel);
+
         const linkHref = href || '#';
+
+        // Determine if it's a URL or file path and set appropriate href
+        let finalHref;
+        let buttonText;
+
+        if (linkHref.startsWith('http:') || linkHref.startsWith('https:')) {
+          // It's a URL - use as is
+          finalHref = linkHref;
+          buttonText = linkHref;
+        } else {
+          // It's a file path - add server path
+          const rootFilePath = '/photos/files/';
+          finalHref = rootFilePath + linkHref;
+          buttonText = linkHref;
+        }
+
         const btn = createElement('a', {
-          class: ['extra-info-cta', 'btn', 'btn-sm'],
-          href: linkHref,
+          class: ['btn', 'btn-outline-secondary', 'ms-4'],
+          href: finalHref,
           target: '_blank',
           rel: 'noopener noreferrer',
-          text: t?.('form.more_info') || 'Więcej'
-        }, panel);
+          text: buttonText
+        }, buttonRow);
       }
     } else if (this.isLink && (this.param || link)) {
       // If only a link is present, render a small link box
@@ -171,12 +221,28 @@ export class DialogManager {
       }, container);
       const content = createElement('div', { class: ['extra-info-content'] }, panel);
       const linkHref = href || '#';
+
+      // Determine if it's a URL or file path and set appropriate href
+      let finalHref;
+      let buttonText;
+
+      if (linkHref.startsWith('http:') || linkHref.startsWith('https:')) {
+        // It's a URL - use as is
+        finalHref = linkHref;
+        buttonText = linkHref;
+      } else {
+        // It's a file path - add server path
+        const rootFilePath = '/photos/files/';
+        finalHref = rootFilePath + linkHref;
+        buttonText = linkHref;
+      }
+
       createElement('a', {
-        class: ['extra-info-cta', 'btn', 'btn-sm'],
-        href: linkHref,
+        class: ['extra-info-cta', 'btn', 'btn-sm', 'btn-outline-secondary'],
+        href: finalHref,
         target: '_blank',
         rel: 'noopener noreferrer',
-        text: t?.('form.open_link') || 'Otwórz'
+        text: buttonText
       }, content);
     }
   }
@@ -214,10 +280,18 @@ export class DialogManager {
     if (this.dialogContainer && this.listContainer) {
       this.dialogContainer.insertBefore(controlsContainer, this.listContainer);
     }
+
+    let dialogSortMethod = localStorage.getItem('dialogSortMethod');
+    if (dialogSortMethod) {
+
+      sortingContainer.querySelector('select').value = dialogSortMethod;
+    }
+    this.handleSortChange(dialogSortMethod);
   }
 
   createSortingControls(onSortChange, currentSort = 'favorites') {
     const options = [
+      { value: 'default', label: `${t('form.default')}` },
       { value: 'favorites', label: `${t('form.favorites_first')}` },
       { value: 'az', label: 'A-Z' },
       { value: 'za', label: 'Z-A' }
@@ -228,26 +302,18 @@ export class DialogManager {
 
     });
 
-    // Label - TYLKO TEKST, bez zdarzeń!
-    // createElement('label', {
-    //   for: 'sortOptions',
-    //   class: ['sorting-label'],
-    //   text: 'Sortuj: '
-    // }, sortingContainer);
 
-    // Select - TU JEST MIEJSCE NA ZDARZENIE
     const select = createElement('select', {
       id: 'sortOptions',
       class: ['form-select', 'sorting-select'],
       onchange: (e) => {
         const selectedValue = e.target.value;
         if (typeof onSortChange === 'function') {
-          onSortChange(selectedValue); // Wywołaj przekazaną funkcję
+          onSortChange(selectedValue);
         }
       }
     }, sortingContainer);
 
-    // Opcje z domyślnie wybraną wartością
     for (const [idx, opt] of options.entries()) {
       createElement('option', {
         value: opt.value,
@@ -261,9 +327,12 @@ export class DialogManager {
 
 
   handleSortChange(sortMethod) {
+    console.log('Selected sort method:', sortMethod);
     this.currentSort = sortMethod;
     this.applySorting(sortMethod);
+    localStorage.setItem('dialogSortMethod', sortMethod);
   }
+
   createSearchField() {
     const searchContainer = document.createElement('div');
     searchContainer.classList.add('search-container', 'mb-2');
@@ -280,7 +349,6 @@ export class DialogManager {
     return searchContainer;
   }
 
-  // Tworzenie kontrolek filtrowania
   createFilterControls() {
     const existingControls = this.dialogContainer.querySelector('.dialog-controls');
     const filterControls = createElement('div', {
@@ -292,16 +360,56 @@ export class DialogManager {
     const isFilters = Object.keys(this.filters).length > 0;
     if (!isFilters) {
       filterControls.classList.add('d-none')
+      return filterControls;
+    }
+
+    const isMobile = window.innerWidth <= 768;
+    let content = filterControls;
+
+    if (isMobile) {
+      const header = createElement('div', {
+        class: ['filter-controls-header'],
+      }, filterControls);
+
+      const title = createElement('span', {
+        class: ['filter-controls-title'],
+        text: 'Filtry'
+      }, header);
+
+      const toggle = createElement('span', {
+        class: ['filter-controls-toggle'],
+        text: '▼'
+      }, header);
+
+
+      content = createElement('div', {
+        class: ['filter-controls-content']
+      }, filterControls);
+
+
+      filterControls.classList.add('collapsed');
+
+      header.addEventListener('click', () => {
+        if (filterControls.classList.contains('collapsed')) {
+          filterControls.classList.remove('collapsed');
+          filterControls.classList.add('expanded');
+        } else {
+          filterControls.classList.remove('expanded');
+          filterControls.classList.add('collapsed');
+        }
+      });
     }
 
     for (const [filterName, filterValues] of Object.entries(this.filters)) {
-      const filterGroup = createElement('div', { class: ['filter-group', 'me-3'] }, filterControls);
+      if (!filterName || filterName.trim() === '' || filterName.trim() === '-') continue;
+      // console.log(filterName, 'filtry')
+      const filterGroup = createElement('div', { class: ['filter-group', 'me-3'] }, content);
 
 
-      createElement('label', {
-        class: ['filter-label'],
-        text: this.formatFilterName(filterName) + ': '
-      }, filterGroup);
+      // createElement('label', {
+      // class: ['filter-label'],
+      // text: this.formatFilterName(filterName) + ': '
+      // }, filterGroup);
 
       // Dropdown Bootstrap
       const dropdown = createElement('div', { class: ['dropdown', 'd-inline-block'] }, filterGroup);
@@ -312,7 +420,7 @@ export class DialogManager {
         id: `${filterName}-dropdown`,
         'data-bs-toggle': 'dropdown',
         'aria-expanded': 'false',
-        text: `${t("form.check_word")} ${this.formatFilterName(filterName)}`
+        text: `${this.formatFilterName(filterName)}`
       }, dropdown);
 
       const dropdownMenu = createElement('ul', {
@@ -341,6 +449,7 @@ export class DialogManager {
         : [];
 
       sortedValues.forEach(value => {
+        if (!value || value.trim() === '' || value.trim() === '-' || value.trim() === '?') return;
         const li = createElement('li', {}, dropdownMenu);
         const checkbox = createElement('input', {
           type: 'checkbox',
@@ -359,6 +468,7 @@ export class DialogManager {
       // Obsługa zmian (delegacja zdarzeń)
       dropdownMenu.addEventListener('change', (e) => this.handleFilter(e, filterName));
     }
+
     const clearFiltersBtn = createElement('button', {
       class: ['btn', 'btn-outline-secondary', 'clear-filters-btn'],
       type: 'button',
@@ -366,7 +476,7 @@ export class DialogManager {
       'aria-expanded': 'false',
       text: `${t("form.reset_filters")}`,
       style: { float: 'right', backgroundColor: '#fff', color: '#000' }
-    }, filterControls);
+    }, content);
 
     // Clear all filters: uncheck specific checkboxes, check the "-all" ones,
     // reset activeFilters object and refresh visible options.
@@ -406,24 +516,29 @@ export class DialogManager {
 
   // Pobranie unikalnych kategorii z opcji
   getUniqueCategories() {
-    const attrVals = this.attrValues.ATTR_VALUE
-    const attrDesc = this.attrValues.ATTR_DESCRIPTION
+    console.log(this.attrValues)
+    const attrVals = this.attrValues.STAN
+    const attrDesc = this.attrValues.INFO
     const categories = new Set();
     this.options.forEach(option => {
+      if (attrVals) {
+        const foundEntry = attrVals.find(entry => Object.keys(entry)[0] === option.VALUE);
 
-      const foundEntry = attrVals.find(entry => Object.keys(entry)[0] === option.VALUE);
-      if (foundEntry) {
-        const value = foundEntry[option.VALUE];
-        option.ATTR_VALUE = value
+        if (foundEntry) {
+          const value = foundEntry[option.VALUE];
+          option.STAN = value
+        }
+        const foundDesc = attrDesc.find(entry => Object.keys(entry)[0] === option.VALUE);
+        if (foundDesc) {
+          const value = foundDesc[option.VALUE];
+          option.ATTR_DESC = value
+        }
       }
-      const foundDesc = attrDesc.find(entry => Object.keys(entry)[0] === option.VALUE);
-      if (foundDesc) {
-        const value = foundDesc[option.VALUE];
-        option.ATTR_DESC = value
-      }
+      else { return [] }
     });
     return Array.from(categories);
   }
+
 
   // Renderowanie opcji
   async renderOptions(imageMap) {
@@ -532,18 +647,20 @@ export class DialogManager {
       }
     }, colorBox);
 
-    // stock status indicator based on option.ATTR_VALUE (ZERO, SAFE, LOW)
+    // stock status indicator based on option.STAN (ZERO, SAFE, LOW)
     // create a small colored dot on the option box (no text)
-    if (option?.ATTR_VALUE) {
+
+    if (option?.STAN && this.env) {
       try {
-        const raw = String(option?.ATTR_VALUE || '');
-        const match = raw.match(/ZERO|SAFE|LOW/i);
+        const raw = String(option?.STAN || '');
+        const match = raw.match(/ZERO|SAFE|LOW|CRITICAL/i);
         const status = match ? match[0].toUpperCase() : null;
         if (status) {
           const map = {
             ZERO: { class: 'stock-zero' },
             SAFE: { class: 'stock-safe' },
-            LOW: { class: 'stock-low' }
+            LOW: { class: 'stock-low' },
+            CRITICAL: { class: 'stock-critical' }
           };
           const info = map[status] || { class: 'stock-unknown' };
 
@@ -615,6 +732,13 @@ export class DialogManager {
     // Sortuj według wybranej metody
     items.sort((a, b) => {
       switch (sortMethod) {
+        case 'default':
+          // Sortuj według oryginalnej kolejności (ROW_NUM lub kolejności w this.options)
+          const aValue = a.querySelector('.image-name').dataset.value;
+          const bValue = b.querySelector('.image-name').dataset.value;
+          const aIndex = this.options.findIndex(opt => opt.VALUE === aValue);
+          const bIndex = this.options.findIndex(opt => opt.VALUE === bValue);
+          return aIndex - bIndex;
         case 'az':
           return a.querySelector('.image-name').textContent.localeCompare(
             b.querySelector('.image-name').textContent
@@ -703,7 +827,7 @@ export class DialogManager {
   // Obsługa kliknięcia opcji
   handleOptionClick(clickedElement) {
 
-    if (this.isMultiChoice) {
+    if (this.isMultiChoice && clickedElement.id != '<NONE>') {
       // TRYB WIELOKROTNEGO WYBORU
       // 1. Toggle zaznaczenia
       clickedElement.classList.toggle('active');
@@ -826,16 +950,10 @@ export class DialogManager {
 
     // Wywołanie funkcji obsługi z zewnętrznego modułu
     if (typeof window.dialogConfirmHandler === 'function') {
-
       window.dialogConfirmHandler(selectedData);
 
-    } else {
-
-      // Domyślna obsługa, jeśli handler nie jest zdefiniowany
-      const values = window.formValues || {};
-      const inputs = window.formInputs || {};
-      updateFormWithSelectedValue(values, inputs, selectedData, this.options);
     }
+
     this.dialog.close();
   }
 
@@ -878,6 +996,7 @@ function updateFormWithSelectedValue(values, inputs, selectedData, options) {
 
   const currentInput = inputs[paramName];
   if (currentInput && currentInput.tagName === "BUTTON") {
+
     const currentOption = options[paramName].find(v => v.VALUE === value)
     if (currentOption?.ALIAS) {
       currentInput.innerText = `${currentOption.ALIAS} - ${currentOption.ALIAS_DESCRIPTION}`;
@@ -911,15 +1030,11 @@ export async function createDialog(param, options, grNr, filters, attrs) {
   await dialogManager.initialize(param, options, grNr, filters, attrs);
 
   // Przechwyć aktualne options w closure
-  window.dialogConfirmHandler = (selectedData) => {
-    const values = window.formValues || {};
-    const inputs = window.formInputs || {};
-
-  };
 }
 
 
-export function getInfoFromDialog(values, inputs, options, selectedData = null) {
+export async function getInfoFromDialog(values, inputs, options, selectedData = null) {
+  console.log(values, 'getInfoFromDialog');
   logFunctionName('getInfoFromDialog');
 
   // Jeśli nie przekazano selectedData, pobierz wszystkie aktywne elementy
@@ -935,7 +1050,7 @@ export function getInfoFromDialog(values, inputs, options, selectedData = null) 
       paramName: box.dataset.paramName,
       paramDescription: box.dataset.paramDescription
     }));
-
+    // console.log('majstruje przy', values, options, selectedItems)
     // Ustaw selectedData w zależności od liczby elementów:
     // - Dla 1 elementu: pojedynczy obiekt
     // - Dla wielu elementów: tablica obiektów

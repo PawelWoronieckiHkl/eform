@@ -53,7 +53,9 @@ export class SourceWindow {
         const ver = await this.getLegacySlopeVer()
         await slopeLoader.init(ver, this.param.SOURCE, document.documentElement.lang);
         this.data = await slopeLoader.parseData();
+
         this.allOptionsByParameter = slopeLoader.convertDictValues(this.data.dictValues);
+
         this.createObject();
     }
     async getLegacySlopeVer() {
@@ -69,15 +71,186 @@ export class SourceWindow {
 
     createObject() {
         for (const [key, value] of Object.entries(this.data.params)) {
-            if (value.DESCRIPTION) {
+
+            if (value.DESCRIPTION && value.ENABLE !== null) {
+                console.log(value, "SPRAWDZAMOCOCHODZI")
                 this.sourceValues[value.NAME] = '';
+                // Ustaw podstawowe meta-pola na bezpieczne wartości
+                // processSourceValues je potem poprawnie zaktualizuje
+                this.sourceValues[value.NAME + '___DICT'] = false;
+                this.sourceValues[value.NAME + '___VISIBLE'] = true;
+                this.sourceValues[value.NAME + '___TITLE'] = value.DESCRIPTION || value.NAME;
+                this.sourceValues[value.NAME + '___DESCRIPTION'] = '';
+                this.sourceValues[value.NAME + '_ALIAS'] = '';
+                this.sourceValues[value.NAME + '_ALIAS___DESCRIPTION'] = '';
             }
         }
-
     }
 
     getObject() {
         return this.sourceValues;
+    }
+
+    getParameterVisibility() {
+        // Zwraca informacje o widoczności i enabled state parametrów
+        const visibility = {};
+        if (this.data && this.data.params) {
+            this.data.params.forEach(param => {
+                if (param.NAME && param.ENABLE !== null) {
+                    const isVisible = isEnabled(param.ENABLE, this.sourceValues, 'param');
+                    const hasOptions = this.allOptionsByParameter[param.NAME] || false
+
+                    console.log(param.NAME, isVisible, hasOptions, '----- TUTAJ')
+                    visibility[param.NAME] = {
+                        visible: isVisible,
+                        hasDict: hasOptions,
+                        description: param.DESCRIPTION || param.NAME
+                    };
+                }
+            });
+        }
+        return visibility;
+    }
+
+    /**
+     * Przetwarza wartości z SOURCE (slope) na strukturę z meta-polami
+     * @returns {Object} - Rozszerzony obiekt z meta-polami
+     */
+    processSourceValues() {
+        if (!this.sourceValues || typeof this.sourceValues !== 'object') {
+            return this.sourceValues;
+        }
+
+        const processedValues = {};
+        const visibility = this.getParameterVisibility();
+
+        // Stwórz mapę parametrów dla szybkiego dostępu do DESCRIPTION
+        const paramsMap = {};
+        if (Array.isArray(this.data.params)) {
+            this.data.params.forEach(param => {
+                if (param.NAME) {
+                    paramsMap[param.NAME] = param;
+                }
+            });
+        }
+
+        // Zbierz wszystkie parametry - z sourceValues (bez meta-pól) i widoczne z visibility
+        const visibleParams = Object.keys(visibility).filter(key => visibility[key] && visibility[key].visible);
+
+        // Dodatkowo filtruj parametry które mają ENABLE == null
+        const enabledParams = visibleParams.filter(key => {
+            const param = this.data.params.find(p => p.NAME === key);
+            return param && param.ENABLE !== null;
+        });
+
+        const allParams = new Set([
+            ...Object.keys(this.sourceValues).filter(key => {
+                // Tylko rzeczywiste parametry (bez meta-pól)
+                if (key.includes('___') || key.includes('_ALIAS')) return false;
+
+                // Sprawdź czy parametr ma ENABLE !== null
+                const param = this.data.params.find(p => p.NAME === key);
+                return param && param.ENABLE !== null;
+            }),
+            ...enabledParams // Tylko widoczne i enabled parametry z visibility
+        ]);
+
+        // Przeprocesuj każdy parametr
+        for (const subParamName of allParams) {
+            // Sprawdź czy parametr ma ENABLE !== null
+            const paramDef = this.data.params.find(p => p.NAME === subParamName);
+            if (!paramDef || paramDef.ENABLE === null) {
+                continue;
+            }
+
+            const subParamValue = this.sourceValues[subParamName];
+
+            // Skopiuj podstawową wartość (lub ustaw pustą jeśli nie ma)
+            processedValues[subParamName] = subParamValue || '';
+
+            // Dodaj meta-pola dla tego sub-parametru
+            if (subParamValue && subParamValue !== '') {
+
+                const paramOptions = this.allOptionsByParameter?.[subParamName];
+                if (paramOptions && Array.isArray(paramOptions)) {
+
+                    const foundOption = paramOptions.find(opt => opt.VALUE === subParamValue);
+
+                    if (foundOption) {
+                        // Dodaj alias jeśli istnieje
+                        if (foundOption.ALIAS) {
+                            processedValues[`${subParamName}_ALIAS`] = foundOption.ALIAS;
+                            processedValues[`${subParamName}_ALIAS___DESCRIPTION`] = foundOption.ALIAS_DESCRIPTION || '';
+                        } else {
+                            processedValues[`${subParamName}_ALIAS`] = '';
+                            processedValues[`${subParamName}_ALIAS___DESCRIPTION`] = '';
+                        }
+
+                        // Dodaj opis
+                        processedValues[`${subParamName}___DESCRIPTION`] = foundOption.DESCRIPTION || '';
+                    } else {
+                        // Brak w słowniku - ustaw puste meta-pola
+                        processedValues[`${subParamName}_ALIAS`] = '';
+                        processedValues[`${subParamName}_ALIAS___DESCRIPTION`] = '';
+                        processedValues[`${subParamName}___DESCRIPTION`] = '';
+                    }
+                } else {
+
+                    // Brak słownika - ustaw puste meta-pola
+                    processedValues[`${subParamName}_ALIAS`] = '';
+                    processedValues[`${subParamName}_ALIAS___DESCRIPTION`] = '';
+                    processedValues[`${subParamName}___DESCRIPTION`] = '';
+                }
+
+                // Sprawdź czy parametr ma opcje (___DICT) i użyj rzeczywistej widoczności
+                const paramVisibility = visibility[subParamName];
+
+
+                // Jeśli mamy informację o widoczności, użyj jej
+                if (paramVisibility) {
+                    processedValues[`${subParamName}___DICT`] = paramVisibility.hasDict;
+                } else {
+                    // Fallback dla przypadków gdy visibility nie jest dostępna
+                    const dictValue = !!(paramOptions && paramOptions.length > 0);
+                    processedValues[`${subParamName}___DICT`] = dictValue;
+                    console.log(`${subParamName}___DICT set to ${dictValue} (from paramOptions fallback)`);
+                }
+
+                // Ustaw ___TITLE z DESCRIPTION parametru jeśli dostępne
+                const sourceParam = paramsMap[subParamName];
+                processedValues[`${subParamName}___TITLE`] = sourceParam?.DESCRIPTION || subParamName;
+                processedValues[`${subParamName}___VISIBLE`] = paramVisibility ? paramVisibility.visible : true;
+            } else {
+                // Pusta wartość - ustaw puste meta-pola
+                processedValues[`${subParamName}_ALIAS`] = '';
+                processedValues[`${subParamName}_ALIAS___DESCRIPTION`] = '';
+                processedValues[`${subParamName}___DESCRIPTION`] = '';
+
+                // Użyj rzeczywistej widoczności dla ___DICT i ___VISIBLE
+                const paramVisibility = visibility[subParamName];
+
+                // Debug dla pustych wartości
+                console.log(`${subParamName} (empty): paramVisibility=${!!paramVisibility}, hasDict=${paramVisibility?.hasDict}`);
+
+                // Dla pustych wartości: jeśli mamy informację o widoczności, użyj jej
+                if (paramVisibility) {
+                    processedValues[`${subParamName}___DICT`] = paramVisibility.hasDict;
+                    console.log(`${subParamName}___DICT set to ${paramVisibility.hasDict} (from visibility, empty value)`);
+                } else {
+                    // Fallback dla przypadków gdy visibility nie jest dostępna
+                    processedValues[`${subParamName}___DICT`] = false;
+                    console.log(`${subParamName}___DICT set to false (fallback, empty value)`);
+                }
+
+                // Ustaw ___TITLE z DESCRIPTION parametru jeśli dostępne  
+                const sourceParam = paramsMap[subParamName];
+                processedValues[`${subParamName}___TITLE`] = sourceParam?.DESCRIPTION || subParamName;
+                processedValues[`${subParamName}___VISIBLE`] = paramVisibility ? paramVisibility.visible : true;
+            }
+
+        }
+
+        return processedValues;
     }
     renderModal(photoFile) {
 
@@ -96,7 +269,7 @@ export class SourceWindow {
         createElement('img', {
             src: photoFile,
             alt: 'SLOPE',
-            class: ['img-fluid', 'mb-4'],
+            class: ['slope-image'],
             onerror: (e) => {
                 // Safely handle image load errors without creating an infinite loop.
                 // Some helpers add event listeners that won't be removed by setting onerror=null,
@@ -108,7 +281,7 @@ export class SourceWindow {
                     // If we've already attempted fallback for this element, show placeholder and stop.
                     if (img.dataset._fallbackAttempted) {
                         const placeholder = document.createElement('div');
-                        placeholder.className = 'img-placeholder img-fluid mb-4';
+                        placeholder.className = 'img-placeholder img-fluid mb-4 ';
                         placeholder.textContent = 'Brak zdjęcia';
                         img.parentNode.replaceChild(placeholder, img);
                         return;
@@ -184,6 +357,19 @@ export class SourceWindow {
                     col.style.display = 'grid';
                 }
             }
+
+            // Check if we're at the end of a row (every 2 elements or last element)
+            if (idx % 2 === 1 || idx === this.data.params.length - 1) {
+                // Check if all columns in the current row have display: none
+                const cols = row.querySelectorAll('.col-12');
+                const allHidden = Array.from(cols).every(col => col.style.display === 'none');
+
+                if (allHidden) {
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = '';
+                }
+            }
         });
 
         // Buttons
@@ -196,7 +382,7 @@ export class SourceWindow {
         createElement('button', {
             type: 'button',
             class: ['cancel-btn'],
-            text: 'Anuluj',
+            text: t('order.cancel'),
             onclick: () => this.close()
         }, container);
 
@@ -204,7 +390,7 @@ export class SourceWindow {
             id: 'dialog-confim',
             type: 'btn',
             class: ['submit-btn'],
-            text: 'Akceptuj',
+            text: t('order.confirm'),
             onclick: () => this.processForm()
         }, container);
     }
@@ -221,12 +407,16 @@ export class SourceWindow {
     processForm() {
         let inputs = document.querySelectorAll('.source-input');
         inputs.forEach(input => {
+            console.log(input.value, "SPRAWDZAMOCOCHODZI2")
             if (input.id in this.sourceValues) {
-                if (parseInt(input.value != NaN)) {
+
+                if (!isNaN(input.value) && input.value.trim() !== '') {
+                    console.log(input.value, "SPRAWDZAMOCOCHODZI23")
                     this.sourceValues[input.id] = parseInt(input.value);
                 }
                 else {
                     this.sourceValues[input.id] = input.value;
+                    console.log(input.value, "SPRAWDZAMOCOCHODZI4")
                 }
             }
         });

@@ -123,7 +123,13 @@ export function createInfoDialog({
             type: "button",
             onclick: (e) => {
                 e.preventDefault();
-                if (typeof action === "function") action();
+                if (typeof action === "function") {
+                    action();
+                }
+                // Jeśli akcja jest pusta lub nie istnieje, zamknij dialog
+                if (!action || action.toString() === '() => {}') {
+                    dialog.close();
+                }
             }
         }, btnContainer);
         btn.dataset.enter = enter ? "true" : "false";

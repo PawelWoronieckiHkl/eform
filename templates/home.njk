@@ -1,7 +1,17 @@
 {% extends "base.njk" %}
+
 {% block head %}
     <link rel="stylesheet" href="/styles/home.css">
     <link rel="stylesheet" href="/styles/mobile/home.css">
+    <script>
+        // Add home page identifier to body
+        document.addEventListener('DOMContentLoaded', function () {
+            document
+                .body
+                .classList
+                .add('home-page');
+        });
+    </script>
 {% endblock head %}
 
 {% block content %}
@@ -31,19 +41,19 @@
     </div>
 {% endif %}
 <div class="content">
-    <div class="container my-5 col-12 w-100 ">
+    <div class="container mb-5 col-12 w-100 mobile-rm-card">
 
         {% if user %}
             <div class="row justify-content-center">
-                <div class="col-12 col-md-8 col-lg-6 text-center">
-                    <h3 class="mb-3">{{ __('base.user_data') }}</h3>
-                    <h5>{{ __('base.welcome') }}
+                <div class="col-12 col-md-8 col-lg-6 text-center ">
+                    <h3 >{{ __('base.user_data') }}</h3>
+                    <h5>
                         {{ user.client_name }}</h5>
                     <p>
                         <strong>{{ __('base.nip') }}</strong>
                         {{ user.tax_id }}</p>
-                    <hr>
-                    <h6 class="mb-3">{{ __('base.contact_info') }}</h6>
+
+                    <h6 >{{ __('base.contact_info') }}</h6>
                     <p>
                         <strong>{{ __('base.street') }}</strong>
                         {{ user.street }}</p>
@@ -70,7 +80,18 @@
     {% include 'order_to_print.njk' %}
 </div>
 
-<div class="content center-content d-flex extra-info-parrent">
+<!-- Orders visibility toggle -->
+<div class="orders-toggle-container">
+    <div class="content center-content custom-checkbox-wrapper">
+        <input type="checkbox" id="orders-toggle" class="custom-checkbox"/>
+        <label for="orders-toggle" class="custom-checkbox-label">
+            <span class="custom-checkbox-indicator"></span>
+            <span class="custom-checkbox-text">{{ __('base.show_orders') or 'Pokaż zamówienia' }}</span>
+        </label>
+    </div>
+</div>
+
+<div class="content center-content d-flex extra-info-parrent d-none" id='last-orders-section'>
     {% if orders %}
         <div class="container col -4 me-2 add-info-box">
             <h2>{{ __('base.last_orders') }}</h2>

@@ -20,7 +20,7 @@ async function generateExcel(orderData) {
   return buffer;
 }
 
-async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData) {
+async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData, orderIdx) {
   console.log('zaczynam', logoPath)
   const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
   const logoDataUri = `data:image/png;base64,${logoBase64}`;
@@ -44,7 +44,8 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData)
     orderDetails: orderData,
     cleanOrderItems: cleanOrderItems,
     logoPath: logoDataUri,
-    sendData: data
+    sendData: data,
+    orderNr: orderIdx
   });
   let browser;
   if (process.env.NODE_ENV == 'live-dev') {
@@ -54,13 +55,7 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData)
     });
   }
   else {
-    const executablePath = '/root/.cache/ms-playwright/chromium_headless_shell-1179/chrome-linux/headless_shell';
-    if (!fs.existsSync(executablePath)) {
-      throw new Error(`Playwright executable missing at ${executablePath}`);
-    }
-
     browser = await chromium.launch({
-      executablePath,
       headless: true,
       args: ['--no-sandbox', '--disable-dev-shm-usage']
     });
@@ -77,28 +72,8 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData)
   <head>
     <meta charset="UTF-8">
     <style>
-      /* Dodaj wszystkie potrzebne style */
+      /* Import głównego CSS */
       ${fs.readFileSync(path.join(__dirname, 'styles/order-pdf.css'), 'utf8')}
-      /* ... i pozostałe pliki CSS ... */
-      
-      /* Ustawienia globalne */
-      body {
-        font-family: "Courier", monospace !important;
-    width: 297mm;  /* Szerokość zgodna z A4 w landscapie */
-        margin: 0;
-        padding: 0;
-      }
-      
-      .logo { 
-        width: 400px; 
-        margin-top: 60px; 
-        margin-left: 60px; 
-      }
-      
-      @page {
-        size: A4 landscape;
-        margin: 0;
-      }
     </style>
   </head>
   <body>${html}</body>
@@ -118,8 +93,8 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData)
     format: 'A4',
     landscape: true,
     printBackground: true,
-    scale: 0.44,
-    margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
+    scale: 0.8,
+    margin: { top: '1mm', right: '1mm', bottom: '1mm', left: '1mm' }
   });
 
   await browser.close();

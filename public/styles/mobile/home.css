@@ -1,5 +1,10 @@
 /* mobile home placeholder */
 @media (max-width: 767.98px) {
+    body {
+        background-color: white !important;
+        padding-bottom: 0%;
+    }
+
     .home-hero {
         display: flex;
         align-items: center;
@@ -18,6 +23,14 @@
         gap: 8px;
         overflow: auto;
         padding-bottom: 6px;
+    }
+
+    .add-info-box h2 {
+        min-height: 5rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
     }
 
     .quick-actions .action {
@@ -69,8 +82,21 @@
         padding-left: 5px !important;
         padding-right: 5px !important;
     }
-    .content{ width: 100% !important;
-                padding: 0% !important;}
+
+    .content {
+        width: 105% !important;
+        padding: 0% !important;
+
+    }
+
+    #last-orders-section {
+        margin-top: 0 !important
+    }
+
+    .custom-checkbox-wrapper {
+        margin-top: 0 !important;
+    }
+
     .content h3,
     .content h5 {
         font-size: 1.2rem;
@@ -136,8 +162,36 @@
     .order-info {
         flex: 0 0 100% !important
     }
-    .order-card-row{
-     flex-wrap: nowrap !important;
+
+    .order-card-row {
+        flex-wrap: nowrap !important;
+    }
+
+    /* Mobile container layout - stack vertically with 100% width */
+
+    /* Change parent flexbox direction to column */
+    #last-orders-section.d-flex {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    /* Target last orders and history containers */
+    .container.add-info-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 15px !important;
+        margin-right: 0 !important;
+        flex: none !important;
+    }
+
+    /* Specific targeting for Bootstrap classes */
+    .container.col-4.add-info-box,
+    .container.col-6.add-info-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 15px !important;
+        margin-right: 0 !important;
+        flex: none !important;
     }
 
 }

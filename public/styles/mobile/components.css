@@ -1,33 +1,190 @@
 @media (max-width: 767.98px) {
 
+    /* Mobile components - white theme, full width, no borders/shadows */
+
     /* Badge */
     .badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: var(--muted);
-        color: var(--text);
-        padding: 6px 8px;
-        border-radius: 999px;
+        background: #f8f9fa !important;
+        color: #333 !important;
+        padding: 8px 12px !important;
+        border-radius: 20px !important;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
+        border: none !important;
+        box-shadow: none !important;
     }
 
     /* List item */
     .list-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px;
-        background: var(--surface);
-        border-radius: 10px;
-        box-shadow: var(--card-shadow);
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important;
+        padding: 20px !important;
+        background: white !important;
+        border-radius: 0 !important;
+        border: none !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        box-shadow: none !important;
+        margin-bottom: 0 !important;
+        width: 100% !important;
     }
 
     .avatar-sm {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
-        background: var(--muted);
+        width: 50px !important;
+        height: 50px !important;
+        border-radius: 10px !important;
+        background: #f8f9fa !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Form elements */
+    .form-control,
+    .form-select {
+        width: 93% !important;
+        padding: 5px !important;
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 10px !important;
+        font-size: 1.1rem !important;
+        background: white !important;
+        box-shadow: none !important;
+        margin-bottom: 15px !important;
+        height:max-content !important;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #007bff !important;
+
+    }
+
+    /* Buttons */
+    .btn {
+        width: 100% !important;
+        padding: 15px !important;
+        font-size: 1.1rem !important;
+        border-radius: 10px !important;
+
+        box-shadow: none !important;
+        margin-bottom: 10px !important;
+    }
+
+
+
+
+    .btn-outline-secondary {
+        background: white !important;
+        color: #6c757d !important;
+        border: 2px solid #6c757d !important;
+    }
+
+    /* Form button spacing */
+    .form-button {
+        margin-top: 15px !important;
+
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        width: 100% !important;
+        padding: 15px !important;
+        font-size: 1.1rem !important;
+
+    }
+
+    /* Buttons space */
+    #buttons-space {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        margin-top: 20px !important;
+        padding: 20px !important;
+        width: 100% !important;
+    }
+
+    /* Commission space */
+    .commission-space {
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Container adjustments */
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+   
+        margin: 0 !important;
+    }
+
+    /* Content full width */
+    .content {
+        width: 100% !important;
+        max-width: 100% !important;
+
+        margin: 0 !important;
+        background: white !important;
+    }
+
+    /* Form sections */
+    .asortment-container {
+        width: 100% !important;
+        padding: 15px 0 !important;
+        margin: 0 !important;
+    }
+
+    .asortment-inputs {
+        flex-direction: column !important;
+        gap: 15px !important;
+        width: 100% !important;
+    }
+
+    .asortment-inputs>div {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Commission input */
+    .comm-input {
+        width: 100% !important;
+        margin-bottom: 20px !important;
+    }
+
+    .comm-input input {
+        width: 100% !important;
+        padding: 10px !important;
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 10px !important;
+        font-size: 1.1rem !important;
+        box-shadow: none !important;
+    }
+
+    /* Labels */
+    label {
+        font-weight: 600 !important;
+        color: #333 !important;
+        margin-bottom: 8px !important;
+        font-size: 1rem !important;
+    }
+
+    /* Dynamic form */
+    #dynamic-form {
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 20px 0 !important;
+    }
+
+    /* Order reminder */
+    .order-reminder {
+        width: 100% !important;
+
+        margin: 0 !important;
+    }
+
+    .order-reminder h3 {
+        text-align: center !important;
+        margin-bottom: 20px !important;
+        font-size: 1.3rem !important;
+        color: #333 !important;
     }
 }

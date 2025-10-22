@@ -163,7 +163,7 @@ dialog::backdrop {
 	width: 25px;
 	height: 25px;
 	border: 1px solid rgba(255, 255, 255, 0.4);
-	background-color: rgba(0, 0, 0, 0.11);
+
 	cursor: pointer;
 	border-radius: 4px;
 }
@@ -195,6 +195,23 @@ p {
 	justify-content: flex-end;
 	color: #00000049;
 	font-weight: 600;
+}
+
+/* Desktop - ukryj mobilne elementy filtrów */
+@media (min-width: 769px) {
+	.filter-controls-header {
+		display: none !important;
+	}
+
+	.filter-controls-content {
+		display: block !important;
+		padding: 0 !important;
+	}
+
+	.filter-controls {
+		margin-top: 2% !important;
+		max-height: none !important;
+	}
 }
 
 .sorting-controls {
@@ -447,6 +464,11 @@ dialog::backdrop {
 .stock-zero {
 	background-color: #d9534f;
 }
+
+.stock-critical {
+	background-color: #fd7e14;
+}
+
 
 .stock-safe {
 	background-color: #28a745;

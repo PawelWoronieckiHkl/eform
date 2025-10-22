@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { requireLogin, requirePermission, checkOrderOwnership } = require('../middleware/loginMixture');
+const { requireLogin, checkOrderOwnership, requireOwner } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
 const orderService = require('../services/orderService.js')
+const ownerService = require('../services/owner.js')
 const mailBot = require('../services/mailBot/mailBot')
 const path = require('path');
 const OrderSender = require("../services/sendOrderService")
@@ -21,25 +22,86 @@ router.get('/edit/:orderId', requireLogin, async (req, res) => {
 })
 
 
+router.get("/userOrders", requireLogin, requireOwner, async (req, res) => {
+    try {
+        const { userIdent } = req.query;
+        console.log(req.query, 'req query in user orders')
+        if (!userIdent) {
+            delete req.session.context_user;
+            return res.redirect('/orders');
+        }
+
+        // Ustawienie kontekstu użytkownika na podstawie userIdent
+        await ownerService.setContextUserByIdent(req, userIdent);
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10;
+        const offset = (page - 1) * limit;
+        const userId = await db.getUserIdByIdent(userIdent);
+
+        // Pobierz zamówienia dla konkretnego użytkownika
+        const [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(userId, limit, offset),
+            db.countUserOrders(userId)
+        ]);
+
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        // Pobierz dane użytkownika dla nagłówka
+        const selectedUser = await db.getUserData(userIdent);
+
+        res.render("orders_owner.njk", {
+            orders,
+            page,
+            limit,
+            totalOrders,
+            totalPages,
+            users: await db.getUsersByOwner(req),
+            selectedUser: selectedUser,
+            selectedUserIdent: userIdent
+        });
+    } catch (error) {
+        console.error('Error fetching user orders:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+});
+
 router.get("/", requireLogin, async (req, res) => {
+
+
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const offset = (page - 1) * limit;
 
+    const currentUser = ownerService.getCurrentUser(req);
     const [orders, totalOrders] = await Promise.all([
-        db.getUserOrders(req.session.user.userId, limit, offset),
-        db.countUserOrders(req.session.user.userId)
+        db.getUserOrders(currentUser.userId, limit, offset),
+        db.countUserOrders(currentUser.userId)
     ]);
-    
-    const totalPages = Math.ceil(totalOrders / limit);
 
-    res.render("orders.njk", {
-        orders,
-        page,
-        limit,
-        totalOrders,
-        totalPages
-    });
+    const totalPages = Math.ceil(totalOrders / limit);
+    if (req.session.user?.isOwner) {
+        res.render("orders_owner.njk", {
+            orders,
+            page,
+            limit,
+            totalOrders,
+            totalPages,
+            users: await db.getUsersByOwner(req)
+        });
+    }
+    else {
+        res.render("orders.njk", {
+            orders,
+            page,
+            limit,
+            totalOrders,
+            totalPages
+        });
+    }
 });
 
 
@@ -48,9 +110,10 @@ router.get("/history", requireLogin, async (req, res) => {
     const limit = 20;
     const offset = (page - 1) * limit;
 
+    const currentUser = ownerService.getCurrentUser(req);
     const [orders, totalOrders] = await Promise.all([
-        db.getUserOrders(user.id, limit, offset, true),
-        db.countUserOrders(user.id, true)
+        db.getUserOrders(currentUser.userId, limit, offset, true),
+        db.countUserOrders(currentUser.userId, true)
     ]);
 
     const totalPages = Math.ceil(totalOrders / limit);
@@ -75,8 +138,8 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
             res.render("order_sent_prices.njk",
                 { orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total }
             );
-            req.session.user.showPricesOnce = false; 
-            return ;
+            req.session.user.showPricesOnce = false;
+            return;
         } else {
             return res.render("order_sent.njk",
                 { orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total }
@@ -93,7 +156,8 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
 
 
 router.get("/add-order", requireLogin, async (req, res) => {
-    const addr = await db.getUserAddresses(user.id)
+    const currentUser = ownerService.getCurrentUser(req);
+    const addr = await db.getUserAddresses(currentUser.userId)
 
     res.render("new-order.njk", { addr: addr });
 });
@@ -133,6 +197,140 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
 });
 
 
+router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOwnership, async (req, res) => {
+    try {
+        const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
+
+        if (!orderItems || orderItems.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Nie można wygenerować PDF dla pustego zamówienia"
+            });
+        }
+
+        const heads = Object.keys(orderItems[0].json_parameters);
+        let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
+
+        // Pobierz logo użytkownika
+        const currentUser = ownerService.getCurrentUser(req);
+        const photoFile = await db.getUserLogo(currentUser?.pin);
+        const logoPath = path.join(__dirname, '../img/', photoFile);
+
+        // Konwertuj logo do base64 z obsługą błędów
+        const fs = require('fs');
+        let logoDataUri = null;
+        try {
+            console.log('Próba odczytu logo z:', logoPath);
+            if (fs.existsSync(logoPath)) {
+                const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
+                logoDataUri = `data:image/png;base64,${logoBase64}`;
+                console.log('Logo pomyślnie załadowane');
+            } else {
+                console.log('Plik logo nie istnieje:', logoPath);
+            }
+        } catch (error) {
+            console.error('Błąd przy odczycie logo:', error);
+        }
+
+        // Konfiguracja i18n tak jak w pdfGenerator.js
+        const nunjucks = require('nunjucks');
+        const confLang = require('../services/mailBot/conf');
+        const lang = req.getLocale();
+        const i18n = confLang(lang);
+        const __ = (key) => i18n.__(key, { locale: lang });
+
+        // Konfiguracja Nunjucks z funkcją tłumaczenia
+        const env = nunjucks.configure('templates', {
+            autoescape: true,
+            trimBlocks: true,
+            lstripBlocks: true
+        });
+        env.addGlobal('__', __);
+
+        console.log('Dane przekazywane do template:', {
+            orderDetails: orderDetails.id,
+            itemsCount: orderItems.length,
+            photoFile,
+            logoPath: logoDataUri ? 'LOGO_LOADED' : 'NO_LOGO'
+        });
+        console.log(req.session.user.showPrices, 'show prices in session before render', req.session.user.showPricesOnce);
+
+        // Określ czy pokazać ceny (sprawdź przed resetowaniem showPricesOnce)
+        const shouldShowPrices = req.session.user?.showPrices || req.session.user?.showPricesOnce || req.params.showPrices === 'true';
+        const isShort = req.params.short === 'true';
+        console.log(req.params.short,isShort, 'isShort param', req.params.showPrices, shouldShowPrices, 'should show prices in pdf');
+        // Wyrenderuj template do HTML
+        let html;
+        if (!isShort) {
+            html = env.render('order_to_print.njk', {
+                orderDetails,
+                orderItems,
+                heads,
+                cleanOrderItems,
+                total,
+                photoFile,
+                logoPath: logoDataUri,
+                prices: shouldShowPrices
+            });
+        }
+        else{
+            html = env.render('order_to_print_short.njk', {
+                orderDetails,
+                orderItems,
+                heads,
+                cleanOrderItems,
+                total,
+                photoFile,
+                logoPath: logoDataUri,
+                prices: shouldShowPrices
+            });
+        }
+
+
+        // Użyj Playwright do wygenerowania PDF z HTML
+        const { chromium } = require('playwright');
+        const browser = await chromium.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-dev-shm-usage']
+        });
+
+        const context = await browser.newContext();
+        const page = await context.newPage();
+
+        await page.setContent(html, {
+            waitUntil: 'networkidle',
+            timeout: 30000
+        });
+
+        const pdfBuffer = await page.pdf({
+            format: 'A3',
+            landscape: true,
+            printBackground: true,
+            margin: { top: '10mm', right: '10mm', bottom: '10mm', left: '10mm' }
+        });
+
+        await browser.close();
+
+        // Ustaw nagłówki dla pobrania pliku
+        const fileName = `zamowienie_${orderDetails.id}.pdf`;
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Content-Length', pdfBuffer.length);
+
+        // Wyślij PDF
+        res.send(pdfBuffer);
+
+    } catch (error) {
+        console.error('Błąd generowania PDF:', error);
+        res.status(500).json({
+            success: false,
+            message: "Błąd podczas generowania PDF: " + error.message
+        });
+    }
+});
+
+
+
 router.get("/order/:orderId/new-position/", requireLogin, (req, res) => {
 
     res.render("form.njk", { orderId: req.params.orderId });
@@ -140,6 +338,7 @@ router.get("/order/:orderId/new-position/", requireLogin, (req, res) => {
 
 router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
     try {
+        let extraMail = process.env.EXTRA_MAIL ? process.env.EXTRA_MAIL.split(',') : false;
         const id = req.params.orderId;
         const { status } = req.body;
         const response = await db.changeOrderStatus(id, 'sent');
@@ -147,29 +346,28 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
 
         if (orderItems || orderItems.length > 0) {
             const sender = new OrderSender.OrderSender(orderDetails, orderItems);
-            const sendData = sender.init()
-            const user = await db.getUserData(req.session.user?.pin)
+            const sendData = await sender.init()
+            const currentUser = ownerService.getCurrentUser(req);
+            const user = await db.getUserData(currentUser?.pin)
             const clientName = user.client_name
-            console.log('user and username', user, clientName)
-            const photoFile = await db.getUserLogo(req.session.user?.pin)
+            const photoFile = await db.getUserLogo(currentUser?.pin)
             const logoPath = path.join(__dirname, '../img/', photoFile)
-
             const heads = Object.keys(orderItems[0].json_parameters);
             let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
             // { orderDetails: orderDetails[0], orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems }
             const lang = req.getLocale();
-            const mail = await db.getUserMail(req.session.user?.pin)
+            const mail = await db.getUserMail(currentUser?.pin)
+            const orderIdx = await db.getUserOrderId(req.params.orderId)
 
-
-            const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData)
-            console.log(sendData, 'siema')
+            const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx)
+            console.log(sendData.commission, 'siema')
             mailBot.sendMail(
-                [mail.user_email, mail.organization_email, mail.organization_email2],
+                [mail.user_email, mail.organization_email, mail.organization_email2, extraMail],
                 lang,
                 pdf,
                 {
                     klient: clientName,
-                    orderNr: `${req.params.orderId}`,
+                    orderNr: orderIdx,
                     logoPath: logoPath,
                     orderDetails: sendData
                 }
@@ -189,7 +387,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
         console.error(err);
     }
 });
-router.post('/copy/:orderId', checkOrderOwnership,requireLogin, async (req, res) => {
+router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res) => {
     let orderAddress = null;
     let sendAddress = null;
 
@@ -240,9 +438,9 @@ router.post('/copy/:orderId', checkOrderOwnership,requireLogin, async (req, res)
 
 router.post('/lock', requireLogin, async (req, res) => {
     try {
-        let {status} = req.body;
+        let { status } = req.body;
         if (req.session) req.session.user.showPrices = status;
-        return res.json({status:'success', refresh:true})
+        return res.json({ status: 'success', refresh: true })
     }
     catch (err) {
         console.error(err);
@@ -263,8 +461,8 @@ router.post('/save-order', requireLogin, async (req, res) => {
             sendAddrId = response
         }
 
-
-        let id = await db.insertNewOrder(commission, addrId, user.id, comment, sendAddrId);
+        const currentUser = ownerService.getCurrentUser(req);
+        let id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId);
 
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: `/orders/order/${id}` });
     }
@@ -273,7 +471,7 @@ router.post('/save-order', requireLogin, async (req, res) => {
     }
 });
 
-router.put('/update-order/:orderId',requireLogin, checkOrderOwnership, async (req, res) => {
+router.put('/update-order/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
     try {
         const { commission, orderContactInfo, orderSendAddress, comment } = req.body;
         const { orderId } = req.params;
@@ -285,7 +483,8 @@ router.put('/update-order/:orderId',requireLogin, checkOrderOwnership, async (re
         else {
             response = await db.insertOrderAddress(orderContactInfo)
             const addrId = response[0].insertId;
-            response = db.insertNewOrder(commission, addrId, user.id);
+            const currentUser = ownerService.getCurrentUser(req);
+            response = db.insertNewOrder(commission, addrId, currentUser.userId);
         }
 
         return res.json({ response: response, redirect: `/orders/order/${orderId}` });
@@ -295,7 +494,7 @@ router.put('/update-order/:orderId',requireLogin, checkOrderOwnership, async (re
     }
 })
 
-router.delete('/order/:orderId/delete/', requireLogin,checkOrderOwnership, async (req, res) => {
+router.delete('/order/:orderId/delete/', requireLogin, checkOrderOwnership, async (req, res) => {
     // console.log(req.params.orderId);
     let response = await db.deleteOrder(req.params.orderId);
     if (response) {
@@ -330,6 +529,17 @@ router.patch('/:orderId/comment/update', requireLogin, async (req, res) => {
     } catch (err) {
         console.error('Błąd przy aktualizacji komentarza:', err);
         return res.status(500).json({ success: false, error: 'Wewnętrzny błąd serwera.' });
+    }
+});
+
+// Clear context user endpoint
+router.get('/clear-context', requireLogin, requireOwner, async (req, res) => {
+    try {
+        ownerService.clearContextUser(req);
+        res.redirect('/orders');
+    } catch (err) {
+        console.error('Error clearing context user:', err);
+        res.status(500).json({ success: false, error: 'Internal server error' });
     }
 });
 

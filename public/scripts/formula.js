@@ -8,6 +8,7 @@ parser.setVariable("MAX", "MAX");
 parser.setVariable("DOM", "DOM");
 
 function inList(params) {
+    // console.log('inList', params)
     if (!params || params.length < 2) return false;
 
     let what = (params[0] || "").toString().toLowerCase();
@@ -77,6 +78,8 @@ function inList3(params) {
 // }
 
 function contains(params) {
+
+    // console.log('contains', params)
     if (!params || params.length < 2) return false;
     let what = (params[0] || "").toString();
     let list = (params[1] || "").toString();
@@ -91,7 +94,7 @@ function contains(params) {
 }
 
 parser.setFunction("WSROD", function (params) {
-
+    // console.log(params)
     return inList(params);
 });
 
@@ -102,7 +105,7 @@ parser.setFunction("HASLO", function (params) {
     if (params.length > 0) {
         return false;
     }
-    return false;
+    return true;
 });
 
 parser.setFunction("NIEWSROD", function (params) {
@@ -150,7 +153,7 @@ parser.setFunction("ORAZ", function (params) {
 });
 
 parser.setFunction("USTAW", function (params) {
-    // console.log(params,'wart')
+    if (window.ignoreDom && params[1] == 'DOM') { return true }
     if (!params || params.length < 2) return false;
 
     if (!window.inputsValidators) window.inputsValidators = {};
@@ -171,9 +174,10 @@ parser.setFunction("USTAW", function (params) {
 
     const field = String(params[0]).toUpperCase();
     const parameter = String(params[1]).toUpperCase();
-    if (window.ignoreDom && parameter == "DOM") { return false }
-    let value = params.length >= 3 ? String(params[2]) : undefined;
 
+
+    let value = params.length >= 3 ? String(params[2]) : undefined;
+    if (parameter == 'DOM' && value == '') { return true }
 
     const validatorModel = window.inputsValidators[window.actualParam][window.actualValue];
     const defaultsModel = window.inputsDefaults[window.actualParam][window.actualValue];
@@ -264,6 +268,7 @@ parser.setFunction("CEILING", function (params) {
 });
 
 function evaluateFormula(expression, context, type, param = null) {
+
     if (!expression || expression === "<NULL>") {
         return true;
     }
@@ -272,13 +277,43 @@ function evaluateFormula(expression, context, type, param = null) {
         context = {};
     }
 
-    for (let key in context) {
-        if (context.hasOwnProperty(key)) {
-            let value = context[key];
+    // Funkcja do spłaszczania zagnieżdżonych obiektów
+    function flattenObject(obj, prefix = '') {
+        let result = {};
+        for (let key in obj) {
+            if (obj[key] && typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+                // Dla WYMIAROWANIE_SLOPOW - wyciągnij wartości bezpośrednio
+                if (key === 'WYMIAROWANIE_SLOPOW') {
+                    for (let subKey in obj[key]) {
+                        if (subKey !== 'TYP') { // Pomiń TYP
+                            result[subKey] = obj[key][subKey];
+                        }
+                    }
+                } else {
+                    // Rekurencyjnie spłaszcz inne zagnieżdżone obiekty
+                    Object.assign(result, flattenObject(obj[key], prefix + key + '.'));
+                }
+            } else {
+                result[prefix + key] = obj[key];
+            }
+        }
+        return result;
+    }
+
+    // Spłaszcz kontekst przed konwersją na uppercase
+    const flatContext = flattenObject(context);
+
+    for (let key in flatContext) {
+        if (flatContext.hasOwnProperty(key)) {
+            let value = flatContext[key];
+
             if (typeof value === "string") {
                 upperCaseContext[key] = value.toUpperCase();
             } else {
                 upperCaseContext[key] = value;
+            }
+            if (upperCaseContext[key] == ''){
+                upperCaseContext[key] = 0;
             }
         }
     }
@@ -305,13 +340,28 @@ function evaluateFormula(expression, context, type, param = null) {
     // }
 
     let result = parser.parse(expression);
-
-
-    if (param && expression.includes('HASLO') && result.result == false) {
-        
-        window.lockedParams.push(param)
+    if (expression.includes(`WSROD(ARTALU25,"UT")`)) {
+        console.log('ARTALU', expression, parser.variables.ARTALU25
+            , context.ARTALU25, result)
     }
 
+
+    if (param && expression.includes('HASLO')) {
+
+        if (result.result == true) {
+
+            window.lockedParams.push(param)
+        }
+        else {
+            if (param && !window.skipCountParams.includes(param)) {
+                window.skipCountParams.push(param);}
+
+            return false
+        }
+    }
+    if (expression && expression.includes('WYMIAROWANIE')) {
+
+    }
     if (result.result == "0") {
         result.result = false;
     }

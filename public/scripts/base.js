@@ -1,4 +1,3 @@
-
 import { getEnvVersion } from "./getEnv.js";
 async function getLogo() {
     try {
@@ -85,11 +84,43 @@ async function getUserName() {
     if (!data.success) {
         throw new Error('Błąd pobierania nazwy użytkownika: ' + data.message);
     }
+
+    // Sprawdź context user
+    let contextInfo = '';
+    try {
+        const contextBtns = document.querySelectorAll('.context-button');
+        const contextResponse = await fetch('/context-user', {
+            method: 'GET',
+            credentials: 'include'
+        });
+        if (contextResponse.ok) {
+            const contextData = await contextResponse.json();
+            if (contextData.success && contextData.contextUser) {
+                window.context = true
+                contextBtns.forEach(contextBtn => {
+                    contextBtn.classList.remove('d-none');
+                });
+                contextInfo = `<br>(${contextData.ident})`;
+            }
+            else{window.context = false
+                contextBtns.forEach(contextBtn => {
+                    contextBtn.classList.add('d-none');
+                });
+            }
+        }
+    } catch (err) {
+        console.error('Błąd pobierania context user:', err);
+    }
+
     setTimeout(() => {
         console.log(t('base.user'), data.name);
-        document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${data.name}`;
+        document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${data.name}${contextInfo}`;
     }, 100);
 }
+
+
+
+
 
 async function getConfigNum() {
     const version = await getEnvVersion();
@@ -108,16 +139,72 @@ async function getConfigNum() {
 
 
     console.log('wersja', data);
-    if (version) {
-        document.getElementById('config-number-info').innerHTML =
 
-            `Numer konfiguracji <br> ${data.name}`;
-    }
+    document.getElementById('config-number-info').innerHTML =
+
+        `Numer konfiguracji <br> ${data.name}`;
+
 
 }
+
+
 
 
 getConfigNum()
 
 getUserName()
     .catch(err => console.error('getUserName Error:', err));
+
+// Desktop navigation toggle functionality
+document.addEventListener('DOMContentLoaded', function () {
+    const navToggleBtn = document.getElementById('navToggleBtn');
+    const desktopNav = document.querySelector('.desktop-nav');
+
+    if (navToggleBtn && desktopNav) {
+        // Check for saved state in localStorage and sync with html class
+        const isCollapsed = localStorage.getItem('nav-collapsed') === 'true';
+        if (isCollapsed) {
+            document.documentElement.classList.add('nav-collapsed');
+            desktopNav.classList.add('collapsed');
+        }
+
+        navToggleBtn.addEventListener('click', function () {
+            const isCurrentlyCollapsed = document.documentElement.classList.contains('nav-collapsed');
+
+            if (isCurrentlyCollapsed) {
+                document.documentElement.classList.remove('nav-collapsed');
+                desktopNav.classList.remove('collapsed');
+                localStorage.setItem('nav-collapsed', 'false');
+            } else {
+                document.documentElement.classList.add('nav-collapsed');
+                desktopNav.classList.add('collapsed');
+                localStorage.setItem('nav-collapsed', 'true');
+            }
+        });
+    }
+});
+
+// Logout functionality for both desktop and mobile nav
+document.addEventListener('DOMContentLoaded', function () {
+    const desktopLogoutLink = document.querySelector('[data-action="logout"]');
+    const mobileLogoutLink = document.getElementById('mobile-logout-link');
+
+    function handleLogout(event) {
+        event.preventDefault();
+
+        // Create a form and submit it for POST logout
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/user/logout';
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    if (desktopLogoutLink) {
+        desktopLogoutLink.addEventListener('click', handleLogout);
+    }
+
+    if (mobileLogoutLink) {
+        mobileLogoutLink.addEventListener('click', handleLogout);
+    }
+});

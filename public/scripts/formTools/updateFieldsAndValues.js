@@ -8,6 +8,8 @@ import { loadScript } from './scriptLoader.js';
 import { findAllValidatorsForInput } from './validateUtils.js'
 
 
+
+
 export function resetDependences([params, display], name, inputs, values, allOptionsByParameter) {
     logFunctionName('resetDependences');
 
@@ -100,14 +102,24 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
 
     // Pobieramy aktualny obiekt z displayValues lub tworzymy pusty
     let currentValue = displayValues.get(paramName) || {};
-    // console.log(value, currentValue, 'build')
-    console.log(currentValue, 'display sprawdzam')
-    
     if (currentValue['option_value'] || currentValue['option_value'] != undefined
     ) {
         currentValue['option_value'] = String(currentValue['option_value'])
     }
-
+    if (value === '<NONE>') {
+        // Zamiast usuwać klucz, wyczyść wszystkie wartości w obiekcie
+        let currentValue = displayValues.get(paramName) || {};
+        // Wyczyść wszystkie właściwości obiektu
+        for (let key in currentValue) {
+            currentValue[key] = '';
+        }
+        // Upewnij się, że podstawowe właściwości istnieją jako puste
+        currentValue['option_value'] = '';
+        currentValue['option_description'] = '';
+        displayValues.set(paramName, currentValue);
+        console.log('NONE - cleared values for:', paramName, currentValue);
+        return;
+    }
 
     // 1. Obsługa wartości jako OBIEKTU (SourceWindow)
     if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -116,19 +128,25 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
 
         for (let [fieldName, fieldVal] of Object.entries(value)) {
             if (!fieldVal || value === '<NONE>') {
-                // console.log('build mamy none', paramName)
-                delete displayValues[paramName];
-                continue
-            };
-
-            // zapisz surową wartość do valueParts
+                // Zamiast usuwać klucz, wyczyść wszystkie wartości w obiekcie
+                let currentValue = displayValues.get(paramName) || {};
+                // Wyczyść wszystkie właściwości obiektu
+                for (let key in currentValue) {
+                    currentValue[key] = '';
+                }
+                // Upewnij się, że podstawowe właściwości istnieją jako puste
+                currentValue['option_value'] = '';
+                currentValue['option_description'] = '';
+                displayValues.set(paramName, currentValue);
+                continue;
+            }            // zapisz surową wartość do valueParts
             valueParts.push(fieldVal);
 
             // spróbuj znaleźć opis
             if (dictValues[fieldName]) {
                 const match = dictValues[fieldName].find(v => v.VALUE === fieldVal);
                 if (match) {
-                    // console.log('match', match)
+
                     if (match.ALIAS) {
                         descParts.push(match.ALIAS_DESCRIPTION ?? '');
                     } else {
@@ -146,10 +164,11 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
         currentValue['option_description'] = descParts.join(' / ');
 
         displayValues.set(paramName, currentValue);
-        return; // nic więcej nie robimy w tym przypadku
+
+        return;
     }
 
-    // 2. Obsługa dotychczasowej logiki — gdy value to string
+
     if (value != '<NONE>') {
         const valOBj = searchForParameter(value, dictValues, paramName);
 
@@ -164,7 +183,7 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
                 currentValue['option_description'] = currentParam?.DESCRIPTION ?? "";
             }
         }
-        displayValues.set(paramName, currentValue);
+
     }
 }
 
@@ -205,7 +224,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
                     paramName
                 );
                 let expression = param
-
+                // console.log(param, 'param enable', isEnabled, values, param.ENABLE)
             }
 
             catch (error) {
@@ -232,7 +251,6 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
         const currentSelect = inputs[paramName];
 
         if (currentSelect.tagName === "INPUT") {
-
         }
 
         const allowed = allowedOptions[paramName];
@@ -263,7 +281,7 @@ export function updateLink() {
 
 }
 
-export function updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter) {
+export function updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value) {
 
     logFunctionName('updateFieldStates')
     for (let key in inputs) {
@@ -274,6 +292,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                 break;
             }
         }
+
         if (!param) continue;
         let shouldEnable = false;
         try {
@@ -305,41 +324,72 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
         if (inputs[key].tagName == 'INPUT') {
             validateFormInput(values, inputs[key]);
         }
+        let paramName; // Ensure paramName is defined in the scope
 
         if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE) {
-            try {
-                loadScript(param.SOURCE, values, displayValues, groupNumber, function (scriptResult) {
-                    if (scriptResult) {
 
-                        for (const [paramName, value] of Object.entries(scriptResult)) {
-                            if (inputs && inputs[paramName]) {
-                                let key = Object.keys(scriptResult)[0]
-                                let val = Object.values(scriptResult)[0]
+            const wrongValues = ['', 0, null, undefined, NaN]
+            const checkParams = ['SZEROKOSC', 'WYSOKOSC'].filter(p => {
+                let input = inputs[p];
+                if (input !== undefined) {
+                    let parentDiv = input.parentNode;
+                    return parentDiv && parentDiv.style.display !== 'none';
+                }
+                return false;
+            });
+            const hasValidValues = checkParams.length === 0 || checkParams.every(p => !wrongValues.includes(values[p]));
 
-                                let strVal;
-                                if (param.FORMAT == 'n%') {
-                                    strVal = `${parseInt(val * 100)}%`;
-                                    inputs[paramName].value = `${parseInt(val * 100)}%`;
+            if (hasValidValues &&
+                !(window.skipCountParams.includes(param.NAME)
+                    || inputs[key].parentNode.style.display === 'none')) {
+
+                try {
+                    loadScript(param.SOURCE, values, displayValues, groupNumber, allOptionsByParameter, function (scriptResult) {
+                        if (scriptResult) {
+
+                            for ([paramName, value] of Object.entries(scriptResult)) {
+                                if (inputs && inputs[paramName]) {
+                                    let key = Object.keys(scriptResult)[0]
+                                    let val = Object.values(scriptResult)[0]
+
+                                    let strVal;
+                                    if (param.FORMAT == 'n%') {
+                                        strVal = `${parseInt(val * 100)}%`;
+                                        inputs[paramName].value = `${parseInt(val * 100)}%`;
+                                    }
+                                    else {
+                                        strVal = String(value)
+                                        inputs[paramName].value = value;
+                                    }
+
+                                    values[paramName] = value;
+                                    buildValuesToDisplay(allOptionsByParameter, strVal, param.NAME, displayValues, 'INPUT ');
                                 }
-                                else {
-                                    strVal = String(value)
-                                    inputs[paramName].value = value;
-                                }
-
-                                values[paramName] = value;
-                                buildValuesToDisplay(allOptionsByParameter, strVal, param.NAME, displayValues, 'INPUT ');
                             }
                         }
-                    }
-                });
+                    });
+                }
+                catch (error) {
+                    console.log('mamy error')
+                    inputs[paramName].value = '0'
+                    values[param.NAME] = 0
+                    console.log('PARAM NAME:', param.NAME);
+                }
             }
-            catch (error) {
-                console.log('mamy error')
-                inputs[paramName].value = 0
+            else {
+                inputs[param.NAME].value = '0'
+                values[param.NAME] = 0
+                setTimeout(() => {
+                    console.log('PARAM NAME:', param.NAME, values);
+                }, 1000);
             }
         }
 
-        if (param.FORMULA != "<NULL>") {
+        if (param.FORMULA != "<NULL>" &&
+            !(window.skipCountParams.includes(param.NAME)
+                || inputs[key].parentNode.style.display === 'none')
+
+        ) {
             setTimeout(() => {
                 if (param.FORMULA.includes('RABAT')) {
                 }
@@ -349,10 +399,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                         values,
                         "formula"
                     );
-                    // if (param.FORMULA.includes('CENA_UZNANIOWA')
-                    // || param.FORMULA.includes('CENA_SUMA')) {
-                    // console.log(param.FORMULA, 'FORMULA', result)
-                    // }
+
 
                     if (result === false || result === null || result < 0) {
                         inputs[key].value = '0';
@@ -396,7 +443,7 @@ export function setWar(values, params, inputs) {
 
         const keys = path.split('.');
         let current = obj;
-
+        let currentInput = inputs[param.NAME];
         for (let i = 0; i < keys.length - 1; i++) {
 
             if (!current[keys[i]] || typeof current[keys[i]] !== 'object') {
@@ -406,14 +453,29 @@ export function setWar(values, params, inputs) {
         }
         if (param.NAME == param.SOURCE) {
             param.modal.setTyp(value);
+            console.log()
 
         }
         else if (param.TYPE == 'link') {
-            inputs[param.NAME].value = `/photos/${window.tempGroupNumber}/${param.NAME}/${value}`
-            inputs[param.NAME].target = "_blank";
-            inputs[param.NAME].href = `/photos/${window.tempGroupNumber}/${param.NAME}/${value}`
+            currentInput.value = `/photos/${window.tempGroupNumber}/${param.NAME}/${value}`
+            currentInput.target = "_blank";
+            currentInput.href = `/photos/${window.tempGroupNumber}/${param.NAME}/${value}`
 
         }
+        else {
+            console.log(currentInput, value, 'DOMOM')
+            if (currentInput) {
+                // Sprawdź typ elementu i ustaw odpowiednią właściwość
+                if (currentInput.tagName === 'INPUT' || currentInput.tagName === 'TEXTAREA' || currentInput.tagName === 'SELECT') {
+                    currentInput.value = value;
+                } else {
+                    currentInput.innerHTML = value;
+                }
+            } else {
+                console.warn(`Input element for ${param.NAME} not found`);
+            }
+        }
+        console.log('SET WAR', keys[keys.length - 1], value)
         current[keys[keys.length - 1]] = value;
 
     }
@@ -422,7 +484,12 @@ export function setWar(values, params, inputs) {
         const keys = key.split('.');
         let paramName = keys[0]
         const param = params.find(p => p.NAME == paramName);
-        setNestedValue(values, key, window.constValues[key], param, inputs);
+
+        if (param) {
+            setNestedValue(values, key, window.constValues[key], param, inputs);
+        } else {
+            console.warn(`Parameter ${paramName} not found in params`);
+        }
     }
 
 

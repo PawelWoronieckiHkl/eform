@@ -1,9 +1,150 @@
 @media (max-width: 767.98px) {
+    #slope-modal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: rgba(0, 0, 0, 0.8) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        z-index: 1000 !important;
+        font-family: Arial, sans-serif !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .slope-dialog {
+        background: white !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        position: relative !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        border: none !important;
+    }
+
+    .slope-dialog h3 {
+        text-align: center !important;
+        margin: 0 !important;
+        padding: 20px !important;
+        background: white !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        font-size: 1.3rem !important;
+        color: #333 !important;
+    }
+
+    .slope-image {
+        max-height: 40vh !important;
+        max-width: calc(100% - 40px) !important;
+        width: auto !important;
+        height: auto !important;
+        object-fit: contain !important;
+        display: block !important;
+        margin: 20px auto !important;
+        border-radius: 10px !important;
+        border: 2px solid #e0e0e0 !important;
+        background: #f8f9fa !important;
+        padding: 10px !important;
+        box-shadow: none !important;
+    }
+
+    .slope-form {
+        padding: 20px !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .slope-form>div {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .slope-form .row1 {
+        margin-bottom: 20px !important;
+    }
+
+    .slope-form .row2 {
+        margin-bottom: 30px !important;
+    }
+
+    .slope-form label {
+        width: 100% !important;
+        margin-bottom: 15px !important;
+        font-weight: 600 !important;
+        color: #333 !important;
+    }
+
+    .slope-form input[type=number] {
+        width: 100% !important;
+        margin-top: 8px !important;
+        box-sizing: border-box !important;
+        padding: 15px !important;
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 10px !important;
+        font-size: 1.1rem !important;
+        background: white !important;
+        box-shadow: none !important;
+    }
+
+    .slope-form-buttons {
+        display: flex !important;
+        gap: 10px !important;
+        margin-top: auto !important;
+        padding: 20px !important;
+        background: white !important;
+        border-top: 1px solid #e0e0e0 !important;
+        position: sticky !important;
+        bottom: 0 !important;
+    }
+
+    .slope-form-buttons button {
+        flex: 1 !important;
+        padding: 15px !important;
+        cursor: pointer !important;
+        font-size: 1.1rem !important;
+        border-radius: 10px !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .slope-form-buttons button.cancel-btn {
+        background-color: #f8f9fa !important;
+        border: 2px solid #e0e0e0 !important;
+        color: #333 !important;
+    }
+
+    .slope-form-buttons button.submit-btn {
+        background-color: #007bff !important;
+        color: white !important;
+    }
+
+    .slope-form-buttons button.cancel-btn:hover {
+        background-color: #e9ecef !important;
+        border-color: #6c757d !important;
+    }
+
+    .slope-form-buttons button.submit-btn:hover {
+        background-color: #0056b3 !important;
+    }
+
     .slope-note {
-        background: var(--surface);
-        padding: 10px;
-        border-radius: 10px;
-        box-shadow: var(--card-shadow);
-        font-size: 0.95rem;
+        background: #f8f9fa !important;
+        padding: 15px !important;
+        border-radius: 10px !important;
+        box-shadow: none !important;
+        font-size: 1rem !important;
+        margin: 10px 0 !important;
+        border: 1px solid #e0e0e0 !important;
+        color: #333 !important;
+        line-height: 1.4 !important;
     }
 }

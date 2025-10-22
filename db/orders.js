@@ -50,7 +50,7 @@ async function getOrderDetails(orderId) {
     LEFT JOIN order_address ON \`order\`.order_address_id = order_address.id
     LEFT JOIN send_address ON \`order\`.send_address_id = send_address.id
     WHERE \`order\`.id = ?`;
-    
+
     let orderDetails = await selectQuery(orderDetailsQuery, orderId);
     console.log(orderDetails, 'query')
     orderDetails = dateUtils.humanizeData(orderDetails);
@@ -166,7 +166,7 @@ async function getOrderDataToSend(orderId) {
     console.log(sendAddId)
     if (!sendAddId[0]?.send_address_id) {
 
-        orderDetailsQuery = `SELECT o.id, o.commision, o.sent_date, o.comment, u.client_name , u.tax_id, u.ident as user_ident,org.ident as org_ident,o.commision as name,u.street,u.zip,u.city,u.country, u.phone, u.email
+        orderDetailsQuery = `SELECT o.id, o.commision, o.sent_date, o.order_idx, o.comment, u.client_name , u.tax_id, u.ident as user_ident,org.ident as org_ident,o.commision as name,u.street,u.zip,u.city,u.country, u.phone, u.email
 FROM eform.\`order\` o 
 join \`user\` u on  u.id = o.user_id
 join organization org on org.id = o.organization_id 
@@ -174,7 +174,7 @@ where o.id like ?
 `}
     else {
 
-        orderDetailsQuery = `SELECT o.id, o.commision, o.sent_date, o.comment, u.client_name , u.tax_id, u.ident as user_ident,org.ident as org_ident,s.name,s.street,s.zip,s.city,s.country, s.phone, s.email
+        orderDetailsQuery = `SELECT o.id, o.commision, o.sent_date, o.comment, o.order_idx, u.client_name , u.tax_id, u.ident as user_ident,org.ident as org_ident,s.name,s.street,s.zip,s.city,s.country, s.phone, s.email
 FROM \`order\` o 
 join \`user\` u on  u.id = o.user_id
 join send_address s on s.id = o.send_address_id 
@@ -229,6 +229,12 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false) {
     }
 }
 
+
+async function getUserOrderId(orderId) {
+    const query = `SELECT order_idx FROM \`order\` WHERE id = ?`;
+    const result = await selectQuery(query, orderId);
+    return result[0]?.order_idx || false;
+}
 
 async function countUserOrders(userId, sent = false) {
 
@@ -385,6 +391,7 @@ module.exports = {
     updateOrderComment,
     changeOrderStatus,
     insertSendAddress,
+    getUserOrderId,
     getOrderWithItems,
     checkOwner
 }

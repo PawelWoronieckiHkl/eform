@@ -20,8 +20,9 @@ export class AttrLoader {
     async loadFile() {
         const translatedFile = window.translator.checkString(this.file)
         console.log('przetłumaczone', translatedFile)
-        const attrPath = `${this.mainPath}/${this.groupNumber}/data/${this.file}`;
+        const attrPath = `${this.mainPath}/data/${this.file}`;
         const data = await this.loader.loadData(attrPath);
+        console.log('ATTR DATA:', data)
         const objects = this.convertDataToObjects(data)
         this.attrValues = objects
         console.log(this.attrValues, 'semafor')
@@ -30,6 +31,7 @@ export class AttrLoader {
     convertDataToObjects(csvData) {
         // Zakładamy csvData w formacie: [ [VALUE, ATTR_VALUE, ATTR_DESCRIPTION], ... ]
         const headers = csvData[0].map(h => h.trim().toUpperCase());
+        console.log('HEADERS:', headers);
         const result = {};
 
         for (let col = 1; col < headers.length; col++) {
@@ -52,6 +54,7 @@ export class AttrLoader {
                 // Jeśli wartość to <NULL>, pomijamy ją (nie dodajemy do tablicy)
             }
         }
+        console.log(result, 'result z attrLoader')
         return result;
     }
 

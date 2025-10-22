@@ -55,9 +55,14 @@ export function createInputField(param, options, groupNumber, filters, allOption
         btn.classList.add("btn", 'color-dialog-btn');
         btn.id = param.NAME;
         btn.type = 'button';
-        if (param.DEFAULT !='<NULL>') {
-            let val = options.find(val => val.VALUE ==param.DEFAULT)
-            btn.textContent = `${val.VALUE}-${val.DESCRIPTION}`
+        if (param.DEFAULT != '<NULL>') {
+            let val = options.find(val => val.VALUE == param.DEFAULT)
+            if (param.DEFAULT == '<NONE>') {
+                btn.textContent = ` ${val.DESCRIPTION}`;
+            }
+            else {
+                btn.textContent = `${val.VALUE}-${val.DESCRIPTION}`
+            }
         }
         else {
             btn.innerHTML = `${t('form.check_word')}`;
@@ -142,26 +147,30 @@ export function fillFields(displayValues, inputs, values) {
         const labelData = displayValues.get(input.name)
         // console.log(input.name, labelData)
         if (values[input.name] == "<NONE>") {
-            let description = input.name + '___DESCRIPTION'
-            labelData.option_description = values[description]
-            input.textContent = `${labelData.option_description}`
+            let description = input?.name + '___DESCRIPTION' || '';
+            console.log(`Użycie wartości dla description: ${description}, wartość: ${values[description]}`);
+            if (labelData) {
+                labelData.option_description = values[description];
+                input.textContent = `${labelData.option_description}`;
+            } else {
+                console.warn(`labelData is undefined for input: ${input.name}`);
+            }
         }
 
         switch (tag) {
             case "BUTTON":
                 if (labelData?.option_value) {
-                    input.textContent = `${labelData.option_value} - ${labelData.option_description}`
+                    input.textContent = `${labelData.option_value} - ${labelData.option_description}`;
+                } else if (labelData?.option_value == ' ') {
+                    input.textContent = `${labelData.option_description}`;
                 }
-                if (labelData?.option_value == ' ') {
-                    input.textContent = `${labelData.option_description}`
-
-                }
-                else { continue }
+                break;
             case "INPUT":
-                input.value = labelData?.option_value ?? fillCalculated(values, input)
-
+                input.value = labelData?.option_value ?? fillCalculated(values, input);
+                break;
             case "SELECT":
-                input.value = labelData?.option_value ?? fillCalculated(values, input)
+                input.value = labelData?.option_value ?? fillCalculated(values, input);
+                break;
         }
 
     }

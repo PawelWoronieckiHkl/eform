@@ -5,10 +5,70 @@ body {
 
 }
 
+/* Instant nav collapse styles - prevent flash */
+html.nav-collapsed .desktop-nav {
+	width: 60px;
+}
+
+html.nav-collapsed .desktop-nav .nav-toggle-icon {
+	transform: rotate(180deg);
+}
+
+html.nav-collapsed .desktop-nav .logo {
+	opacity: 0;
+
+	pointer-events: none;
+}
+
+html.nav-collapsed .nav-text {
+	opacity: 0;
+	width: 0;
+	overflow: hidden;
+}
+
+html.nav-collapsed .desktop-nav .icon {
+	margin-right: 0 !important;
+}
+
+html.nav-collapsed .desktop-nav .new-order-link {
+	width: 45px !important;
+	height: 45px !important;
+	margin-left: 7px !important;
+	padding: 10px !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 5px !important;
+	border-radius: 8px !important;
+}
+
+/* First button in collapsed nav needs top margin */
+
+
+html.nav-collapsed .desktop-nav #node-div,
+html.nav-collapsed .desktop-nav #user-div,
+html.nav-collapsed .desktop-nav #config-div {
+	display: none !important;
+}
+
+html.nav-collapsed .content {
+	margin-left: 65px;
+	min-width: calc(100% - 70px) !important;
+}
+
+html.nav-collapsed .modern-back-btn {
+	margin-left: 65px !important;
+}
+
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
+}
+
+.padding-top {
+	padding-top: 7rem !important;
+	margin-right: 4rem !important;
 }
 
 /* Firefox */
@@ -21,7 +81,23 @@ a.btn {
 }
 
 .content {
+
+	max-width: 95%;
+	float: left;
+	margin-left: 275px;
+	min-width: 63% !important;
+	max-width: 90%;
+	float: left;
+	min-width: calc(100% - 280px) !important;
 	padding-right: 20px;
+	transition: margin-left 0.3s ease, min-width 0.3s ease;
+}
+
+/* Adjust content when nav is collapsed */
+.desktop-nav.collapsed+.languages+main .content,
+.desktop-nav.collapsed~main .content {
+	margin-left: 65px;
+	min-width: calc(100% - 70px) !important;
 }
 
 .logo {
@@ -47,7 +123,7 @@ a.btn {
 }
 
 .icon {
-	max-width: 30px;
+	max-width: 80px;
 	max-height: 30px;
 }
 
@@ -79,14 +155,14 @@ input[type=checkbox] {
 }
 
 .languages {
+	position: absolute !important;
+	top: 10px;
+	right: 10px;
 
-	align-items: end;
-	margin-left: 90%;
-	right: 0%;
 }
 
 .desktop-nav {
-	width: 230px;
+	width: 280px;
 	height: 100vh;
 	position: fixed;
 	top: 0;
@@ -94,8 +170,147 @@ input[type=checkbox] {
 	background-color: #fff;
 	color: #333;
 	border-right: 1px solid #ddd;
-
 	z-index: 1000;
+	transition: width 0.3s ease;
+	overflow: visible;
+}
+
+/* Collapsed state */
+.desktop-nav.collapsed {
+	width: 60px;
+}
+
+/* Toggle button */
+.nav-toggle-btn {
+	position: absolute;
+	top: 15px;
+	right: 0;
+	background: #f8f9fa;
+	border: 1px solid #ddd;
+	border-radius: 4px 0 0 4px;
+	padding: 5px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	z-index: 1001;
+}
+
+.nav-toggle-btn:hover {
+	background: #e9ecef;
+}
+
+.nav-toggle-icon {
+	color: #666;
+	transition: transform 0.3s ease;
+	width: 35px;
+	height: 20px;
+	right: 0;
+}
+
+html.nav-collapsed .nav-toggle-icon {
+	width: 50px;
+}
+
+/* Rotate arrow when collapsed - point right */
+.desktop-nav.collapsed .nav-toggle-icon {
+	transform: rotate(180deg);
+}
+
+/* Logo adjustments */
+.desktop-nav .logo {
+	transition: opacity 0.3s ease;
+}
+
+.desktop-nav.collapsed .logo {
+	opacity: 0;
+	pointer-events: none;
+}
+
+/* Nav text visibility */
+.nav-text {
+	transition: opacity 0.3s ease;
+}
+
+.desktop-nav.collapsed .nav-text {
+	opacity: 0;
+	width: 0;
+	overflow: unset hidden !important;
+}
+
+/* Icon adjustments */
+.desktop-nav .icon {
+	transition: margin 0.3s ease;
+	min-width: 20px;
+}
+
+.desktop-nav.collapsed .icon {
+	margin-right: 0 !important;
+}
+
+/* Button adjustments for collapsed state */
+.desktop-nav.collapsed .new-order-link {
+	width: 45px !important;
+	height: 45px !important;
+	margin-left: 7px !important;
+	padding: 10px !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 5px !important;
+	border-radius: 8px !important;
+}
+
+/* First button in collapsed nav needs top margin */
+.desktop-nav.collapsed .new-order-link:first-of-type {
+	margin-top: 60px !important;
+}
+
+/* All nav buttons in collapsed state */
+.desktop-nav.collapsed .new-order-link:hover {
+	transform: scale(1.05);
+	transition: transform 0.2s ease, border 0.2s ease;
+	background-color: white !important;
+	border: 2px solid #ccc !important;
+	color: #333 !important;
+}
+
+/* Tooltip styling for collapsed nav */
+.desktop-nav.collapsed [title]:hover::after {
+	content: attr(title);
+	position: absolute;
+	left: 55px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: #333;
+	color: white;
+	padding: 5px 10px;
+	border-radius: 4px;
+	white-space: nowrap;
+	font-size: 14px;
+	z-index: 1002;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.desktop-nav.collapsed [title]:hover::before {
+	content: '';
+	position: absolute;
+	left: 50px;
+	top: 50%;
+	transform: translateY(-50%);
+	border: 5px solid transparent;
+	border-right-color: #333;
+	z-index: 1002;
+}
+
+/* Hide divs when collapsed */
+.desktop-nav.collapsed #node-div,
+.desktop-nav.collapsed #user-div,
+.desktop-nav.collapsed #config-div {
+	display: none !important;
+}
+
+/* Add top margin to nav flex-column when collapsed */
+.desktop-nav.collapsed .nav.flex-column {
+	margin-top: 70px;
 }
 
 .modern-back-btn {
@@ -111,10 +326,16 @@ input[type=checkbox] {
 	box-shadow: 0 2px 16px 0 rgba(202, 202, 202, 0.08) !important;
 	padding: 0.3em 0.9em 0.3em 0.3em !important;
 	cursor: pointer !important;
-	transition: box-shadow 0.15s, transform 0.15s !important;
+	transition: box-shadow 0.15s, transform 0.15s, margin-left 0.3s ease !important;
 	outline: none !important;
-	margin-left: 250px !important;
-	top: 30px !important;
+	margin-left: 280px !important;
+	top: 15px !important;
+}
+
+/* Adjust back button when nav is collapsed */
+.desktop-nav.collapsed~.languages~main .modern-back-btn,
+.desktop-nav.collapsed+.languages+main .modern-back-btn {
+	margin-left: 65px !important;
 }
 
 .modern-back-btn:hover {
@@ -133,24 +354,43 @@ input[type=checkbox] {
 	letter-spacing: 0.002em;
 }
 
+/* Hide back-text on home page when nav is collapsed */
+html.nav-collapsed .home-page .back-text {
+	display: none;
+}
+
+.desktop-nav.collapsed~.languages~main .home-page .back-text,
+.desktop-nav.collapsed+.languages+main .home-page .back-text {
+	display: none;
+}
+
 .desktop-nav .side-nav {
 
 	width: 100%;
 	height: 49%;
-	overflow-y: auto;
+	overflow: visible;
 }
-@media (max-width: 1400px) {
-#user-div{
-	margin-top: -40% !important;
 
-}}
 
 .desktop-nav .side-nav .nav {
 	padding: 0;
 }
 
-.desktop-nav .side-nav .nav-item {
-	margin-bottom: 10px;
+
+.new-order-link {
+	width: 95% !important;
+	margin-left: 2% !important;
+	margin-bottom: 2% !important;
+	text-align: left !important;
+	border: 1px solid transparent !important;
+	transition: border 0.2s ease !important;
+}
+
+.new-order-link:hover {
+	background-color: white !important;
+	border: 2px solid #ccc !important;
+	color: #636363 !important;
+	font-size: large !important;
 }
 
 .desktop-nav .side-nav .nav-link {
@@ -176,9 +416,14 @@ input[type=checkbox] {
 	display: none !important;
 }
 
+p {
+	margin-bottom: 2px !important;
+}
+
 .container {
 	max-width: 100% !important;
 	margin: 0 auto;
+	margin-top: 2px !important;
 	background-color: #fff;
 	border: 1px solid #ddd;
 	border-radius: 8px;
@@ -244,18 +489,32 @@ input[type=checkbox] {
 }
 
 .site-footer {
-  position: fixed;
-  bottom: 0;
-  left: 225px;             /* lub left: 210px; jeśli chcesz odstęp od lewej */
-  right: 0;            /* rozciągnij do prawej krawędzi */
-  background: #fff;
-  border-top: 1px solid #e0e0e0;
-  padding: 12px 0 8px 0;
-  text-align: center;
-  font-family: 'Inter', Arial, sans-serif;
-  font-size: 1rem;
-  box-shadow: 0 -2px 16px 0 rgba(60, 60, 80, 0.03);
-  z-index: 500;       /* aby być widocznym na wierzchu */
+	position: fixed;
+	bottom: 0;
+	left: 225px;
+	/* lub left: 210px; jeśli chcesz odstęp od lewej */
+	right: 0;
+	/* rozciągnij do prawej krawędzi */
+	background: #fff;
+	border-top: 1px solid #e0e0e0;
+	padding: 12px 0 8px 0;
+	text-align: center;
+	font-family: 'Inter', Arial, sans-serif;
+	font-size: 1rem;
+	box-shadow: 0 -2px 16px 0 rgba(60, 60, 80, 0.03);
+	z-index: 500;
+	/* aby być widocznym na wierzchu */
+	transition: left 0.3s ease;
+}
+
+/* Expand footer when nav is collapsed */
+html.nav-collapsed .site-footer {
+	left: 60px;
+}
+
+.desktop-nav.collapsed~main~footer.site-footer,
+.desktop-nav.collapsed+.languages+main~footer.site-footer {
+	left: 60px;
 }
 
 .footer-links {
@@ -290,6 +549,7 @@ input[type=checkbox] {
 	z-index: 999999;
 }
 
+/* Standard tooltips for all elements */
 .has-tooltip::after {
 	content: attr(data-tooltip);
 	position: absolute;
@@ -311,6 +571,78 @@ input[type=checkbox] {
 	font-weight: 500;
 }
 
+.has-tooltip:hover::after {
+	opacity: 1;
+	transform: translateX(-50%) scale(1);
+}
+
+/* Completely disable standard tooltips for navbar */
+.desktop-nav .has-tooltip::after,
+.desktop-nav .has-tooltip::before {
+	display: none !important;
+	content: none !important;
+}
+
+/* Navbar tooltips - higher specificity to override standard tooltips */
+html.nav-collapsed .desktop-nav .has-tooltip:hover::after,
+html.nav-collapsed .desktop-nav .has-tooltip:focus::after,
+.desktop-nav.collapsed .has-tooltip:hover::after,
+.desktop-nav.collapsed .has-tooltip:focus::after {
+	content: attr(data-tooltip) !important;
+	position: fixed !important;
+	z-index: 10000 !important;
+	top: 50% !important;
+	left: 70px !important;
+	bottom: auto !important;
+	right: auto !important;
+	transform: translateY(-50%) scale(1) !important;
+	background: #a7a7a7 !important;
+	color: #fff !important;
+	padding: 8px 14px !important;
+	border-radius: 8px !important;
+	white-space: nowrap !important;
+	opacity: 1 !important;
+	pointer-events: none !important;
+	font-size: 1rem !important;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13) !important;
+	font-weight: 500 !important;
+	font-family: inherit !important;
+	display: block !important;
+}
+
+/* Hide navbar tooltips when not hovered */
+html.nav-collapsed .desktop-nav .has-tooltip::after,
+.desktop-nav.collapsed .has-tooltip::after {
+	display: none !important;
+}
+
+/* Arrow for navbar tooltips - only on hover */
+html.nav-collapsed .desktop-nav .has-tooltip:hover::before,
+html.nav-collapsed .desktop-nav .has-tooltip:focus::before,
+.desktop-nav.collapsed .has-tooltip:hover::before,
+.desktop-nav.collapsed .has-tooltip:focus::before {
+	content: '' !important;
+	position: fixed !important;
+	z-index: 10000 !important;
+	left: 65px !important;
+	top: 50% !important;
+	bottom: auto !important;
+	right: auto !important;
+	transform: translateY(-50%) !important;
+	border-width: 6px !important;
+	border-style: solid !important;
+	border-color: transparent #a7a7a7 transparent transparent !important;
+	opacity: 1 !important;
+	display: block !important;
+}
+
+/* Hide navbar arrows when not hovered */
+html.nav-collapsed .desktop-nav .has-tooltip::before,
+.desktop-nav.collapsed .has-tooltip::before {
+	display: none !important;
+}
+
+/* Standard tooltip styles - MOVED AFTER navbar styles for proper cascade */
 .has-tooltip:hover::after,
 .has-tooltip:focus::after {
 	opacity: 1;
@@ -349,12 +681,13 @@ input[type=checkbox] {
 	z-index: 9999;
 	opacity: 0.92;
 	pointer-events: none;
+	text-align: center;
 
 }
 
-#user-info{
+#user-info {
 	left: 24px;
-	margin-top: 35% !important;
+
 	background: #ffffff;
 	color: #000000;
 	font-weight: 800;

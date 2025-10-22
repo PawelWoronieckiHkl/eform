@@ -41,3 +41,8 @@
   top: 5px;
   border: 1px solid rgb(207, 207, 207) !important;
 }
+#context-dropdown-item{
+    text-decoration: none !important;
+    font-weight: bold !important;
+    color:red !important
+}

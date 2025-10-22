@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { requireLogin } = require('../middleware/loginMixture');
+const { requireLogin, isOwner } = require('../middleware/loginMixture');
 const authService = require('../services/authService')
+const ownerService = require('../services/owner.js');
 const db = require("../db/db_helper.js");
 const langManager = require('../services/setLanguage')
 const langVer = require('../services/languageManager')
@@ -19,7 +20,8 @@ router.post("/accept-rodo", async (req, res, next) => {
     try {
         const { accepted } = req.body;
         if (accepted) {
-            const pin = req.session.user.pin;
+            const currentUser = ownerService.getCurrentUser(req);
+            const pin = currentUser.pin;
             await db.setUserAcceptedRODO(pin, true);
             req.session.mustAcceptRODO = false;
             return res.status(200).json({ message: "RODO accepted" });
@@ -48,11 +50,12 @@ router.post("/auth/login", async (req, res, next) => {
             const isFirst = await authService.checkFirstLogon(pin)
             console.log(isFirst, 'first logon check result')
             let owner = await db.getOwner(pin);
-            console.log(owner, 'siema')
             const userId = await db.getUserId(pin)
             req.session.user = { userId, pin, password, showPrices: false, organization: (owner.orgIdent).toUpperCase() };
-
-
+            req.session.user.isOwner = await isOwner(owner);
+            req.session.user.organization = owner.orgId;
+            console.log(req.session.user, 'session user after login')
+            console.log(req.session.user.isOwner, 'is owner???')
             langVer.checkTranslateLegacy(localesDir)
             let lang;
             try {
@@ -76,7 +79,8 @@ router.post("/auth/login", async (req, res, next) => {
 
 
 router.get('/logo', requireLogin, async (req, res) => {
-    const pin = req.session.user.pin;
+    const currentUser = ownerService.getCurrentUser(req);
+    const pin = currentUser.pin;
     const photoFilename = await db.getUserLogo(pin)
 
     const photoPath = path.join(__dirname, '..', 'img', photoFilename)
@@ -100,13 +104,15 @@ router.get('/no-permission', requireLogin, async (req, res) => {
     return res.render('no-permission.njk');
 });
 router.get('/rodo', requireLogin, async (req, res) => {
-    const pin = req.session.user.pin;
+    const currentUser = ownerService.getCurrentUser(req);
+    const pin = currentUser.pin;
 
     return res.render('rodo.njk');
 });
 
-router.get('/owner/',requireLogin, async (req, res) => {
-    const pin = req.session.user.pin
+router.get('/owner/', requireLogin, async (req, res) => {
+    const currentUser = ownerService.getCurrentUser(req);
+    const pin = currentUser.pin
 
     let response = await db.getOwner(pin);
     if (response) {
@@ -123,7 +129,8 @@ router.get('/owner/',requireLogin, async (req, res) => {
     }
 })
 
-router.get('/name',requireLogin, async (req, res) => {
+router.get('/name', requireLogin, async (req, res) => {
+
     const pin = req.session.user.pin;
     console.log(pin, 'pin in getUserName')
     let response = await db.getUserName(pin);
@@ -145,7 +152,8 @@ router.get('/name',requireLogin, async (req, res) => {
 router.post("/auth/check-password", async (req, res, next) => {
     try {
         const { password, remember, orderId } = req.body;
-        const pin = req.session.user.pin;
+        const currentUser = ownerService.getCurrentUser(req);
+        const pin = currentUser.pin;
         const isValid = await authService.checkPassword(pin, password);
 
         let redirectUrl;
@@ -170,6 +178,11 @@ router.post("/auth/check-password", async (req, res, next) => {
         return next(err);
     }
 });
-
+router.get('/isOwner', requireLogin, async (req, res) => {
+    return res.status(200).json({
+        success: true,
+        name: response
+    });
+});
 
 module.exports = router;

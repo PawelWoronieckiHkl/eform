@@ -7,7 +7,8 @@ class OrderSender {
     constructor(order, orderItems) {
         console.log(order)
         this.data = {
-            orderno: order?.id ?? 0,
+            orderno: order?.order_idx ?? 0,
+            orderid: order?.id ?? 0,
             commission: order?.commision ?? "",
             client: order.client_name,
             organizationIdent: order.org_ident,
@@ -32,17 +33,17 @@ class OrderSender {
             const rawObj = item.json_parameters;
 
             const sortedFilteredObj = Object.keys(rawObj)
-                .filter(key => !key.endsWith('_ALIAS___DESCRIPTION'))
                 .sort()
                 .reduce((acc, key) => {
                     acc[key] = rawObj[key];
                     return acc;
                 }, {});
 
-
+            console.log("ITEM ", item)
             this.data.items.push({
                 orderpos: idx,
                 product: item?.asortment_group_number,
+                product_description: item?.group_name ?? '',
                 commission: item?.commision ?? "",
                 parameters: sortedFilteredObj,
                 comment: item.comment,

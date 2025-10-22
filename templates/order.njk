@@ -6,6 +6,7 @@
 {% endblock title %}
 
 {% block head %}
+
   <link rel="stylesheet" href="/styles/order_details.css">
   <link rel="stylesheet" href="/styles/mobile/order_details.css">
   <link rel="stylesheet" href="/styles/dialog.css">
@@ -25,64 +26,102 @@
 
   {% block content %}
 
-    <div class="content center-content col-10 ">
-      <div id='order-nav' class='bg-white d-flex justify-content-between'>
-        <div id="order-buttons">
-          <!--{% block order_del_btn %} <button class="btn btn-outline-danger " id="delete-order-btn" data-href='/orders/order/{{ orderDetails.id }}/delete' type='button'> {{ __('order.delete_order') }} </button> {% endblock %}-->
-          {% block new_pos_btn %}
-            <a href="/orders/order/{{ orderDetails.id }}/new-position/" class="btn btn-outline-success" id="new-order-button" type="button">
-              {{ __('order.add_position_btn') }}
-            </a>
-            <a href="/orders/edit/{{ orderDetails.id }}" class="btn btn-outline-secondary" id="new-order-button" type="button">
-              {{ __('edit_order.title') }}
-            </a>
-          {% endblock %}
-        </div>
-        {% block order_space %}
-          <div class="floating-order w-50">
-          {% endblock %}
-          <h2 class="fw-bold header text-center p-4" id='order-title' data-id="{{ orderDetails.id }}">
-            {{ __('order.title') }}
-            {{ orderDetails.order_idx }}
-            <br/>
+    <div class="content  col-9 center-content">
+      <div id='order-nav' class='bg-white'>
+        <!-- Główny rząd z przyciskami i tytułem -->
+        <div class="order-nav-main">
+          <!-- Mobile: Top row with buttons -->
+          <div class="mobile-top-row d-block d-md-none">
+            <div id="order-buttons">
+              <a href="/orders/order/{{ orderDetails.id }}/new-position/" class="btn btn-outline-success" id="new-order-button" type="button">
+                <img class='ico' src="/img/new-position.png" alt="">
+              </a>
+              <a href="/orders/edit/{{ orderDetails.id }}" class="btn btn-outline-secondary bg-secondary" id="edit-order-button" type="button">
+                <img class='ico' src="/img/edit-text.png" alt="{{ __('orders.edit') }}">
+              </a>
+            </div>
+            <div id="generate-container-mobile">
+              <button id="unlockBtn" class="btn"><img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
+              <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'><img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
+              <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip')}}"><img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
+            </div>
+          </div>
 
-            {% if orderDetails.commision %}
-              <p id='commission-name' data-name='{{ orderDetails.commision }}'>"{{ orderDetails.commision }}"</p>
-            {% endif %}
-          </h2>
+          <!-- Desktop: Original buttons -->
+          <div id="order-buttons" class="d-none d-md-flex">
+            <!--{% block order_del_btn %} <button class="btn btn-outline-danger " id="delete-order-btn" data-href='/orders/order/{{ orderDetails.id }}/delete' type='button'> {{ __('order.delete_order') }} </button> {% endblock %}-->
+            {% block new_pos_btn %}
+              <a href="/orders/order/{{ orderDetails.id }}/new-position/" class="btn btn-outline-success" id="new-order-button" type="button">
+                {{ __('order.add_position_btn') }}
+              </a>
+              <a href="/orders/edit/{{ orderDetails.id }}" class="btn btn-outline-secondary" id="new-order-button" type="button">
+                {{ __('edit_order.title') }}
+              </a>
+            {% endblock %}
+          </div>
+          {% block order_space %}
+            <div class="floating-order w-50 d-none d-md-block" id='desktop-floating-order'>
+            {% endblock %}
+            <h2 class="fw-bold header text-center p-4" id='order-title' data-id="{{ orderDetails.id }}">
+              {% block order_title %}
+                {{ __('order.title') }}
+              {% endblock %}
+              {{ orderDetails.order_idx }}
+              <br/>
+
+              {% if orderDetails.commision %}
+                <p id='commission-name' data-name='{{ orderDetails.commision }}'>"{{ orderDetails.commision }}"</p>
+              {% endif %}
+
+            </h2>
+          </div>
+          {% block print_space %}
+            <div id="generate-container" class='me-3 d-none d-md-flex'>
+              <button id="unlockBtn" class="btn"><img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
+              <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_short_pdf_tooltip') }}" id='short-print-button'><img src="/img/pdf-short.png" alt="pdf icon" class='icon'></button>
+              <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'><img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
+              <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip')}}"><img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
+
+            </div>
+
+          </div>
+
+          <div class="floating-order w-100 mobile d-block d-md-none">
+            <h2 class="fw-bold header text-center p-4" id='order-title-mobile' data-id="{{ orderDetails.id }}">
+              {{ __('order.title') }}
+              {{ orderDetails.order_idx }}
+              <br/>
+
+              {% if orderDetails.commision %}
+                <p id='commission-name-mobile' data-name='{{ orderDetails.commision }}'>"{{ orderDetails.commision }}"</p>
+              {% endif %}
+            </h2>
+          </div>
+          <!-- Komentarz pod tytułem -->
           <div class="comment-space d-flex align-items-center justify-content-center w-100">
             <h3 id='comment' class='h3 fw-bold btn' data-id="{{ orderDetails.id }}">
-              {% if orderDetails.comment %}
+              {% if orderDetails.comment and orderDetails.comment.trim() and orderDetails.comment.trim() != '' and orderDetails.comment.trim() != '-' %}
                 {{ __('order.comment') }}:
                 {{ orderDetails.comment }}
               {% endif %}
             </h3>
           </div>
         </div>
-
-        {% block print_space %}
-          <div id="generate-container" class='me-3'>
-            <button id="unlockBtn" class="btn"><img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
-            <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'><img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
-            <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip')}}"><img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
-
-          </div>
-        {% endblock %}
-
-      </div>
-      <div class="container my-5">
+      {% endblock %}
+      <div class="container my-5 padding-top mobile-rm-card">
 
         <div class="position-relative mb-4 static-head"></div>
 
         {% if cleanOrderItems.length > 0 %}
           <div class="order-table-container" style="overflow-x: auto;">
-            {% set globalIndex = 1 %}
             {% block table %}
               {% for table in cleanOrderItems %}
+                {% set globalIndex = 1 %}
                 <div class="table-scroll mb-5">
 
                   {% block table_style %}
-                    <table class="table align-left table-bordered order-table">
+                    <!-- Desktop table -->
+                    <table class="table align-left table-bordered order-table mt-5 d-none d-md-table">
                       <thead>
                       {% endblock %}
                       <tr>
@@ -92,12 +131,6 @@
                         {% endblock %}
                         <th class="edit-buttons">#</th>
 
-                        <th class="edit-buttons">{{ __('order.department') }}</th>
-
-                        <th class="edit-buttons">{{ __('order.group_name') }}</th>
-                        <!--<th class="edit-buttons">{{ __('order.amount') }}</th>-->
-                        <th class="edit-buttons">{{ __('order.name') }}</th>
-
                         {% for header in table.headers1 %}
 
                           {% if not(header in table.locked) %}
@@ -106,6 +139,12 @@
                           {% endif %}
 
                         {% endfor %}
+
+                        <th class="edit-buttons">{{ __('order.department') }}</th>
+
+                        <th class="edit-buttons">{{ __('order.group_name') }}</th>
+                        <!--<th class="edit-buttons">{{ __('order.amount') }}</th>-->
+                        <th class="edit-buttons">{{ __('order.name') }}</th>
                         <th class="edit-buttons">{{ __('order.comment') }}</th>
                       </tr>
                     </thead>
@@ -114,6 +153,7 @@
 
                         {% block item_redirect %}
                           <tr style="cursor: pointer display:grid" onclick="window.location.href='/position/{{ rowObj.item.id }}'">
+
                           {% endblock %}
                           {% block pos_btns %}
                             <td>
@@ -129,6 +169,13 @@
                             {% endblock %}
                           </td>
                           <th scope="row">{{ globalIndex }}</th>
+
+                          {% for header in table.headers1 %}
+                            {% if (not(header in rowObj.item.lockedParams)) %}
+
+                              <td class="td-val">{{ rowObj.row.row1[header] or '-' }}</td>
+                            {% endif %}
+                          {% endfor %}
                           <td>{{ rowObj.item.department or '-'}}
                           </td>
 
@@ -138,12 +185,6 @@
                           <!--<td>{{ rowObj.item.amount or "-" }}</td>-->
                           <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-"   }}</td>
 
-                          {% for header in table.headers1 %}
-                            {% if (not(header in rowObj.item.lockedParams)) %}
-
-                              <td class="td-val">{{ rowObj.row.row1[header] or '-' }}</td>
-                            {% endif %}
-                          {% endfor %}
                           <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
 
                         </tr>
@@ -151,10 +192,16 @@
                           <td colspan="1" class="price"></td>
                           {% for header in table.headers2 %}
                             {% if (not(header in rowObj.item.lockedParams)) %}
-                              <td class="price" colspan="2">
-                                <span class="price-label">{{ header }}:</span>
-                                <b>{{ rowObj.row.row2[header] or '-' }}</b>
-                              </td>
+                              {% set value = rowObj
+                                .row
+                                .row2[header] %}
+                              {% if value and value != '-' and value != '' and (value | float or value == '0') %}
+                                <td class="price" colspan="2">
+                                  <span class="price-label">{{ header }}:</span>
+
+                                  <b>{{ value }}</b>
+                                </td>
+                              {% endif %}
                             {% endif %}
                           {% endfor %}
                         </tr>
@@ -165,11 +212,79 @@
                     </tbody>
                   </table>
 
+                  <!-- Mobile cards version -->
+                  <div class="mobile-items-list d-block d-md-none">
+                    {% for rowObj in table.rows %}
+                      <div class="mobile-item-card" data-position-url="/position/{{ rowObj.item.id }}">
+                        <div class="mobile-item-header">
+                          <div class="mobile-item-basic">
+                            <span class="mobile-item-name">{{ rowObj.item.commision | truncate(25, true, "...") or "-" }}</span>
+                            <span class="mobile-item-group">{{ rowObj.item.group_name or '-' }}</span>
+                          </div>
+                          <span class="mobile-item-number">#{{ globalIndex }}</span>
+                        </div>
+
+                        <div class="mobile-item-details">
+                          <div class="mobile-item-detail">
+                            <strong>{{ __('order.department') }}:</strong><br>
+                            {{ rowObj.item.department or '-' }}
+                          </div>
+                        </div>
+
+                        {% if table.headers1.length > 0 %}
+                          <div class="mobile-item-specs">
+                            {% for header in table.headers1 %}
+                              {% if not(header in rowObj.item.lockedParams) %}
+                                <div class="mobile-spec-item">
+                                  <strong>{{ header }}:</strong>
+                                  {{ rowObj.row.row1[header] or '-' }}
+                                </div>
+                              {% endif %}
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+
+                        {% if table.headers2.length > 0 %}
+                          <div class="mobile-item-prices">
+                            {% for header in table.headers2 %}
+                              {% if not(header in rowObj.item.lockedParams) %}
+                                <div class="mobile-price-item">
+                                  <strong>{{ header }}:</strong>
+                                  <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                                </div>
+                              {% endif %}
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+
+                        {% if rowObj.item.comment %}
+                          <div class="mobile-item-comment">
+                            <strong>{{ __('order.comment') }}:</strong><br>
+                            {{ rowObj.item.comment }}
+                          </div>
+                        {% endif %}
+
+                        <div class="mobile-item-actions">
+                          <button class="btn btn-outline-secondary btn-sm duplicate-btn" data-id='{{ rowObj.item.id }}' onclick="event.stopPropagation()">
+                            {{ __('order.duplicate') }}
+                          </button>
+                          <a class="btn btn-outline-secondary btn-sm" href="/position/{{ rowObj.item.id }}/edit?id={{ rowObj.item.id }}" onclick="event.stopPropagation()">
+                            {{ __('order.edit') }}
+                          </a>
+                          <button class="btn btn-outline-danger btn-sm delete-position-btn" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
+                            {{ __('order.delete') }}
+                          </button>
+                        </div>
+                      </div>
+                      {% set globalIndex = globalIndex + 1 %}
+                    {% endfor %}
+                  </div>
+
                 </div>
 
               {% endfor %}
 
-              {% if total %}
+              {% if total and(total | length > 0) %}
                 <div id='total-container'>
                   <div class="total-price d-flex justify-content-end align-items-center">
                     {% for key, value in total %}
@@ -179,48 +294,59 @@
                           &#8364;</span>
                       {% endif %}
                     {% endfor %}
-                  {% endif %}
-                {% endblock %}
-                {% block send_order_btn %}
+                  </div>
                 </div>
-                <button class="btn btn-outline-success p-1 stop-propagation send-order-btn me-3" type="button" id='send-order' data-id="{{ orderDetails.id }}">
-                  <p>
-                    {{ __('order.send_order_btn') }}</p>
-                </button>
-              {% endblock %}
-            </div>
-
-          {% else %}
-            <div class="text-center py-5">
-              <h3 class="mb-4">{{ __('order.no_positions') }}</h3>
-              <p class="lead">{{ __('order.add_position') }}</p>
-            </div>
-          {% endif %}
-        </div>
-
-      </div>
-
-      <div id='dialog-container'>
-        <dialog id='dialog-space'></dialog>
-        <dialog id="delete-dialog">
-          <h3 class="text-center" id='dialog-title'>{{ __('order.delete_element') }}</h3>
-          <p class="text-center" id='for-sure'>{{ __('order.delete_confirm') }}</p>
-          <div class="alert" id='status-info'></div>
-          <div class="confirmattion-buttons">
-            <button id="cancel-btn" class="btn btn-secondary me-1" type="button">{{ __('order.cancel') }}</button>
-            <button id="confirm-btn" class="btn btn-danger ms-1" type="button">{{ __('order.confirm') }}</button>
+              {% endif %}
+            {% endblock %}
+            {% block send_order_btn %}
+              <button class="btn btn-outline-success p-1 stop-propagation send-order-btn me-3" type="button" id='send-order' data-id="{{ orderDetails.id }}">
+                <p>
+                  {{ __('order.send_order_btn') }}</p>
+              </button>
+            {% endblock %}
           </div>
-        </dialog>
-      </div>
 
-      <div id="print-template-container" style="display:none;!important">
-        {% include 'order_to_print.njk' %}
+        {% else %}
+          <div class="text-center py-5">
+            <h3 class="mb-4">{{ __('order.no_positions') }}</h3>
+            <p class="lead">{{ __('order.add_position') }}</p>
+          </div>
+        {% endif %}
       </div>
 
     </div>
-  {% endblock %}
+
+    <div id='dialog-container'>
+      <dialog id='dialog-space'></dialog>
+      <dialog id="delete-dialog">
+        <h3 class="text-center" id='dialog-title'>{{ __('order.delete_element') }}</h3>
+        <p class="text-center" id='for-sure'>{{ __('order.delete_confirm') }}</p>
+        <div class="alert" id='status-info'></div>
+        <div class="confirmattion-buttons">
+          <button id="cancel-btn" class="btn btn-secondary me-1" type="button">{{ __('order.cancel') }}</button>
+          <button id="confirm-btn" class="btn btn-danger ms-1" type="button">{{ __('order.confirm') }}</button>
+        </div>
+      </dialog>
+    </div>
+
+    <div id="print-template-container" style="display:none;!important">
+      {% include 'order_to_print.njk' %}
+    </div>
+
+  </div>
+{% endblock %}
 </div>
 
 {% block scripts %}
-  <script type='module' src="/scripts/order.js"></script>
+<script type='module' src="/scripts/order.js"></script>
+<script src="/scripts/mobileCards.js"></script>
+
+<script>
+  let orderNavBtn = document.getElementById('orders-nav-btn');
+  if (orderNavBtn) {
+    orderNavBtn
+      .classList
+      .add('active');
+  }
+</script>
 {% endblock scripts %}

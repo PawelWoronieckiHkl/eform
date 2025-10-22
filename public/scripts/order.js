@@ -12,12 +12,12 @@ const confirmationDialog = document.getElementById('delete-dialog');
 const statusInfo = document.getElementById('status-info');
 const commentBtn = document.getElementById('comment-btn');
 const editIcon = document.getElementById('edit-comment-btn');
-const unlockBtn = document.getElementById('unlockBtn')
-const lockBtn = document.getElementById('lock-btn')
+const unlockBtns = document.querySelectorAll('[id="unlockBtn"]')
+const lockBtns = document.querySelectorAll('[id="lockBtn"]')
 const sendBtn = document.querySelector('.send-order-btn')
-const excelBtn = document.getElementById('generate-excel-btn')
-const printBtn = document.getElementById('print-button')
-
+const excelBtns = document.querySelectorAll('[id="generate-excel-btn"]')
+const printBtns = document.querySelectorAll('[id="print-button"]')
+const shortPrintBtns = document.querySelectorAll('[id="short-print-button"]')
 // DELETE dialog
 export async function deleteItem(path) {
   const res = await fetch(path, {
@@ -74,8 +74,7 @@ function createDuplicateDiag(btn) {
       {
         label: t('order.cancel'),
         className: "btn btn-secondary m-2",
-        id: "cancel-btn",
-        action: async () => { } // Pusta akcja - zamknie dialog automatycznie
+        id: "cancel-btn"
       },
       {
         label: "Ok",
@@ -125,7 +124,6 @@ function buildAndShowDialog(btn) {
     buttons: [
       {
         label: `${t('orders.abort')}`,
-        action: () => dialog.close(),
         className: "btn btn-secondary me-1",
         id: "cancel-btn"
       },
@@ -198,7 +196,7 @@ async function unlock(password) {
 
 }
 
-async function lock(){  
+async function lock() {
   try {
     console.log('lock lock lock')
     const response = await fetch(`/orders/lock`, {
@@ -206,70 +204,19 @@ async function lock(){
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({status: false})
+      body: JSON.stringify({ status: false })
     });
     const result = await response.json();
-    if(result.status == 'success'){
-          console.log('lock lock lock', result)
+    if (result.status == 'success') {
+      console.log('lock lock lock', result)
       window.location.reload(response.refresh)
     }
   }
-  catch(err){
+  catch (err) {
     console.warn(err)
     window.location.href = '/'
   }
 }
-
-// commentBtn.addEventListener('click', editComment);
-// editIcon.addEventListener('click', editComment);
-
-// function editComment() {
-//   const commentInput = document.getElementById('comment-input');
-//   const acceptBtn    = document.getElementById('accept-comment-btn');
-//   const inputValue = commentInput.dataset.value;
-//   commentBtn.classList.add('d-none');
-//   editIcon.classList.add('d-none');
-//   commentInput.classList.remove('d-none');
-//   acceptBtn.classList.remove('d-none');
-
-//     if (inputValue) {
-//   commentInput.value = commentInput.dataset.value || commentBtn.textContent.trim();
-// }
-//   commentInput.focus();
-
-
-//   const save = async e => {
-//     if (e.type === 'keydown' && e.key !== 'Enter') return;
-
-//     const newComment = commentInput.value.trim();
-
-//     if (!newComment) return;
-
-//     try {
-//       const res = await fetch(`/orders/${orderId}/comment/update`, {
-//         method: 'PATCH',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ comment: newComment })
-//       });
-//       if (!res.ok) throw new Error(`Status ${res.status}`);
-//       commentBtn.textContent = newComment;
-//     } catch (err) {
-//       console.error('Błąd aktualizacji komentarza:', err);
-//     }
-
-//     commentInput.classList.add('d-none');
-//     acceptBtn.classList.add('d-none');
-//     commentBtn.classList.remove('d-none');
-//     editIcon.classList.remove('d-none');
-
-//     commentInput.removeEventListener('keydown', save);
-//     acceptBtn.removeEventListener('click', save);
-//   };
-
-//   commentInput.addEventListener('keydown', save);
-//   acceptBtn.addEventListener('click', save);
-// }
-
 
 if (sendBtn) {
   sendBtn.addEventListener('click', async (event) => {
@@ -278,19 +225,25 @@ if (sendBtn) {
   });
 }
 
-if (lockBtn) lockBtn.addEventListener('click', async ()=> await lock())
+lockBtns.forEach(lockBtn => {
+  lockBtn.addEventListener('click', async () => await lock())
+})
 
-excelBtn.addEventListener('click', () => generateExcel())
+excelBtns.forEach(btn => {
+  btn.addEventListener('click', () => generateExcel())
+})
 
+printBtns.forEach(btn => {
+  btn.addEventListener('click', () => generatePdf())
+})
 
-printBtn.addEventListener('click', () => {
-  generatePdf()
-});
-
+shortPrintBtns.forEach(btn => {
+  btn.addEventListener('click', () => generatePdf(true))
+})
 
 window.addEventListener('scroll', function () {
   const navbar = document.getElementById('order-nav');
-  const scrollTrigger = 150;
+  const scrollTrigger = 120;
 
   if (window.scrollY > scrollTrigger) {
     navbar.classList.add('navbar-scrolled');
@@ -301,29 +254,30 @@ window.addEventListener('scroll', function () {
 
 
 
-if (unlockBtn) unlockBtn.addEventListener('click', function () {
-  const parent = document.getElementById('dialog-container');
+unlockBtns.forEach(unlockBtn => {
+  unlockBtn.addEventListener('click', function () {
+    const parent = document.getElementById('dialog-container');
 
-  const { buttons, diag } = createInfoDialog({
-    title: `${t('order.unlock')}`,
-    buttons: [
-      {
-        label: `${t('orders.abort')}`,
-        action: () => diag.close(),
-        className: "btn btn-secondary me-1",
-        id: "cancel-btn"
-      },
-      {
-        enter: true,
-        label: `${t('order.unlock')}`,
-        action: async () => await unlock(password),
-        className: "btn btn-success ms-1",
-        id: "confirm-btn"
-      }
-    ],
-    parent,
-    input: { name: `${t('login.password_label')}`, id: "password-input", type: 'password' },
-    checkbox: { name: `${t('order.remember')}`, id: 'checkbox-remember' }
+    const { buttons, diag } = createInfoDialog({
+      title: `${t('order.unlock')}`,
+      buttons: [
+        {
+          label: `${t('orders.abort')}`,
+          className: "btn btn-secondary me-1",
+          id: "cancel-btn"
+        },
+        {
+          enter: true,
+          label: `${t('order.unlock')}`,
+          action: async () => await unlock(password),
+          className: "btn btn-success ms-1",
+          id: "confirm-btn"
+        }
+      ],
+      parent,
+      input: { name: `${t('login.password_label')}`, id: "password-input", type: 'password' },
+      checkbox: { name: `${t('order.remember')}`, id: 'checkbox-remember' }
+    });
+    const password = document.getElementById('password-input')
   });
-  const password = document.getElementById('password-input')
 });

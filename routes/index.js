@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { requireLogin } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
+const ownerService = require('../services/owner.js');
 const path = require('path')
 const fs = require('fs');
 const langManager = require('../services/setLanguage')
@@ -26,7 +27,7 @@ router.get('/translations', (req, res) => {
   });
 });
 
-router.get('/env', requireLogin,(req, res) => {
+router.get('/env', requireLogin, (req, res) => {
   const versionsHuman = {
     dev: 'Deweloperska',
     test: "Testowa",
@@ -56,27 +57,29 @@ router.get('/change-language', (req, res) => {
 
 router.get("/", requireLogin, async (req, res) => {
 
-  user = await db.getUserData(req.session.user.pin);
+  const currentUser = ownerService.getCurrentUser(req);
+  user = await db.getUserData(currentUser.pin);
   const mustAcceptRODO = req.session.mustAcceptRODO || false;
   console.log(mustAcceptRODO, 'must accept RODO')
   const orders = await db.getUserOrders(user.id, 4, 0);
   const ordersSent = await db.getUserOrders(user.id, 4, 0, true);
   return res.render("home.njk", { user: user, orders: orders, ordersSent: ordersSent, limit: 4, mustAcceptRODO: mustAcceptRODO });
 });
-router.get("/delivery-time",requireLogin, async (req, res) => {
-  const deliveryTimes = await db.getDeliveryTimes(req.session.user.pin)
+router.get("/delivery-time", requireLogin, async (req, res) => {
+  const currentUser = ownerService.getCurrentUser(req);
+  const deliveryTimes = await db.getDeliveryTimes(currentUser.pin)
   res.render("delivery.njk", { deliveryTimes: deliveryTimes });
 });
 
 
-router.get("/contact",requireLogin, (req, res) => {
+router.get("/contact", requireLogin, (req, res) => {
   res.render("contact.njk");
 });
 
-router.get("/terms",requireLogin,async (req, res) => {
+router.get("/terms", requireLogin, async (req, res) => {
   try {
-
-    const html = await readWord('rodo', `${req.session.user?.organization}_regulations`);
+    const currentUser = ownerService.getCurrentUser(req);
+    const html = await readWord('rodo', `${currentUser?.organization}_regulations`);
     res.render("terms.njk", { contentHtml: html });
   } catch (err) {
     console.error(err);
@@ -88,10 +91,10 @@ router.get("/terms",requireLogin,async (req, res) => {
 
 
 
-router.get("/privacy",requireLogin, async (req, res) => {
+router.get("/privacy", requireLogin, async (req, res) => {
   try {
-
-    const html = await readWord('rodo', `${req.session.user?.organization ?? "COZY"}_privacy`);
+    const currentUser = ownerService.getCurrentUser(req);
+    const html = await readWord('rodo', `${currentUser?.organization ?? "COZY"}_privacy`);
     res.render("privacy.njk", { contentHtml: html });
   } catch (err) {
     console.error(err);
@@ -100,7 +103,7 @@ router.get("/privacy",requireLogin, async (req, res) => {
   }
 });
 
-router.get('/config-num',requireLogin, async (req, res) => {
+router.get('/config-num', requireLogin, async (req, res) => {
   const num = await verManager.getConfigNum()
   if (num) {
     return res.status(200).json({
@@ -115,4 +118,32 @@ router.get('/config-num',requireLogin, async (req, res) => {
     })
   }
 });
+
+router.get('/context-user', requireLogin, async (req, res) => {
+  try {
+    const contextUser = ownerService.getContextUser(req);
+
+    if (!contextUser) {
+      return res.status(200).json({
+        success: false,
+        contextUser: false
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      contextUser: true,
+      ident: contextUser.clientName
+    });
+  } catch (error) {
+    console.error('Error checking context user:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+});
+
+
+
 module.exports = router;

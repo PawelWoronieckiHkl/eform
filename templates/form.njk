@@ -22,26 +22,22 @@
       <p id="orderId" class='d-none'>{{orderId}}</p>
       <div class='content'>
         <h1>{{ __('form.header') }}</h1>
-        <div class='container d-flex col-12 p-3'>
-
-          <div class='commission-space d-flex mb-4 col-12'>
-            <div class="comm-input d-grid col-3">
-
-              <label for="commision-inputs">{{ __('form.commission_label') }}</label>
-              <input type="text" class='validate' id="commission-input" maxlength="60" placeholder="{{ __('form.commission_placeholder')}}" ">
-            </div>
-
-          </div>
-        </div>
 
         <div class="container asortment-container">
+
           <div class='d-flex justify-content-xxl-start asortment-inputs'>
-            <div class="col-2 d-flex flex-column">
-              <label for="department">{{ __('form.department_label') }}</label>
+            <div class='commission-space d-flex col-3'>
+              <div class="comm-input d-grid col-12">
+                <label for="commision-inputs">1.{{ __('form.commission_label') }}</label>
+                <input type="text" class='validate' id="commission-input" maxlength="32" placeholder="{{ __('form.commission_placeholder')}}" ">
+              </div>
+            </div>
+            <div class="col-2 d-flex flex-column gr-select">
+              <label for="department">2.{{ __('form.department_label') }}</label>
               <select name="department" id="department-select" class="form-select"></select>
             </div>
-            <div class="col-2 d-flex flex-column">
-              <label for="asortment-group">{{ __('form.group_label') }}</label>
+            <div class="col-2 d-flex flex-column gr-select">
+              <label for="asortment-group">3.{{ __('form.group_label') }}</label>
               <select name="asortment-group" id="asortment-group-select" class="form-select"></select>
             </div>
           </div>

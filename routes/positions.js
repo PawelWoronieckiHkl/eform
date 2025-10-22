@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { requireLogin } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
+const ownerService = require('../services/owner.js');
 const fs = require('fs');
 const path = require('path');
 const itemBuilder = require('../services/itemBuilder')
@@ -75,7 +76,7 @@ router.delete('/:positionId/delete', requireLogin, async (req, res) => {
   }
 })
 
-router.get('/photo',requireLogin, async (req, res) => {
+router.get('/photo', requireLogin, async (req, res) => {
   try {
     const { photoName, groupNumber, folderName } = req.query;
     console.log('Odebrano zapytanie o zdjęcie:', { photoName, groupNumber, folderName });
@@ -120,7 +121,7 @@ router.get('/photo',requireLogin, async (req, res) => {
 
 
 
-router.get('/:positionId/edit/', requireLogin,async (req, res) => {
+router.get('/:positionId/edit/', requireLogin, async (req, res) => {
   // console.log(req.params.orderId);
   let result = await db.getPosition(req.params.positionId);
 
@@ -171,7 +172,7 @@ router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
   }
 })
 
-router.get('/:positionId/data',requireLogin, async (req, res) => {
+router.get('/:positionId/data', requireLogin, async (req, res) => {
   let result = await db.getPosition(req.params.positionId);
 
   if (result) {
@@ -184,8 +185,9 @@ router.get('/:positionId/data',requireLogin, async (req, res) => {
   }
 })
 
-router.post('/favorites/toggle', requireLogin,async (req, res) => {
-  const userId = req.session.user.userId; // lub z JWT: req.user.id
+router.post('/favorites/toggle', requireLogin, async (req, res) => {
+  const currentUser = ownerService.getCurrentUser(req);
+  const userId = currentUser.userId; // lub z JWT: req.user.id
   const { productValue, groupNumber } = req.body;
 
   if (!userId) {
@@ -209,7 +211,7 @@ router.post('/favorites/toggle', requireLogin,async (req, res) => {
   }
 });
 
-router.get('/:positionId',requireLogin, async (req, res) => {
+router.get('/:positionId', requireLogin, async (req, res) => {
   let result = await db.getPosition(req.params.positionId);
 
   const parametersDesc = JSON.parse(result.json_parameters_desc);
@@ -230,9 +232,10 @@ router.get('/:positionId',requireLogin, async (req, res) => {
   }
 })
 
-router.get('/favs/:groupNr',requireLogin, async (req, res) => {
+router.get('/favs/:groupNr', requireLogin, async (req, res) => {
   const groupNumber = req.params.groupNr;
-  const userId = req.session.user.userId; // lub z JWT: req.user.id}
+  const currentUser = ownerService.getCurrentUser(req);
+  const userId = currentUser.userId; // lub z JWT: req.user.id}
   const favs = await db.getFavs(userId, groupNumber);
   console.log(favs)
   if (!favs || favs.length === 0) {
@@ -298,7 +301,7 @@ router.get('/version/:groupNr/', requireLogin, async (req, res) => {
   return res.status(200).json({ version: version })
 })
 
-router.post('/versions/update/',requireLogin, async (req, res) => {
+router.post('/versions/update/', requireLogin, async (req, res) => {
   try {
     const paths = req.body;
 

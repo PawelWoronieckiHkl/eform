@@ -3,6 +3,7 @@
 	margin: 0;
 	padding: 0;
 }
+
 body {
 	font-family: "Roboto", sans-serif !important;
 	background-color: #f1f1f1 !important;
@@ -20,6 +21,7 @@ h1 {
 	color: #444 !important;
 	text-align: center !important;
 }
+
 label {
 	display: block;
 	font-weight: 500;
@@ -41,6 +43,7 @@ button {
 	margin-right: 10px;
 	max-height: fit-content;
 }
+
 button:hover {
 	background-color: #444;
 }
@@ -58,6 +61,7 @@ input[type="number"] {
 	color: #333;
 	transition: border-color 0.3s;
 }
+
 select:focus,
 input[type="password"]:focus,
 input[type="text"]:focus,
@@ -66,15 +70,17 @@ input[type="number"]:focus {
 	outline: none;
 }
 
-body{
+body {
 	overflow-x: auto !important;
 }
+
 #config-div {
-  position: fixed;
-  bottom: 2%;       /* odległość od dołu */
-  left: 2%;        /* odległość od prawej krawędzi */
-  z-index: 999999;
-  text-align: center;
-  color: #666666b0;
-  font-weight: 600;
+
+	position: fixed;
+	bottom: 2%;
+	width: 280px;
+	z-index: 999999;
+	text-align: center;
+	color: #666666b0;
+	font-weight: 600;
 }

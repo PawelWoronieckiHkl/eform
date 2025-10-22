@@ -3,7 +3,6 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"scripts": {
-		"postinstall": "npx playwright install chromium",
 		"start": "node --openssl-legacy-provider server.js",
 		"dev": "node --watch server.js"
 	},
@@ -39,12 +38,10 @@
 		"nunjucks": "^3.2.4",
 		"path": "^0.12.7",
 		"pdfkit": "^0.17.1",
+		"playwright": "^1.54.2",
 		"puppeteer": "^24.10.2",
 		"smb-enumerate-files": "^1.0.4",
 		"smb2": "^0.2.11",
 		"util": "^0.12.5"
-	},
-	"devDependencies": {
-		"playwright": "^1.54.2"
 	}
 }

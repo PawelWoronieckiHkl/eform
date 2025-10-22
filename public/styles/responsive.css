@@ -23,7 +23,7 @@
 	}
 }
 
-@media (max-width: 650px) {
+@media (max-width: 850px) {
 	.desktop-nav {
 		display: none !important;
 	}

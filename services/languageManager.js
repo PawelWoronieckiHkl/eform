@@ -79,7 +79,7 @@ function checkTranslateLegacy(dir) {
     console.log('Zmieniono plik, zaktualizowano .version.txt');
   } else {
     console.log('Brak zmian w pliku.');
-    jsonToExcel(dir);
+   
   }
 }
 

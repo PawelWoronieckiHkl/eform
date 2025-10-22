@@ -50,13 +50,14 @@ export class Translator {
             return objects;
         }
         else{
+            console.log('Brak danych do załadowania tłumaczeń')
             return {};
         }
     }
 
     checkString(string) {
         if (typeof string !== "string" || !string) return string;
-
+        
         const re = /!([^!]+)!/g;
         const missing = new Set();
 
@@ -67,8 +68,13 @@ export class Translator {
 
             let value;
 
-            // this.stringsContent may be an array of objects or a single map-like object
-            if (Array.isArray(this.stringsContent)) {
+            if (Object.keys(this.stringsContent).length== 0) {
+                console.log(key, 'brak tlumaczen')
+                return t(`translate.${key}`)
+                
+            }
+
+            else if (Array.isArray(this.stringsContent)) {
                 for (const obj of this.stringsContent) {
                     if (obj && Object.prototype.hasOwnProperty.call(obj, key)) {
                         const v = obj[key];
@@ -81,6 +87,7 @@ export class Translator {
                     if (v !== undefined && v !== '') value = v;
                 }
             }
+            
 
             if (value === undefined) {
                 missing.add(key);
