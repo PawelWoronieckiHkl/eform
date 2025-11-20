@@ -30,10 +30,33 @@ async function checkFirstLogon(pin) {
 	}
 	else {
 		const isPolicyAccepted = await db.getPolicyState(pin)
-		console.log(isPolicyAccepted ,'is policy accepted')
+		console.log(isPolicyAccepted, 'is policy accepted')
 		return isPolicyAccepted ? false : true
 	}
 }
 
+async function checkEmployeePassword(login, password) {
+	const employee = await db.getEmployeeByLogin(login);
+	if (!employee) {
+		console.log("Nie ma takiego pracownika");
+		return { valid: false, employee: null };
+	}
 
-module.exports = { checkPassword, checkFirstLogon };
+	// Sprawdź hasło bez hashowania (porównanie bezpośrednie)
+	if (password === employee.password) {
+		console.log("Hasło pracownika poprawne (bez hashowania)");
+		return { valid: true, employee };
+	}
+
+	// Sprawdź także z bcrypt na wypadek zahashowanych haseł
+	if (bcrypt.compareSync(password, employee.password)) {
+		console.log("Hasło pracownika poprawne (bcrypt)");
+		return { valid: true, employee };
+	}
+
+	console.log("Hasło pracownika nieprawidłowe");
+	return { valid: false, employee: null };
+}
+
+
+module.exports = { checkPassword, checkFirstLogon, checkEmployeePassword };

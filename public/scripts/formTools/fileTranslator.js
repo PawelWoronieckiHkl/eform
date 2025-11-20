@@ -69,7 +69,7 @@ export class Translator {
             let value;
 
             if (Object.keys(this.stringsContent).length== 0) {
-                console.log(key, 'brak tlumaczen')
+                // console.log(key, 'brak tlumaczen')
                 return t(`translate.${key}`)
                 
             }

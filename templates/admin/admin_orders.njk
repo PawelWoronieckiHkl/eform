@@ -1,0 +1,70 @@
+{% extends "orders.njk" %}
+{% block head %}
+    <link rel="stylesheet" href="/styles/orders.css">
+    <link rel="stylesheet" href="/styles/mobile/orders.css">
+    <link rel="stylesheet" href="/styles/dialog.css">
+    <link rel="stylesheet" href="/styles/mobile/dialog.css">
+    <link rel="stylesheet" href="/styles/owner/orders.css">
+{% endblock head %}
+
+{% block users %}
+    <div class='d-flex'>
+        <div id='userSelectContainer'>
+            <label for='userSelect' id='userSelectLabel' class="mt-5">{{ __('orders.users_list') }}</label>
+            <div class="dropdown-container">
+                <input type="text" id="userSelect" class="dropdown-input" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
+                <div id="userDropdown" class="dropdown-menu custom-dropdown">
+                    <div class="dropdown-item context-button">
+                        <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
+                            <span class="nav-text">{{ __('base.turn_off_context') }}</span>
+                        </a>
+                    </div>
+                    {% for user in users %}
+                        <div class="dropdown-item" data-value="{{ user.ident }}">{{ user.ident }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+        <div id='showAllOrders-container' class='mt-5 ms-5 pt-3'>
+            <a href='/orders/organization-orders' id='showAllOrdersBtn' class='btn btn-outline-secondary'>
+                {{ __('orders.show_all_orders') }}
+            </a>
+
+        </div>
+        {% if selectedUser %}
+            <div class="alert alert-info mt-3">
+                <strong>Zamówienia użytkownika:</strong>
+                {{ selectedUser.client_name }}
+                ({{ selectedUserIdent }})
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+{% block pagination %}
+
+    {% if range(totalPages).length > 1 %}
+        <nav aria-label="Paginate">
+            <ul class="pagination justify-content-center">
+                {% for i in range(1, totalPages + 1) %}
+
+                    <li class="page-item {% if i == page %}active{% endif %}">
+                        {% if selectedUserIdent %}
+                            <a class="page-link" href="?userIdent={{ selectedUserIdent }}&page={{ i }}">{{ i }}</a>
+                        {% else %}
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <p>{{ __('orders.page_word') }}
+                {{ page }}
+                z
+                {{ totalPages }}</p>
+        </nav>
+    {% endif %}
+{% endblock %}
+{% block scripts %}
+    <script type="module" src="/scripts/orders.js"></script>
+    <script type="module" src="/scripts/owner/orders.js"></script>
+{% endblock scripts %}

@@ -13,10 +13,30 @@ import { validateAllFieldsOnSubmit } from './formTools/validateUtils.js'
 
 
 function getPositionIdFromUrl() {
+    // Sprawdź najpierw query parameter ?id=123
     const params = new URLSearchParams(window.location.search);
-    return params.get('id');
+    const queryId = params.get('id');
+
+    if (queryId) {
+        console.log('ID z query params:', queryId);
+        return queryId;
+    }
+
+    // Jeśli nie ma query param, czytaj z URL path /position/123/edit
+    const pathParts = window.location.pathname.split('/');
+    const positionIndex = pathParts.findIndex(part => part === 'position');
+
+    if (positionIndex !== -1 && pathParts[positionIndex + 1]) {
+        const pathId = pathParts[positionIndex + 1];
+        console.log('ID z URL path:', pathId);
+        return pathId;
+    }
+
+    console.log('Nie znaleziono ID w URL');
+    return null;
 }
 async function getPositionInfo(id) {
+    console.log(id, 'semaasdsad')
     try {
         const response = await fetch(`/position/${id}/data`, {
             method: "GET",

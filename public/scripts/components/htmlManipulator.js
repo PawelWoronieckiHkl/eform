@@ -90,6 +90,12 @@ export function createInfoDialog({
 } = {}) {
     if (!parent) throw new Error("Parent element is required!");
 
+    // Usuń istniejący dialog jeśli istnieje
+    const existingDialog = document.getElementById("delete-dialog");
+    if (existingDialog) {
+        existingDialog.remove();
+    }
+
     const dialog = createElement("dialog", { id: "delete-dialog" }, parent);
 
     if (title) {
@@ -126,10 +132,9 @@ export function createInfoDialog({
                 if (typeof action === "function") {
                     action();
                 }
-                // Jeśli akcja jest pusta lub nie istnieje, zamknij dialog
-                if (!action || action.toString() === '() => {}') {
-                    dialog.close();
-                }
+                // Zawsze zamknij i usuń dialog po kliknięciu
+                dialog.close();
+                dialog.remove();
             }
         }, btnContainer);
         btn.dataset.enter = enter ? "true" : "false";
@@ -148,7 +153,25 @@ export function createInfoDialog({
     }
 
     if (typeof dialog.showModal === "function") {
+        console.log("Opening delete dialog - showModal supported");
         dialog.showModal();
+
+        // iOS Safari fallback - force visibility
+        setTimeout(() => {
+            dialog.style.display = 'grid';
+            dialog.style.visibility = 'visible';
+            dialog.style.opacity = '1';
+            console.log("Dialog forced visible for iOS");
+        }, 50);
+    } else {
+        console.log("showModal not supported - using fallback");
+        // Fallback for older browsers
+        dialog.style.display = 'grid';
+        dialog.style.visibility = 'visible';
+        dialog.style.opacity = '1';
+        dialog.style.position = 'fixed';
+        dialog.style.zIndex = '99999';
+        dialog.setAttribute('open', '');
     }
 
     return { buttons: buttonElements, diag: dialog };
@@ -164,7 +187,7 @@ export function isEnabled(formula, values, paramName) {
             "paramdict",
             paramName
         );
-        // console.log(formula, isEnabled)
+        if (isEnabled == 'password') { isEnabled = false }
     }
     catch (error) {
 

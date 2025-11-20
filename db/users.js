@@ -2,6 +2,7 @@ const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('./core')
 const dateUtils = require("../utils/humanize_date.js");
 const e = require("express");
 const bcrypt = require('bcryptjs');
+const { get } = require('lodash');
 
 
 async function getLanguage(pin) {
@@ -20,6 +21,12 @@ async function getFirstLogonInfo(pin) {
     const query = 'SELECT first_login_at from `user` where pin like ?'
     let result = await selectQuery(query, pin)
     return result[0].first_login_at
+}
+
+async function getUserByEmployye(pin) {
+    const query = `select u.* from user u join employee e on u.id = e.user_id where e.login = ?`;
+    let result = await selectQuery(query, [pin])
+    return result && result.length > 0 ? result[0] : null;
 }
 
 async function uodateFirstLogonInfo(pin) {
@@ -44,14 +51,28 @@ async function getPolicyState(pin) {
     return result[0].privacy_policy_accepted_at
 }
 
+async function getAllOrganizations() {
+    const query = 'SELECT * FROM organization'
+    let result = await selectQuery(query)
+    return result;
+}
 
+async function getEmployyeInfo(login) {
+    const query = 'select * from employee where login = ?'
+    let result = await selectQuery(query, [login])
+    return result[0];
+}
 async function getUserLogo(pin) {
     const query = `select o.photo_path from user u join organization o on u.organization_id = o.id
     where u.pin = ?`;
     let result = await selectQuery(query, pin)
-    return result[0].photo_path;
+    return result && result.length > 0 ? result[0].photo_path : 'hkl.png';
 }
-
+async function getLogo(id){
+    const query = `select photo_path from organization where id = ?`;
+    let result = await selectQuery(query, [id])
+    return result && result.length > 0 ? result[0].photo_path : 'hkl.png';
+}
 async function getUserMail(pin) {
     const query = 'select o.email as organization_email,o.email2 as organization_email2,u.email as user_email from `user` u join organization o on u.organization_id = o.id where u.pin = ?';
     let result = await selectQuery(query, pin)
@@ -64,6 +85,13 @@ async function getOwner(pin) {
     where u.pin = ?`;
     let result = await selectQuery(query, pin)
     return result[0];
+}
+
+async function getOwnerByUserId(userId) {
+    const query = `select o.ident as orgIdent, o.id as orgId, u.ident as userIdent from user u join organization o on u.organization_id = o.id
+    where u.id = ?`;
+    let result = await selectQuery(query, [userId])
+    return result && result.length > 0 ? result[0] : null;
 }
 
 
@@ -108,22 +136,6 @@ async function getUserIdent(pin) {
 
     return result[0].id;
 }
-
-async function getUserByIdent(ident) {
-    const query = `SELECT * FROM user WHERE ident = ?`;
-    const result = await selectQuery(query, [ident]);
-
-    if (result.length > 0) {
-        return result[0];
-    }
-    return null;
-}
-
-async function updateUserIdent(oldIdent, newIdent) {
-    const sql = `UPDATE eform.\`user\` SET ident = ? WHERE ident = ?`;
-    const result = await updateQuery(sql, [newIdent, oldIdent]);
-    return result;
-}
 async function getUserData(pin) {
     const query = `SELECT * FROM \`user\` WHERE pin LIKE ?`;
 
@@ -142,7 +154,6 @@ async function getUserData(pin) {
 async function getUsers() {
     const sql = `
         SELECT 
-            id,
             ident, 
             client_name AS name, 
             street AS address, 
@@ -223,27 +234,12 @@ async function updateUser(userPin, email = '', phone = '') {
     const result = await updateQuery(sql, [phone, email, userPin]);
     return result;
 }
+async function updatePlain(userId, plainPassword) {
 
-async function updateUserById(userId, updateData) {
-    const fields = [];
-    const values = [];
-
-    for (const [key, value] of Object.entries(updateData)) {
-        fields.push(`${key} = ?`);
-        values.push(value);
-    }
-
-    if (fields.length === 0) {
-        throw new Error('Brak danych do aktualizacji');
-    }
-
-    values.push(userId);
-
-    const sql = `UPDATE eform.\`user\` SET ${fields.join(', ')} WHERE id = ?`;
-    const result = await updateQuery(sql, values);
+    const sql = `UPDATE eform.\`user\` set plain = ? where ident = ?`;
+    const result = await updateQuery(sql, [plainPassword, userId]);
     return result;
 }
-
 async function getUserAddresses(userId) {
 
     const query = 'select a.id,a.street,a.city,a.zip,a.country,a.phone,a.email,o.commision, o.user_id  from `order` o join order_address a on o.order_address_id  = a.id where o.user_id =?';
@@ -252,9 +248,99 @@ async function getUserAddresses(userId) {
     return { addresses }
 }
 
-async function updateUserOrganization(ident, organizationId) {
-    const sql = `UPDATE eform.\`user\` SET organization_id = ? WHERE ident = ?`;
-    const result = await updateQuery(sql, [organizationId, ident]);
+// ===== EMPLOYEE FUNCTIONS =====
+
+async function getEmployeesByUserId(userId) {
+    const query = `
+        SELECT id, name, surname, last_login, user_id, password, phone, login 
+        FROM employee 
+        WHERE user_id = ?
+        ORDER BY surname, name
+    `;
+    const result = await selectQuery(query, [userId]);
+    return result || [];
+}
+
+async function getEmployeeById(employeeId) {
+    const query = `SELECT * FROM employee WHERE id = ?`;
+    const result = await selectQuery(query, [employeeId]);
+    return result && result.length > 0 ? result[0] : null;
+}
+
+async function getEmployeeByLogin(login) {
+    const query = `SELECT * FROM employee WHERE login = ?`;
+    const result = await selectQuery(query, [login]);
+    return result && result.length > 0 ? result[0] : null;
+}
+
+async function addEmployee(employeeData) {
+    const { name, surname, login, password, phone, userId } = employeeData;
+    console.log('jestem w addEmployee', employeeData)
+    // Check if the user already exists
+    const checkEmployeeQuery = `SELECT id FROM employee WHERE login = ?`;
+    const checkUserQuery = `SELECT id FROM eform.\`user\` WHERE pin = ?`;
+    const existingEmployee = await selectQuery(checkEmployeeQuery, [login]);
+    const existingUser = await selectQuery(checkUserQuery, [login]);
+    console.log('existingEmployee:', existingEmployee);
+    console.log('existingUser:', existingUser);
+    if (existingEmployee.length > 0 || existingUser.length > 0) {
+        console.log('Employee already exists or user does not exist');
+        return { success: false, info: 'USER_EXISTS' };
+
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 12);
+
+    const sql = `
+        INSERT INTO employee (name, surname, login, password, phone, user_id)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    try {
+        const result = await insertQuery(sql, [name, surname, login, hashedPassword, phone, userId]);
+        return result.insertId;
+    } catch (err) {
+        throw new Error('Błąd przy dodawaniu pracownika: ' + err.message);
+    }
+}
+
+async function deleteEmployee(employeeId) {
+    const sql = `DELETE FROM employee WHERE id = ?`;
+    const result = await deleteQuery(sql, [employeeId]);
+    return result;
+}
+
+async function getEmployeeOrders(employeeId, limit = 50, offset = 0) {
+    const query = `
+        SELECT 
+            o.id,
+            o.commision,
+            o.created_date,
+            o.sent_date,
+            o.status,
+            o.total_price,
+            COUNT(oi.id) as items_count
+        FROM \`order\` o
+        LEFT JOIN order_item oi ON o.id = oi.order_id
+        WHERE o.employee_id = ?
+        GROUP BY o.id
+        ORDER BY o.created_date DESC
+        LIMIT ? OFFSET ?
+    `;
+    const result = await selectQuery(query, [employeeId, limit, offset]);
+    return result || [];
+}
+
+async function countEmployeeOrders(employeeId) {
+    const query = `SELECT COUNT(*) as total FROM \`order\` WHERE employee_id = ?`;
+    const result = await selectQuery(query, [employeeId]);
+    return result && result.length > 0 ? result[0].total : 0;
+}
+
+async function updateEmployeeLastLogin(employeeId) {
+    const sql = `UPDATE employee SET last_login = ? WHERE id = ?`;
+    const now = dateUtils.getDbTimestamp();
+    const result = await updateQuery(sql, [now, employeeId]);
     return result;
 }
 
@@ -264,6 +350,7 @@ module.exports = {
     getPolicyState,
     getUserLogo,
     getOwner,
+    getOwnerByUserId,
     updateUserPasswordByPin,
     getDbPassword,
     getUserData,
@@ -272,13 +359,23 @@ module.exports = {
     getUserId,
     getUserMail,
     updateUser,
-    updateUserById,
     getUserAddresses,
     getUserName,
     setUserAcceptedRODO,
     uodateFirstLogonInfo,
     getUserIdent,
-    getUserByIdent,
-    updateUserIdent,
-    updateUserOrganization
+
+    getEmployeesByUserId,
+    getEmployeeById,
+    getEmployeeByLogin,
+    addEmployee,
+    deleteEmployee,
+    getEmployeeOrders,
+    countEmployeeOrders,
+    updateEmployeeLastLogin,
+    updatePlain,
+    getUserByEmployye,
+    getEmployyeInfo,
+    getAllOrganizations,
+    getLogo
 }

@@ -46,6 +46,7 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
             const prodecuresResults = [window.inputsValidators,
             window.inputsDefaults]
 
+
         } catch (error) {
             console.error('Błąd ewaluacji procedury:', error);
         }
@@ -104,7 +105,7 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
 
 export function setDefaultValues(inputs, values, allOptionsByParameter, displayValues, fromChecked = false) {
     logFunctionName('setDefaultValues');
-
+    console.log(JSON.stringify(inputsDefaults), 'inputsDefaults w getProcedures');
     if (fromChecked) { return false }
     // Iterujemy po inputsDefaults zamiast inputsValidators
     Object.entries(inputsDefaults).forEach(([firstParam, models]) => {
@@ -127,9 +128,11 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                     const domValue = functions.DOM;
                     values[param] = domValue;
                     setDescription(values, domValue, allOptionsByParameter, param)
+                    console.log(domValue, input?.id, 'domValue w setDefaultValues');
                     try {
-                        const curPar = buildValuesToDisplay(allOptionsByParameter, domValue, input.id, displayValues, input.tagName);
 
+                        const curPar = buildValuesToDisplay(allOptionsByParameter, domValue, input?.id, displayValues, input.tagName);
+                        console.log(curPar, 'domValue w setDefaultValues 1')
                         // Ustawianie wartości DOM w UI
                         if (input.tagName === 'INPUT') {
 
@@ -146,6 +149,7 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                             }
                             else {
                                 if (domValue === '<NONE>') {
+                                    console.log(curPar,'domValue w setDefaultValues 2')
                                     buttonLabel = currentParam?.DESCRIPTION ?? ""
                                 }
                                 else {
@@ -384,7 +388,7 @@ export function clearDisabledValues(values, displayValues) {
     for (const key of Object.keys(values)) {
 
         const baseParam = key.replace(/___DESCRIPTION$/, '');
-        if (key.includes('___VISIBLE') || baseParam.includes('___TITLE')|| baseParam.includes('___DICT')) {
+        if (key.includes('___VISIBLE') || baseParam.includes('___TITLE') || baseParam.includes('___DICT')) {
             continue;
         }
 
@@ -392,7 +396,7 @@ export function clearDisabledValues(values, displayValues) {
             const desc = `${baseParam}___DESCRIPTION`;
             const visibleKey = `${baseParam}___VISIBLE`;
 
-    
+
             values[visibleKey] = false;
 
             // Usuń lub ustaw na pusty string zarówno dla klucza jak i desc

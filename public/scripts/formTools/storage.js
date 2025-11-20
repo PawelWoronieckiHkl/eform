@@ -19,26 +19,30 @@ export class AttrLoader {
 
     async loadFile() {
         const translatedFile = window.translator.checkString(this.file)
-        console.log('przetłumaczone', translatedFile)
+        // console.log('przetłumaczone', translatedFile)
         const attrPath = `${this.mainPath}/data/${this.file}`;
         const data = await this.loader.loadData(attrPath);
-        console.log('ATTR DATA:', data)
+        // console.log('ATTR DATA:', data)
         const objects = this.convertDataToObjects(data)
         this.attrValues = objects
-        console.log(this.attrValues, 'semafor')
+        // console.log(this.attrValues, 'semafor')
     }
 
     convertDataToObjects(csvData) {
         // Zakładamy csvData w formacie: [ [VALUE, ATTR_VALUE, ATTR_DESCRIPTION], ... ]
         const headers = csvData[0].map(h => h.trim().toUpperCase());
-        console.log('HEADERS:', headers);
+        // console.log('HEADERS:', headers);
         const result = {};
 
         for (let col = 1; col < headers.length; col++) {
             const key = headers[col];
             result[key] = [];
+ 
             for (let row = 1; row < csvData.length; row++) {
                 const valueKey = csvData[row][0].trim();
+
+                if(valueKey.endsWith('-OBS')){
+                console.log('VALUE KEY:', valueKey);}
                 let value = csvData[row][col] ? csvData[row][col].trim() : '';
                 value = value.replace(/\r/g, '');
 

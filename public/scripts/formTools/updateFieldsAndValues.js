@@ -93,31 +93,35 @@ export function resetDisplayEntry(param, display) {
 }
 
 export function buildValuesToDisplay(dictValues, value, paramName, displayValues, tagName) {
-    if (paramName == 'PROWADZENIE') {
-        // console.log('build Prowadzenie', dictValues, value, paramName, displayValues, tagName)
-    }
+
 
     logFunctionName('buildValuesToDisplay');
 
 
     // Pobieramy aktualny obiekt z displayValues lub tworzymy pusty
     let currentValue = displayValues.get(paramName) || {};
+    console.log('currentValue before:', currentValue);
     if (currentValue['option_value'] || currentValue['option_value'] != undefined
     ) {
+
         currentValue['option_value'] = String(currentValue['option_value'])
     }
+
     if (value === '<NONE>') {
-        // Zamiast usuwać klucz, wyczyść wszystkie wartości w obiekcie
+
         let currentValue = displayValues.get(paramName) || {};
         // Wyczyść wszystkie właściwości obiektu
         for (let key in currentValue) {
-            currentValue[key] = '';
+            currentValue['locked'] = false;
+            currentValue['option_value'] = '';
+            currentValue['option_description'] = '';
+            currentValue['row'] = '';
         }
         // Upewnij się, że podstawowe właściwości istnieją jako puste
         currentValue['option_value'] = '';
         currentValue['option_description'] = '';
         displayValues.set(paramName, currentValue);
-        console.log('NONE - cleared values for:', paramName, currentValue);
+        // console.log('NONE - cleared values for:', paramName, currentValue);
         return;
     }
 
@@ -128,6 +132,7 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
 
         for (let [fieldName, fieldVal] of Object.entries(value)) {
             if (!fieldVal || value === '<NONE>') {
+
                 // Zamiast usuwać klucz, wyczyść wszystkie wartości w obiekcie
                 let currentValue = displayValues.get(paramName) || {};
                 // Wyczyść wszystkie właściwości obiektu
@@ -171,7 +176,6 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
 
     if (value != '<NONE>') {
         const valOBj = searchForParameter(value, dictValues, paramName);
-
         currentValue['option_value'] = value;
 
         if (tagName != "INPUT") {
@@ -277,9 +281,6 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
     }
 }
 
-export function updateLink() {
-
-}
 
 export function updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value) {
 
@@ -303,6 +304,11 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                 param.NAME
             );
 
+            if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE && !shouldEnable) {
+                window.skipCountParams.push(param.NAME)
+            }
+
+            if (shouldEnable == 'password') { shouldEnable = false }
 
         }
         catch (error) {
@@ -324,7 +330,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
         if (inputs[key].tagName == 'INPUT') {
             validateFormInput(values, inputs[key]);
         }
-        let paramName; // Ensure paramName is defined in the scope
+        let paramName;
 
         if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE) {
 
@@ -332,6 +338,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
             const checkParams = ['SZEROKOSC', 'WYSOKOSC'].filter(p => {
                 let input = inputs[p];
                 if (input !== undefined) {
+
                     let parentDiv = input.parentNode;
                     return parentDiv && parentDiv.style.display !== 'none';
                 }
@@ -340,11 +347,12 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
             const hasValidValues = checkParams.length === 0 || checkParams.every(p => !wrongValues.includes(values[p]));
 
             if (hasValidValues &&
-                !(window.skipCountParams.includes(param.NAME)
-                    || inputs[key].parentNode.style.display === 'none')) {
+                !(window.skipCountParams.includes(param.NAME))) {
 
                 try {
-                    loadScript(param.SOURCE, values, displayValues, groupNumber, allOptionsByParameter, function (scriptResult) {
+                    // console.log(param.NAME, "SKRyPTy2")
+                    loadScript(param.SOURCE, values, displayValues, groupNumber, allOptionsByParameter, param, function (scriptResult) {
+
                         if (scriptResult) {
 
                             for ([paramName, value] of Object.entries(scriptResult)) {
@@ -355,7 +363,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                                     let strVal;
                                     if (param.FORMAT == 'n%') {
                                         strVal = `${parseInt(val * 100)}%`;
-                                        inputs[paramName].value = `${parseInt(val * 100)}%`;
+                                        inputs[paramName].value = val;
                                     }
                                     else {
                                         strVal = String(value)
@@ -364,6 +372,7 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
 
                                     values[paramName] = value;
                                     buildValuesToDisplay(allOptionsByParameter, strVal, param.NAME, displayValues, 'INPUT ');
+
                                 }
                             }
                         }
@@ -373,48 +382,55 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                     console.log('mamy error')
                     inputs[paramName].value = '0'
                     values[param.NAME] = 0
-                    console.log('PARAM NAME:', param.NAME);
+                    // console.log('PARAM NAME:', param.NAME);
                 }
             }
             else {
                 inputs[param.NAME].value = '0'
                 values[param.NAME] = 0
-                setTimeout(() => {
-                    console.log('PARAM NAME:', param.NAME, values);
-                }, 1000);
+                // setTimeout(() => {
+                // console.log('PARAM NAME:', param.NAME, values);
+                // }, 1000);
             }
         }
 
         if (param.FORMULA != "<NULL>" &&
-            !(window.skipCountParams.includes(param.NAME)
-                || inputs[key].parentNode.style.display === 'none')
+            !(window.skipCountParams.includes(param.NAME))
 
         ) {
             setTimeout(() => {
                 if (param.FORMULA.includes('RABAT')) {
                 }
                 try {
-                    const result = window.FormulaHandler.evaluateFormula(
+                    let result = window.FormulaHandler.evaluateFormula(
                         param.FORMULA,
                         values,
                         "formula"
+
                     );
-
-
+                    // console.log(values['CENA'], values['DOPLATA'], values['CENA_RABAT'],values['DOPLATA_EL'],values['DOPLATA_EL_RABAT'], values, '=>', param.FORMULA)
+                    console.log(`${param.NAME} ==== `, param.FORMULA, '=>', result)
                     if (result === false || result === null || result < 0) {
                         inputs[key].value = '0';
                         values[key] = 0;
                     } else {
-                        inputs[key].value = result.toFixed(2);
-                        values[key] = parseFloat(result.toFixed(2));
+                        result = parseFloat(result);
+                        inputs[key].value = result?.toFixed(2) ?? '0';
+                        values[key] = parseFloat(result?.toFixed(2)) ?? 0;
                         buildValuesToDisplay(allOptionsByParameter, result.toFixed(2), param.NAME, displayValues, 'INPUT ');
                     }
                     validateFormInput(values, inputs[key]);
                 } catch (error) {
-                    console.log('mamy error');
+                    const result = window.FormulaHandler.evaluateFormula(
+                        param.FORMULA,
+                        values,
+                        "formula"
+
+                    );
+                    console.log('mamy error', error, param.FORMULA, param.NAME, result, typeof result);
                     showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`);
                 }
-            }, 1000); // tutaj ustawiasz liczbę milisekund opóźnienia
+            }, 300); // tutaj ustawiasz liczbę milisekund opóźnienia
         }
 
 
@@ -452,8 +468,9 @@ export function setWar(values, params, inputs) {
             current = current[keys[i]];
         }
         if (param.NAME == param.SOURCE) {
+
             param.modal.setTyp(value);
-            console.log()
+
 
         }
         else if (param.TYPE == 'link') {
@@ -463,7 +480,7 @@ export function setWar(values, params, inputs) {
 
         }
         else {
-            console.log(currentInput, value, 'DOMOM')
+
             if (currentInput) {
                 // Sprawdź typ elementu i ustaw odpowiednią właściwość
                 if (currentInput.tagName === 'INPUT' || currentInput.tagName === 'TEXTAREA' || currentInput.tagName === 'SELECT') {
@@ -475,7 +492,7 @@ export function setWar(values, params, inputs) {
                 console.warn(`Input element for ${param.NAME} not found`);
             }
         }
-        console.log('SET WAR', keys[keys.length - 1], value)
+
         current[keys[keys.length - 1]] = value;
 
     }

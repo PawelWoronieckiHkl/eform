@@ -1,5 +1,5 @@
 @media (max-width: 767.98px) {
-    dialog {
+    dialog:not(#delete-dialog) {
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
@@ -24,12 +24,12 @@
         box-sizing: border-box !important;
     }
 
-    dialog::backdrop {
+    dialog:not(#delete-dialog)::backdrop {
         display: none !important;
         background: transparent !important;
     }
 
-    dialog[open] {
+    dialog:not(#delete-dialog)[open] {
         display: flex !important;
         background: white !important;
         width: 100vw !important;
@@ -42,16 +42,6 @@
     }
 
 
-    #dialog-title {
-        padding: 20px !important;
-        font-weight: 700 !important;
-        background: white !important;
-        color: #333 !important;
-        text-align: center !important;
-        border-bottom: 1px solid #e0e0e0 !important;
-        margin: 0 !important;
-        font-size: 1.3rem !important;
-    }
 
     #dialog-container {
         padding: 0 !important;
@@ -109,11 +99,15 @@
     }
 
     .image-box {
-        display: flex !important;
         flex-direction: column !important;
         position: relative !important;
         width: 100% !important;
         margin-bottom: 10px !important;
+    }
+
+    /* Respect JavaScript display control for filtering/searching */
+    .image-box:not([style*="display: none"]) {
+        display: flex !important;
     }
 
     .image-name {
@@ -238,72 +232,73 @@
         background: white !important;
     }
 
-.button-wrapper {
-    margin: 0 !important;
-}
+    .button-wrapper {
+        margin: 0 !important;
+    }
 
 
 
-/* Filter controls - collapsible */
-.filter-controls {
-    background: white !important;
-    border: 2px solid #e0e0e0 !important;
-    border-radius: 12px !important;
-    margin: 15px !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-}
+    /* Filter controls - collapsible */
+    .filter-controls {
+        background: white !important;
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 12px !important;
+        margin: 15px !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    }
 
-.filter-controls.collapsed {
-    max-height: 60px !important;
-}
+    .filter-controls.collapsed {
+        max-height: 60px !important;
+    }
 
-.filter-controls.expanded {
-    max-height: 400px !important;
-}
+    .filter-controls.expanded {
+        max-height: 400px !important;
+    }
 
-.filter-controls-header {
-    background: #f8f9fa !important;
-    padding: 15px 20px !important;
-    border-bottom: 1px solid #e0e0e0 !important;
-    cursor: pointer !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    user-select: none !important;
-}
+    .filter-controls-header {
+        background: #f8f9fa !important;
+        padding: 15px 20px !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        user-select: none !important;
+    }
 
-.filter-controls-header:hover {
-    background: #e9ecef !important;
-}
+    .filter-controls-header:hover {
+        background: #e9ecef !important;
+    }
 
-.filter-controls-title {
-    font-weight: 600 !important;
-    color: #333 !important;
-    font-size: 1.1rem !important;
-}
+    .filter-controls-title {
+        font-weight: 600 !important;
+        color: #333 !important;
+        font-size: 1.1rem !important;
+    }
 
-.filter-controls-toggle {
-    font-size: 1.2rem !important;
-    color: #666 !important;
-    transition: transform 0.3s ease !important;
-}
+    .filter-controls-toggle {
+        font-size: 1.2rem !important;
+        color: #666 !important;
+        transition: transform 0.3s ease !important;
+    }
 
-.filter-controls.expanded .filter-controls-toggle {
-    transform: rotate(180deg) !important;
-}
+    .filter-controls.expanded .filter-controls-toggle {
+        transform: rotate(180deg) !important;
+    }
 
-.filter-controls-content {
-    padding: 15px !important;
-    display: none !important;
-}
+    .filter-controls-content {
+        padding: 15px !important;
+        display: none !important;
+    }
 
-.filter-controls.expanded .filter-controls-content {
-    display: block !important;
-}
-#sortOptions{
-    margin-right: 15px !important;
-}
+    .filter-controls.expanded .filter-controls-content {
+        display: block !important;
+    }
+
+    #sortOptions {
+        margin-right: 15px !important;
+    }
 }

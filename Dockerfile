@@ -20,7 +20,17 @@ COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 # Instalacja Playwright z wymaganymi dependency i Chromium
-RUN npx playwright install chromium --with-deps
+# Dodatkowe flagi dla pewności instalacji
+RUN npx playwright install chromium --with-deps && \
+    npx playwright install-deps chromium && \
+    # Sprawdź czy chromium został zainstalowany
+    npx playwright install chromium --force && \
+    # Ustaw zmienne środowiskowe dla Playwright
+    echo "PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright" >> /etc/environment
+
+# Dodaj zmienną środowiskową dla Playwright
+ENV PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=false
 
 # Kopiowanie plików aplikacji
 COPY . .
@@ -37,6 +47,11 @@ RUN git clone https://github.com/tiknil/json-excel-translations.git /tmp/json-ex
     cp ./jsonToExcel.py /usr/local/bin/jsonToExcel && \
     # Cleanup
     rm -rf /tmp/json-excel-translations
+
+# Sprawdź czy Playwright został poprawnie zainstalowany
+RUN npx playwright --version && \
+    ls -la /root/.cache/ms-playwright/ || echo "Playwright cache not found" && \
+    find /root/.cache -name "*chromium*" -type d || echo "Chromium not found"
 
 WORKDIR /app
 

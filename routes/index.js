@@ -2,8 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { requireLogin } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
+const adminDb = require("../db/admin/db_helper.js");
+const usersDb = require("../db/users.js");
 const ownerService = require('../services/owner.js');
 const path = require('path')
+
 const fs = require('fs');
 const langManager = require('../services/setLanguage')
 const verManager = require('../services/versionManager.js')
@@ -63,7 +66,22 @@ router.get("/", requireLogin, async (req, res) => {
   console.log(mustAcceptRODO, 'must accept RODO')
   const orders = await db.getUserOrders(user.id, 4, 0);
   const ordersSent = await db.getUserOrders(user.id, 4, 0, true);
-  return res.render("home.njk", { user: user, orders: orders, ordersSent: ordersSent, limit: 4, mustAcceptRODO: mustAcceptRODO });
+
+  // Pobierz organizacje tylko dla adminów
+  let organizations = [];
+  if (req.session.user.isAdmin) {
+    organizations = await db.getAllOrganizations();
+  }
+
+  return res.render("home.njk", {
+    user: user,
+    orders: orders,
+    ordersSent: ordersSent,
+    limit: 4,
+    mustAcceptRODO: mustAcceptRODO,
+    admin: req.session.user.isAdmin,
+    organizations: organizations
+  });
 });
 router.get("/delivery-time", requireLogin, async (req, res) => {
   const currentUser = ownerService.getCurrentUser(req);
@@ -141,6 +159,21 @@ router.get('/context-user', requireLogin, async (req, res) => {
       success: false,
       message: 'Internal server error'
     });
+  }
+});
+
+// Set organization for admin users
+router.get('/set-organization/:id', requireLogin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    req.session.user.organization = id;
+    delete req.session.context_user;
+
+    const redirectPath =  '/';
+    res.redirect(redirectPath);
+  } catch (error) {
+    console.error('Error setting organization:', error);
+    res.status(500).redirect('/');
   }
 });
 

@@ -23,7 +23,8 @@ class OrderSender {
             country: order.country,
             email: order.email,
             phone: order.phone,
-
+            total: order.total_price,
+            total_hidden: order.total_price_hidden,
             items: []
 
         }
@@ -39,8 +40,9 @@ class OrderSender {
                     return acc;
                 }, {});
 
-            console.log("ITEM ", item)
+  
             this.data.items.push({
+                posid: item?.id ?? 0,
                 orderpos: idx,
                 product: item?.asortment_group_number,
                 product_description: item?.group_name ?? '',
@@ -63,10 +65,10 @@ class OrderSender {
     async saveToFile() {
         if (!process.env?.PRODUCTION) {
             const filePath = path.join(this.output_path, this.fileName);
-            console.log("PATH ", filePath)
+       
             try {
                 await fs.promises.writeFile(filePath, JSON.stringify(this.data, null, 2), 'utf-8');
-                console.log(`File saved to ${filePath}`);
+
             } catch (error) {
                 console.error(`Failed to save file: ${error.message}`);
             }
@@ -93,7 +95,6 @@ class OrderSender {
                     secure: ftpConfig.secure
                 });
                 await client.uploadFrom(filePath, ftpConfig.remotePath);
-                console.log(`File uploaded to FTP: ${ftpConfig.remotePath}`);
             } catch (err) {
                 console.error(`FTP upload failed: ${err.message}`);
             }

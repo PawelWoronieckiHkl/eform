@@ -115,7 +115,11 @@
 		"check_option": "Wybierz opcję",
 		"search_input_placeholder": "Wyszukaj po nazwie...",
 		"empty_select_warning": "Nie wybrano żadnej opcji.",
-		"all_word": "Wszystkie"
+		"all_word": "Wszystkie",
+		"status_zero": "Niedostępne",
+		"status_safe": "Dostępne",
+		"status_low": "Niski stan",
+		"status_critical": "Stan krytyczny"
 	},
 	"mail": {
 		"order_confirm": "mail.order_confirm",

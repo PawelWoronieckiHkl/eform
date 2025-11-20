@@ -31,6 +31,7 @@ async function jsonTextBackToMap(orderItems) {
     let currentDisplayHeaders2 = [];
 
     for (const [key, param] of jsonParameters.entries()) {
+
       const display = param && param.param_description ? param.param_description : key;
       const headerKey = display + "||" + key; // rozróżnia nawet powtarzalne "MODEL"
       const rowStr = (param && param.row !== undefined) ? String(param.row) : '1';
@@ -75,6 +76,7 @@ async function jsonTextBackToMap(orderItems) {
 
     // Tworzymy wiersz jako obiekt: [headerKey] => wartość, plus na display mapujemy nagłówek po kolei
     item.lockedParams = []
+    item.posId = item.id || 0
     let rowObj = {};
     for (const [key, param] of jsonParameters.entries()) {
       const display = param && param.param_description ? param.param_description : key;
@@ -100,12 +102,12 @@ async function jsonTextBackToMap(orderItems) {
         }
 
         if ('locked' in param && 'param_description' in param) {
-            if (!isNaN(param.option_value) && param?.option_value != undefined && 'listsum' in param) {
-              let totalkey = total[param.param_description] || { price: 0, locked: !!param.locked };
-              totalkey.price = (totalkey.price || 0) + Number(param.option_value || 0);
-              totalkey.locked = !!param.locked;
-              total[param.param_description] = totalkey;
-            }
+          if (!isNaN(param.option_value) && param?.option_value != undefined && 'listsum' in param) {
+            let totalkey = total[param.param_description] || { price: 0, locked: !!param.locked };
+            totalkey.price = (totalkey.price || 0) + Number(param.option_value || 0);
+            totalkey.locked = !!param.locked;
+            total[param.param_description] = totalkey;
+          }
           if (param.locked) {
 
             if (!table.locked.includes(param.param_description)) {

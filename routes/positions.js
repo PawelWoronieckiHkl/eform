@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { requireLogin } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
+const adminDb = require("../db/admin/db_helper.js");
 const ownerService = require('../services/owner.js');
 const fs = require('fs');
 const path = require('path');
@@ -124,9 +125,9 @@ router.get('/photo', requireLogin, async (req, res) => {
 router.get('/:positionId/edit/', requireLogin, async (req, res) => {
   // console.log(req.params.orderId);
   let result = await db.getPosition(req.params.positionId);
-
+  let orderId = result.order_id;
   if (result) {
-    return res.render('edit_position.njk', { position: result })
+    return res.render('edit_position.njk', { position: result, orderId: orderId })
   }
   else {
     return res.status(400).json({
@@ -163,7 +164,10 @@ router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
   )
 
   if (result) {
-    return res.status(200).json({ redirect: `/orders/order/${orderId}` })
+    console.log('DUPLIKOWANIE POZYCJI - WYNIK:', result[0]);
+    const newPositionId = result[0].insertId;
+    console.log('Nowe ID pozycji:', newPositionId);
+    return res.status(200).json({ redirect: `/position/${newPositionId}/edit` })
   }
   else {
     return res.status(400).json({
@@ -327,7 +331,38 @@ router.post('/versions/update/', requireLogin, async (req, res) => {
   }
 });
 
+// Endpoint do przesuwania pozycji w górę
+router.post('/:id/move-up', requireLogin, async (req, res) => {
+  try {
+    const positionId = req.params.id;
+    const result = await db.movePositionUp(positionId);
 
+    if (result.success) {
+      res.json({ success: true, message: result.message });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    console.error('Error moving position up:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
 
+// Endpoint do przesuwania pozycji w dół
+router.post('/:id/move-down', requireLogin, async (req, res) => {
+  try {
+    const positionId = req.params.id;
+    const result = await db.movePositionDown(positionId);
+
+    if (result.success) {
+      res.json({ success: true, message: result.message });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    console.error('Error moving position down:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
 
 module.exports = router;

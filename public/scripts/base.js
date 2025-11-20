@@ -36,6 +36,16 @@ async function getLogo() {
 getLogo()
     .catch(err => console.error('Final error:', err));
 
+async function getEmployyeInfo(){
+    try{
+        await fetch('/user/employee-info', {
+            method: 'GET',
+            credentials: 'include'
+        });
+    } catch(err) {
+        console.error('getEmployyeInfo Error:', err);
+    }
+}
 
 export function validate(validateClass) {
     let inputs = document.querySelectorAll(validateClass);
@@ -72,7 +82,7 @@ export function validate(validateClass) {
     return allValid;
 }
 
-async function getUserName() {
+export async function getUserName() {
     const user = await fetch('/user/name', {
         method: 'GET',
         credentials: 'include'
@@ -116,6 +126,7 @@ async function getUserName() {
         console.log(t('base.user'), data.name);
         document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${data.name}${contextInfo}`;
     }, 100);
+    return data;
 }
 
 

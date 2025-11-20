@@ -34,7 +34,9 @@
 		"zip": "Postal code:",
 		"city_country": "City:",
 		"user_id": "(Test) ID:",
-		"no_user_data": "No user data."
+		"no_user_data": "No user data.",
+		"organization": "Organization",
+		"turn_off_context": "Turn off context"
 	},
 	"edit_order": {
 		"title": "Edit Order",
@@ -108,7 +110,16 @@
 		"saved_form_success": "Order saved!",
 		"error_saving_form": "Error while saving the order!",
 		"error_loading_form": "Failed to load files for the selected group.",
-		"comment_label":"ORDER COMMENTS:",
-		"check_word":"Check"
+		"comment_label": "ORDER COMMENTS:",
+		"check_word": "Check",
+		"search_input_placeholder": "Search by name...",
+		"empty_select_warning": "No option selected.",
+		"all_word": "All",
+		"status": "Stock status",
+		"status_zero": "Unavailable",
+		"status_safe": "Available",
+		"status_low": "Low stock",
+		"status_critical": "Critical stock",
+		"reset_filters": "Reset filters"
 	}
 }

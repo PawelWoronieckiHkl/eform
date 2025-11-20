@@ -11,7 +11,7 @@
 {% endblock head %}
 {% block key_nav %}{% endblock %}
 {% block back_link %}
-  <button class="modern-back-btn" onclick="window.history.back()">
+  <button class="modern-back-btn" onclick="window.location.href='/orders/order/{{orderId}}'">
   {% endblock %}
   {% block content %}
     <form action="post" class='full-form'>

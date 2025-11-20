@@ -96,7 +96,7 @@ export function setDescription(values, value, allOptionsByParameter, name, calle
 	if (value === '<NONE>') console.log('NONE VALUE');
 
 	const valObj = searchForParameter(value, allOptionsByParameter, name)
-	if (name == "KOLOR") console.log('KOLOR VALOBJ:', valObj);
+	
 	let prodAliasName = ''
 	let prodAliasComment = ''
 
@@ -143,6 +143,16 @@ export function checkIfOptionsExist(allOptionsByParameter, paramName, values) {
 		values[paramName + '___DICT'] = false;
 	}
 	return values;
+}
+
+export function roundInputValue(value, step) {
+
+	if (isNaN(value) || value === null || !value) {
+		return value; // Nie można zaokrąglić bez prawidłowego kroku
+	}
+
+
+	return parseInt(value);
 }
 
 export {

@@ -12,6 +12,8 @@ import {
 import { createElement } from '../components/htmlManipulator.js'
 import { stopSpin, startSpin } from "../components/hourglass.js";
 import { getEnvVersion } from "../getEnv.js";
+import { getUserName } from "../base.js";
+
 
 export class DialogManager {
   constructor() {
@@ -47,6 +49,7 @@ export class DialogManager {
     startSpin()
     logFunctionName('DialogManager.initialize');
     this.param = param;
+    this.user = await getUserName();
     this.options = options;
     this.groupNumber = groupNumber;
     this.filters = filters
@@ -69,18 +72,27 @@ export class DialogManager {
     // Pobranie mapy obrazów
     const imageMap = await this.fetchImageMap(param, options, groupNumber);
 
-    // Przygotowanie interfejsu
-    this.setupUI();
     this.env = await getEnvVersion();
-    console.log(this.env, 'env w dialogu')
 
+    // NAJPIERW dodaj statusy do filtrów
     if (this.attrValues && this.attrValues != undefined && Object.keys(this.attrValues).length > 0) {
       this.getUniqueCategories()
-    }    // Renderowanie opcji
+    }
+
+    // POTEM przygotuj interfejs (tutaj się tworzą kontrolki filtrów)
+    this.setupUI();
+
+    // Renderowanie opcji
     await this.renderOptions(imageMap);
 
     // Pokazanie dialogu
     this.dialog.showModal();
+
+    // Reset scroll do góry za każdym razem
+    if (this.listContainer) {
+      this.listContainer.scrollTop = 0;
+    }
+
     stopSpin()
   }
 
@@ -274,22 +286,36 @@ export class DialogManager {
     if (filterControls) {
       controlsContainer.appendChild(filterControls);
     }
-    const sortingContainer = this.createSortingControls(this.handleSortChange.bind(this), this.currentSort || 'favorites');
+
+    const sortingContainer = this.createSortingControls(this.handleSortChange.bind(this), this.currentSort || 'default');
     controlsContainer.appendChild(sortingContainer);
     // Wstawienie kontrolek przed listą opcji
     if (this.dialogContainer && this.listContainer) {
       this.dialogContainer.insertBefore(controlsContainer, this.listContainer);
     }
 
-    let dialogSortMethod = localStorage.getItem('dialogSortMethod');
-    if (dialogSortMethod) {
+    // Ustawienie wartości AFTER dodania do DOM z opóźnieniem
+    setTimeout(() => {
 
-      sortingContainer.querySelector('select').value = dialogSortMethod;
-    }
-    this.handleSortChange(dialogSortMethod);
+      let dialogSortMethod = localStorage.getItem(`${this.param.NAME}-dialogSortMethod`) || 'default';
+
+      const selectElement = sortingContainer.querySelector('select');
+      if (selectElement) {
+        selectElement.value = dialogSortMethod;
+
+
+        // Sprawdź czy wartość została ustawiona
+        if (selectElement.value !== dialogSortMethod) {
+          console.warn('Failed to set select value, falling back to first option');
+          selectElement.selectedIndex = 0; // default jest pierwszym elementem (index 0)
+        }
+      }
+
+      this.handleSortChange(dialogSortMethod || 'default');
+    }, 10);
   }
 
-  createSortingControls(onSortChange, currentSort = 'favorites') {
+  createSortingControls(onSortChange, currentSort = 'default') {
     const options = [
       { value: 'default', label: `${t('form.default')}` },
       { value: 'favorites', label: `${t('form.favorites_first')}` },
@@ -315,11 +341,11 @@ export class DialogManager {
     }, sortingContainer);
 
     for (const [idx, opt] of options.entries()) {
-      createElement('option', {
+      const option = createElement('option', {
         value: opt.value,
-        text: opt.label,
-
+        text: opt.label
       }, select);
+      option.textContent = opt.label; // Explicit text content
     }
 
     return sortingContainer;
@@ -327,10 +353,13 @@ export class DialogManager {
 
 
   handleSortChange(sortMethod) {
-    console.log('Selected sort method:', sortMethod);
-    this.currentSort = sortMethod;
-    this.applySorting(sortMethod);
-    localStorage.setItem('dialogSortMethod', sortMethod);
+    // Zabezpieczenie przed undefined/null
+    const method = sortMethod || 'default';
+
+
+    this.currentSort = method;
+    this.applySorting(method);
+    localStorage.setItem(`${this.param.NAME}-dialogSortMethod`, method);
   }
 
   createSearchField() {
@@ -445,7 +474,19 @@ export class DialogManager {
 
       // Pozostałe opcje (posortowane)
       const sortedValues = Array.isArray(filterValues)
-        ? Array.from(filterValues).sort((a, b) => String(a).localeCompare(String(b), undefined, { sensitivity: 'base' }))
+        ? Array.from(filterValues).sort((a, b) => {
+          // Zamień przecinki na kropki i spróbuj sparsować jako liczby
+          const aNum = parseFloat(String(a).replace(',', '.'));
+          const bNum = parseFloat(String(b).replace(',', '.'));
+
+          // Jeśli oba są liczbami, sortuj numerycznie
+          if (!isNaN(aNum) && !isNaN(bNum)) {
+            return aNum - bNum;
+          }
+
+          // Jeśli oba są tekstem, sortuj alfabetycznie
+          return String(a).localeCompare(String(b), undefined, { sensitivity: 'base' });
+        })
         : [];
 
       sortedValues.forEach(value => {
@@ -457,9 +498,22 @@ export class DialogManager {
           value: value,
           id: `${filterName}-${value}`
         }, li);
+
+        // Tłumaczenia dla STAN
+        let displayText = value;
+        if (filterName === this.stan) {
+          const translations = {
+            'ZERO': t('form.status_zero') || 'Niedostępne',
+            'SAFE': t('form.status_safe') || 'Dostępne',
+            'LOW': t('form.status_low') || 'Niski stan',
+            'CRITICAL': t('form.status_critical') || 'Stan krytyczny'
+          };
+          displayText = translations[value] || value;
+        }
+
         createElement('label', {
           class: ['form-check-label'],
-          text: value,
+          text: displayText,
           for: `${filterName}-${value}`
         }, li);
       });
@@ -516,26 +570,76 @@ export class DialogManager {
 
   // Pobranie unikalnych kategorii z opcji
   getUniqueCategories() {
-    console.log(this.attrValues)
+
     const attrVals = this.attrValues.STAN
+
     const attrDesc = this.attrValues.INFO
     const categories = new Set();
+    const stockStatuses = new Set();
+    const missingStanOptions = [];
+
     this.options.forEach(option => {
       if (attrVals) {
-        const foundEntry = attrVals.find(entry => Object.keys(entry)[0] === option.VALUE);
+        // Usuń końcówkę ~<cyfra> z option.VALUE
+        const val = option?.VALUE ?? '';
+        const normalizedValue = val.replace(/~\d+$/, '');
+
+        const foundEntry = attrVals.find(entry => {
+          const entryKeys = Object.keys(entry)[0];
+          if (entryKeys === normalizedValue) {
+            option.OBSOLETE = false;
+            return entry
+          }
+          else if (entryKeys.endsWith('-OBS')) {
+            if (entryKeys.slice(0, -4) === normalizedValue) {
+              option.OBSOLETE = true;
+              return entry;
+            }
+          }
+        });
 
         if (foundEntry) {
-          const value = foundEntry[option.VALUE];
-          option.STAN = value
+          const entryKey = Object.keys(foundEntry)[0];
+
+          // Sprawdź czy to wpis z -OBS czy normalny
+          if (entryKey.endsWith('-OBS')) {
+            option.STAN = foundEntry[entryKey];
+          } else {
+            option.STAN = foundEntry[normalizedValue];
+          }
+
+          // Wyciągnij status
+          const match = String(option.STAN).match(/ZERO|SAFE|LOW|CRITICAL/i);
+          if (match) {
+            stockStatuses.add(match[0].toUpperCase());
+          }
+        } else {
+          // Dodaj opcję do listy brakujących STAN
+          missingStanOptions.push(option.VALUE);
         }
-        const foundDesc = attrDesc.find(entry => Object.keys(entry)[0] === option.VALUE);
-        if (foundDesc) {
-          const value = foundDesc[option.VALUE];
-          option.ATTR_DESC = value
+
+        if (attrDesc) {
+          const foundDesc = attrDesc.find(entry => Object.keys(entry)[0] === normalizedValue);
+          if (foundDesc) {
+            const value = foundDesc[normalizedValue];
+            option.ATTR_DESC = value
+          }
         }
+      } else {
+        return [];
       }
-      else { return [] }
     });
+
+    // Log brakujących opcji STAN w nowej linii
+    if (missingStanOptions.length > 0) {
+    }
+
+    // Dodaj filtr STAN
+    if (stockStatuses.size > 0 && (this.env || this.user.pin == '0000')) {
+      this.stan = t('form.warehouse_stock') || 'Stan magazynowy';
+      this.filters[this.stan] = Array.from(stockStatuses);
+    }
+
     return Array.from(categories);
   }
 
@@ -587,6 +691,10 @@ export class DialogManager {
     colorBox.id = option.VALUE;
     colorBox.dataset.paramName = this.param.NAME;
     colorBox.dataset.paramDescription = option.DESCRIPTION;
+    const top = document.createElement('div');
+    top.classList.add('image-box-top');
+    const bottom = document.createElement('div');
+    bottom.classList.add('image-box-bottom');
     if (this.isMultiChoice) {
       colorBox.classList.add('multi-selectable'); // Nowa klasa dla stylizacji
     }
@@ -600,6 +708,57 @@ export class DialogManager {
         colorBox.dataset[key.toLowerCase()] = value;
       }
     }
+    let circleElem = createElement('span', {
+
+      'aria-hidden': 'true'
+    });
+    let deliveryInfo;
+    if (option?.STAN) {
+      try {
+
+        const raw = String(option?.STAN || '');
+        const match = raw.match(/ZERO|SAFE|LOW|CRITICAL/i);
+        const status = match ? match[0].toUpperCase() : null;
+        if (status) {
+          const map = {
+            ZERO: { class: 'stock-zero' },
+            SAFE: { class: 'stock-safe' },
+            LOW: { class: 'stock-low' },
+            CRITICAL: { class: 'stock-critical' }
+          };
+          const info = map[status] || { class: 'stock-unknown' };
+
+          // create a tiny dot badge and append it to the option box (color via CSS)
+          if (status == 'ZERO' && option.OBSOLETE) {
+            colorBox.classList.add("obsolete")
+          }
+          else if (status == "ZERO") {
+            colorBox.classList.add("unavailable")
+          }
+          if (option?.ATTR_DESC) {
+            circleElem = createElement('span', {
+              class: ['stock-badge', info.class,],
+              'aria-hidden': 'true'
+            });
+            deliveryInfo = createElement('div', {
+              class: ['delivery-info'],
+              'aria-hidden': 'true',
+              text: option.ATTR_DESC
+            });
+          }
+
+          else {
+            circleElem = createElement('span', {
+              class: ['stock-badge', info.class],
+              'aria-hidden': 'true'
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Error creating stock badge', err);
+      }
+    }
+
     if (option.ATTRIBUTES) {
       try {
 
@@ -619,12 +778,13 @@ export class DialogManager {
 
     if (filename) {
       const imageWrapper = this.createImageWrapper(option, filename);
-      colorBox.appendChild(imageWrapper);
+      top.appendChild(imageWrapper);
     }
 
     // Dodanie nazwy i opisu
     const colorName = document.createElement('p');
     colorName.classList.add('image-name');
+    
     if (option?.ALIAS) {
       colorName.innerHTML = `${option.ALIAS}<br>${option.ALIAS_DESCRIPTION}`;
     }
@@ -636,7 +796,7 @@ export class DialogManager {
     colorName.dataset.value = option.VALUE;
 
 
-    createElement('img', {
+    const heartIcon = createElement('img', {
       class: ['icon', 'heart-icon'],
       src: isFav ? '/img/heart-on.png' : '/img/heart-off.png',
       alt: 'Podgląd',
@@ -645,55 +805,34 @@ export class DialogManager {
         e.stopPropagation();
         await this.favouriteBehavior(e.currentTarget, option);
       }
-    }, colorBox);
+    });
 
     // stock status indicator based on option.STAN (ZERO, SAFE, LOW)
     // create a small colored dot on the option box (no text)
 
-    if (option?.STAN && this.env) {
-      try {
-        const raw = String(option?.STAN || '');
-        const match = raw.match(/ZERO|SAFE|LOW|CRITICAL/i);
-        const status = match ? match[0].toUpperCase() : null;
-        if (status) {
-          const map = {
-            ZERO: { class: 'stock-zero' },
-            SAFE: { class: 'stock-safe' },
-            LOW: { class: 'stock-low' },
-            CRITICAL: { class: 'stock-critical' }
-          };
-          const info = map[status] || { class: 'stock-unknown' };
 
-          // create a tiny dot badge and append it to the option box (color via CSS)
-          if (status == "ZERO") {
-            colorBox.classList.add("unavailable")
-          }
-          if (option?.ATTR_DESC) {
-            let circleElem = createElement('span', {
-              class: ['stock-badge', info.class, 'has-tooltip'],
-              'aria-hidden': 'true'
-            }, colorBox);
-            circleElem.dataset.tooltip = option.ATTR_DESC
-          }
 
-          else {
-            let circleElem = createElement('span', {
-              class: ['stock-badge', info.class],
-              'aria-hidden': 'true'
-            }, colorBox);
-          }
-        }
-      } catch (err) {
-        console.error('Error creating stock badge', err);
-      }
+
+
+    if (isFav) { bottom.classList.add('favorite'); }
+    if (circleElem) {
+      bottom.appendChild(circleElem);
     }
-
-
-    if (isFav) { colorBox.classList.add('favorite'); }
-
-    colorBox.appendChild(colorName);
-
+    else{
+      colorName.classList.add('ml-3');
+    }
+    bottom.appendChild(colorName);
+    bottom.appendChild(heartIcon);
+    colorBox.appendChild(top);
+    colorBox.appendChild(bottom);
+    if (deliveryInfo) {
+      colorBox.appendChild(deliveryInfo);
+    }
+    else {
+      bottom.classList.add('mt-2');
+    }
     return colorBox;
+
   }
 
 
@@ -920,12 +1059,23 @@ export class DialogManager {
 
       // Sprawdź każdy aktywny filtr
       for (const [filterName, selectedValues] of Object.entries(filters)) {
-        // Pobierz wartość atrybutu z obiektu ATTRIBUTES
-        const attributeValue = option.ATTRIBUTES?.[filterName];
 
-        // Jeśli filtr jest aktywny i wartość nie pasuje do żadnej z wybranych
-        if (selectedValues.length > 0 &&
-          (!attributeValue || !selectedValues.includes(attributeValue))) {
+        // Filtr STAN
+        if (filterName === this.stan && selectedValues.length > 0) {
+          const stanValue = option.STAN || '';
+          const match = String(stanValue).match(/ZERO|SAFE|LOW|CRITICAL/i);
+          const status = match ? match[0].toUpperCase() : '';
+
+          if (!selectedValues.includes(status)) {
+            matchesFilters = false;
+            break;
+          }
+          continue;
+        }
+
+        // Inne filtry
+        const attributeValue = option.ATTRIBUTES?.[filterName];
+        if (selectedValues.length > 0 && (!attributeValue || !selectedValues.includes(attributeValue))) {
           matchesFilters = false;
           break;
         }
@@ -1033,8 +1183,8 @@ export async function createDialog(param, options, grNr, filters, attrs) {
 }
 
 
-export async function getInfoFromDialog(values, inputs, options, selectedData = null) {
-  console.log(values, 'getInfoFromDialog');
+export function getInfoFromDialog(values, inputs, options, selectedData = null) {
+
   logFunctionName('getInfoFromDialog');
 
   // Jeśli nie przekazano selectedData, pobierz wszystkie aktywne elementy
@@ -1056,6 +1206,7 @@ export async function getInfoFromDialog(values, inputs, options, selectedData = 
     // - Dla wielu elementów: tablica obiektów
     selectedData = selectedItems.length === 1 ? selectedItems[0] : selectedItems;
   }
+
 
   const result = updateFormWithSelectedValue(
     values,

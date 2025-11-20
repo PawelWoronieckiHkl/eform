@@ -8,22 +8,36 @@
 {% endblock head %}
 
 {% block users %}
-    <div id='userSelectContainer'>
-        <label for='userSelect' id='userSelectLabel' class="mt-5">{{ __('orders.users_list') }}</label>
-        <div class="dropdown-container">
-            <input type="text" id="userSelect" class="dropdown-input" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
-            <div id="userDropdown" class="dropdown-menu custom-dropdown">
-                <div class="dropdown-item context-button">
-                    <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
-                        <span class="nav-text">{{ __('base.turn_off_context') }}</span>
-                    </a>
-                </div>
-                {% for user in users %}
-                    <div class="dropdown-item" data-value="{{ user.ident }}">{{ user.ident }}</div>
-                {% endfor %}
-            </div>
-        </div>
+    <div class='d-flex'>
+        {% block user_select %}
 
+            <div id='userSelectContainer'>
+                <label for='userSelect' id='userSelectLabel' class="mt-5">{{ __('orders.users_list') }}</label>
+                <div class="dropdown-container">
+                    <input type="text" id="userSelect" class="dropdown-input" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
+                    <div id="userDropdown" class="dropdown-menu custom-dropdown">
+                        <div class="dropdown-item context-button">
+                            <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
+                                <span class="nav-text">{{ __('base.turn_off_context') }}</span>
+                            </a>
+                        </div>
+                        {% for user in users %}
+                            <div class="dropdown-item" data-value="{{ user.ident }}">{{ user.ident }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        {% endblock %}
+        {% block all_orders_btn %}
+
+            <div id='showAllOrders-container' class='mt-5 ms-5 pt-3'>
+                <a href='/orders/organization-orders' id='showAllOrdersBtn' class='btn btn-outline-secondary'>
+                    {{ __('orders.show_all_orders') }}
+                </a>
+
+            </div>
+        {% endblock %}
         {% if selectedUser %}
             <div class="alert alert-info mt-3">
                 <strong>Zamówienia użytkownika:</strong>

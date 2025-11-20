@@ -13,6 +13,7 @@ import {
   setDescription,
   fillFields,
   setWar,
+  roundInputValue,
   fillInputDescription,
   setListRow,
   checkIfOptionsExist
@@ -36,6 +37,7 @@ export async function generateForm(
   editFlag = false
 
 ) {
+  window.finishFlag = false;
   window.skipCountParams = [];
   window.editFlag = editFlag
   window.inputsValidators = {};
@@ -102,7 +104,7 @@ export async function generateForm(
         values[param.NAME] = param.modal.processSourceValues();
 
         // 2. Uaktualnij displayValues dla całego obiektu sourceWindow
-        buildValuesToDisplay(allOptionsByParameter, sourceValues, param.NAME, displayValues, 'BUTTON');
+        buildValuesToDisplay(allOptionsByParameter, param.modal.sourceDisplayValues, param.NAME, displayValues, 'BUTTON');
 
         inputFlags[paramName] = true;
         validParams[paramName] = true;
@@ -110,14 +112,15 @@ export async function generateForm(
         const dv = displayValues.get(param.NAME);
         if (dv) {
           // Możesz wybrać display tekstu — np. sam opis:
-          inputs[param.NAME].value = sourceValues;
+          inputs[param.NAME].value = param.modal.sourceDisplayValues;
+
           inputs[param.NAME].innerText = `${dv.option_description || ''}`;
 
           // lub krótki value
           // inputs[param.NAME].innerText = `${param.DESCRIPTION}: ${dv.option_value || ''}`;
         }
 
-        // 4. Odśwież formularz (jeśli trzeba)
+
         updateProcedure({
           params,
           inputs,
@@ -126,7 +129,7 @@ export async function generateForm(
           allOptionsByParameter,
           options,
           name: param.NAME,
-          value: sourceValues,
+          value: param.modal.sourceDisplayValues,
           groupNumber,
           tagName: '',
           filters,
@@ -170,6 +173,7 @@ export async function generateForm(
     inputs[param.NAME] = input;
     if (!editFlag) {
       displayValues.set(param.NAME, { 'param_description': param?.ALIAS_DESCRIPTION ?? param.DESCRIPTION });
+
     } else {
       // jakieś akcje w trybie edycji (jeśli potrzebne)
     }
@@ -268,8 +272,7 @@ export async function generateForm(
 
     inputs[key].addEventListener("input", function () {
       if (this.tagName === "INPUT") {
-        console.log('select 1 @@@@@@@@@@@@@@@@@@@@@@@@@')
-        values[this.name] = parseFloat(this.value);
+        values[this.name] = roundInputValue(this.value);
         updateProcedure({
           ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
           flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true, attrValues: semafor.attrValues }
@@ -280,7 +283,8 @@ export async function generateForm(
 
     if (inputs[key].tagName === "INPUT") {
       inputs[key].addEventListener('blur', function () {
-        console.log('select 2 @@@@@@@@@@@@@@@@@@@@@@@@@')
+        values[this.name] = roundInputValue(this.value);
+        inputs[this.name].value = values[this.name];
         updateProcedure({
           ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
           flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true, attrValues: semafor.attrValues }
@@ -302,21 +306,21 @@ export async function generateForm(
   // console.log('przed onclick', values)
   document.getElementById('dialog-confirm').onclick = async () => {
 
-    let valueToUpdate = '';
+
+    let valueToUpdate;
     // console.log('przed oknem dialogowym', values)
-    let [selectedValue, paramName] = await getInfoFromDialog(values, inputs, allOptionsByParameter);
+    let [selectedValue, paramName] = getInfoFromDialog(values, inputs, allOptionsByParameter);
 
+     let descValue = selectedValue.replace(/~\d+$/g, '');
+    
     values = setDescription(values, selectedValue, allOptionsByParameter, paramName)
-    values[paramName] = selectedValue;
-
+    values[paramName] = descValue;
+    // console.log('wartość z okna dialogowego:', selectedValue, 'dla parametru:', paramName);
     if (selectedValue.includes('|') && params[paramName]?.MULTI) {
       valueToUpdate = (selectedValue.split("|"))[0];
     } else {
       valueToUpdate = selectedValue;
     }
-
-    // console.log(`Wartość do aktualizacji: ${valueToUpdate}`);
-    // console.log(`Wartości po aktualizacji:`, values);
 
     updateProcedure({
       ...COMMON_PARAMS, options, name: paramName, value: valueToUpdate, tagName: 'BUTTON', filters, attrValues: semafor.attrValues,
@@ -327,7 +331,7 @@ export async function generateForm(
   return [inputs, values, displayValues];
 }
 
-export function updateProcedure({
+export async function updateProcedure({
   params, inputs, values, displayValues, allOptionsByParameter, options, name, value, groupNumber,
   tagName, filters, calculatedParams, flags = {}, attrValues = {}
 }) {
@@ -339,12 +343,14 @@ export function updateProcedure({
     updateStates = false,
     percent = false
   } = flags;
-
+  window.finishFlag = false;
   startSpin()
-  for (let [param, input] of Object.entries(calculatedParams)) {
-
-    values[param] = input.value
-  }
+  setTimeout(() => {
+    for (let [param, input] of Object.entries(calculatedParams)) {
+      // console.log('calculatedParams pętla', param, input.value)
+      values[param] = input.value
+    }
+  }, 150)
 
   values = setDescription(values, value, allOptionsByParameter, name)
   // console.log(values, 'po setDescription')
@@ -377,9 +383,19 @@ export function updateProcedure({
 
   fillInputDescription(inputs, params, values, allOptionsByParameter)
   stopSpin()
+  console.log(values, 'valuesss')
+  console.log('ceny after', values['CENAPASEK'], values['CENA'], values['DOPLATA'], values['DOPLATA_EL'], values['CENA_SUMA'], values['SUMA_BRUTTO'], values['CENA_RABAT'], values['DOPLATA_EL_RABAT'], values['CENA_KONCOWA'])
+  console.log('CENA, CENAPASEK, DOPLATA, DOPLATA_EL, CENA_SUMA, SUMA_BRUTTO, CENA_RABAT, DOPLATA_EL_RABAT, CENA_KONCOWA')
+  console.log(displayValues, 'displayValuess')
+
 
   // values = setDescription(values, value, allOptionsByParameter, name)
-  console.log('values po updateProcedure', values)
+  // console.log('values po updateProcedure', values)
+  console.log('ustawiam flagę')
+  setTimeout(() => {
+    window.finishFlag = true;
+  }, 1300)
+
 }
 
 export function isSource(param) {

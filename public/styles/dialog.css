@@ -9,7 +9,7 @@ dialog {
 	padding: 3%;
 	align-items: center !important;
 	max-height: fit-content !important;
-	z-index: 1000 !important;
+	z-index: 100 !important;
 }
 
 dialog::backdrop {
@@ -21,7 +21,11 @@ dialog::backdrop {
 	display: flex;
 	justify-content: center;
 }
-
+.image-box-bottom{
+	width:100% !important;
+	display: flex;
+	justify-content: space-between;
+}
 .cancel-btn {
 	margin-right: 5px;
 }
@@ -122,9 +126,7 @@ dialog::backdrop {
 }
 
 .heart-icon {
-	position: absolute;
-	right: 8px;
-	bottom: 8px;
+	margin-top:10px !important;
 	display: inline-block;
 	width: 20px;
 	height: 20px;
@@ -134,7 +136,13 @@ dialog::backdrop {
 
 }
 
-
+.delivery-info{
+	width: 100%;
+	text-align: center;
+	font-size: 0.75rem;
+	color: #555555;
+	margin-top: 4px;
+}
 .close-dialog-btn {
 	position: absolute;
 	background-color: transparent !important;
@@ -449,9 +457,8 @@ dialog::backdrop {
 }
 
 .stock-badge {
-	position: absolute;
-	bottom: 13px;
-	left: 12px;
+
+	margin-top:10px;
 	/* place in top-left corner to be visible and not overlap controls */
 	width: 18px;
 	height: 18px;
@@ -484,5 +491,44 @@ dialog::backdrop {
 
 .unavailable {
 	background-color: #cccaca;
-	;
+}
+
+.obsolete {
+	position: relative;
+	pointer-events: none;
+	opacity: 0.5;
+	filter: grayscale(100%);
+}
+
+.obsolete::before {
+	content: "OBSOLETE";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(-15deg);
+	font-size: 28px;
+	font-weight: 900;
+	color: rgba(230, 2, 2, 0.8);
+	text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+	letter-spacing: 2px;
+	z-index: 3;
+	pointer-events: none;
+}
+
+.obsolete::after {
+	content: "!";
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	color: white;
+	background-color: #e60202;
+	font-weight: bold;
+	font-size: 16px;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 4;
 }

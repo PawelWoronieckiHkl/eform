@@ -265,6 +265,67 @@ async function duplicateOrderAddress(id) {
     return null;
 }
 
+// Funkcje do zmiany kolejności pozycji (swap ID)
+async function movePositionUp(positionId) {
+    try {
+        // Pobierz aktualną pozycję
+        const currentPosition = await selectQuery('SELECT order_id, id FROM order_item WHERE id = ?', [positionId]);
+        if (!currentPosition.length) return { success: false, message: 'Position not found' };
+
+        const { order_id } = currentPosition[0];
+
+        // Znajdź pozycję powyżej (z mniejszym ID)
+        const abovePosition = await selectQuery(
+            'SELECT id FROM order_item WHERE order_id = ? AND id < ? ORDER BY id DESC LIMIT 1',
+            [order_id, positionId]
+        );
+
+        if (!abovePosition.length) return { success: false, message: 'Already at top' };
+
+        // Zamień ID miejscami
+        const tempId = -Math.abs(positionId) - Math.abs(abovePosition[0].id);
+
+        await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [tempId, positionId]);
+        await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [positionId, abovePosition[0].id]);
+        await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [abovePosition[0].id, tempId]);
+
+        return { success: true, message: 'Position moved up' };
+    } catch (error) {
+        console.error('Error moving position up:', error);
+        return { success: false, message: 'Database error' };
+    }
+}
+
+async function movePositionDown(positionId) {
+    try {
+        // Pobierz aktualną pozycję
+        const currentPosition = await selectQuery('SELECT order_id, id FROM order_item WHERE id = ?', [positionId]);
+        if (!currentPosition.length) return { success: false, message: 'Position not found' };
+
+        const { order_id } = currentPosition[0];
+
+        // Znajdź pozycję poniżej (z większym ID)
+        const belowPosition = await selectQuery(
+            'SELECT id FROM order_item WHERE order_id = ? AND id > ? ORDER BY id ASC LIMIT 1',
+            [order_id, positionId]
+        );
+
+        if (!belowPosition.length) return { success: false, message: 'Already at bottom' };
+
+        // Zamień ID miejscami
+        const tempId = -Math.abs(positionId) - Math.abs(belowPosition[0].id);
+
+        await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [tempId, positionId]);
+        await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [positionId, belowPosition[0].id]);
+        await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [belowPosition[0].id, tempId]);
+
+        return { success: true, message: 'Position moved down' };
+    } catch (error) {
+        console.error('Error moving position down:', error);
+        return { success: false, message: 'Database error' };
+    }
+}
+
 module.exports = {
     insertNewForm,
     getPosition,
@@ -279,6 +340,7 @@ module.exports = {
     addFavorite,
     getFavs,
     duplicateSendAddress,
-    removeFavorite
-
+    removeFavorite,
+    movePositionUp,
+    movePositionDown
 }

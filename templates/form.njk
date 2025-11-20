@@ -15,7 +15,7 @@
   {# window.history.back() #}
 {% endblock %}
 {% block back_link %}
-  <button class="modern-back-btn" onclick="window.history.back()">
+  <button class="modern-back-btn" onclick="window.location.href='/orders/order/{{orderId}}'">
   {% endblock %}
   {% block content %}
     <form action="save" class='full-form' id="commission-form">

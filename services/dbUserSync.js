@@ -5,7 +5,9 @@ const path = require('path');
 const csv = require('csvtojson');
 
 async function updateClients() {
-
+  if (process.env?.PRODUCTION === 'true' || process.env?.PRODUCTION) {
+    await fixEncodingInDatabase();
+  }
   const contractorsFileName = 'contractors.txt';
   const contractorsPath = path.join(usersPath, contractorsFileName);
 
@@ -23,6 +25,35 @@ async function updateClients() {
     console.log('Baza klientów aktualna');
   } else {
     await insertClients(diff.toAdd);
+  }
+
+  // Aktualizacja haseł sekwencyjnie, aby uniknąć "Too many connections"
+  // if(process.env.NODE_ENV === 'test'){
+  if (false) {
+    console.log('Rozpoczynam aktualizację haseł...');
+    let updated = 0;
+    let skipped = 0;
+
+    for (const client of diff.fileClients) {
+      if (client.password) {
+        const user = dbClientsObj.find(dbClient => dbClient.ident === client.ident);
+        if (user) {
+          try {
+            await db.updatePlain(user.ident, client.password);
+            updated++;
+            console.log(`[${updated}] Zaktualizowano hasło dla użytkownika ${client.ident}`);
+          } catch (err) {
+            console.error(`Błąd przy aktualizacji hasła dla ${client.ident}:`, err.message);
+          }
+        } else {
+          skipped++;
+        }
+      } else {
+        skipped++;
+      }
+    }
+
+    console.log(`Zakończono aktualizację haseł. Zaktualizowano: ${updated}, Pominięto: ${skipped}`);
   }
 }
 
@@ -47,18 +78,12 @@ function compareClients(fileClients, dbClients) {
   const identsInFile = new Set(fileClients.map(c => (c.ident || '').toUpperCase()));
 
   const toRemove = dbClients.filter(client => {
-    if (client.ident == 'frank') {
-      console.log(client)
-    }
-
-
-
     const pin = (client.pin || '').toUpperCase();
     const ident = (client.ident || '').toUpperCase();
     return !pinsInFile.has(pin) && !identsInFile.has(ident);
   });
 
-  return { toAdd, toRemove };
+  return { toAdd, toRemove, fileClients };
 }
 
 
@@ -100,234 +125,119 @@ async function insertClients(clientsObj) {
   }
 }
 
-async function updateClientIdent() {
-  try {
-    const mappingFilename = 'efor-update-contractors.txt'
-    console.log('🔄 Rozpoczynam aktualizację identyfikatorów klientów...');
+async function fixEncodingInDatabase() {
+  console.log('Rozpoczynam naprawę kodowania w bazie danych...');
 
-    const mappingPath = path.join(usersPath, mappingFilename);
+  const users = await db.getUsers();
+  let fixed = 0;
+  let skipped = 0;
 
-    // Wczytaj plik z mapowaniem
-    const mappingDataRaw = await csv({ delimiter: '\t' }).fromFile(mappingPath);
+  for (const user of users) {
+    let needsUpdate = false;
+    const updates = {};
 
-    let updatedCount = 0;
-    let notFoundCount = 0;
-    let errorCount = 0;
+    // Pola do sprawdzenia
+    const fieldsToCheck = ['name', 'address', 'city', 'ident'];
 
-    for (const mapping of mappingDataRaw) {
-      const oldIdent = mapping.EFOR_IDENT?.trim();
-      const newIdent = mapping.CURRENT_IDENT?.trim();
+    for (const field of fieldsToCheck) {
+      if (user[field]) {
+        let fixedValue = user[field];
+        const originalValue = fixedValue; // Zapisz oryginał na początku
 
-      if (!oldIdent || !newIdent) {
-        console.warn(`⚠️ Pominięto niepełny rekord: ${JSON.stringify(mapping)}`);
-        errorCount++;
-        continue;
-      }
+        // Sprawdź czy pole zawiera problematyczne znaki
+        if (fixedValue.includes('�')) {
 
-      if (oldIdent === newIdent) {
-        console.log(`ℹ️ Identyfikator ${oldIdent} jest już poprawny`);
-        continue;
-      }
-
-      try {
-        // Sprawdź czy klient o starym identyfikatorze istnieje w bazie
-        const clientExists = await db.getUserByIdent(oldIdent);
-
-        if (!clientExists) {
-          console.warn(`❌ Nie znaleziono klienta o identyfikatorze: ${oldIdent}`);
-          notFoundCount++;
-          continue;
-        }
-
-        // Aktualizuj identyfikator w bazie
-        await db.updateUserIdent(oldIdent, newIdent);
-        console.log(`✅ Zaktualizowano: ${oldIdent} → ${newIdent}`);
-        updatedCount++;
-
-      } catch (updateError) {
-        console.error(`❌ Błąd przy aktualizacji ${oldIdent} → ${newIdent}:`, updateError.message);
-        errorCount++;
-      }
-    }
-
-    console.log('📊 Podsumowanie aktualizacji identyfikatorów:');
-    console.log(`   ✅ Zaktualizowano: ${updatedCount} klientów`);
-    console.log(`   ❌ Nie znaleziono: ${notFoundCount} klientów`);
-    console.log(`   ⚠️ Błędy: ${errorCount} rekordów`);
-    console.log(`   📋 Łącznie przetworzono: ${mappingDataRaw.length} rekordów`);
-
-  } catch (err) {
-    console.error(`❌ Błąd przy aktualizacji identyfikatorów klientów:`, err.message);
-    throw err;
-  }
-}
-
-async function fixCharacterEncoding() {
-  try {
-    console.log('🔧 Rozpoczynam naprawę kodowania znaków w bazie danych...');
-
-    // Mapowanie błędnych znaków na poprawne
-    const encodingMap = {
-      // Polskie znaki - najczęstsze błędne kodowania UTF-8
-      'Ä…': 'ą', 'Ä„': 'Ą',
-      'Ä‡': 'ć', 'Ä†': 'Ć',
-      'Ä™': 'ę', 'Ä˜': 'Ę',
-      'Å‚': 'ł', 'Å': 'Ł',
-      'Åƒ': 'ń', 'Å„': 'Ń',
-      'Ã³': 'ó', 'Ã"': 'Ó',
-      'Å›': 'ś', 'Åš': 'Ś',
-      'Åº': 'ź', 'Å¹': 'Ź',
-      'Å¼': 'ż', 'Å»': 'Ż',
-
-      // Niemieckie znaki
-      'Ã¤': 'ä', 'Ã„': 'Ä',
-      'Ã¶': 'ö', 'Ã–': 'Ö',
-      'Ã¼': 'ü', 'Ãœ': 'Ü',
-      'ÃŸ': 'ß',
-
-      // Dla przykładu "H�hne" -> prawdopodobnie "Höhne"  
-      'Ã¶': 'ö',
-      'Ã¼': 'ü'
-    };
-
-    // Pobierz wszystkich użytkowników z bazy
-    const allUsers = await db.getUsers();
-
-    let updatedCount = 0;
-    let errorCount = 0;
-    let noChangesCount = 0;
-
-    for (const user of allUsers) {
-      try {
-        let hasChanges = false;
-        const updateData = {};
-
-        // Sprawdź i napraw każde pole tekstowe
-        const textFields = [
-          { alias: 'ident', column: 'ident' },
-          { alias: 'name', column: 'client_name' },
-          { alias: 'address', column: 'street' },
-          { alias: 'city', column: 'city' }
-        ];
-
-        for (const field of textFields) {
-          if (user[field.alias] && typeof user[field.alias] === 'string') {
-            let originalValue = user[field.alias];
-            let fixedValue = originalValue;
-
-            // Zastąp wszystkie błędne znaki
-            for (const [badChar, goodChar] of Object.entries(encodingMap)) {
-              fixedValue = fixedValue.replace(new RegExp(badChar, 'g'), goodChar);
+          try {
+            const bytes = [];
+            for (let i = 0; i < fixedValue.length; i++) {
+              bytes.push(fixedValue.charCodeAt(i));
             }
 
-            // Usuń znaki � (replacement character)
-            fixedValue = fixedValue.replace(/�/g, 'ö'); // Dla H�hne -> Höhne
-
-            // Jeśli wartość się zmieniła, dodaj do aktualizacji
-            if (fixedValue !== originalValue) {
-              updateData[field.column] = fixedValue; // Używaj prawdziwej nazwy kolumny
-              hasChanges = true;
-              console.log(`🔄 ${user.ident || user.id}: ${field.alias} "${originalValue}" → "${fixedValue}"`);
+            // Znajdź pozycje � (U+FFFD = 65533)
+            const problematicIndexes = [];
+            for (let i = 0; i < bytes.length; i++) {
+              if (bytes[i] === 65533) {
+                problematicIndexes.push(i);
+              }
             }
+
+            if (problematicIndexes.length > 0) {
+
+
+              // W kontekście niemieckim, � często to ü, ö lub ä
+              const chars = fixedValue.split('');
+              for (const idx of problematicIndexes) {
+                const before = idx > 0 ? chars[idx - 1].toLowerCase() : '';
+                const after = idx < chars.length - 1 ? chars[idx + 1].toLowerCase() : '';
+
+                // Heurystyka dla niemieckiego
+                if (['h', 'r', 's', 'l', 'n'].includes(before)) {
+                  chars[idx] = 'ü'; // H�hne -> Hühne, schl�ter -> schlüter
+                } else if (before === 'h' && after === 'h') {
+                  chars[idx] = 'ö'; // H�hne -> Höhne
+                } else if (['b', 'k', 't', 'd', 'g'].includes(before)) {
+                  chars[idx] = 'ö';
+                } else {
+                  chars[idx] = 'ü'; // domyślnie
+                }
+              }
+              fixedValue = chars.join('');
+
+            }
+          } catch (err) {
+            console.error(`  Błąd dekodowania:`, err.message);
           }
         }
 
-        // Aktualizuj rekord jeśli są zmiany
-        if (hasChanges) {
-          await db.updateUserById(user.id, updateData);
-          updatedCount++;
-        } else {
-          noChangesCount++;
+        // Dodatkowe mapowania dla typowych błędów UTF-8/Latin1
+        const encodingMap = {
+          'Ã¶': 'ö', 'Ã¼': 'ü', 'Ã¤': 'ä',
+          'Ã–': 'Ö', 'Ãœ': 'Ü', 'Ã„': 'Ä',
+          'ÃŸ': 'ß', 'Ã©': 'é', 'Ã¨': 'è',
+          'Ã¡': 'á', 'Ã ': 'à'
+        };
+
+        for (const [broken, correct] of Object.entries(encodingMap)) {
+          if (fixedValue.includes(broken)) {
+            fixedValue = fixedValue.replace(new RegExp(broken.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), correct);
+
+          }
         }
 
-      } catch (updateError) {
-        console.error(`❌ Błąd przy naprawie kodowania dla użytkownika ID ${user.id}:`, updateError.message);
-        errorCount++;
+        // Porównaj NA KOŃCU po wszystkich transformacjach
+        if (fixedValue !== originalValue) {
+          console.log(`  RÓŻNICA! Original: "${originalValue}" -> Fixed: "${fixedValue}"`);
+          updates[field] = fixedValue;
+          needsUpdate = true;
+        }
       }
     }
-
-    console.log('📊 Podsumowanie naprawy kodowania:');
-    console.log(`   ✅ Naprawiono: ${updatedCount} użytkowników`);
-    console.log(`   ✓ Bez zmian: ${noChangesCount} użytkowników`);
-    console.log(`   ❌ Błędy: ${errorCount} użytkowników`);
-    console.log(`   📋 Łącznie sprawdzono: ${allUsers.length} użytkowników`);
-
-  } catch (err) {
-    console.error(`❌ Błąd podczas naprawy kodowania:`, err.message);
-    throw err;
-  }
-}
-
-async function updateUserOrganizations() {
-  try {
-    console.log('🏢 Rozpoczynam aktualizację przypisań do organizacji...');
-
-    const contractorsFileName = 'contractors.txt';
-    const contractorsPath = path.join(usersPath, contractorsFileName);
-
-    // Wczytanie pliku i parsowanie TSV na JSON
-    const fileClientsObjRaw = await csv({ delimiter: '\t' }).fromFile(contractorsPath);
-
-    // Parsowanie organizacji z pliku
-    const fileClientsObj = parseClients(fileClientsObjRaw);
-
-    let updatedCount = 0;
-    let notFoundCount = 0;
-    let errorCount = 0;
-    let noChangesCount = 0;
-
-    for (const fileClient of fileClientsObj) {
+    console.log(needsUpdate ? '  Wymagana aktualizacja.' : '  Brak zmian wymaganych.', user.id);
+    if (needsUpdate && user.id) {
       try {
-        const ident = fileClient.ident?.trim();
+        // Buduj SQL UPDATE dynamicznie
+        let setClause = Object.keys(updates).map(field => `\`${field}\` = ?`).join(', ');
+        const values = Object.values(updates);
+        values.push(user.id);
+        if (setClause == 'name') { setClause = 'client_name' };
+        const sql = `UPDATE eform.\`user\` SET ${setClause} WHERE id = ?`;
+        console.log(`  Wykonuję SQL:`, sql);
+        console.log(`  Wartości:`, values);
 
-        if (!ident) {
-          console.warn(`⚠️ Pominięto rekord bez identyfikatora: ${JSON.stringify(fileClient)}`);
-          errorCount++;
-          continue;
-        }
+        const result = await updateQuery(sql, values);
+        console.log(`  Wynik UPDATE:`, result);
 
-        // Znajdź użytkownika w bazie po ident
-        const dbUser = await db.getUserByIdent(ident);
-
-        if (!dbUser) {
-          console.warn(`❌ Nie znaleziono użytkownika o identyfikatorze: ${ident}`);
-          notFoundCount++;
-          continue;
-        }
-
-        // Sprawdź czy organization_id się różni
-        const newOrganizationId = fileClient.organization_id || 3; // Domyślnie 3 jeśli pusto
-        const currentOrganizationId = dbUser.organization_id;
-
-        if (currentOrganizationId === newOrganizationId) {
-          console.log(`ℹ️ ${ident}: organizacja już poprawna (${newOrganizationId})`);
-          noChangesCount++;
-          continue;
-        }
-
-        // Aktualizuj organization_id
-        await db.updateUserOrganization(ident, newOrganizationId);
-
-        console.log(`✅ ${ident}: organizacja ${currentOrganizationId} → ${newOrganizationId}`);
-        updatedCount++;
-
-      } catch (updateError) {
-        console.error(`❌ Błąd przy aktualizacji organizacji dla ${fileClient.ident}:`, updateError.message);
-        errorCount++;
+        fixed++;
+        console.log(`[${fixed}] Naprawiono kodowanie dla użytkownika ID: ${user.id} (${user.ident})`);
+        console.log(`  Zaktualizowane pola:`, updates);
+      } catch (err) {
+        console.error(`Błąd przy aktualizacji użytkownika ID ${user.id}:`, err.message);
+        console.error(`  Stack:`, err.stack);
       }
+    } else {
+      skipped++;
     }
-
-    console.log('📊 Podsumowanie aktualizacji organizacji:');
-    console.log(`   ✅ Zaktualizowano: ${updatedCount} użytkowników`);
-    console.log(`   ✓ Bez zmian: ${noChangesCount} użytkowników`);
-    console.log(`   ❌ Nie znaleziono: ${notFoundCount} użytkowników`);
-    console.log(`   ⚠️ Błędy: ${errorCount} rekordów`);
-    console.log(`   📋 Łącznie przetworzono: ${fileClientsObj.length} rekordów`);
-
-  } catch (err) {
-    console.error(`❌ Błąd podczas aktualizacji organizacji:`, err.message);
-    throw err;
   }
+  console.log(`Zakończono naprawę kodowania. Naprawiono: ${fixed}, Pominięto: ${skipped}`);
 }
-
-module.exports = { updateClients, updateClientIdent, fixCharacterEncoding, updateUserOrganizations };
+module.exports = { updateClients, fixEncodingInDatabase };

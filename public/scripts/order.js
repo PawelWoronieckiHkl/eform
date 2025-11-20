@@ -18,6 +18,9 @@ const sendBtn = document.querySelector('.send-order-btn')
 const excelBtns = document.querySelectorAll('[id="generate-excel-btn"]')
 const printBtns = document.querySelectorAll('[id="print-button"]')
 const shortPrintBtns = document.querySelectorAll('[id="short-print-button"]')
+const moveUpBtns = document.querySelectorAll('.move-up-btn')
+const moveDownBtns = document.querySelectorAll('.move-down-btn')
+getPrices()
 // DELETE dialog
 export async function deleteItem(path) {
   const res = await fetch(path, {
@@ -138,15 +141,44 @@ function buildAndShowDialog(btn) {
   });
 }
 
+function getPrices() {
+  const prices = {
+    hiddenPrices: [],
+    visiblePrices: []
+  };
+  const hiddenPrice = document.querySelectorAll('.total-hidden');
+  const visiblePrice = document.querySelectorAll('.total');
+
+ 
+
+  hiddenPrice.forEach(price => {
+    const priceText = price.innerText?.trim();
+    if (priceText) {
+      prices.hiddenPrices.push(priceText);
+    }
+  });
+
+  visiblePrice.forEach(price => {
+    const priceText = price.innerText?.trim();
+    if (priceText) {
+      prices.visiblePrices.push(priceText);
+    }
+  });
+ console.log(prices, 'prices in getPrices function')
+  return prices;
+}
+
+
 async function sendOrder(sendBtn) {
   const orderId = sendBtn.dataset.id
+  const prices = getPrices();
   try {
     const response = await fetch(`/orders/send/${orderId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ status: 'sent' })
+      body: JSON.stringify({ status: 'sent', prices: prices })
     });
     const result = await response.json();
     console.log(response)
@@ -279,5 +311,48 @@ unlockBtns.forEach(unlockBtn => {
       checkbox: { name: `${t('order.remember')}`, id: 'checkbox-remember' }
     });
     const password = document.getElementById('password-input')
+  });
+});
+
+// Funkcje do przesuwania pozycji
+async function movePosition(positionId, direction) {
+  try {
+    const response = await fetch(`/position/${positionId}/move-${direction}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      showToast('success', result.message);
+      // Odśwież stronę po krótkim czasie, aby pokazać nową kolejność
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } else {
+      showToast('error', result.message);
+    }
+  } catch (error) {
+    showToast('error', 'Błąd podczas przesuwania pozycji');
+    console.error('Error moving position:', error);
+  }
+}
+
+// Obsługa przycisków przesuwania w górę
+moveUpBtns.forEach(btn => {
+  btn.addEventListener('click', async (event) => {
+    event.stopPropagation();
+    const positionId = btn.dataset.id;
+    await movePosition(positionId, 'up');
+  });
+});
+
+// Obsługa przycisków przesuwania w dół
+moveDownBtns.forEach(btn => {
+  btn.addEventListener('click', async (event) => {
+    event.stopPropagation();
+    const positionId = btn.dataset.id;
+    await movePosition(positionId, 'down');
   });
 });

@@ -1,0 +1,111 @@
+/* Employee Orders Styles */
+.employee-header {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.employee-header h2 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.employee-header h2 i {
+    margin-right: 0.5rem;
+}
+
+.employee-header .text-muted {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.orders-table {
+    margin-bottom: 0;
+}
+
+.orders-table thead {
+    background-color: #f8f9fa;
+}
+
+.orders-table thead th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    padding: 0.75rem;
+}
+
+.orders-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.orders-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.orders-table tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.badge.bg-dark {
+    background-color: #343a40 !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+.btn-dark {
+    background-color: #343a40;
+    border-color: #343a40;
+    color: white;
+}
+
+.btn-dark:hover {
+    background-color: #23272b;
+    border-color: #1d2124;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+    .employee-header {
+        padding: 1.5rem;
+    }
+
+    .employee-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .orders-table {
+        font-size: 0.875rem;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Empty state */
+.alert-info {
+    padding: 2rem;
+}
+
+.alert-info i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+}

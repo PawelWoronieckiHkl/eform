@@ -172,16 +172,21 @@ function setupShowButton(inputs, values, valuesToDisplay, orderId, comment, vers
 	const showButton = document.getElementById('show-button');
 
 	showButton.onclick = async function () {
+		setTimeout(async () => {
+		showToast('success', `${t('form.saved_form_success')}`);
 		if (!await validateForm(inputs, values)) {
 			showToast('error', t("form.incorrect_data"));
 			return;
 		}
-		if (!sentState) {
+		if (!sentState && window.finishFlag == true) {
 			await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
 			sentState = true;
 		}
+		else{
+			showToast('error', t("form.try_again"));
+		}
 
-	};
+	}, 2000);}
 }
 
 
@@ -243,11 +248,11 @@ async function sendData(inputs, values, valuesToDisplay, orderId, comment, versi
 			body: json,
 		});
 		const result = await response.json();
-		showToast('success', `${t('form.saved_form_success')}`);
+
 		setTimeout(() => {
 			window.location.href = `/orders/order/${orderId}`;
 			return result;
-		}, 3000);
+		}, 750);
 	} catch (error) {
 		console.error("Bład przy wysyłaniu", error);
 		showToast('error', t("form.error_saving_form"));

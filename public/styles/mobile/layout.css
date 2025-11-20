@@ -105,10 +105,68 @@
         margin: 0 !important;
         padding: 0 !important;
     }
-    .languages{
-        top:1rem !important;
-        left:11rem !important;
+
+    .languages {
+        top: 1rem !important;
+        left: 11rem !important;
     }
+
+    /* Delete dialog - wyłączone z globalnych stylów w dialog.css */
+    #delete-dialog[open] {
+        display: grid !important;
+        grid-template-rows: auto 1fr auto !important;
+        width: 320px !important;
+        height: auto !important;
+        min-height: 200px !important;
+        max-height: 80vh !important;
+        min-width: 300px !important;
+        max-width: 90vw !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+        border-radius: 16px !important;
+        border: 2px solid #ddd !important;
+        padding: 0 !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        overflow: visible !important;
+        background: white !important;
+        z-index: 10001 !important;
+        box-sizing: border-box !important;
+        -webkit-transform: translate(-50%, -50%) !important;
+    }
+
+    /* Dialog elements */
+    #delete-dialog h3 {
+        padding: 16px !important;
+        margin: 0 !important;
+        text-align: center !important;
+        border-bottom: 1px solid #eee !important;
+    }
+
+    #delete-dialog p {
+        padding: 20px !important;
+        margin: 0 !important;
+        text-align: center !important;
+    }
+
+    #delete-dialog .confirmation-buttons {
+        display: flex !important;
+        gap: 10px !important;
+        padding: 16px !important;
+        border-top: 1px solid #eee !important;
+    }
+
+    #delete-dialog .confirmation-buttons button {
+        flex: 1 !important;
+        padding: 12px !important;
+        border: none !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        font-size: 1rem !important;
+    }
+
     .mobile-nav .navbar-toggler {
         border: none;
         background: var(--muted);
@@ -273,10 +331,24 @@
         margin-bottom: 8px !important;
     }
 
-.rm-col-7{
-    width: 100% !important;
-}
-.rm-p-5{
-    padding: 0 !important;}
+    .rm-col-7 {
+        width: 100% !important;
+    }
+
+    .rm-p-5 {
+        padding: 0 !important;
+    }
+
+    /* Backdrop dla delete dialog - wysoka specyfikowość */
+    @media (max-width: 767.98px) {
+        html body main dialog#delete-dialog[open]::backdrop {
+            display: block !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(2px) !important;
+            -webkit-backdrop-filter: blur(2px) !important;
+        }
+        
+
+    }
 
 }

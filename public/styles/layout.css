@@ -9,7 +9,15 @@ body {
 html.nav-collapsed .desktop-nav {
 	width: 60px;
 }
-
+.sm {
+	z-index: 150 !important;
+	width: 92% !important;
+}
+.sm li{
+	padding: 0;
+	margin: 0;
+	font-size: 11px !important;
+}
 html.nav-collapsed .desktop-nav .nav-toggle-icon {
 	transform: rotate(180deg);
 }
@@ -170,7 +178,7 @@ input[type=checkbox] {
 	background-color: #fff;
 	color: #333;
 	border-right: 1px solid #ddd;
-	z-index: 1000;
+	z-index: 100;
 	transition: width 0.3s ease;
 	overflow: visible;
 }
@@ -286,7 +294,7 @@ html.nav-collapsed .nav-toggle-icon {
 	border-radius: 4px;
 	white-space: nowrap;
 	font-size: 14px;
-	z-index: 1002;
+	z-index: 102;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -298,7 +306,7 @@ html.nav-collapsed .nav-toggle-icon {
 	transform: translateY(-50%);
 	border: 5px solid transparent;
 	border-right-color: #333;
-	z-index: 1002;
+	z-index: 102;
 }
 
 /* Hide divs when collapsed */
@@ -382,6 +390,7 @@ html.nav-collapsed .home-page .back-text {
 	margin-left: 2% !important;
 	margin-bottom: 2% !important;
 	text-align: left !important;
+	z-index: 100 !important;
 	border: 1px solid transparent !important;
 	transition: border 0.2s ease !important;
 }
@@ -401,7 +410,9 @@ html.nav-collapsed .home-page .back-text {
 
 	transition: background-color 0.3s;
 }
-
+#organizationDropdown{
+	border: #888 1px solid !important;
+}
 .desktop-nav .side-nav .nav-link:hover,
 .desktop-nav .side-nav .nav-link.active {
 	background-color: #f0f0f0;
@@ -480,12 +491,12 @@ p {
 }
 
 #toast-container {
-	z-index: 9999999 !important;
+	z-index: 151 !important;
 	position: relative;
 }
 
 .toast {
-	z-index: 10000000 !important;
+	z-index: 151 !important;
 }
 
 .site-footer {
@@ -502,7 +513,7 @@ p {
 	font-family: 'Inter', Arial, sans-serif;
 	font-size: 1rem;
 	box-shadow: 0 -2px 16px 0 rgba(60, 60, 80, 0.03);
-	z-index: 500;
+	z-index: 50;
 	/* aby być widocznym na wierzchu */
 	transition: left 0.3s ease;
 }
@@ -546,7 +557,7 @@ html.nav-collapsed .site-footer {
 .has-tooltip {
 	position: relative;
 	cursor: pointer;
-	z-index: 999999;
+	z-index: 151;
 }
 
 /* Standard tooltips for all elements */
@@ -590,7 +601,7 @@ html.nav-collapsed .desktop-nav .has-tooltip:focus::after,
 .desktop-nav.collapsed .has-tooltip:focus::after {
 	content: attr(data-tooltip) !important;
 	position: fixed !important;
-	z-index: 10000 !important;
+	z-index: 152 !important;
 	top: 50% !important;
 	left: 70px !important;
 	bottom: auto !important;
@@ -623,7 +634,7 @@ html.nav-collapsed .desktop-nav .has-tooltip:focus::before,
 .desktop-nav.collapsed .has-tooltip:focus::before {
 	content: '' !important;
 	position: fixed !important;
-	z-index: 10000 !important;
+	z-index: 152 !important;
 	left: 65px !important;
 	top: 50% !important;
 	bottom: auto !important;
@@ -678,7 +689,7 @@ html.nav-collapsed .desktop-nav .has-tooltip::before,
 	padding: 12px 22px;
 	font-family: 'Inter', Arial, sans-serif;
 	font-size: 12px;
-	z-index: 9999;
+	z-index: 150;
 	opacity: 0.92;
 	pointer-events: none;
 	text-align: center;
@@ -694,7 +705,7 @@ html.nav-collapsed .desktop-nav .has-tooltip::before,
 	padding: 12px 22px;
 	font-family: 'Inter', Arial, sans-serif;
 	font-size: 13px;
-	z-index: 9999;
+	z-index: 150;
 	opacity: 0.92;
 	pointer-events: none;
 	text-align: center;

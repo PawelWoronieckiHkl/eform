@@ -9,6 +9,8 @@ const ordersRoutes = require('./routes/orders');
 const positionsRoutes = require('./routes/positions');
 const userRoutes = require('./routes/users');
 const mainRoutes = require('./routes/index');
+const adminRoutes = require('./routes/admin');
+const { addOrganizationsForAdmin } = require('./middleware/loginMixture.js');
 const bodyParser = require("body-parser");
 const { photoPath, dataDir, localesDir, availabeLanguages, defaultLanguage } = require('./config');
 const cookieParser = require('cookie-parser');
@@ -94,7 +96,7 @@ else {
 			secure: false,
 			httpOnly: true,
 			sameSite: "lax",
-			maxAge: 1000 * 60 * 60*8,
+			maxAge: 1000 * 60 * 60 * 8,
 			// domain: "eform.tkproject.eu" 
 		}
 	}));
@@ -114,7 +116,9 @@ app.use((req, res, next) => {
 	res.locals.locale = req.getLocale();
 	next();
 });
+app.use(addOrganizationsForAdmin);
 app.use('/user', userRoutes);
+app.use('/admin', adminRoutes);
 app.use('/', mainRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/position', positionsRoutes);
@@ -135,7 +139,7 @@ app.use((err, req, res, next) => {
 	console.error(err);
 	const status = err.status || 500;
 	const message = err.message || "Serwer error.";
-	const attemptedPath = req.originalUrl; 
+	const attemptedPath = req.originalUrl;
 
 	res.status(status).render('error.njk', {
 		status,

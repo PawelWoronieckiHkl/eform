@@ -1,0 +1,95 @@
+{% extends "base.njk" %}
+
+{% block title %}Panel Pracowników{% endblock title %}
+
+{% block head %}
+    <link rel="stylesheet" href="/styles/user_panel.css">
+{% endblock head %}
+
+{% block content %}
+    <div class="content  col-9 center-content">
+        <div class="container my-5 mobile-rm-card">
+            <div class="employee-panel-header mb-4">
+                <h2 class="text-center mb-3">
+                    <i class="fas fa-users"></i>
+                    {{ __('employee.panel_title') or 'Zarządzanie Pracownikami' }}
+                </h2>
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="/user/employee/add" class="btn btn-dark">
+                        <i class="fas fa-user-plus"></i>
+                        {{ __('employee.add_employee') or 'Dodaj Pracownika' }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="employees-container">
+                {% if employees and employees.length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered employee-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>{{ __('employee.name') or 'Imię' }}</th>
+                                    <th>{{ __('employee.surname') or 'Nazwisko' }}</th>
+                                    <th>{{ __('employee.login') or 'Login' }}</th>
+                                    <th>{{ __('employee.phone') or 'Telefon' }}</th>
+                                    <th>{{ __('employee.last_login') or 'Ostatnie logowanie' }}</th>
+                                    <th class="text-center">{{ __('employee.actions') or 'Akcje' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for employee in employees %}
+                                    <tr data-employee-id="{{ employee.id }}">
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ employee.name }}</td>
+                                        <td>{{ employee.surname }}</td>
+                                        <td>{{ employee.login }}</td>
+                                        <td>{{ employee.phone or '-' }}</td>
+                                        <td>{{ employee.last_login or 'Nigdy' }}</td>
+                                        <td class="text-center">
+                                            <div class="action-buttons">
+                                                <a href="/user/employee/{{ employee.id }}/orders" class="btn btn-secondary view-orders-btn mb-2">
+                                                    <i class="fas fa-shopping-cart me-2"></i>
+                                                    {{ __('employee.view_orders') or 'Zobacz zamówienia' }}
+                                                </a>
+                                                <button class="btn btn-danger delete-employee-btn" data-id="{{ employee.id }}" data-name="{{ employee.name }} {{ employee.surname }}">
+                                                    <i class="fas fa-trash me-2"></i>
+                                                    {{ __('employee.delete') or 'Usuń pracownika' }}
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert" role="alert">
+                        <i class="fas fa-info-circle"></i>
+                        <p class="mb-2">{{ __('employee.no_employees') or 'Brak pracowników do wyświetlenia' }}</p>
+                        <a href="/user/employee/add" class="btn btn-dark">
+                            <i class="fas fa-user-plus"></i>
+                            {{ __('employee.add_first') or 'Dodaj pierwszego pracownika' }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Dialog potwierdzenia usunięcia -->
+        <dialog id="delete-dialog" class="delete-dialog">
+            <div class="dialog-content">
+                <h3 id="dialog-title">{{ __('orders.are_you_sure') or 'Potwierdź usunięcie' }}</h3>
+                <p id="dialog-message"></p>
+                <div class="dialog-buttons">
+                    <button id="cancel-btn" class="btn btn-secondary">{{ __('order.cancel') or 'Anuluj' }}</button>
+                    <button id="confirm-btn" class="btn btn-danger">{{ __('employee.delete') or 'Usuń' }}</button>
+                </div>
+            </div>
+        </dialog>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script type="module" src="/scripts/user_panel.js"></script>
+{% endblock scripts %}

@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { requireLogin, checkOrderOwnership, requireOwner } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
-const orderService = require('../services/orderService.js')
-const ownerService = require('../services/owner.js')
-const mailBot = require('../services/mailBot/mailBot')
+const adminDb = require("../db/admin/db_helper.js");
+const orderService = require('../services/orderService.js');
+const ownerService = require('../services/owner.js');
+const mailBot = require('../services/mailBot/mailBot');
 const path = require('path');
-const OrderSender = require("../services/sendOrderService")
+const OrderSender = require("../services/sendOrderService");
 const { generatePdf } = require('../services/mailBot/pdfGenerator');
 const { buildOrderItemStructure } = require('../services/itemBuilder.js');
 
@@ -104,6 +105,57 @@ router.get("/", requireLogin, async (req, res) => {
     }
 });
 
+router.get('/organization-orders?:history', requireLogin, requireOwner, async (req, res) => {
+    ownerService.clearContextUser(req);
+    const page = parseInt(req.query.page) || 1;
+    const limit = 25;
+    const offset = (page - 1) * limit;
+    const history = req.query.history === 'true';
+
+    const currentUser = ownerService.getCurrentUser(req);
+    let [orders, totalOrders] = [];
+    if (history) {
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset, history, req.session.user.organization),
+            db.countUserOrders(currentUser.userId, history, req.session.user.organization)
+        ]);
+    } else {
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset, false, req.session.user.organization),
+            db.countUserOrders(currentUser.userId, false, req.session.user.organization)
+        ]);
+    }
+
+
+    const totalPages = Math.ceil(totalOrders / limit);
+    console.log(orders, 'ORG ORDERS');
+    if (req.session.user?.isOwner) {
+        if (history) {
+            res.render('owner/organization_orders_history.njk', {
+                orders,
+                page,
+                limit,
+                totalOrders,
+                totalPages,
+                users: await db.getUsersByOwner(req)
+            });
+            return;
+        }
+        else {
+            res.render('owner/organization_orders.njk', {
+                orders,
+                page,
+                limit,
+                totalOrders,
+                totalPages,
+                users: await db.getUsersByOwner(req)
+            });
+            return;
+        }
+    }
+});
+
+
 
 router.get("/history", requireLogin, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -117,14 +169,26 @@ router.get("/history", requireLogin, async (req, res) => {
     ]);
 
     const totalPages = Math.ceil(totalOrders / limit);
+    if (req.session.user?.isOwner) {
+        res.render("orders_history_owner.njk", {
+            orders,
+            page,
+            limit,
+            totalOrders,
+            totalPages,
+            users: await db.getUsersByOwner(req)
+        });
+    }
+    else {
+        res.render("orders_history.njk", {
+            orders,
+            page,
+            limit,
+            totalOrders,
+            totalPages
+        });
+    }
 
-    res.render("orders_history.njk", {
-        orders,
-        page,
-        limit,
-        totalOrders,
-        totalPages
-    });
 });
 
 router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
@@ -258,7 +322,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         // Określ czy pokazać ceny (sprawdź przed resetowaniem showPricesOnce)
         const shouldShowPrices = req.session.user?.showPrices || req.session.user?.showPricesOnce || req.params.showPrices === 'true';
         const isShort = req.params.short === 'true';
-        console.log(req.params.short,isShort, 'isShort param', req.params.showPrices, shouldShowPrices, 'should show prices in pdf');
+        console.log(req.params.short, isShort, 'isShort param', req.params.showPrices, shouldShowPrices, 'should show prices in pdf');
         // Wyrenderuj template do HTML
         let html;
         if (!isShort) {
@@ -273,7 +337,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
                 prices: shouldShowPrices
             });
         }
-        else{
+        else {
             html = env.render('order_to_print_short.njk', {
                 orderDetails,
                 orderItems,
@@ -330,7 +394,6 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
 });
 
 
-
 router.get("/order/:orderId/new-position/", requireLogin, (req, res) => {
 
     res.render("form.njk", { orderId: req.params.orderId });
@@ -340,8 +403,9 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
     try {
         let extraMail = process.env.EXTRA_MAIL ? process.env.EXTRA_MAIL.split(',') : false;
         const id = req.params.orderId;
-        const { status } = req.body;
+        const status = req.body.status;
         const response = await db.changeOrderStatus(id, 'sent');
+        await db.updateOrderPrice(id, req.body.prices);
         const { orderDetails, orderItems } = await db.getOrderDataToSend(req.params.orderId);
 
         if (orderItems || orderItems.length > 0) {
@@ -353,16 +417,21 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             const photoFile = await db.getUserLogo(currentUser?.pin)
             const logoPath = path.join(__dirname, '../img/', photoFile)
             const heads = Object.keys(orderItems[0].json_parameters);
+
             let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
+            console.log('START @@@@@@@@@@@@',cleanOrderItems, 'CLEAN ORDER ITEMS IN SEND ORDER');
             // { orderDetails: orderDetails[0], orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems }
+ 
             const lang = req.getLocale();
             const mail = await db.getUserMail(currentUser?.pin)
             const orderIdx = await db.getUserOrderId(req.params.orderId)
-
+            let mailList = [mail.user_email, mail.organization_email, mail.organization_email2, extraMail,'pawel.woroniecki@hkl.eu'];
             const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx)
-            console.log(sendData.commission, 'siema')
+            if (process.env.NODE_ENV === 'test'||process.env.NODE_ENV === 'dev'  ) {
+                mailList = [extraMail,'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu']
+            }
             mailBot.sendMail(
-                [mail.user_email, mail.organization_email, mail.organization_email2, extraMail],
+                mailList,
                 lang,
                 pdf,
                 {

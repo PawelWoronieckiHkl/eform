@@ -1,9 +1,31 @@
 const db = require("../db/db_helper.js");
+const usersDb = require("../db/users.js");
 
 function requireLogin(req, res, next) {
   if (!req.session.user) {
     return res.redirect("/user/login");
   }
+  next();
+}
+
+async function addOrganizationsForAdmin(req, res, next) {
+  // Override res.render to add organizations for admin users
+  const originalRender = res.render;
+
+  res.render = async function (view, options = {}) {
+    if (req.session.user && req.session.user.isAdmin) {
+      try {
+        options.organizations = await usersDb.getAllOrganizations();
+        options.admin = true;
+      } catch (error) {
+        console.error('Error fetching organizations:', error);
+        options.organizations = [];
+      }
+    }
+
+    return originalRender.call(this, view, options);
+  };
+
   next();
 }
 
@@ -77,4 +99,4 @@ function requireOwner(req, res, next) {
   next();
 }
 
-module.exports = { requireLogin, requirePermission, checkOrderOwnership, isOwner, requireOwner };
+module.exports = { requireLogin, requirePermission, checkOrderOwnership, isOwner, requireOwner, addOrganizationsForAdmin };

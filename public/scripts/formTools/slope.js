@@ -29,6 +29,7 @@ export class SourceWindow {
         this.data = null;
         this.allOptionsByParameter = null;
         this.sourceValues = {};
+        this.sourceDisplayValues = {};
     }
 
     async init(catalog, param) {
@@ -73,7 +74,7 @@ export class SourceWindow {
         for (const [key, value] of Object.entries(this.data.params)) {
 
             if (value.DESCRIPTION && value.ENABLE !== null) {
-                console.log(value, "SPRAWDZAMOCOCHODZI")
+                // console.log(value, "SPRAWDZAMOCOCHODZI")
                 this.sourceValues[value.NAME] = '';
                 // Ustaw podstawowe meta-pola na bezpieczne wartości
                 // processSourceValues je potem poprawnie zaktualizuje
@@ -100,7 +101,7 @@ export class SourceWindow {
                     const isVisible = isEnabled(param.ENABLE, this.sourceValues, 'param');
                     const hasOptions = this.allOptionsByParameter[param.NAME] || false
 
-                    console.log(param.NAME, isVisible, hasOptions, '----- TUTAJ')
+                    // console.log(param.NAME, isVisible, hasOptions, '----- TUTAJ')
                     visibility[param.NAME] = {
                         visible: isVisible,
                         hasDict: hasOptions,
@@ -116,6 +117,7 @@ export class SourceWindow {
      * Przetwarza wartości z SOURCE (slope) na strukturę z meta-polami
      * @returns {Object} - Rozszerzony obiekt z meta-polami
      */
+    //1
     processSourceValues() {
         if (!this.sourceValues || typeof this.sourceValues !== 'object') {
             return this.sourceValues;
@@ -213,7 +215,7 @@ export class SourceWindow {
                     // Fallback dla przypadków gdy visibility nie jest dostępna
                     const dictValue = !!(paramOptions && paramOptions.length > 0);
                     processedValues[`${subParamName}___DICT`] = dictValue;
-                    console.log(`${subParamName}___DICT set to ${dictValue} (from paramOptions fallback)`);
+                    // console.log(`${subParamName}___DICT set to ${dictValue} (from paramOptions fallback)`);
                 }
 
                 // Ustaw ___TITLE z DESCRIPTION parametru jeśli dostępne
@@ -230,16 +232,16 @@ export class SourceWindow {
                 const paramVisibility = visibility[subParamName];
 
                 // Debug dla pustych wartości
-                console.log(`${subParamName} (empty): paramVisibility=${!!paramVisibility}, hasDict=${paramVisibility?.hasDict}`);
+                // console.log(`${subParamName} (empty): paramVisibility=${!!paramVisibility}, hasDict=${paramVisibility?.hasDict}`);
 
                 // Dla pustych wartości: jeśli mamy informację o widoczności, użyj jej
                 if (paramVisibility) {
                     processedValues[`${subParamName}___DICT`] = paramVisibility.hasDict;
-                    console.log(`${subParamName}___DICT set to ${paramVisibility.hasDict} (from visibility, empty value)`);
+                    // console.log(`${subParamName}___DICT set to ${paramVisibility.hasDict} (from visibility, empty value)`);
                 } else {
                     // Fallback dla przypadków gdy visibility nie jest dostępna
                     processedValues[`${subParamName}___DICT`] = false;
-                    console.log(`${subParamName}___DICT set to false (fallback, empty value)`);
+                    // console.log(`${subParamName}___DICT set to false (fallback, empty value)`);
                 }
 
                 // Ustaw ___TITLE z DESCRIPTION parametru jeśli dostępne  
@@ -350,7 +352,7 @@ export class SourceWindow {
 
 
                 if (!isEnabled(param.ENABLE, this.sourceValues, 'param')) {
-                    console.log(param.ENABLE, this.sourceValues)
+                    // console.log(param.ENABLE, this.sourceValues)
                     col.style.display = 'none';
                 } else {
                     enabledParams[param.NAME] = true;
@@ -407,18 +409,24 @@ export class SourceWindow {
     processForm() {
         let inputs = document.querySelectorAll('.source-input');
         inputs.forEach(input => {
-            console.log(input.value, "SPRAWDZAMOCOCHODZI2")
+
             if (input.id in this.sourceValues) {
 
                 if (!isNaN(input.value) && input.value.trim() !== '') {
-                    console.log(input.value, "SPRAWDZAMOCOCHODZI23")
+                    // console.log(input.value, "SPRAWDZAMOCOCHODZI23")
                     this.sourceValues[input.id] = parseInt(input.value);
                 }
                 else {
                     this.sourceValues[input.id] = input.value;
-                    console.log(input.value, "SPRAWDZAMOCOCHODZI4")
+                    // console.log(input.value, "SPRAWDZAMOCOCHODZI4")
+                }
+
+                // Uzupełnij sourceDisplayValues - każdy element trafia jako klucz-wartość
+                if (!!input.value){
+                this.sourceDisplayValues[input.id] = input.value;
                 }
             }
+
         });
 
         // Wywołanie callbacka z aktualnymi danymi, jeśli został podany

@@ -23,7 +23,7 @@ body {
 	color: #333;
 	border-right: 1px solid #ddd;
 	padding: 20px;
-	z-index: 1000;
+	z-index: 100;
 }
 .desktop-nav .side-nav {
 	margin-top: 15vh;
@@ -169,7 +169,7 @@ button:hover {
 		top: 0;
 		left: 0;
 		width: 100%;
-		z-index: 1100;
+		z-index: 110;
 	}
 	.form-content {
 		margin-top: 70px;

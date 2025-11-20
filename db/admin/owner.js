@@ -1,0 +1,81 @@
+const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('../core')
+const bcrypt = require('bcryptjs');
+const dateUtils = require("../../utils/humanize_date.js");
+
+async function getUsersByOwner(req) {
+    if (!req.session.user?.isOwner) {
+        throw new Error("User is not an owner or session is invalid.");
+    }
+
+    const organizationId = req.session.user.organization;
+
+    const query = `
+        SELECT u.client_name, u.ident, u.pin, u.id 
+        FROM user u
+        INNER JOIN organization o ON u.organization_id = o.id
+        WHERE o.id = ?;
+    `;
+
+    try {
+        const users = await selectQuery(query, [organizationId]);
+
+        return users;
+    } catch (error) {
+        console.error("Error fetching users by owner:", error);
+        throw error;
+    }
+}
+
+
+
+async function getUserIdByIdent(ident) {
+
+    const query = `
+        SELECT u.id 
+        FROM user u
+        WHERE u.ident = ?;
+    `;
+
+    try {
+        const user = await selectQuery(query, [ident]);
+
+        return user[0]?.id;
+    } catch (error) {
+        console.error("Error fetching users by owner:", error);
+        throw error;
+    }
+}
+
+async function getUserByIdent(ident) {
+    const query = `
+        SELECT u.id, u.client_name, u.ident, u.pin, u.password, u.organization_id, o.ident AS org_ident
+        FROM user u
+        INNER JOIN organization o ON u.organization_id = o.id
+        WHERE u.ident = ?;
+    `;
+
+    try {
+        const user = await selectQuery(query, [ident]);
+        console.log(user, 'user by ident query result');
+        return user[0] || null;
+    } catch (error) {
+        console.error("Error fetching user by ident:", error);
+        throw error;
+    }
+}
+
+
+module.exports = {
+    selectQuery,
+    insertQuery,
+    updateQuery,
+    deleteQuery,
+    getUserIdByIdent,
+    getUsersByOwner,
+    getUserByIdent
+};
+
+
+
+
+

@@ -4,11 +4,7 @@ export function generateExcel() {
   const comment = document.getElementById('comment')
   const commision = document.getElementById('commission-name') || document.getElementById('commission-name-mobile')
 
-  if (!comment || !commision) {
-    console.error('Missing required elements:', { comment: !!comment, commision: !!commision });
-    alert('Nie znaleziono wymaganych elementów na stronie');
-    return;
-  }
+
 
   const tables = document.querySelectorAll('#print-template-container table');
   console.log(tables)
@@ -99,10 +95,7 @@ export async function generatePdf(isShort = false) {
   const comment = document.getElementById('comment');
   const commision = document.getElementById('commission-name') || document.getElementById('commission-name-mobile');
 
-  if (!comment || !commision) {
-    alert('Nie znaleziono danych zamówienia');
-    return;
-  }
+
 
   const orderId = comment.dataset.id;
   if (!orderId) {

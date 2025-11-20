@@ -61,7 +61,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
                 btn.textContent = ` ${val.DESCRIPTION}`;
             }
             else {
-                btn.textContent = `${val.VALUE}-${val.DESCRIPTION}`
+                btn.textContent = `${val?.VALUE}-${val?.DESCRIPTION}`
             }
         }
         else {
@@ -208,6 +208,12 @@ export function checkIfParamHidden(formula, values, param) {
             "param",
             param
         );
+        if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE && !shouldEnable) {
+            window.skipCountParams.push(param.NAME)
+        }
+        console.log(shouldEnable, 'SHOULD ENABLE')
+        if (shouldEnable == 'password') { shouldEnable = false }
+
 
     }
     catch (error) {
