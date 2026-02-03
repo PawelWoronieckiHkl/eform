@@ -40,11 +40,27 @@
                                                     </div>
                                                     <div class="status-card-value">{{ (statuses[globalIndex].shipping_date) }}</div>
                                                 </div>
-                                                <div class="status-card">
-                                                    <div class="status-card-header">
-                                                        <span class="status-card-label">{{ __('order.shipping_method_label') }}</span>
-                                                    </div>
-                                                    <div class="status-card-value status-card-code">{{ statuses[globalIndex].parcel_code }}</div>
+                                                {% if statuses[globalIndex].parcel_href %}
+                                                    <div class="status-card" id='parcel-link-card'>
+                                                        <div class="status-card-header">
+                                                            <span class="status-card-label">{{ __('order.shipping_method_label') }}</span>
+                                                        </div>
+                                                        <a href="{{ statuses[globalIndex].parcel_href }}" id='parcel-link' target="_blank" rel="noopener noreferrer">
+                                                            <div class="status-card-value status-card-code">
+                                                                <img src="/img/express-delivery.png" alt="delivery icon" class="icon ms-1">
+                                                                    <span>
+                                                                        {{ statuses[globalIndex].parcel_code }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    {% else %}
+                                                        <div class="status-card">
+                                                            <div class="status-card-header">
+                                                                <span class="status-card-label">{{ __('order.shipping_method_label') }}</span>
+                                                            </div>
+                                                            <div class="status-card-value status-card-code">{{ statuses[globalIndex].parcel_code }}</div>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </td>
@@ -53,9 +69,9 @@
                             {% endblock %}
                             {% block new_pos_btn %}
                                 {# 
-                                         <button class="action-btn status-btn me-1 p-1 has-tooltip-2"  data-tooltip="{{ __('order.status_btn_tooltip') }}" data-id='{{ statuses[globalIndex].order_pos }}' onclick="event.stopPropagation()">
-                                             <img src="/img/delivery-status.png" class='icon' alt="{{ __('order.edit') }}">
-                                         </button>                                 #}
+                                                                                                                                                                                                                                                                                                                                                             <button class="action-btn status-btn me-1 p-1 has-tooltip-2"  data-tooltip="{{ __('order.status_btn_tooltip') }}" data-id='{{ statuses[globalIndex].order_pos }}' onclick="event.stopPropagation()">
+                                                                                                                                                                                                                                                                                                                                                                 <img src="/img/delivery-status.png" class='icon' alt="{{ __('order.edit') }}">
+                                                                                                                                                                                                                                                                                                                                                             </button>                                 #}
                             {% endblock %}
                             {% block send_order_btn %}{% endblock %}
                             {% block order_space %}

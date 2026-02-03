@@ -1,1 +1,23 @@
 === 2026-02-03 07:49:50 - Start ===
+[main 1a19b46] Automatic commit 2026-02-03 07:49
+ 2 files changed, 19 insertions(+), 6 deletions(-)
+ create mode 100644 cron.log
+ rewrite git_auto_commit.sh (90%)
+To https://github.com/PawelWrHkl/eform.git
+   0a614c8..1a19b46  main -> main
+=== 2026-02-03 07:49:52 - Koniec (Exit: 0) ===
+=== 2026-02-03 12:00:01 - Start ===
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+=== 2026-02-03 12:00:01 - Koniec (Exit: 0) ===
+=== 2026-02-03 12:30:01 - Start ===

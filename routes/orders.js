@@ -11,7 +11,7 @@ const OrderSender = require("../services/sendOrderService");
 const { generatePdf } = require('../services/mailBot/pdfGenerator');
 const { buildOrderItemStructure } = require('../services/itemBuilder.js');
 const { getPriceAfterDiscount } = require('../services/getDiscount.js');
-const { SyncProdStatus } = require('../services/prodStatus.js');
+const { SyncProdStatus, setParcelHref } = require('../services/prodStatus.js');
 
 router.use(async (req, res, next) => {
     // Ustaw owner dla wszystkich widoków
@@ -238,18 +238,19 @@ router.get("/history", requireLogin, async (req, res) => {
 });
 
 router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
+
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
     const currentUser = ownerService.getCurrentUser(req);
     console.log(orderDetails, 'CURRENT USER IN ORDER HISTORY VIEW');
-    const statuses = await db.getUserStatuses(currentUser.ident, orderDetails.order_idx);
-
+    let statuses = await db.getUserStatuses(currentUser.ident, orderDetails.order_idx);
+    statuses = setParcelHref(statuses);
+    
     if (orderItems) {
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
         const totalPrice = await db.getTotal(orderDetails.id)
 
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
-            console.log(statuses, 'STATUSES IN ORDER HISTORY VIEW');
             res.render("order_sent_prices.njk",
                 {
                     orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, statuses: statuses
@@ -259,7 +260,6 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
             req.session.user.showPricesOnce = false;
             return;
         } else {
-            console.log(statuses, 'STATUSES IN ORDER HISTORY VIEW');
             return res.render("order_sent.njk",
                 {
                     orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, owner: req.session.user.isOwner, statuses: statuses

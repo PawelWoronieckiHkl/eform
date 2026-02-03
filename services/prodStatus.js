@@ -12,7 +12,6 @@ class SyncProdStatus {
         this.userIdent = null;
     }
 
-
     async init(orgIdent, userIdent) {
         this.orgIdent = orgIdent;
         this.userIdent = userIdent;
@@ -87,7 +86,8 @@ class SyncProdStatus {
         for (const record of this.statusesData) {
             const exists = await db.checkIfStatusExists(record);
             if (exists && exists.length > 0) {
-                console.log(`Status exists in DB for ORDERNO: ${record.ORDERNO}, ORDERPOS: ${record.ORDERPOS}`);
+                let result = await db.updateStatus(record);
+                console.log('Updated status with result:', result);
             } else {
                 console.log(`Status does NOT exist in DB for ORDERNO: ${record.ORDERNO}, ORDERPOS: ${record.ORDERPOS}`);
                 let result = await db.insertStatus(record);
@@ -99,29 +99,28 @@ class SyncProdStatus {
 
 }
 
-function setParcelHref(statuses){
-        
-    for(const status of statuses){
-        let codeElems = status.parcel_code.split(' ') 
-        if(codeElems.length > 1){
-            switch (codeElems[0]){
+function setParcelHref(statuses) {
+
+    for (const status of statuses) {
+        let [parcel, code] = status.parcel_code?.split(' ') ?? ['', ''];
+        if (code) {
+            switch (parcel) {
                 case 'DPD':
-                    status.parcel_href = `https://www.dpd.com.pl/tracking/?parcelNumber=${codeElems[1]}`;
+                    status.parcel_href = `https://www.dpd.com.pl/tracking/?parcelNumber=${code}`;
                     break;
                 case 'UPS':
-                    status.parcel_href = `https://www.ups.com/track?loc=en_US&tracknum=${codeElems[1]}`;
+                    status.parcel_href = `https://www.ups.com/track?loc=en_US&tracknum=${code}`;
                     break;
                 case 'DHL':
-                    status.parcel_href = `https://www.dhl.com/en/express/tracking.html?AWB=${codeElems[1]}&brand=DHL`;
+                    status.parcel_href = `https://www.dhl.com/en/express/tracking.html?AWB=${code}&brand=DHL`;
                     break;
                 default:
                     status.parcel_href = null;
             }
-
         }
     }
-    console.log('setParcelHref statuses:', statuses);
+    console.log(statuses, 'STATUSES WITH PARCEL HREF');
     return statuses;
 }
 
-module.exports = { SyncProdStatus };
+module.exports = { SyncProdStatus, setParcelHref };

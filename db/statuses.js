@@ -33,4 +33,28 @@ async function getUserStatuses(userIdent, orderIdx) {
     const result = await selectQuery(query, [userIdent, orderIdx]);
     return result;
 }
-module.exports = { checkIfStatusExists, insertStatus, getUserStatuses };
+
+
+async function updateStatus(record) {
+    console.log(record, 'updateStatus record');
+    const query = `UPDATE position_statuses SET
+    status = ?,
+    shipping_date = ?,
+    parcel_code = ?
+    WHERE user_ident = ? AND order_idx = ? AND order_pos = ?`;
+    const result = await updateQuery(query, [
+        record.STATUS,
+        dateUtils.convertToSQLDate(record.SHIPPINGDATE),
+        record.PARCELCODE,
+        record.USERIDENT,
+        record.ORDERNO,
+        record.ORDERPOS
+    ]);
+    return result;
+}
+module.exports = { 
+    checkIfStatusExists,
+    insertStatus,
+    getUserStatuses,
+    updateStatus 
+};
