@@ -10,7 +10,28 @@ const langManager = require('../services/setLanguage')
 const langVer = require('../services/languageManager')
 const { dataDir, localesDir } = require('../config');
 const path = require("path");
-const { updateClients } = require('../services/dbUserSync')
+const { updateClients } = require('../services/dbUserSync');
+const { hash } = require('crypto');
+const hashUser = require('../utils/hashUser').hashUser;
+const EmailFbSync = require('../utils/emailFbSync');
+
+// Middleware do automatycznego dodawania users dla owner'ów
+router.use(async (req, res, next) => {
+    // Ustaw owner dla wszystkich widoków
+    res.locals.owner = req.session?.user?.isOwner || false;
+    res.locals.admin = req.session?.user?.isAdmin || false;
+    res.locals.isEmployee = req.session?.user?.isEmployee || false;
+
+    if (req.session?.user?.isOwner) {
+        try {
+            res.locals.users = await db.getUsersByOwner(req);
+        } catch (error) {
+            console.error('Error loading users for owner:', error);
+            res.locals.users = [];
+        }
+    }
+    next();
+});
 
 router.get("/login", (req, res) => {
 
@@ -46,6 +67,7 @@ router.post("/accept-rodo", async (req, res, next) => {
 });
 router.post("/auth/login", async (req, res, next) => {
     try {
+
         const { pin, password } = req.body;
         const isValid = await authService.checkPassword(pin, password);
         const isEmployeeLogin = await authService.checkEmployeePassword(pin, password);
@@ -54,13 +76,21 @@ router.post("/auth/login", async (req, res, next) => {
             const isFirst = await authService.checkFirstLogon(pin)
             console.log(isFirst, 'first logon check result')
             let owner = await db.getOwner(pin);
+
+            if (!owner) {
+                return res.render("login.njk", { message: "Dane nieprawidłowe" });
+            }
+
             const userId = await db.getUserId(pin)
             req.session.user = { userId, pin, password, showPrices: false, organization: (owner.orgIdent).toUpperCase() };
+
             req.session.user.isOwner = await isOwner(owner);
+            console.log(req.session.user.isOwner, 'is owner after login check')
             req.session.user.isAdmin = pin == "admin";
 
             req.session.user.organization = owner.orgId;
             console.log(req.session.user, 'session user after login')
+
             console.log(req.session.user.isOwner, 'is owner???')
 
             // Zapisz historię logowania
@@ -84,16 +114,27 @@ router.post("/auth/login", async (req, res, next) => {
             }
 
             return res.redirect("/");
+
         } else if (isEmployeeLogin) {
             const employee = await db.getEmployeeByLogin(pin);
             const user = await db.getUserByEmployye(pin);
+
+            if (!user) {
+                return res.render("login.njk", { message: "Dane nieprawidłowe" });
+            }
+
             const organization = await db.getOwner(user.pin);
+
+            if (!organization) {
+                return res.render("login.njk", { message: "Dane nieprawidłowe" });
+            }
 
             req.session.user = { pin: user.pin, password: user.password, showPrices: false, organization: organization.orgId, userId: user.id };
             req.session.user.isOwner = false;
             req.session.user.isEmployee = true;
             req.session.employee = { name: employee.name, surname: employee.surname, id: employee.id, login: employee.login, phone: employee.phone };
 
+            logEmployeeLogin = await db.logEmployeeLogin(employee.id);
             console.log(req.session.employee, 'session employee after login')
             req.session.mustAcceptRODO = false;
             return res.redirect("/");
@@ -105,6 +146,68 @@ router.post("/auth/login", async (req, res, next) => {
     }
 });
 
+router.get('/edit-user', requireLogin, async (req, res) => {
+    let currentUser = ownerService.getCurrentUser(req);
+    let user = await db.getUserData(currentUser.pin);
+    const success = req.query.success === '1';
+    return res.render('edit_user.njk', { user, success });
+});
+
+router.post('/update-user', requireLogin, async (req, res) => {
+    try {
+        const currentUser = ownerService.getCurrentUser(req);
+        const pin = currentUser.pin;
+
+        // Odbierz dane z formularza
+        const { tax_id, street, zip, city, email } = req.body;
+        console.log(email, 'email to update')
+        // const emailSync = new EmailFbSync(currentUser.ident, email);
+        // emailSync.saveChanges();
+        // Walidacja - sprawdź czy wszystkie wymagane pola są wypełnione
+        if (!tax_id || !street || !zip || !city || !email) {
+            return res.status(400).render('edit_user.njk', {
+                user: await db.getUserData(pin),
+                error: 'Wszystkie pola są wymagane'
+            });
+        }
+
+        // Walidacja - usuń białe znaki
+        const trimmedData = {
+            tax_id: tax_id.trim(),
+            street: street.trim(),
+            zip: zip.trim(),
+            city: city.trim(),
+            email: email.trim()
+        };
+
+        // Sprawdź czy pola nie są puste po usunięciu białych znaków
+        if (!trimmedData.tax_id || !trimmedData.street || !trimmedData.zip || !trimmedData.city || !trimmedData.email) {
+            return res.status(400).render('edit_user.njk', {
+                user: await db.getUserData(pin),
+                error: 'Żadne pole nie może być puste'
+            });
+        }
+
+        // Walidacja formatu email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(trimmedData.email)) {
+            return res.status(400).render('edit_user.njk', {
+                user: await db.getUserData(pin),
+                error: 'Nieprawidłowy format adresu email'
+            });
+        }
+
+        await db.updateUserData(pin, trimmedData);
+
+        return res.redirect('/');
+    } catch (err) {
+        console.error('Error updating user:', err);
+        return res.status(500).render('edit_user.njk', {
+            user: await db.getUserData(req.session.user.pin),
+            error: 'Błąd podczas aktualizacji danych użytkownika'
+        });
+    }
+});
 
 router.get('/tutorial', requireLogin, async (req, res) => {
     return res.render('tutorial.njk');
@@ -129,7 +232,7 @@ router.get('/logo', requireLogin, async (req, res) => {
     const pin = currentUser.pin;
     console.log(pin, 'pin in get logo', req.session.user?.organization)
     let photoFilename = await db.getUserLogo(pin);
-    if (req.session.user?.isAdmin){
+    if (req.session.user?.isAdmin) {
         photoFilename = await db.getLogo(req.session.user.organization);
     }
     const photoPath = path.join(__dirname, '..', 'img', photoFilename)
@@ -181,6 +284,8 @@ router.get('/owner/', requireLogin, async (req, res) => {
 router.get('/name', requireLogin, async (req, res) => {
 
     const pin = req.session.user.pin;
+    const mailAdresses = await db.getUserMail(pin)
+
     console.log(pin, 'pin in getUserName')
     let response = await db.getUserName(pin);
     console.log(response, 'response from getUserName')
@@ -188,7 +293,8 @@ router.get('/name', requireLogin, async (req, res) => {
         return res.status(200).json({
             success: true,
             name: response,
-            pin: pin
+            pin: pin,
+            email: mailAdresses.user_email
         });
     }
     else {
@@ -326,6 +432,60 @@ router.post('/employee/add', requireLogin, async (req, res) => {
     }
 });
 
+router.get('/employee/edit/:id', requireLogin, async (req, res) => {
+    const empDetails = await db.getEmployeeById(req.params.id);
+    return res.render("user/edit_employee.njk", { employee: empDetails });
+});
+
+router.post('/employee/edit/:id', requireLogin, async (req, res) => {
+    try {
+        const employeeId = req.params.id;
+        const currentUser = ownerService.getCurrentUser(req);
+        const userId = currentUser.userId;
+
+        const employee = await db.getEmployeeById(employeeId);
+
+        if (!employee) {
+            return res.status(404).json({
+                success: false,
+                message: 'Pracownik nie znaleziony'
+            });
+        }
+
+        if (employee.user_id !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: 'Brak uprawnień'
+            });
+        }
+
+        const { name, surname, login, password, phone } = req.body;
+
+        const updatedData = {
+            name,
+            surname,
+            login,
+            phone: phone || ''
+        };
+
+        if (password && password.trim() !== '') {
+            updatedData.password = password;
+        }
+
+        await db.updateEmployee(employeeId, updatedData);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Pracownik został zaktualizowany'
+        });
+    } catch (err) {
+        console.error('Error updating employee:', err);
+        return res.status(500).json({
+            success: false,
+            message: 'Błąd podczas aktualizacji pracownika'
+        });
+    }
+});
 router.delete('/employee/:id', requireLogin, async (req, res) => {
     try {
         const employeeId = req.params.id;
@@ -396,6 +556,16 @@ router.get('/employee/:id/orders', requireLogin, async (req, res) => {
 
 router.get('/employee-panel', requireLogin, async (req, res) => {
     return res.render("user/user_panel.njk");
+});
+
+
+router.get('/uid', requireLogin, async (req, res) => {
+    console.log('pin', req.session.user.pin)
+    const ident = await db.getUserIdent(req.session.user.pin)
+    console.log(ident, 'ident in /uid route')
+    const uid = hashUser(ident);
+    console.log(uid, 'uid in /uid route')
+    return res.json({ success: true, uid: uid });
 });
 
 module.exports = router;

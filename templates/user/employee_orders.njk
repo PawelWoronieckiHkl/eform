@@ -1,98 +1,124 @@
 {% extends "base.njk" %}
-
 {% block title %}Zamówienia Pracownika{% endblock title %}
-
 {% block head %}
     <link rel="stylesheet" href="/styles/employee_orders.css">
-{% endblock head %}
-
-{% block content %}
-    <div class="content  col-9 center-content">
-        <div class="container my-5 mobile-rm-card">
-            <div class="employee-header mb-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2>
-                            <i class="fas fa-user"></i>
-                            {{ employee.name }}
-                            {{ employee.surname }}
-                        </h2>
-                        <p class="text-muted mb-0">
-                            <i class="fas fa-shopping-cart"></i>
-                            {{ __('employee.orders_count') or 'Liczba zamówień' }}:
-                            <strong>{{ ordersCount }}</strong>
-                        </p>
-                    </div>
-                    <div>
-                        <a href="/user/employee-panel" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i>
-                            {{ __('base.back_button') or 'Powrót' }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            {% if orders and orders.length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered orders-table">
-                        <thead class="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>{{ __('orders.commission') or 'Numer zamówienia' }}</th>
-                                <th>{{ __('orders.created_date') or 'Data utworzenia' }}</th>
-                                <th>{{ __('orders.status') or 'Status' }}</th>
-                                <th>{{ __('orders.items_count') or 'Liczba pozycji' }}</th>
-                                <th>{{ __('orders.total_price') or 'Cena' }}</th>
-                                <th class="text-center">{{ __('orders.actions') or 'Akcje' }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in orders %}
-                                <tr>
-                                    <td>{{ loop.index }}</td>
-                                    <td>
-                                        <strong>{{ order.commision or '-' }}</strong>
-                                    </td>
-                                    <td>{{ order.created_date }}</td>
-                                    <td>
-                                        {% if order.status == 'sent' %}
-                                            <span class="badge bg-dark">{{ __('orders.sent') or 'Wysłane' }}</span>
-                                        {% elif order.status == 'active' %}
-                                            <span class="badge bg-secondary">{{ __('orders.active') or 'Aktywne' }}</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">{{ order.status }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-secondary">{{ order.items_count }}</span>
-                                    </td>
-                                    <td>
-                                        {% if order.total_price %}
-                                            {{ order.total_price }}
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="/orders/order/{{ order.id }}" class="btn btn-sm btn-dark" title="{{ __('orders.view_details') or 'Zobacz szczegóły' }}">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <div class="text-center p-5 m-5" role="alert">
-                    <i class="fas fa-info-circle"></i>
-                    <p class="mb-0">{{ __('employee.no_orders') or 'Ten pracownik nie ma jeszcze żadnych zamówień' }}</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-{% endblock content %}
-
-{% block scripts %}
-    <script type="module" src="/scripts/base.js"></script>
-{% endblock scripts %}
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+            <link rel="stylesheet" href="/styles/dialog.css">
+            {% endblock head %}
+            {% block key_nav %}
+                window.history.back()
+            {% endblock %}
+            {% block back_link %}
+                <button class="modern-back-btn" onclick="window.history.back()">
+                {% endblock %}
+                <a href="/user/employee-panel" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ __('base.back_button') or 'Powrót' }}
+                </a>
+                {% block content %}
+                    <div class="content  col-9 center-content">
+                        <div class="container my-5 mobile-rm-card">
+                            <div class="employee-header mb-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h2>
+                                            <i class="fas fa-user"></i>
+                                            {{ employee.name }}
+                                            {{ employee.surname }}
+                                        </h2>
+                                        <p class="text-muted mb-0">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            {{ __('employee.orders_count') or 'Liczba zamówień' }}:
+                                            <strong>{{ ordersCount }}</strong>
+                                        </p>
+                                    </div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div class="search-container ">
+                                <input
+                                    type="text"
+                                    id='order-search'
+                                    class="form-control search-input"
+                                    name='order-search'
+                                    maxlength="100"
+                                    placeholder="Szukaj zamówień..."/>
+                                <div class="filter-status-container d-grid">
+                                    <select name="filter-status" id="filter-status">
+                                        <option class='form-control' value="0" selected="selected" disabled="disabled">Status</option>
+                                        <option class='form-control' value="all">Wszystkie</option>
+                                        <option class='form-control' value="active">Aktywne</option>
+                                        <option class='form-control' value="sent">Wysłane</option>
+                                    </select>
+                                </div>
+                            </div>
+                            {% if orders and orders.length > 0 %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered orders-table">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>{{ __('orders.commission') or 'Numer zamówienia' }}</th>
+                                                <th>{{ __('orders.created_date') or 'Data utworzenia' }}</th>
+                                                <th>{{ __('orders.status') or 'Status' }}</th>
+                                                <th>{{ __('orders.items_count') or 'Liczba pozycji' }}</th>
+                                                <th>{{ __('orders.total_price') or 'Cena' }}</th>
+                                                <th class="text-center">{{ __('orders.actions') or 'Akcje' }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in orders %}
+                                                <tr>
+                                                    <td>
+                                                        <strong>{{ order.commision or '-' }}</strong>
+                                                    </td>
+                                                    <td>{{ order.created_date }}</td>
+                                                    {% if order.status == 'sent' %}
+                                                        <td class='sent'>
+                                                            <span class="badge bg-dark ac">{{ __('orders.sent') or 'Wysłane' }}</span>
+                                                        {% elif order.status == 'active' %}
+                                                            <td class='active'>
+                                                                <span class="badge bg-success">{{ __('orders.active') or 'Aktywne' }}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">{{ order.status }}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-secondary">{{ order.items_count }}</span>
+                                                        </td>
+                                                        <td>
+                                                            {% if order.total_float %}
+                                                                {{ order.total_float }}
+                                                            {% else %}
+                                                                <span class="text-muted">0</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="text-center d-grid">
+                                                            {% if order.status == 'sent' %}
+                                                                <a href="/orders/history/order/{{ order.id }}" class="btn btn-sm btn-dark w-75 m-auto" title="{{ __('orders.see_order') or 'Zobacz szczegóły' }}">
+                                                                    {{ __('orders.see_order') or 'Zobacz' }}</a>
+                                                            {% elif order.status == 'active' %}
+                                                                <a href="/orders/order/{{ order.id }}" class="btn btn-sm btn-dark w-75 m-auto" title="{{ __('orders.see_order') or 'Zobacz szczegóły' }}">
+                                                                    {{ __('orders.see_order') or 'Zobacz' }}</a>
+                                                                <button class="btn btn-sm btn-success p-1 stop-propagation send-order-btn has-tooltip w-75 m-auto mt-1" data-tooltip="{{ __('orders.send_order_tooltip') }}" type="button" id='send-order' data-id="{{ order.id }}">
+                                                                    {{ __('orders.send') }}
+                                                                </button>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center p-5 m-5" role="alert">
+                                        <i class="fas fa-info-circle"></i>
+                                        <p class="mb-0">{{ __('employee.no_orders') or 'Ten pracownik nie ma jeszcze żadnych zamówień' }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endblock content %}
+                    {% block scripts %}
+                        <script type="module" src="/scripts/base.js"></script>
+                        <script type='module' src="/scripts/employee_orders.js"></script>
+                    {% endblock scripts %}

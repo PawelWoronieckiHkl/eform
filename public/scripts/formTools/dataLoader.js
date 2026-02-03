@@ -47,7 +47,7 @@ export class DataLoader {
 
       return data;
     } catch (error) {
-      console.warn(`Błąd ładowania - brak pliku ${file}`,);
+      console.warn(`Błąd ładowania - brak pliku.`,);
       return null;
     }
   }
@@ -241,6 +241,7 @@ export class DataLoader {
   async selectPrices(params) {
 
     if (!await formsManager.getClientScripts()) { return params }
+
     const [path, scripts] = await formsManager.getClientScripts()
     // console.log("Ścieżka do skryptów:", path);
     for (const param of params) {
@@ -248,7 +249,6 @@ export class DataLoader {
 
       if (param?.SCRIPTS == 'true' && scriptPath) {
         param.SOURCE = `${path}${scriptPath.file}`
-
       }
     }
     return params
@@ -308,7 +308,7 @@ export class DataLoader {
         }
       }
     }
-
+    // console.log(result, 'Po rozszerzeniu kolekcji');
     return result;
   }
 
@@ -324,6 +324,7 @@ export class DataLoader {
 
 
   getAllFilters() {
+    // console.log(this.parameterFilters, 'Zwracane filtry Po rozszerzeniu kolekcji');
     return this.parameterFilters;
   }
 }

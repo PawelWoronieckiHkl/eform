@@ -1,9 +1,10 @@
 import { showToast } from "./components/toast.js";
 import { createInfoDialog, createElement } from "./components/htmlManipulator.js";
-import { generateExcel, generatePdf } from "./components/generators.js"
-import { createDialog } from "./formTools/dialogUtils_copy.js";
+import { generateExcel as generateExcelOld, generatePdf } from "./components/generators.js"
+import { generateExcel } from "./components/generators_exceljs.js"
 
-
+import { showDiscountModal, updateDiscountDisplay } from "./orderTools/setDiscount.js";
+ 
 const closeBtn = document.getElementById('cancel-btn');
 const confirmBtn = document.getElementById('confirm-btn');
 const deletePositionBtns = document.querySelectorAll('.delete-position-btn');
@@ -18,6 +19,7 @@ const sendBtn = document.querySelector('.send-order-btn')
 const excelBtns = document.querySelectorAll('[id="generate-excel-btn"]')
 const printBtns = document.querySelectorAll('[id="print-button"]')
 const shortPrintBtns = document.querySelectorAll('[id="short-print-button"]')
+const discountBtn = document.getElementById('discount-btn');
 const moveUpBtns = document.querySelectorAll('.move-up-btn')
 const moveDownBtns = document.querySelectorAll('.move-down-btn')
 getPrices()
@@ -119,7 +121,7 @@ async function duplicate(btn) {
 }
 
 
-function buildAndShowDialog(btn) {
+export function buildAndShowDialog(btn) {
   const parent = document.getElementById('dialog-container');
   const { buttons, dialog } = createInfoDialog({
     title: `${t('orders.send_order')}`,
@@ -149,7 +151,7 @@ function getPrices() {
   const hiddenPrice = document.querySelectorAll('.total-hidden');
   const visiblePrice = document.querySelectorAll('.total');
 
- 
+
 
   hiddenPrice.forEach(price => {
     const priceText = price.innerText?.trim();
@@ -164,7 +166,7 @@ function getPrices() {
       prices.visiblePrices.push(priceText);
     }
   });
- console.log(prices, 'prices in getPrices function')
+  console.log(prices, 'prices in getPrices function')
   return prices;
 }
 
@@ -285,7 +287,6 @@ window.addEventListener('scroll', function () {
 });
 
 
-
 unlockBtns.forEach(unlockBtn => {
   unlockBtn.addEventListener('click', function () {
     const parent = document.getElementById('dialog-container');
@@ -355,4 +356,16 @@ moveDownBtns.forEach(btn => {
     const positionId = btn.dataset.id;
     await movePosition(positionId, 'down');
   });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateDiscountDisplay();
+  if (discountBtn) {
+    discountBtn.addEventListener('click', async () => {
+      console.log('Kliknięto przycisk rabatu');
+      await showDiscountModal();
+    });
+  } else {
+    console.error('Element z id "discount-btn" nie został znaleziony.');
+  }
 });

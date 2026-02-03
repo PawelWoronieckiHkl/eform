@@ -192,14 +192,13 @@
     }
 
     .mobile-nav .nav-link:hover {
-        background: var(--muted);
+        background: var(--muted); 
     }
 
     .logo {
-        height: 7vh !important;
-        width: 100% !important;
         margin-top: 1vh !important;
         margin-left: 1vh !important;
+        max-width: 40vw !important;
     }
 
     .language-switcher {

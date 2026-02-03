@@ -9,7 +9,6 @@ parser.setVariable("MAX", "MAX");
 parser.setVariable("DOM", "DOM");
 
 function inList(params) {
-    // console.log('inList', params)
     if (!params || params.length < 2) return false;
 
     let what = (params[0] || "").toString().toLowerCase();
@@ -17,7 +16,6 @@ function inList(params) {
 
     what = "," + what + ",";
     list = "," + list + ",";
-    // if (params.includes('FE')){console.log('FE found', params, list.includes(what))}
     return list.includes(what);
 }
 
@@ -79,9 +77,10 @@ function inList3(params) {
 //     }
 // }
 
+
+
 function contains(params) {
 
-    // console.log('contains', params)
     if (!params || params.length < 2) return false;
     let what = (params[0] || "").toString();
     let list = (params[1] || "").toString();
@@ -96,14 +95,58 @@ function contains(params) {
 }
 
 parser.setFunction("WSROD", function (params) {
-    // console.log(params)
     return inList(params);
 });
 
+
+parser.setFunction("FLOOR", function (params) {
+
+    if (!params || params.length < 2) return null;
+
+    const number = parseFloat(params[0]);
+    const significance = parseFloat(params[1]);
+
+    if (isNaN(number) || isNaN(significance)) return null;
+    if (significance === 0) return 0;
+
+    if ((number > 0 && significance < 0) || (number < 0 && significance > 0)) {
+        return null;
+    }
+    
+    return Math.floor(number / significance) * significance;
+});
+
+
+parser.setFunction("CEIL", function (params) {
+    if (!params || params.length < 2) return null;
+
+    const number = parseFloat(params[0]);
+    const significance = parseFloat(params[1]);
+    if (isNaN(number) || isNaN(significance)) return null;
+    if (significance === 0) return 0;
+
+    if ((number > 0 && significance < 0) || (number < 0 && significance > 0)) {
+        return null;
+    }
+    return Math.ceil(number / significance) * significance;
+});
+
+parser.setFunction("ZAOKR", function (params) {
+    if (!params || params.length === 0) return 0;
+
+    const number = parseFloat(params[0]);
+    const decimals = params.length > 1 ? parseInt(params[1]) : 0;
+
+    if (isNaN(number)) return 0;
+    if (isNaN(decimals) || decimals < 0) return Math.round(number);
+
+    const multiplier = Math.pow(10, decimals);
+    return Math.round(number * multiplier) / multiplier;
+});
+
+
 parser.setFunction("HASLO", function (params) {
     window.paramPassword = 'tak mam password'
-    // Do cofnięcia
-    // console.log('HASLO',params)
     if (params.length > 0) {
         return false;
     }
@@ -182,6 +225,7 @@ parser.setFunction("USTAW", function (params) {
     if (parameter == 'DOM' && value == '') { return true }
 
     const validatorModel = window.inputsValidators[window.actualParam][window.actualValue];
+
     const defaultsModel = window.inputsDefaults[window.actualParam][window.actualValue];
 
     const currentValue = parser.getVariable(field) || window.formulaContext[field];
@@ -194,9 +238,7 @@ parser.setFunction("USTAW", function (params) {
     }
     if (parameter == 'WAR') {
         if (value == '<NONE>') { delete window.constValues[field]; return false };
-        // console.log('wartosci', value)
         window.constValues[field] = value;
-
         return true;
     }
     if (value === undefined || value === '-') {
@@ -208,10 +250,10 @@ parser.setFunction("USTAW", function (params) {
         } else if (parameter === "MIN" || parameter === "MAX") {
             delete validatorModel[field][parameter];
         }
-        if (Object.keys(validatorModel[field]).length === 0) {
+        if (validatorModel[field] && Object.keys(validatorModel[field]).length === 0) {
             delete validatorModel[field];
         }
-        if (Object.keys(defaultsModel[field]).length === 0) {
+        if (defaultsModel[field] && Object.keys(defaultsModel[field]).length === 0) {
             delete defaultsModel[field];
         }
         return true;
@@ -220,12 +262,12 @@ parser.setFunction("USTAW", function (params) {
     let result = false;
     switch (parameter) {
         case "MIN":
-            validatorModel[field][parameter] = value;
-            result = currentValue ? Number(currentValue) >= Number(value) : true;
+            validatorModel[field][parameter] = Math.round(value);
+            result = true;
             break;
         case "MAX":
-            validatorModel[field][parameter] = value;
-            result = currentValue ? Number(currentValue) <= Number(value) : true;
+            validatorModel[field][parameter] = Math.round(value);
+            result = true;
             break;
         case "DOM":
             value = String(value)
@@ -238,10 +280,11 @@ parser.setFunction("USTAW", function (params) {
             result = false;
     }
 
-    if (Object.keys(validatorModel[field]).length === 0) {
+    // Usuń puste obiekty tylko jeśli nie ma żadnych walidatorów
+    if (validatorModel[field] && Object.keys(validatorModel[field]).length === 0) {
         delete validatorModel[field];
     }
-    if (Object.keys(defaultsModel[field]).length === 0) {
+    if (defaultsModel[field] && Object.keys(defaultsModel[field]).length === 0) {
         delete defaultsModel[field];
     }
 
@@ -279,12 +322,10 @@ function evaluateFormula(expression, context, type, param = null) {
         context = {};
     }
 
-    // Funkcja do spłaszczania zagnieżdżonych obiektów
     function flattenObject(obj, prefix = '') {
         let result = {};
         for (let key in obj) {
             if (obj[key] && typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-                // Dla WYMIAROWANIE_SLOPOW - wyciągnij wartości bezpośrednio
                 if (key === 'WYMIAROWANIE_SLOPOW') {
                     for (let subKey in obj[key]) {
                         if (subKey !== 'TYP') { // Pomiń TYP
@@ -292,7 +333,6 @@ function evaluateFormula(expression, context, type, param = null) {
                         }
                     }
                 } else {
-                    // Rekurencyjnie spłaszcz inne zagnieżdżone obiekty
                     Object.assign(result, flattenObject(obj[key], prefix + key + '.'));
                 }
             } else {
@@ -302,7 +342,6 @@ function evaluateFormula(expression, context, type, param = null) {
         return result;
     }
 
-    // Spłaszcz kontekst przed konwersją na uppercase
     const flatContext = flattenObject(context);
 
     for (let key in flatContext) {
@@ -333,31 +372,17 @@ function evaluateFormula(expression, context, type, param = null) {
     }
     window.paramPassword = ''
 
-    // if (expression.includes('CENA_UZNANIOWA')
-    // || expression.includes('CENA_SUMA')) {
-    // console.log('formula context', context)
-    // }
-
     let result = parser.parse(expression);
-    // if (expression.includes(`(WSROD(MODEL,"U25SD,I25SD,MKKU25,MKKE25,MKKES25,MKES25,U25EL,U25MV,U25LR,MKOL,U25DLX2"),IF(KOLOR_ALIAS___DESCRIPTION<>"", ZAWIERA(KOLOR_ALIAS___DESCRIPTION,"#0"), ZAWIERA(KOLOR___DESCRIPTION,"#0")))`)) {
-    // console.log('MKKU25 formula', parser.variables)
-    // }
-
 
     if (param && expression.includes('HASLO')) {
         if (result.result == true) {
-            if (window.skipCountParams.includes(param)) {
-                const index = window.skipCountParams.indexOf(param);
-                window.skipCountParams.splice(index, 1);
-            }
-
-            window.lockedParams.push(param);
+            window.skipCountParams = [...new Set(window.skipCountParams)].filter(p => p !== param);
+            window.lockedParams = [...new Set([...window.lockedParams, param])];
             return 'password';
         }
         else {
-            if (param && !window.skipCountParams.includes(param)) {
-                window.skipCountParams.push(param);
-            }
+            window.lockedParams = [...new Set(window.lockedParams)].filter(p => p !== param);
+            window.skipCountParams = [...new Set([...window.skipCountParams, param])];
             return false;
         }
 
@@ -370,8 +395,6 @@ function evaluateFormula(expression, context, type, param = null) {
     }
     if (result.error) {
         error_count++;
-
-        // console.warn(context, result.error, error_count, expression)
         return false;
     }
     else if (type === 'formula' || type === 'PROCEDURE') {

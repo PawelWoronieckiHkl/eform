@@ -10,21 +10,21 @@
     {% endblock %}
     {% block head %}
         <link rel="stylesheet" href="/styles/new-order.css">
-        <link rel="stylesheet" href="/styles/mobile/new-order.css">
-    {% endblock head %}
-    {% block content %}
-        <div class="content center-content">
-            <div class="container my-5 col-7 p-5 text-start mobile-rm-card  rm-col-7 rm-p-5">
-                <div class="row justify-content-center">
-                    <h2 class="p-3">
-                        {% block order_title %}{{ __('site.privacy') }}
-                        {% endblock order_title %}
-                    </h2>
-                    <div class="privacy-content">
-                        {{ contentHtml | safe }}
+            <link rel="stylesheet" href="/styles/mobile/new-order.css">
+            {% endblock head %}
+            {% block content %}
+                <div class="content center-content">
+                    <div class="container my-5 col-7 p-5 text-start mobile-rm-card  rm-col-7 rm-p-5">
+                        <div class="row justify-content-center">
+                            <h2 class="p-3">
+                                {% block order_title %}
+                                    {{ __('site.privacy') }}
+                                {% endblock order_title %}
+                            </h2>
+                            <div class="privacy-content">
+                                {{ contentHtml | safe }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-        </div>
-    {%endblock content%}
+            {% endblock content %}

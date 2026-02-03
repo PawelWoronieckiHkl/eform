@@ -13,7 +13,64 @@
 	width: 30%;
 }
 
-select,
+.last-config-info {
+	position: fixed;
+	z-index: 121;
+	left: calc(43% + 230px);
+	top: 28vh ;
+	transform: translate(-50%, -50%);
+	min-width: 400px;
+	max-width: 650px;
+	padding: 60px 40px;
+
+	border-radius: 5px;
+	backdrop-filter: blur(10px);
+	animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.last-config-info .collapsed{
+		left: 40%;
+}
+
+@keyframes slideIn {
+	from {
+		opacity: 0;
+		transform: translate(-50%, -48%);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate(-50%, -50%);
+	}
+}
+
+#last-config-confirm {
+	width: 80%;
+	padding: 14px 24px;
+	font-size: 16px;
+	font-weight: 600;
+	color: white;
+	background: linear-gradient(135deg, #cfd0d1a9 0%, #7d88928c 100%);
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	box-shadow:
+		0 4px 12px rgba(73, 80, 87, 0.25),
+		inset 0 1px 0 rgba(255, 255, 255, 0.1);
+	letter-spacing: 0.02em;
+	text-transform: none;
+}
+
+#last-config-confirm:hover {
+	background: linear-gradient(135deg, #7b8894 0%, #565e66 100%);
+	transform: translateY(-2px);
+	box-shadow:
+		0 6px 20px rgba(73, 80, 87, 0.35),
+		inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+
 input[type="text"],
 input[type="number"] {
 	width: 90%;
@@ -26,8 +83,6 @@ input[type="number"] {
 	transition: border-color 0.3s;
 }
 
-
-select:focus,
 input[type="text"]:focus,
 input[type="number"]:focus {
 	border-color: #999;
@@ -50,10 +105,21 @@ input[type="number"]:focus {
 	position: relative !important;
 
 }
+
 #commission-input {
 	margin-left: 0 !important;
 	width: 63% !important;
 }
+
+[class*="-select-area"] label {
+	font-family: "Roboto", "semi-bold", sans-serif !important;
+	font-size: 1.1rem !important;
+	color: #333 !important;
+	margin-bottom: 8px !important;
+	padding: 0 5px !important;
+
+}
+
 .order-reminder {
 	display: none !important;
 }
@@ -259,14 +325,14 @@ input[type="number"]:focus {
 
 #version-space {
 	position: fixed;
-	bottom: 10px;
+	bottom: 50px;
 	right: 10px;
 	background-color: rgba(229, 230, 230, 0.295);
 	border-radius: 15px;
 	padding: 5px;
 	font-weight: 600;
 	color: #8f8f8f3f;
-	z-index: 150;
+	z-index: 999 !important;
 
 }
 
@@ -336,6 +402,90 @@ input[type="number"]:focus {
 	outline: 2px solid #a0a4a8;
 	outline-offset: 2px;
 }
-.commission-space{
+
+.commission-space {
 	margin-right: 0 !important;
+}
+
+.input-form {
+	width: 90%;
+	padding: 12px 16px;
+	font-size: 15px;
+	font-weight: 500;
+	border: 1px solid #dee2e6;
+	border-radius: 8px !important;
+	background-color: #ffffff;
+	color: #495057;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.input-form:hover {
+	border-color: #adb5bd;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+.input-form:focus {
+	border-color: #495057;
+	outline: none !important;
+	background-color: #f8f9fa;
+	box-shadow: 0 2px 8px rgba(73, 80, 87, 0.15) !important;
+	transform: translateY(-1px) !important;
+}
+
+/* Show button styling */
+#buttons-space #show-button {
+	background: linear-gradient(135deg, #50dd43 0%, #385f3aa9 100%);
+	color: white;
+	border: none;
+	font-size: 1.1rem;
+	width: 100% !important;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	padding: 6px !important;
+
+}
+
+#buttons-space #show-button:hover {
+	background: linear-gradient(135deg, #50dd43 0%, #444 100%);
+
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+#buttons-space #show-button:active {
+	transform: translateY(0);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Reset button styling */
+#buttons-space #reset-button {
+	background: linear-gradient(135deg, #555 0%, #444 100%);
+	color: white;
+	width: 100% !important;
+	border: none;
+	padding: 6px !important;
+	font-size: 1.1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#buttons-space #reset-button:hover {
+	background: linear-gradient(135deg, #444 0%, #333 100%);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+#buttons-space #reset-button:active {
+	transform: translateY(0);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#buttons-space {
+	margin-top: 20px !important;
+	margin-bottom: 30px !important;
 }

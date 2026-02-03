@@ -2,21 +2,18 @@
 {% block title %}
   {{ __('no_permission.title') }}
 {% endblock title %}
-
 {% block head %}
   <link rel="stylesheet" href="/styles/no-permission.css">
-  <link rel="stylesheet" href="/styles/mobile/no-permission.css">
-{% endblock head %}
-
-{% block content %}
-
-  <div class="content center-content col-10">
-    <div class="container my-5 col-6 ">
-      <h1 class="text-center">{{ __('no_permission.title') }}</h1>
-      <p class="text-center">{{ __('no_permission.message') }}</p>
-      <div class="text-center">
-        <a href="/" class="btn btn-primary">{{ __('no_permission.home_button') }}</a>
+    <link rel="stylesheet" href="/styles/mobile/no-permission.css">
+    {% endblock head %}
+    {% block content %}
+      <div class="content center-content col-10">
+        <div class="container my-5 col-6 ">
+          <h1 class="text-center">{{ __('no_permission.title') }}</h1>
+          <p class="text-center">{{ __('no_permission.message') }}</p>
+          <div class="text-center">
+            <a href="/" class="btn btn-primary">{{ __('no_permission.home_button') }}</a>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-{% endblock content %}
+    {% endblock content %}

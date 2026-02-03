@@ -53,15 +53,25 @@
     gap: 0.5rem;
     align-items: center;
 }
-
+.manage-worker-container .btn{
+    min-width: 55% !important;
+    max-width: 55% !important;
+    width: 55% !important;
+    padding-left: 1% !important;
+}
 .action-buttons .btn {
-    width: 100%;
-    max-width: 200px;
+
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
     white-space: nowrap;
 }
+.view-orders-btn{
+    width: 68% !important;
+}
+.w-30 {
+    width: 70% !important;
 
+}
 .view-orders-btn {
     transition: all 0.2s ease;
 }

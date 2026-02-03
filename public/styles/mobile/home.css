@@ -24,6 +24,9 @@
         overflow: auto;
         padding-bottom: 6px;
     }
+    .container{
+        margin-top: 13% !important;
+    }
 
     .add-info-box h2 {
         min-height: 5rem !important;

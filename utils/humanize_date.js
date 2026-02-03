@@ -52,8 +52,22 @@ function formatLoginTime(dbTimestamp) {
     }
 }
 
+function convertToSQLDate(inputDate) {
+    if (!inputDate) {
+        return null;
+    }
+
+    const parsedDate = dayjs(inputDate, 'YYYY-MM-DD', true);
+    if (!parsedDate.isValid()) {
+        return null;
+    }
+
+    return parsedDate.format('YYYY-MM-DD');
+}
+
 module.exports = {
     humanizeData,
     getDbTimestamp,
-    formatLoginTime
+    formatLoginTime,
+    convertToSQLDate
 };

@@ -109,3 +109,28 @@
     margin-bottom: 1rem;
     display: block;
 }
+
+.search-container {
+    position: relative;
+    display: flex;
+    margin-bottom: 25px;
+}
+
+.search-input {
+    height: 50px;
+    border-radius: 70px;
+    padding-left: 45px;
+    max-width: 20%;
+    margin-left: 0 !important;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#filter-status {
+    height: 50px;
+    min-width: fit-content;
+    
+    margin-left: 30px !important;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

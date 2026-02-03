@@ -11,9 +11,32 @@ const fs = require('fs');
 const langManager = require('../services/setLanguage')
 const verManager = require('../services/versionManager.js')
 const { dataDir, localesDir, availabeLanguages } = require('../config');
-const { readWord } = require('../utils/readWord.js')
+const { readWord } = require('../utils/readWord.js');
+const e = require('express');
+
+
+// Middleware do automatycznego dodawania users dla owner'ów
+router.use(async (req, res, next) => {
+    // Ustaw owner dla wszystkich widoków
+    res.locals.owner = req.session?.user?.isOwner || false;
+    res.locals.admin = req.session?.user?.isAdmin || false;
+    res.locals.isEmployee = req.session?.user?.isEmployee || false;
+
+    if (req.session?.user?.isOwner) {
+        try {
+            res.locals.users = await db.getUsersByOwner(req);
+        } catch (error) {
+            console.error('Error loading users for owner:', error);
+            res.locals.users = [];
+        }
+    }
+    next();
+});
+
+
 router.get('/translations', (req, res) => {
   const lang = req.getLocale();
+  process.env.userLang = lang; // Ustawienie zmiennej środowiskowej dla języka użytkownika
   const filePath = path.join(localesDir, `${lang}.json`);
 
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -55,6 +78,7 @@ router.get('/change-language', (req, res) => {
   const lang = req.query.lang;
   langManager.setLang(lang, res)
   const redirectPath = req.get('Referrer') || '/';
+  process.env.userLang = lang;
   res.redirect(redirectPath);
 });
 
@@ -73,12 +97,14 @@ router.get("/", requireLogin, async (req, res) => {
     organizations = await db.getAllOrganizations();
   }
 
+
   return res.render("home.njk", {
     user: user,
     orders: orders,
     ordersSent: ordersSent,
     limit: 4,
     mustAcceptRODO: mustAcceptRODO,
+    owner: req.session.user.isOwner,
     admin: req.session.user.isAdmin,
     organizations: organizations
   });
@@ -90,19 +116,32 @@ router.get("/delivery-time", requireLogin, async (req, res) => {
 });
 
 
-router.get("/contact", requireLogin, (req, res) => {
-  res.render("contact.njk");
+router.get("/contact", requireLogin, async (req, res) => {
+  try {
+    const currentUser = ownerService.getCurrentUser(req);
+    let owner = await db.getOwner(currentUser.pin);
+    const orgIdent = owner?.orgIdent.toUpperCase() ?? "HKL"
+    const html = await readWord('rodo', `${orgIdent}_contact_${process.env.userLang || 'pl'}`);
+    console.log(`${orgIdent}_regulations_${process.env.userLang || 'pl'}`)
+    res.render("contact.njk", { contentHtml: html });
+  } catch (err) {
+    const html = await readWord('rodo', `LUXANGMBH_contact_${process.env.userLang || 'pl'}`);
+    res.render("contact.njk", { contentHtml: html });
+  }
+
 });
 
 router.get("/terms", requireLogin, async (req, res) => {
   try {
     const currentUser = ownerService.getCurrentUser(req);
-    const html = await readWord('rodo', `${currentUser?.organization}_regulations`);
+    let owner = await db.getOwner(currentUser.pin);
+    const orgIdent = owner?.orgIdent.toUpperCase() ?? "HKL"
+    const html = await readWord('rodo', `${orgIdent ?? "HKL"}_regulations_${process.env.userLang || 'pl'}`);
     res.render("terms.njk", { contentHtml: html });
   } catch (err) {
     console.error(err);
 
-    const html = await readWord('rodo', `COZY_regulations`);
+    const html = await readWord('rodo', `HKL_regulations_${process.env.userLang || 'pl'}`);
     res.render("terms.njk", { contentHtml: html });
   }
 });
@@ -112,11 +151,15 @@ router.get("/terms", requireLogin, async (req, res) => {
 router.get("/privacy", requireLogin, async (req, res) => {
   try {
     const currentUser = ownerService.getCurrentUser(req);
-    const html = await readWord('rodo', `${currentUser?.organization ?? "COZY"}_privacy`);
+    let owner = await db.getOwner(currentUser.pin);
+    const orgIdent = owner?.orgIdent.toUpperCase() ?? "HKL"
+    console.log(`${owner?.orgIdent.toUpperCase() ?? "COZY"}_privacy_${process.env.userLang || 'pl'}`)
+
+    const html = await readWord('rodo', `${orgIdent.toUpperCase() ?? "HKL"}_privacy_${process.env.userLang || 'pl'}`);
     res.render("privacy.njk", { contentHtml: html });
   } catch (err) {
     console.error(err);
-    const html = await readWord('rodo', `COZY_privacy`);
+    const html = await readWord('rodo', `HKL_privacy_${process.env.userLang || 'pl'}`);
     res.render("privacy.njk", { contentHtml: html });
   }
 });
@@ -169,7 +212,7 @@ router.get('/set-organization/:id', requireLogin, async (req, res) => {
     req.session.user.organization = id;
     delete req.session.context_user;
 
-    const redirectPath =  '/';
+    const redirectPath = '/';
     res.redirect(redirectPath);
   } catch (error) {
     console.error('Error setting organization:', error);
@@ -178,5 +221,91 @@ router.get('/set-organization/:id', requireLogin, async (req, res) => {
 });
 
 
+router.post('/set-last-user', requireLogin, async (req, res) => {
+  try {
+    const { orgIdent, userPath } = req.body;
+
+    if (!orgIdent || !userPath) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required parameters'
+      });
+    }
+
+    // Konwertuj orgIdent na liczbę
+    const organizationId = parseInt(orgIdent, 10);
+
+    if (isNaN(organizationId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid organization ID'
+      });
+    }
+
+    req.session.user.organization = organizationId;
+
+    // Zapisz sesję przed zwróceniem odpowiedzi
+    await new Promise((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    console.log('Organization set to:', organizationId, 'for user:', req.session.user.ident);
+
+    return res.json({
+      success: true,
+      redirectUrl: userPath
+    });
+  } catch (error) {
+    console.error('Error setting last user:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+});
+
+
+
+
+router.get('/get-org-ident', requireLogin, async (req, res) => {
+  try {
+    const organization = req.session.user.organization || null;
+    res.json({
+      success: true,
+      organization: organization
+    });
+  } catch (error) {
+    console.error('Error getting organization ident:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+router.get('/employee-status', requireLogin, async (req, res) => {
+  try {
+    let isEmp = req.session.user.isEmployee || false;
+    let panelPath
+    let empName = false;
+    if (!isEmp) {
+      panelPath = '/user/employee-panel'
+
+    }
+    else {
+      panelPath = '/'
+      empName = req.session.employee.name + ' ' + req.session.employee.surname;
+    }
+    res.json({
+      success: true, isEmployee: req.session.user.isEmployee || false,
+      path: panelPath,
+      name: empName
+
+    });
+  } catch (error) {
+    console.error('Error getting employee status:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
 
 module.exports = router;

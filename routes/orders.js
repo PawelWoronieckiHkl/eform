@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { requireLogin, checkOrderOwnership, requireOwner } = require('../middleware/loginMixture');
+const { requireLogin, checkOrderOwnership, requireOwner, isOwner } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
 const adminDb = require("../db/admin/db_helper.js");
 const orderService = require('../services/orderService.js');
@@ -10,7 +10,25 @@ const path = require('path');
 const OrderSender = require("../services/sendOrderService");
 const { generatePdf } = require('../services/mailBot/pdfGenerator');
 const { buildOrderItemStructure } = require('../services/itemBuilder.js');
+const { getPriceAfterDiscount } = require('../services/getDiscount.js');
+const { SyncProdStatus } = require('../services/prodStatus.js');
 
+router.use(async (req, res, next) => {
+    // Ustaw owner dla wszystkich widoków
+    res.locals.owner = req.session?.user?.isOwner || false;
+    res.locals.admin = req.session?.user?.isAdmin || false;
+    res.locals.isEmployee = req.session?.user?.isEmployee || false;
+
+    if (req.session?.user?.isOwner) {
+        try {
+            res.locals.users = await db.getUsersByOwner(req);
+        } catch (error) {
+            console.error('Error loading users for owner:', error);
+            res.locals.users = [];
+        }
+    }
+    next();
+});
 
 
 router.get('/edit/:orderId', requireLogin, async (req, res) => {
@@ -26,7 +44,7 @@ router.get('/edit/:orderId', requireLogin, async (req, res) => {
 router.get("/userOrders", requireLogin, requireOwner, async (req, res) => {
     try {
         const { userIdent } = req.query;
-        console.log(req.query, 'req query in user orders')
+
         if (!userIdent) {
             delete req.session.context_user;
             return res.redirect('/orders');
@@ -57,7 +75,8 @@ router.get("/userOrders", requireLogin, requireOwner, async (req, res) => {
             limit,
             totalOrders,
             totalPages,
-            users: await db.getUsersByOwner(req),
+            admin: req.session.user.isAdmin,
+            owner: req.session.user.isOwner,
             selectedUser: selectedUser,
             selectedUserIdent: userIdent
         });
@@ -76,13 +95,22 @@ router.get("/", requireLogin, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const offset = (page - 1) * limit;
-
+    let orders, totalOrders;
     const currentUser = ownerService.getCurrentUser(req);
-    const [orders, totalOrders] = await Promise.all([
-        db.getUserOrders(currentUser.userId, limit, offset),
-        db.countUserOrders(currentUser.userId)
-    ]);
 
+    if (req.session.user?.isEmployee) {
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset, false, false, req.session.employee.id),
+            db.countUserOrders(currentUser.userId, false, false, req.session.employee.id)
+        ]);
+    }
+    else {
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset),
+            db.countUserOrders(currentUser.userId)
+        ]);
+    }
+    console.log(req.session.user.isOwner, 'IS OWNER IN ORDERS LIST@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     const totalPages = Math.ceil(totalOrders / limit);
     if (req.session.user?.isOwner) {
         res.render("orders_owner.njk", {
@@ -90,8 +118,10 @@ router.get("/", requireLogin, async (req, res) => {
             page,
             limit,
             totalOrders,
+            admin: req.session.user.isAdmin,
+            owner: req.session.user.isOwner,
             totalPages,
-            users: await db.getUsersByOwner(req)
+
         });
     }
     else {
@@ -100,7 +130,10 @@ router.get("/", requireLogin, async (req, res) => {
             page,
             limit,
             totalOrders,
-            totalPages
+            totalPages,
+            admin: req.session.user.isAdmin,
+            owner: req.session.user.isOwner,
+            isEmployee: req.session.user?.isEmployee || false
         });
     }
 });
@@ -128,7 +161,7 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
 
 
     const totalPages = Math.ceil(totalOrders / limit);
-    console.log(orders, 'ORG ORDERS');
+
     if (req.session.user?.isOwner) {
         if (history) {
             res.render('owner/organization_orders_history.njk', {
@@ -136,8 +169,7 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
                 page,
                 limit,
                 totalOrders,
-                totalPages,
-                users: await db.getUsersByOwner(req)
+                totalPages
             });
             return;
         }
@@ -147,8 +179,7 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
                 page,
                 limit,
                 totalOrders,
-                totalPages,
-                users: await db.getUsersByOwner(req)
+                totalPages
             });
             return;
         }
@@ -163,10 +194,23 @@ router.get("/history", requireLogin, async (req, res) => {
     const offset = (page - 1) * limit;
 
     const currentUser = ownerService.getCurrentUser(req);
-    const [orders, totalOrders] = await Promise.all([
-        db.getUserOrders(currentUser.userId, limit, offset, true),
-        db.countUserOrders(currentUser.userId, true)
-    ]);
+    let orders, totalOrders;
+    const user = await db.getOwner(currentUser.pin);
+    let status = new SyncProdStatus();
+    const files = await status.init(user.orgIdent, user.userIdent);
+
+    if (req.session.user?.isEmployee) {
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset, true, false, req.session.employee.id),
+            db.countUserOrders(currentUser.userId, true, false, req.session.employee.id)
+        ]);
+    }
+    else {
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset, true),
+            db.countUserOrders(currentUser.userId, true)
+        ]);
+    }
 
     const totalPages = Math.ceil(totalOrders / limit);
     if (req.session.user?.isOwner) {
@@ -175,8 +219,8 @@ router.get("/history", requireLogin, async (req, res) => {
             page,
             limit,
             totalOrders,
-            totalPages,
-            users: await db.getUsersByOwner(req)
+            owner: req.session.user.isOwner,
+            totalPages
         });
     }
     else {
@@ -185,7 +229,9 @@ router.get("/history", requireLogin, async (req, res) => {
             page,
             limit,
             totalOrders,
-            totalPages
+            totalPages,
+            owner: req.session.user.isOwner,
+            isEmployee: req.session.user?.isEmployee || false
         });
     }
 
@@ -193,20 +239,32 @@ router.get("/history", requireLogin, async (req, res) => {
 
 router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
+    const currentUser = ownerService.getCurrentUser(req);
+    console.log(orderDetails, 'CURRENT USER IN ORDER HISTORY VIEW');
+    const statuses = await db.getUserStatuses(currentUser.ident, orderDetails.order_idx);
 
     if (orderItems) {
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
+        const totalPrice = await db.getTotal(orderDetails.id)
+
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
-            console.log('WITHOUT PRICES')
+            console.log(statuses, 'STATUSES IN ORDER HISTORY VIEW');
             res.render("order_sent_prices.njk",
-                { orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total }
+                {
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, statuses: statuses
+
+                }
             );
             req.session.user.showPricesOnce = false;
             return;
         } else {
+            console.log(statuses, 'STATUSES IN ORDER HISTORY VIEW');
             return res.render("order_sent.njk",
-                { orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total }
+                {
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, owner: req.session.user.isOwner, statuses: statuses
+
+                }
             );
         }
     }
@@ -229,19 +287,22 @@ router.get("/add-order", requireLogin, async (req, res) => {
 
 router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwnership, async (req, res) => {
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
-
+    const clientDiscount = await getPriceAfterDiscount(req.params.orderId);
     if (orderItems) {
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
-        console.log(req.session.user?.showPrices, 'show prices in session', req.session.user?.showPricesOnce, 'show prices once in session');
-        console.log(total, 'order')
+        const totalPrice = await db.getTotal(orderDetails.id)
+
+        console.log(total, ' total order')
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render('order_prices.njk', {
                 orderDetails,
                 orderItems,
                 heads,
                 cleanOrderItems,
-                total
+                total,
+                isEmployee: req.session.user?.isEmployee || false,
+                totalPrice: totalPrice
             });
             req.session.user.showPricesOnce = false; // Reset after first access
             return;  // zakończ obsługę
@@ -251,7 +312,10 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 orderItems,
                 heads,
                 cleanOrderItems,
-                total
+                discount: clientDiscount,
+                total,
+                isEmployee: req.session.user?.isEmployee || false,
+                totalPrice: totalPrice
             });
             return;
         }
@@ -261,9 +325,68 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
 });
 
 
+router.get('/order/:orderId/discount-info', requireLogin, checkOrderOwnership, async (req, res) => {
+    try {
+        const discountInfo = await getPriceAfterDiscount(req.params.orderId);
+        return res.json({
+            success: true,
+            data: discountInfo
+        });
+    } catch (error) {
+        console.error('Error fetching discount info:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error fetching discount info'
+        });
+    }
+});
+
+router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
+    try {
+        const order = await db.getOrderDataToSend(req.params.orderId);
+        const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
+        let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
+        const sender = new OrderSender.OrderSender(order.orderDetails, order.orderItems);
+        const sendData = sender.getData();
+        const totalPrice = await db.getTotal(order.orderDetails.id);
+        res.json({ success: true, data: { sendData, totalPrice, cleanOrderItems, total } });
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        res.status(500).json({ success: false, message: 'Error fetching order details' });
+    }
+});
+
+
+router.post('/order/:orderId/set-discount', requireLogin, checkOrderOwnership, async (req, res) => {
+    try {
+        const { discountPercentage, discountValue } = req.body;
+        const orderId = req.params.orderId;
+        const result = await db.saveDiscount(orderId, discountPercentage, discountValue);
+        if (result) {
+            return res.json({
+                success: true,
+                message: 'Rabat został zapisany pomyślnie',
+                data: result
+            });
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: 'Błąd podczas zapisywania rabatu'
+            });
+        }
+    } catch (error) {
+        console.error('Error saving discount:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Wewnętrzny błąd serwera podczas zapisywania rabatu'
+        });
+    }
+});
+
 router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOwnership, async (req, res) => {
     try {
         const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
+        const order = await db.getOrderDataToSend(req.params.orderId);
 
         if (!orderItems || orderItems.length === 0) {
             return res.status(400).json({
@@ -274,8 +397,10 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
 
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
-
-        // Pobierz logo użytkownika
+        const sender = new OrderSender.OrderSender(order.orderDetails, order.orderItems);
+        const sendData = sender.getData();
+        console.log('SEND DATA IN ORDER PDF', sendData);
+        const totalPrice = await db.getTotal(order.orderDetails.id)
         const currentUser = ownerService.getCurrentUser(req);
         const photoFile = await db.getUserLogo(currentUser?.pin);
         const logoPath = path.join(__dirname, '../img/', photoFile);
@@ -334,7 +459,9 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
                 total,
                 photoFile,
                 logoPath: logoDataUri,
-                prices: shouldShowPrices
+                prices: shouldShowPrices,
+                totalPrice: totalPrice,
+                sendData: sendData
             });
         }
         else {
@@ -346,7 +473,10 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
                 total,
                 photoFile,
                 logoPath: logoDataUri,
-                prices: shouldShowPrices
+                prices: shouldShowPrices,
+                sendData: sendData,
+                totalPrice: totalPrice,
+
             });
         }
 
@@ -405,7 +535,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
         const id = req.params.orderId;
         const status = req.body.status;
         const response = await db.changeOrderStatus(id, 'sent');
-        await db.updateOrderPrice(id, req.body.prices);
+        await db.updateOrderPriceOnSend(id, req.body.prices);
         const { orderDetails, orderItems } = await db.getOrderDataToSend(req.params.orderId);
 
         if (orderItems || orderItems.length > 0) {
@@ -419,17 +549,20 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             const heads = Object.keys(orderItems[0].json_parameters);
 
             let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
-            console.log('START @@@@@@@@@@@@',cleanOrderItems, 'CLEAN ORDER ITEMS IN SEND ORDER');
+            console.log('START @@@@@@@@@@@@', cleanOrderItems, 'CLEAN ORDER ITEMS IN SEND ORDER');
             // { orderDetails: orderDetails[0], orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems }
- 
+
             const lang = req.getLocale();
             const mail = await db.getUserMail(currentUser?.pin)
             const orderIdx = await db.getUserOrderId(req.params.orderId)
-            let mailList = [mail.user_email, mail.organization_email, mail.organization_email2, extraMail,'pawel.woroniecki@hkl.eu'];
+            let mailList = [mail.user_email, mail.organization_email, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'];
             const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx)
-            if (process.env.NODE_ENV === 'test'||process.env.NODE_ENV === 'dev'  ) {
-                mailList = [extraMail,'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu']
+            const orgData = await db.getOrgInfo(req.session.user.organization)
+
+            if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev') {
+                mailList = [extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu']
             }
+            console.log(clientName, orderDetails, 'CLIENT NAME IN SEND ORDER ?@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
             mailBot.sendMail(
                 mailList,
                 lang,
@@ -438,7 +571,8 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
                     klient: clientName,
                     orderNr: orderIdx,
                     logoPath: logoPath,
-                    orderDetails: sendData
+                    orderDetails: sendData,
+                    organization: orgData
                 }
             );
 
@@ -497,8 +631,13 @@ router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res
             item.comment,
             item.ver,
             item.asortment_group_number,
-            item.lang);
-
+            item.lang,
+            item.department,
+            item.group_name,
+            item.parameters_short
+        );
+        console.log(body, 'BODY TO INSERT AS NEW ITEM');
+        console.log(item.total_price, item.unit_price, 'PRICES IN ITEM TO COPY');
         const newItem = await db.insertNewForm(body);
     }
     return res.json({ status: "success", message: "Zamówienie skopiowane poprawnie", redirect: `/orders/order/${newOrderId}` });
@@ -518,6 +657,7 @@ router.post('/lock', requireLogin, async (req, res) => {
 router.post('/save-order', requireLogin, async (req, res) => {
     try {
         let { commission, orderContactInfo, comment, orderSendAddress } = req.body;
+
         let response
         let sendAddrId = null;
         let addrId = null;
@@ -531,8 +671,15 @@ router.post('/save-order', requireLogin, async (req, res) => {
         }
 
         const currentUser = ownerService.getCurrentUser(req);
-        let id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId);
+        let id = 0;
+        if (req.session.user.isEmployee) {
+            console.log(req.session?.employee.id ?? null, 'employeeId w insertNewOrder')
 
+            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, req.session?.employee.id ?? null);
+        }
+        else {
+            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId);
+        }
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: `/orders/order/${id}` });
     }
     catch (err) {

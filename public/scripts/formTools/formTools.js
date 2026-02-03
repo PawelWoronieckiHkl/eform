@@ -33,10 +33,9 @@ import {
 
 } from './dialogUtils_copy.js';
 import { isSource } from '../form.js';
-
 export function logFunctionName(functionName) {
 	const sep = '-'.repeat(10)
-	console.log(`${sep} ${functionName} ${sep}`)
+	// console.log(`${sep} ${functionName} ${sep}`)
 }
 
 export function findParamFromValues(values, paramDict) {
@@ -93,7 +92,7 @@ export function normalizeFilename(filename) {
 
 export function setDescription(values, value, allOptionsByParameter, name, caller = '') {
 
-	if (value === '<NONE>') console.log('NONE VALUE');
+	// if (value === '<NONE>') console.log('NONE VALUE');
 
 	const valObj = searchForParameter(value, allOptionsByParameter, name)
 	

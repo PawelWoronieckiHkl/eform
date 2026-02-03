@@ -6,15 +6,24 @@
     box-shadow: 2px 2px rgb(224, 224, 224);
 }
 
+/* Override content width for order details page */
+.content {
+    width: calc(100% - 280px) !important;
+    max-width: calc(100% - 280px) !important;
+    margin-left: 275px !important;
+}
+
+html.nav-collapsed .content {
+    width: calc(100% - 70px) !important;
+    max-width: calc(100% - 70px) !important;
+    margin-left: 65px !important;
+}
+
 #order-nav {
     position: fixed;
     justify-content: space-between;
     margin-top: 60px;
-    position: fixed !important;
-    left: 295px;
-    z-index: 101 !important;
-    min-width: calc(100% - 330px) !important;
-    transition: left 0.3s ease, min-width 0.3s ease;
+    transition: left 0.3s ease, width 0.3s ease, max-width 0.3s ease;
     display: flex !important;
     flex-direction: column !important;
     align-items: stretch !important;
@@ -25,6 +34,11 @@
     padding: 15px 20px !important;
     min-height: 80px !important;
     height: auto !important;
+    margin-left: 7px !important;
+    width: calc(100% - 340px);
+    max-width: calc(100% - 340px);
+    min-width: calc(100% - 340px);
+    z-index: 100;
 }
 
 .mobile {
@@ -42,24 +56,29 @@
 
 /* Adjust order-nav when navbar is collapsed */
 html.nav-collapsed #order-nav {
-    left: 100px;
-    max-width: calc(100% - 160px) !important;
+    left: 80px;
+    width: calc(100% - 222px);
+    max-width: calc(100% - 222px);
 }
 
 .desktop-nav.collapsed~.languages~main #order-nav,
 .desktop-nav.collapsed+.languages+main #order-nav {
-    left: 85px;
-    min-width: calc(100% - 120px) !important;
+    left: 80px;
+    width: calc(100% - 120px);
+    max-width: calc(100% - 120px);
     transition: all 0.3s ease !important;
 }
 
 #send-order {
-
+    margin-right:3% !important ;
+    margin-bottom: 2% !important;
     float: right;
-
+    scale: 115% !important;
 }
 
-
+.bg-discount {
+    background-color: rgba(182, 224, 210, 0.925) !important;
+}
 .order-table-container {
     margin-top: 100px !important;
     overflow-x: auto;
@@ -124,10 +143,20 @@ html.nav-collapsed #order-nav {
     color: rgb(255, 255, 255);
 }
 
+#new-order-button{
+    margin-left: 3% !important;
+    
+}
 #new-order-button:hover {
     color: rgb(255, 255, 255);
+    
 }
-
+.custom-order-btn {
+    width: 10vw !important;
+    height: 4vh !important;
+    font-size: large !important;
+    font-weight: bold !important;
+}
 .icon {
     max-width: 30px;
     max-height: 30px;
@@ -142,10 +171,66 @@ html.nav-collapsed #order-nav {
     width: 100%;
 }
 
+/* Modern table styling for order details */
 .order-table {
     width: max-content;
     table-layout: auto;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: white;
+    border: 1px solid #dee2e6;
+}
+
+.order-table thead {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.order-table thead th {
+    padding: 16px 12px;
+    font-weight: 900;
+    font-size: 14px;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-right: 1px solid #dee2e6;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.order-table thead th:last-child {
+    border-right: none;
+}
+
+.order-table tbody tr {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-bottom: 1px solid #f1f3f5;
+    cursor: pointer;
+}
+
+.order-table tbody tr:not(#price-row):hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+    transform: translateX(4px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.order-table tbody tr:not(#price-row):hover td,
+.order-table tbody tr:not(#price-row):hover th {
+    background: transparent;
+}
+
+.order-table tbody tr:not(#price-row):hover+#price-row {
+    background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+    transform: translateX(4px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.order-table tbody tr:not(#price-row):hover+#price-row td {
+    background: transparent;
 }
 
 .order-table th,
@@ -154,7 +239,28 @@ html.nav-collapsed #order-nav {
     min-width: 50px;
     text-align: center;
     vertical-align: middle;
-    padding: 8px 12px;
+    padding: 14px 12px;
+    border-right: 1px solid #e9ecef;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.order-table th:last-child,
+.order-table td:last-child {
+    border-right: none;
+}
+
+.order-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.order-table th[scope="row"] {
+    font-weight: 600;
+    color: #495057;
+}
+
+.order-table td {
+    color: black;
+    font-weight: 480;
 }
 
 .th-field,
@@ -164,7 +270,25 @@ html.nav-collapsed #order-nav {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
 
+/* Price row styling */
+#price-row {
+    background: #f8f9fa;
+    font-size: 13px;
+    cursor: default;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#price-row:hover {
+    background: #f8f9fa !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.price-label {
+    color: #6c757d;
+    font-weight: 500;
 }
 
 .comment-space {
@@ -200,12 +324,6 @@ html.nav-collapsed #order-nav {
     font-weight: 600 !important;
     padding: 0 !important;
     text-align: center !important;
-}
-
-/* Adjust comment-space when navbar is collapsed */
-html.nav-collapsed .comment-space {
-    width: calc(100vw - 30px) !important;
-    /* Full width minus margins when collapsed */
 }
 
 /* Collapsed navbar adjustments */
@@ -255,7 +373,7 @@ html.nav-collapsed .comment-space {
 
 /* Fix generate-container to prevent wrapping issues */
 #generate-container {
-    display: flex !important;
+    display: flex;
     align-items: center !important;
     white-space: nowrap !important;
     flex-shrink: 0 !important;
@@ -306,7 +424,7 @@ html.nav-collapsed .comment-space {
 
     border: 0px solid #0e0e0e !important;
 
-    border-radius: 20px !important;
+    border-radius: 0px !important;
 }
 
 .price strong,
@@ -322,7 +440,8 @@ html.nav-collapsed .comment-space {
 .price-label {
     background: #eaf4fd;
     color: #5a5a5a;
-    border-radius: 6px;
+    border-radius: 4px;
+    box-shadow: #71a9e6 0px 2px 6px -1px;
     padding: 2px 8px;
     margin-right: 6px;
     font-size: 0.96em;
@@ -330,31 +449,41 @@ html.nav-collapsed .comment-space {
     display: inline-block;
 }
 
-.total-price {
-    margin-top: 20px;
-    padding: 12px 20px;
-
-
-    max-width: 100%;
-
-    /* wyrównanie do prawej */
-    color: #004085;
-    font-weight: 600;
-    font-size: 1.1rem;
-
-    gap: 30px;
-    /* odstęp pomiędzy elementami */
+#total-container {
+    margin-top: 30px;
     margin-bottom: 30px;
 }
 
-.total-price span {
+.total-price {
 
-    min-width: 180px;
-    text-align: left;
-
-    font-weight: 700;
-    font-size: 1.15rem;
+    border-radius: 0;
+    padding: 20px 24px;
+    box-shadow: none;
+    border: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
 }
+
+.total-price .total {
+    color: #5c5656;
+
+    background: #eaf4fd;
+
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    min-width: 200px;
+    text-align: center;
+    box-shadow: none;
+    transition: none;
+    box-shadow: 0 3px 5px rgba(113, 169, 230, 0.7);
+}
+
+
 
 /* Override content positioning for empty order message */
 .content .container .text-center.py-5 {
@@ -378,10 +507,11 @@ html.nav-collapsed .comment-space {
 
     position: static !important;
     flex: 1 !important;
+    width: calc(100% - 400px) !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    margin-right: 170px !important;
+    margin-right: 100px !important;
 
     z-index: 1;
     background: transparent !important;
@@ -402,80 +532,95 @@ html.nav-collapsed .comment-space {
 }
 
 #order-title {
-    margin-left: 6rem !important;
+    width: 100%;
+    margin-left: 20%;
     padding: 10px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-#commission-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+@media (max-width: 1400px) {
+    #generate-container {
+        display: grid !important;
+    }
+
+    #edit-order-button {
+        margin-left: 3%
+    }
+
+    #order-title {
+        margin-left: 34%;
+    }
 }
 
-/* Adjust floating-order position when navbar is scrolled */
-#order-nav.navbar-scrolled .floating-order {
-    padding: 25px !important;
+    #commission-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-    top: 54px;
-    /* Adjust for increased padding in scrolled state */
+    /* Adjust floating-order position when navbar is scrolled */
+    #order-nav.navbar-scrolled .floating-order {
+        padding: 25px !important;
 
-    /* Remove translateY to use fixed top */
-}
+        top: 54px;
+        /* Adjust for increased padding in scrolled state */
 
-#order-nav.navbar-scrolled .comment-space {
-    top: 30px;
-}
+        /* Remove translateY to use fixed top */
+    }
 
-/* Position ordering controls */
-.position-controls {
-    gap: 1px;
-}
+    #order-nav.navbar-scrolled .comment-space {
+        top: 30px;
+    }
 
-.position-controls .btn,
-.position-controls button.btn {
-    width: 30px !important;
-    height: 20px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 2px !important;
-    border: 1px solid #dee2e6 !important;
-    background-color: white !important;
-    padding: 0 !important;
-    font-size: 10px !important;
-    line-height: 1 !important;
-    min-height: 20px !important;
-    max-height: 20px !important;
-    z-index: 1 !important;
-}
+    /* Position ordering controls */
+    .position-controls {
+        gap: 1px;
+    }
 
-.position-controls .btn svg,
-.position-controls button.btn svg {
-    width: 20px !important;
-    height: 20px !important;
-    fill: #000 !important;
-}
+    .position-controls .btn,
+    .position-controls button.btn {
+        width: 30px !important;
+        height: 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 2px !important;
+        border: 1px solid #dee2e6 !important;
+        background-color: white !important;
+        padding: 0 !important;
+        font-size: 10px !important;
+        line-height: 1 !important;
+        min-height: 20px !important;
+        max-height: 20px !important;
+        z-index: 1 !important;
+    }
 
-.position-controls .btn:hover,
-.position-controls button.btn:hover {
-    background-color: #f8f9fa !important;
-    border-color: #adb5bd !important;
-}
+    .position-controls .btn svg,
+    .position-controls button.btn svg {
+        width: 20px !important;
+        height: 20px !important;
+        fill: #000 !important;
+    }
 
-.position-controls .btn:hover svg,
-.position-controls button.btn:hover svg {
-    fill: #000 !important;
-}
+    .position-controls .btn:hover,
+    .position-controls button.btn:hover {
+        background-color: #f8f9fa !important;
+        border-color: #adb5bd !important;
+    }
 
-.position-controls .btn:hover svg {
-    fill: #000;
-}
+    .position-controls .btn:hover svg,
+    .position-controls button.btn:hover svg {
+        fill: #000 !important;
+    }
 
-/* Flexbox layout for action buttons in horizontal row */
-.table td.d-flex {
-    white-space: nowrap;
-    min-width: fit-content;
-}
+    .position-controls .btn:hover svg {
+        fill: #000;
+    }
+
+    /* Flexbox layout for action buttons in horizontal row */
+    .table td.d-flex {
+        white-space: nowrap;
+        min-width: fit-content;
+    }

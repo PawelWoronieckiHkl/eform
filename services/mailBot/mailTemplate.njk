@@ -228,12 +228,18 @@
           <tr>
             <td class="content-section">
               <div class="comment-container">
-                <p class="comment-text">{{ __('mail.sent_confirmation_1') }}</p>
                 <p class="comment-text">{{ __('mail.sent_confirmation_2_1') }}{{orderNr}}
                   {{ __('mail.sent_confirmation_2_2') }}
                   "{{orderDetails.commission}}".
                   {{ __('mail.sent_confirmation_2_3') }}</p>
                 <p class="comment-text">{{ __('mail.sent_confirmation_3') }}</p>
+                {% if organization.company_mail %}
+                {{organization.company_mail}}  
+                {% endif %}
+                {% if organization.company_phone %}
+                , {{organization.company_phone}}  
+                {% endif %}
+                
               </div>
             </td>
           </tr>

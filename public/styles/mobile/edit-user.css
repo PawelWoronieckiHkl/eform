@@ -1,0 +1,23 @@
+@media (max-width: 767.98px) {
+.mobile-rm-card{
+    margin: 0 !important;
+    width: 100% !important;
+}
+.justify-content-center{
+    justify-content: flex-start !important;
+    width:100% !important;
+    margin-left:1% !important;
+
+}
+.ms-4{
+    margin-left: 0 !important;
+}
+input{
+    width:70% !important;
+}
+.col-6 {
+    width: 100% !important;
+}
+.d-flex{
+    margin-left: -2% !important;
+}}

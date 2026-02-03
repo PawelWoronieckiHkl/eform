@@ -38,12 +38,12 @@ export function createInputField(param, options, groupNumber, filters, allOption
     options = options.possibleElements;
     if (param.SOURCE == param.NAME) {
         let btn = document.createElement("button");
-        btn.classList.add("btn", 'color-dialog-btn', 'source-btn');
+        btn.classList.add("button");
         btn.id = param.NAME;
         btn.type = 'button';
         btn.innerHTML = `${t('Uzupełnij')}`;
         btn.onclick = async function () {
-            console.log('btn click slope')
+        //    console.log('btn click slope')
             await param.modal.show()
 
         };
@@ -52,7 +52,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
     if (param.GRAPHICS == 'true' && Array.isArray(options) && (param.TYPE != 'link')) {
         let btn = document.createElement("button");
-        btn.classList.add("btn", 'color-dialog-btn');
+        btn.classList.add("button");
         btn.id = param.NAME;
         btn.type = 'button';
         if (param.DEFAULT != '<NULL>') {
@@ -100,7 +100,8 @@ export function createInputField(param, options, groupNumber, filters, allOption
     }
 
     let input = document.createElement("input");
-
+    input.classList.add("input-form");
+//    console.log("!JEST FORMUŁAAAAA", param.FORMULA)
     if (param.TYPE === "numeric") {
         input.type = "number";
         input.addEventListener('input', function (event) {
@@ -109,10 +110,15 @@ export function createInputField(param, options, groupNumber, filters, allOption
             }
         });
     }
+
+
     else {
         input.type = "text";
     }
-
+    if (param.FORMULA != "<NULL>") {
+    //    console.log("JEST FORMUŁAAAAA", param.FORMULA)
+        input.type = "text";
+    }
     if (param.TYPE === 'link') {
 
         const linkBtn = document.createElement("a");
@@ -141,22 +147,25 @@ export function createInputField(param, options, groupNumber, filters, allOption
 }
 
 export function fillFields(displayValues, inputs, values) {
-    console.log('fillFields')
+//    console.log('fillFields')
     for (let input of Object.values(inputs)) {
         const tag = input.tagName
         const labelData = displayValues.get(input.name)
         // console.log(input.name, labelData)
         if (values[input.name] == "<NONE>") {
             let description = input?.name + '___DESCRIPTION' || '';
-            console.log(`Użycie wartości dla description: ${description}, wartość: ${values[description]}`);
+        //    console.log(`Użycie wartości dla description: ${description}, wartość: ${values[description]}`);
             if (labelData) {
                 labelData.option_description = values[description];
                 input.textContent = `${labelData.option_description}`;
             } else {
                 console.warn(`labelData is undefined for input: ${input.name}`);
             }
-        }
 
+        }
+        else if (input) {
+
+        }
         switch (tag) {
             case "BUTTON":
                 if (labelData?.option_value) {
@@ -211,14 +220,14 @@ export function checkIfParamHidden(formula, values, param) {
         if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE && !shouldEnable) {
             window.skipCountParams.push(param.NAME)
         }
-        console.log(shouldEnable, 'SHOULD ENABLE')
+    //    console.log(shouldEnable, 'SHOULD ENABLE')
         if (shouldEnable == 'password') { shouldEnable = false }
 
 
     }
     catch (error) {
 
-        console.log('mamy error')
+    //    console.log('mamy error')
 
         showToast('error', `Error:  ${error.message}`)
     }

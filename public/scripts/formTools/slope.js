@@ -4,8 +4,7 @@ import {
     createInputField,
     validateFormInput,
     updateFieldInputs,
-    updateFieldStates,
-    resetDependences,
+
     buildValuesToDisplay,
     getInfoFromDialog,
     findParamFromValues,
@@ -13,6 +12,7 @@ import {
     fillFields
 } from "./formTools.js";
 import { validateAllFieldsOnSubmit, clearDisabledValues } from "./validateUtils.js";
+import { updateFieldStates } from "./updateFieldsAndValues.js";
 
 import { showToast } from "../components/toast.js";
 import { createElement, isEnabled } from "../components/htmlManipulator.js";
@@ -29,7 +29,7 @@ export class SourceWindow {
         this.data = null;
         this.allOptionsByParameter = null;
         this.sourceValues = {};
-        this.sourceDisplayValues = {};
+        this.sourceDisplayValues = new Map(); // Zmiana na Map
     }
 
     async init(catalog, param) {
@@ -54,7 +54,7 @@ export class SourceWindow {
         const ver = await this.getLegacySlopeVer()
         await slopeLoader.init(ver, this.param.SOURCE, document.documentElement.lang);
         this.data = await slopeLoader.parseData();
-
+        // console.log(this.data, "SLOPEDATA")
         this.allOptionsByParameter = slopeLoader.convertDictValues(this.data.dictValues);
 
         this.createObject();
@@ -210,11 +210,11 @@ export class SourceWindow {
 
                 // Jeśli mamy informację o widoczności, użyj jej
                 if (paramVisibility) {
-                    processedValues[`${subParamName}___DICT`] = paramVisibility.hasDict;
+                    processedValues[`${subParamName}___DICT`] = !!paramVisibility.hasDict;
                 } else {
                     // Fallback dla przypadków gdy visibility nie jest dostępna
                     const dictValue = !!(paramOptions && paramOptions.length > 0);
-                    processedValues[`${subParamName}___DICT`] = dictValue;
+                    processedValues[`${subParamName}___DICT`] = !!dictValue;
                     // console.log(`${subParamName}___DICT set to ${dictValue} (from paramOptions fallback)`);
                 }
 
@@ -398,43 +398,32 @@ export class SourceWindow {
     }
 
     attachEvents() {
+        console.log('🔴 attachEvents START');
         // Podpina tylko eventy - nie ładuje, nie buduje DOM, nie waliduje!
         const form = document.getElementById('slope-form');
+        console.log('🔴 slope-form znaleziony:', !!form);
         if (!form) return;
         form.onsubmit = (e) => this.handleSubmit(e, form);
+
+        // Dodaj listenery do wszystkich inputów
+        console.log('🔴 Wywoływam attachInputListeners');
+        this.attachInputListeners();
+        console.log('🔴 attachEvents END');
     }
 
-
-
-    processForm() {
-        let inputs = document.querySelectorAll('.source-input');
-        inputs.forEach(input => {
-
-            if (input.id in this.sourceValues) {
-
-                if (!isNaN(input.value) && input.value.trim() !== '') {
-                    // console.log(input.value, "SPRAWDZAMOCOCHODZI23")
-                    this.sourceValues[input.id] = parseInt(input.value);
-                }
-                else {
-                    this.sourceValues[input.id] = input.value;
-                    // console.log(input.value, "SPRAWDZAMOCOCHODZI4")
-                }
-
-                // Uzupełnij sourceDisplayValues - każdy element trafia jako klucz-wartość
-                if (!!input.value){
-                this.sourceDisplayValues[input.id] = input.value;
-                }
-            }
-
-        });
-
-        // Wywołanie callbacka z aktualnymi danymi, jeśli został podany
-        if (typeof this.onSaveCallback === 'function') {
-            this.onSaveCallback(this.sourceValues);
+    attachInputListeners() {
+        // Dodaj event listenery do wszystkich inputów
+        const inputs = this.getInputsFromDOM();
+        console.log('Inputy do podłączenia:', inputs);
+        for (const paramName in inputs) {
+            const input = inputs[paramName];
+            console.log(`Podłączam listener do: ${paramName}`);
+            // Użyj 'input' event dla real-time aktualizacji
+            input.addEventListener('input', () => {
+                console.log(`Zmiana wartości: ${paramName}`, input.value);
+                this.onFieldChange(paramName);
+            });
         }
-
-        this.close();
     }
 
 
@@ -448,10 +437,63 @@ export class SourceWindow {
             this.backdrop = null;
         }
     }
+
+    getInputsFromDOM() {
+        const inputs = {};
+        document.querySelectorAll('.source-input').forEach(input => {
+            inputs[input.id] = input;
+        });
+        return inputs;
+    }
+
+    onFieldChange(paramName) {
+        const input = document.getElementById(paramName);
+        const param = this.data.params.find(p => p.NAME === paramName);
+
+        if (input && param) {
+            // Aktualizuj wartość w sourceValues
+            if (!isNaN(input.value) && input.value.trim() !== '') {
+                this.sourceValues[paramName] = parseInt(input.value);
+            } else {
+                this.sourceValues[paramName] = input.value;
+            }
+
+
+        }
+    }
+    processForm() {
+        let inputs = document.querySelectorAll('.source-input');
+        inputs.forEach(input => {
+            console.log(this.sourceValues, "SPRAWDZAMOCOCHODZI1")
+            if (input.id in this.sourceValues) {
+
+                if (!isNaN(input.value) && input.value.trim() !== '') {
+                    // console.log(input.value, "SPRAWDZAMOCOCHODZI23")
+                    this.sourceValues[input.id] = parseInt(input.value);
+                }
+                else {
+                    this.sourceValues[input.id] = input.value;
+                    // console.log(input.value, "SPRAWDZAMOCOCHODZI4")
+                }
+
+                // Uzupełnij sourceDisplayValues - każdy element trafia jako klucz-wartość
+                if (!!input.value) {
+                    this.sourceDisplayValues[this.sourceValues[`${input.id}___TITLE`]] = input.value;
+                }
+            }
+
+        });
+
+        // Wywołanie callbacka z aktualnymi danymi, jeśli został podany
+        if (typeof this.onSaveCallback === 'function') {
+            this.onSaveCallback(this.sourceValues);
+        }
+
+        this.close();
+    }
     setTyp(typ) {
         this.TYP = typ;
         this.sourceValues['TYP'] = typ
     }
-    // Możesz dodać metodę validate(values) jeśli chcesz wydzielić walidację!
 }
 

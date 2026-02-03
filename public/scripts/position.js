@@ -35,5 +35,17 @@ async function updatePhotoFields() {
   }
 }
 
+
+document.getElementById('show-json')?.addEventListener('click', function() {
+  const jsonDataDiv = document.getElementById('json-data');
+  if (jsonDataDiv.classList.contains('d-none')) {
+    jsonDataDiv.classList.remove('d-none');
+    this.textContent = 'Ukryj Dane JSON';
+  } else {
+    jsonDataDiv.classList.add('d-none');
+    this.textContent = 'Pokaż Dane JSON';
+  }
+});
+
 // Wywołaj po załadowaniu strony
 document.addEventListener('DOMContentLoaded', updatePhotoFields);

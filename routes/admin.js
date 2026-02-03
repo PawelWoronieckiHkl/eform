@@ -3,6 +3,22 @@ const router = express.Router();
 const { requireLogin } = require('../middleware/loginMixture');
 const logService = require('../services/logService.js');
 const { formatLoginTime } = require('../utils/humanize_date.js');
+const db = require("../db/db_helper.js");
+
+// Middleware do automatycznego dodawania users dla owner'ów
+router.use(async (req, res, next) => {
+    if (req.session.user?.isOwner) {
+        try {
+            res.locals.users = await db.getUsersByOwner(req);
+        } catch (error) {
+            console.error('Error loading users for owner:', error);
+            res.locals.users = [];
+        }
+    }
+    next();
+});
+
+
 
 // Middleware sprawdzający uprawnienia administratora
 function requireAdmin(req, res, next) {

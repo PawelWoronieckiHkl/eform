@@ -1,147 +1,102 @@
 {% extends "base.njk" %}
-
 {% block head %}
     <link rel="stylesheet" href="/styles/home.css">
-    <link rel="stylesheet" href="/styles/mobile/home.css">
-    <script>
-        // Add home page identifier to body
-        document.addEventListener('DOMContentLoaded', function () {
-            document
-                .body
-                .classList
-                .add('home-page');
-        });
-    </script>
-{% endblock head %}
-
-{% block content %}
-    {% if mustAcceptRODO %}
-        <div id="rodo-modal" class="modal-overlay">
-            <div class="modal-content">
-                <h2>{{ __('base.must_accept_rodo') }}</h2>
-
-                <p>{{ __('base.rodo_description') }}</p>
-
-                <a href='/user/rodo' class="rodo-info-text" target='_blank' style="color: #555; font-style: italic; margin-bottom: 1rem;">
-                    {{ __('base.view_rodo_info') }}
-                </a>
-
-                <div class="modal-buttons">
-                    <form action="/user/logout" method="POST" style="display: inline;">
-                        <button type="submit" class="btn btn-danger" style="text-decoration: none;">
-                            {{ __('order.cancel') }}
-                        </button>
+        <link rel="stylesheet" href="/styles/mobile/home.css">
+            <script>
+                // Add home page identifier to body
+                document.addEventListener('DOMContentLoaded', function () {
+                    document
+                        .body
+                        .classList
+                        .add('home-page');
+                });
+            </script>
+        {% endblock head %}
+        {% block content %}
+        {% if mustAcceptRODO %}
+            <div id="rodo-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <h2>{{ __('base.must_accept_rodo') }}</h2>
+                    <p>{{ __('base.rodo_description') }}</p>
+                    <a
+                        href='/user/rodo'
+                        class="rodo-info-text"
+                        target='_blank'
+                        style="color: #555; font-style: italic; margin-bottom: 1rem;">
+                        {{ __('base.view_rodo_info') }}
                     </a>
-                </form>
-                <button id="accept-rodo-btn" type='button' class="btn btn-primary">
-                    {{ __('base.accept_rodo') }}
-                </button>
-            </div>
-        </div>
-    </div>
-{% endif %}
-<div id='main-content' class="content">
-    <div class="container mb-5 col-12 w-100 mobile-rm-card">
-
-        {% if user %}
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-8 col-lg-6 text-center ">
-                    <h3 >{{ __('base.user_data') }}</h3>
-                    <h5>
-                        {{ user.client_name }}</h5>
-                    <p>
-                        <strong>{{ __('base.nip') }}</strong>
-                        {{ user.tax_id }}</p>
-
-                    <h6 >{{ __('base.contact_info') }}</h6>
-                    <p>
-                        <strong>{{ __('base.street') }}</strong>
-                        {{ user.street }}</p>
-                    <p>
-                        <strong>{{ __('base.zip') }}</strong>
-                        {{ user.zip }}</p>
-                    <p>
-                        <strong>{{ __('base.city_country') }}</strong>
-                        {{ user.city }},
-                        {{ user.country }}</p>
-                    <p>{{ __('base.user_id') }}
-                        {{ user.ident }}</p>
+                    <div class="modal-buttons">
+                        <form action="/user/logout" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-danger" style="text-decoration: none;">
+                                {{ __('order.cancel') }}
+                            </button>
+                        </a>
+                    </form>
+                    <button id="accept-rodo-btn" type='button' class="btn btn-primary">
+                        {{ __('base.accept_rodo') }}
+                    </button>
                 </div>
-            </div>
-        {% else %}
-            <div class="alert alert-warning mt-4 text-center" role="alert">
-                {{ __('base.no_user_data') }}
-            </div>
-        {% endif %}
-    </div>
-</div>
-
-<div id="print-template-container" style="display: none;">
-    {% include 'order_to_print.njk' %}
-</div>
-
-<!-- Orders visibility toggle -->
-<div class="orders-toggle-container">
-    <div class="content center-content custom-checkbox-wrapper">
-        <input type="checkbox" id="orders-toggle" class="custom-checkbox"/>
-        <label for="orders-toggle" class="custom-checkbox-label">
-            <span class="custom-checkbox-indicator"></span>
-            <span class="custom-checkbox-text">{{ __('base.show_orders') or 'Pokaż zamówienia' }}</span>
-        </label>
-    </div>
-</div>
-
-<div class="content center-content d-flex extra-info-parrent d-none" id='last-orders-section'>
-    {% if orders %}
-        <div class="container col -4 me-2 add-info-box">
-            <h2>{{ __('base.last_orders') }}</h2>
-            <div class="last-orders-list three-column-layout">
-                {% for order in orders %}
-                    <div class="order-column">
-                        <div class="order-card" onclick="window.location.href='/orders/order/{{ order.id }}'">
-                            <!-- Treść karty pozostaje bez zmian -->
-                            <div class="order-card-row">
-                                <div class="order-id">
-                                    <span class="order-label">#{{ order.order_idx }}</span>
-                                </div>
-                                <div class="order-info">
-                                    <div class="order-commission">
-                                        {{ order.commision }}
-                                    </div>
-                                    <div class="order-date">
-                                        {{ order.created_date }}
-                                    </div>
-                                </div>
-                                <div class="order-actions">
-                                    <a class="btn btn-outline-secondary p-1 stop-propagation" href='/orders/edit/{{ order.id }}'>
-                                        <img src="/img/edit-text.png" alt="{{ __('orders.edit') }}">
-                                    </a>
-                                    <button class="btn btn-outline-success p-1 stop-propagation send-order-btn" type="button" id='send-order' data-id="{{ order.id }}">
-                                        <img src="/img/send.png" alt="{{ __('orders.send') }}">
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
             </div>
         </div>
     {% endif %}
-
-    {% if ordersSent %}
-        {% if not orders %}
-            <div class="container col-6 me-2 h-100 add-info-box">
-            {% else  %}
-                <div class="container col-6 me-2 h-100 add-info-box">
-                {% endif %}
-                <h2>{{ __('base.last_sent_orders') }}</h2>
+    <div id='main-content' class="content">
+        <div class="container mb-5 col-12 w-100 mobile-rm-card">
+            {% if user %}
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-8 col-lg-6 text-center ">
+                        <h5>
+                            {{ user.client_name }}</h5>
+                        <p>
+                            <strong>{{ __('base.nip') }}</strong>
+                            {{ user.tax_id }}</p>
+                        <p>
+                            <strong>{{ __('base.street') }}</strong>
+                            {{ user.street }}</p>
+                        <p>
+                            <strong>{{ __('base.zip') }}</strong>
+                            {{ user.zip }}</p>
+                        <p>
+                            <strong>{{ __('base.city_country') }}</strong>
+                            {{ user.city }}, {{ user.country }}</p>
+                        <p>
+                            <strong>E-mail:</strong>
+                            {{ user.email }}</p>
+                        <a class='btn btn-outline-secondary m-auto mt-3' href="/user/edit-user">{{ __('base.edit_user_data') }}</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-warning mt-4 text-center" role="alert">
+                    {{ __('base.no_user_data') }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div id="print-template-container" style="display: none;">
+        {% include 'order_to_print.njk' %}
+    </div>
+    <!-- Orders visibility toggle -->
+    <div class="orders-toggle-container">
+        <div class="content center-content custom-checkbox-wrapper">
+            <input type="checkbox" id="orders-toggle" class="custom-checkbox"/>
+            <label for="orders-toggle" class="custom-checkbox-label">
+                <span class="custom-checkbox-indicator"></span>
+                <span class="custom-checkbox-text">{{ __('base.show_orders') or 'Pokaż zamówienia' }}</span>
+            </label>
+        </div>
+    </div>
+    <div class="content center-content d-flex extra-info-parrent d-none" id='last-orders-section'>
+        {% if orders %}
+            <div class="container col -4 me-2 add-info-box">
+                <h2>{{ __('base.last_orders') }}</h2>
                 <div class="last-orders-list three-column-layout">
-                    {% for order in ordersSent %}
+                    {% for order in orders %}
                         <div class="order-column">
-                            <div class="history-order-card" onclick="window.location.href='/orders/history/order/{{ order.id }}'">
+                            <div
+                                class="order-card" onclick="window.location.href='/orders/order/{{ order.id }}'">
+                                <!-- Treść karty pozostaje bez zmian -->
                                 <div class="order-card-row">
-                                    <div class="history-order-id">
-                                        <span class="history-order-label">#{{ order.order_idx }}</span>
+                                    <div class="order-id">
+                                        <span class="order-label">#{{ order.order_idx }}</span>
                                     </div>
                                     <div class="order-info">
                                         <div class="order-commission">
@@ -151,22 +106,54 @@
                                             {{ order.created_date }}
                                         </div>
                                     </div>
+                                    <div class="order-actions">
+                                        <a class="action-btn action-btn-edit p-1 stop-propagation" href='/orders/edit/{{ order.id }}'>
+                                            <img src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
+                                            <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn" type="button" id='send-order' data-id="{{ order.id }}">
+                                                <img src="/img/send.png" alt="{{ __('orders.send') }}"></button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if ordersSent %}
+                    {% if not orders %}
+                        <div class="container col-6 me-2 h-100 add-info-box">
+                        {% else %}
+                            <div class="container col-6 me-2 h-100 add-info-box">
+                            {% endif %}
+                            <h2>{{ __('base.last_sent_orders') }}</h2>
+                            <div class="last-orders-list three-column-layout">
+                                {% for order in ordersSent %}
+                                    <div class="order-column">
+                                        <div class="history-order-card" onclick="window.location.href='/orders/history/order/{{ order.id }}'">
+                                            <div class="order-card-row">
+                                                <div class="history-order-id">
+                                                    <span class="history-order-label">#{{ order.order_idx }}</span>
+                                                </div>
+                                                <div class="order-info">
+                                                    <div class="order-commission">
+                                                        {{ order.commision }}
+                                                    </div>
+                                                    <div class="order-date">
+                                                        {{ order.created_date }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endif %}
-
-        <!--{% if ordersSent and orders %} <div class="container col-4 add-info-box"> {% elif ordersSent or orders %} <div class="container col-6 add-info-box me-2"> {% else%} <div class="container col-12 add-info-box me-2"> {% endif %} <h2>Twoje info</h2> <div class="order-column my-2"> <div class="history-order-card"> <div class="order-info"> <div class="order-commission">Twoje info 1</div> <div class="order-date">komentarz 1</div> </div> </div> </div> <div class="order-column my-2"> <div class="history-order-card"> <div class="order-info"> <div class="order-commission">Twoje info 2</div> <div class="order-date">komentarz 2</div> </div> </div> <div class="order-column my-2"> <div class="history-order-card"> <div class="order-info"> <div class="order-commission">Twoje info 3</div> <div class="order-date">komentarz 3</div> </div> </div> </div> -->
-        <div id='dialog-container'>
-            <dialog id='dialog-space'></dialog>
-        </div>
-
-    {% endblock content %}
-
-    {% block scripts %}
-        <script type="module" src="/scripts/orders.js"></script>
-        <script type="module" src="/scripts/home.js"></script>
-    {% endblock scripts %}
+                    {% endif %}                     
+                    <div id='dialog-container'>
+                        <dialog id='dialog-space'></dialog>
+                    </div>
+                {% endblock content %}
+                {% block scripts %}
+                    <script type="module" src="/scripts/orders.js"></script>
+                    <script type="module" src="/scripts/home.js"></script>
+                {% endblock scripts %}

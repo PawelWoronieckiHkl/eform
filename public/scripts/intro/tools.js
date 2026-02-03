@@ -9,7 +9,7 @@ function getStepsForPage(pathname) {
             },
             {
                 element: '#new-order-nav-btn',
-                intro: "Kliknij tutaj, aby utworzyć nowe zamówienie. Tu zaczniesz budować swoje formularze.",
+                intro: t('order.cancel'),
                 position: 'bottom-right-aligned'
             },
             {
@@ -23,11 +23,17 @@ function getStepsForPage(pathname) {
                 position: 'bottom-right-aligned'
             },
             {
+                element: '#employee-panel-nav-btn',
+                intro: "Sprawdź historię swoich zamówień i śledź poprzednie zgłoszenia.",
+                position: 'bottom-right-aligned'
+            },
+            {
                 element: '#new-order-nav-btn',
                 intro: "Przejdziemy teraz do widoku nowego zamówienia.",
                 position: 'floating',
                 tooltipClass: 'introjs-left-tooltip'
             }
+
         ],
         '/orders/add-order': [ // Strona dodawania zamówienia
             {
@@ -40,6 +46,18 @@ function getStepsForPage(pathname) {
                 intro: "To jest formularz zamówienia. Wypełnij wszystkie sekcje, aby utworzyć zamówienie.",
                 position: 'bottom',
                 tooltipClass: 'introjs-under-tooltip'
+            },
+            {
+                element: '#address-checkbox-container',
+                intro: "Tą opcję zaznacz, jeżeli zamówienie jest dla klienta zewnętrznego",
+                position: 'bottom',
+                tooltipClass: 'introjs-under-tooltip'
+            },
+            {
+                element: '#send-address-checkbox-container',
+                intro: "Ta opcja potrzebna jest, jeżeli zamówienie ma być wyłane do klienta.",
+                position: 'bottom',
+                tooltipClass: 'introjs-under-tooltip'
             }
         ],
         '/orders': [ // Strona zamówień
@@ -49,7 +67,31 @@ function getStepsForPage(pathname) {
                 tooltipClass: 'introjs-center-tooltip'
             },
             {
-                element: '.orders-container',
+                element: '.container',
+                intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
+                position: 'top'
+            }
+            , {
+                element: '.order-row',
+                intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
+                position: 'introjs-center-tooltip'
+            }, {
+                element: '#delete-order-btn',
+                intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
+                position: 'top'
+            },
+            {
+                element: '#edit-order-btn',
+                intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
+                position: 'top'
+            },
+            {
+                element: '#send-order',
+                intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
+                position: 'top'
+            },
+            {
+                element: '.order-row',
                 intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
                 position: 'top'
             }
@@ -61,12 +103,36 @@ function getStepsForPage(pathname) {
                 position: 'floating',
                 tooltipClass: 'introjs-center-tooltip'
             }
-        ]
+        ],
+        '/user/employee-panel': [ // Strona panelu pracownika
+            {
+                intro: "Witamy w panelu pracownika! Tutaj możesz zarządzać swoimi zadaniami i zamówieniami.",
+                position: 'floating',
+                tooltipClass: 'introjs-center-tooltip'
+            },
+            {
+                element: '.employee-panel-container',
+                intro: "To jest główny obszar panelu pracownika, gdzie możesz przeglądać i zarządzać swoimi zadaniami.",
+                position: 'top'
+            },
+            {
+                element: '#employee-orders-nav-btn',
+                intro: "Kliknij tutaj, aby zobaczyć zamówienia przypisane do Ciebie.",
+                position: 'bottom-right-aligned'
+            },
+            {
+                element: '#employee-tasks-nav-btn',
+                intro: "Kliknij tutaj, aby zobaczyć zadania przypisane do Ciebie.",
+                position: 'bottom-right-aligned'
+            }
+        ]       
     };
 
     // Sprawdź czy to strona szczegółów zamówienia (orders/order/NUMER)
     const orderDetailPattern = /^\/orders\/order\/\d+$/;
     if (orderDetailPattern.test(pathname)) {
+        const isAnyPostion = document.querySelector('.order-table') !== null || undefined;
+        if (isAnyPostion) {
         return [
             {
                 intro: "To jest strona szczegółów zamówienia. Tutaj możesz przeglądać i edytować swoje konkretne zamówienie.",
@@ -88,7 +154,30 @@ function getStepsForPage(pathname) {
                 intro: "Użyj tych przycisków, aby edytować, duplikować lub wykonać inne akcje na tym zamówieniu.",
                 position: 'top'
             }
-        ];
+        ];} else {
+            return [
+                {
+                    intro: "To jest strona szczegółów zamówienia. Tutaj możesz przeglądać i edytować swoje konkretne zamówienie.",
+                    position: 'floating',
+                    tooltipClass: 'introjs-center-tooltip'
+                },
+                {
+                    element: '.order-header',
+                    intro: "Ta sekcja pokazuje informacje o zamówieniu i jego status.",
+                    position: 'bottom'
+                },
+                {
+                    element: '.order-content',
+                    intro: "To zamówienie nie ma jeszcze żadnych pozycji. Kliknij przycisk poniżej, aby dodać nową pozycję do tego zamówienia.",
+                    position: 'top'
+                },
+                {
+                    element: '.order-actions',
+                    intro: "Użyj tych przycisków, aby edytować, duplikować lub wykonać inne akcje na tym zamówieniu.",
+                    position: 'top'
+                }
+            ];
+        }
     }
 
     // Sprawdź czy to strona szczegółów pozycji (position/NUMER)
@@ -192,104 +281,3 @@ function getStepsForPage(pathname) {
 }
 
 // Główna funkcja intro tour
-function startIntroTour(pathname = window.location.pathname) {
-    const steps = getStepsForPage(pathname);
-
-    if (steps.length === 0) {
-        console.log('No intro steps defined for this page:', pathname);
-        return;
-    }
-
-    let intro = introJs.tour();
-    intro.setOptions({
-        showProgress: true,
-        showBullets: false,
-        exitOnOverlayClick: false,
-        exitOnEsc: true,
-        nextLabel: 'Next →',
-        prevLabel: '← Back',
-        skipLabel: 'Skip',
-        doneLabel: 'Done!',
-        scrollToElement: true,
-        tooltipPosition: 'auto',
-        steps: steps
-    });
-
-    intro.start();
-
-    // localStorage do przechowywania kroków między stronami
-    const storageKey = `introStep_${pathname.replace(/\//g, '_')}`;
-    let stepCounter = parseInt(localStorage.getItem(storageKey)) || 0;
-    let listenersAdded = false;
-
-    // Funkcja zapisująca krok do localStorage
-    function saveStep() {
-        localStorage.setItem(storageKey, stepCounter.toString());
-    }
-
-    // Funkcja do dodawania event listenerów na przyciski
-    function addButtonListeners() {
-        if (listenersAdded) return;
-
-        setTimeout(() => {
-            const nextBtn = document.querySelector('.introjs-nextbutton');
-            const backBtn = document.querySelector('.introjs-prevbutton');
-
-            if (nextBtn && !nextBtn.hasAttribute('data-listener-added')) {
-                nextBtn.addEventListener('click', function () {
-                    stepCounter++;
-                    saveStep();
-                    console.log("NEXT - Krok:", stepCounter);
-
-                    // Logika przejścia między stronami
-                    if (pathname === '/' && stepCounter === 4) {
-                        window.location.href = "/orders";
-                    }
-                });
-                nextBtn.setAttribute('data-listener-added', 'true');
-            }
-
-            if (backBtn && !backBtn.hasAttribute('data-listener-added')) {
-                backBtn.addEventListener('click', function () {
-                    stepCounter--;
-                    saveStep();
-                    console.log("BACK - Krok:", stepCounter);
-                });
-                backBtn.setAttribute('data-listener-added', 'true');
-            }
-
-            listenersAdded = true;
-        }, 100);
-    }
-
-    // Funkcja do logowania aktualnego kroku
-    function logCurrentStep(targetElement) {
-        const navsIds = ['new-order-nav-btn', 'orders-nav-btn', 'orders-history-nav-btn'];
-        const desktopNav = document.querySelector('.desktop-nav');
-        const currentStepId = targetElement ? targetElement.id : 'floating';
-
-        listenersAdded = false;
-        addButtonListeners();
-
-        if (navsIds.includes(currentStepId)) {
-            desktopNav.style.zIndex = '199';
-        } else {
-            desktopNav.style.zIndex = '100';
-        }
-
-        console.log("Current step:", stepCounter);
-    }
-
-    intro.onafterchange(function (targetElement) {
-        logCurrentStep(targetElement);
-    });
-
-    addButtonListeners();
-}
-
-// Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(() => {
-        startIntroTour();
-    }, 1000);
-});

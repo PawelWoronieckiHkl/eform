@@ -16,7 +16,8 @@ import {
   roundInputValue,
   fillInputDescription,
   setListRow,
-  checkIfOptionsExist
+  checkIfOptionsExist,
+  getProcedures
 } from "./formTools/formTools.js";
 import { validateAllFieldsOnSubmit, clearDisabledValues } from "./formTools/validateUtils.js";
 import { SourceWindow } from './formTools/slope.js';
@@ -26,6 +27,9 @@ import { hideLocked, hideParams } from './formTools/createForm.js'
 import { AttrLoader } from "./formTools/storage.js";
 import { Translator } from "./formTools/fileTranslator.js"
 import { stopSpin, startSpin } from "./components/hourglass.js";
+import { fillLocalPositionObject } from "./formTools/localStorageManager.js";
+import { getUid } from './formTools/getUid.js';
+import {generateShortJson} from './formTools/shortJsonGen.js';
 
 
 export async function generateForm(
@@ -33,9 +37,9 @@ export async function generateForm(
   groupNumber = full,
   values = {},
   displayValues = new Map(),
+  editFlag = false,
   lang = document.documentElement.lang || 'pl',
-  editFlag = false
-
+  spin = false
 ) {
   window.finishFlag = false;
   window.skipCountParams = [];
@@ -47,10 +51,20 @@ export async function generateForm(
   window.enabledParams = {};
   window.afterSend = false;
   window.validParams = {};
+  window.calculatedParams = new Set();
+  window.lastChangedField = null; // Przechowuje ostatnio zmienione pole
   window.constValues = {};
   window.lockedParams = [];
+  window.spin = spin;
+  // System kolejki zadań i blokowania UI
+  window.calculationQueue = [];
+  window.uid = '';
+  window.isCalculating = false;
+  window.isPriceCalculating = false;
   const loader = new DataLoader();
+  window.shortJson = {};
   window.translator = new Translator();
+
   const semafor = new AttrLoader();
   await window.translator.init(groupNumber, lang);
   await loader.init(version, groupNumber, lang)
@@ -60,19 +74,23 @@ export async function generateForm(
   const dictValues = data.dictValues;
   let allOptionsByParameter = loader.convertDictValues(dictValues);
 
-  const filters = loader.getAllFilters();
+
   const calculatedParams = {};
   if (!data) return;
 
   allOptionsByParameter = await loader.selectCollections(allOptionsByParameter)
 
+
+  loader.createParameterFilters(allOptionsByParameter);
+  const filters = loader.getAllFilters();
+  fillLocalPositionObject();
   data.params = await loader.selectPrices(data.params)
   window.params = data.params;
   window.actualParam = '';
   window.actualValue = '';
   const form = document.getElementById("dynamic-form");
   const linkContainer = document.createElement("div");
-  linkContainer.id = "link-buttons-container"; // pozycjonowanie CSS
+  linkContainer.id = "link-buttons-container"; 
   let labelNumber = 1;
   const inputs = {};
 
@@ -88,22 +106,20 @@ export async function generateForm(
 
 
 
-  async function buildHtml(options, param, filters) {  // dodane async
+  async function buildHtml(options, param, filters) {
+
     let input;
-    // console.log(param,'link i instrukcja')
+
     const paramName = param.NAME;
     if (!paramName || paramName.startsWith("_") || !param.DESCRIPTION) return;
 
     const div = createElement('div', { class: [`${param.NAME}-select-area`] }, form);
 
-    createElement('label', { text: `${param.DESCRIPTION}: ` }, div);
+    createElement('label', { text: `${param.DESCRIPTION} ` }, div);
 
     if (param.SOURCE == param.NAME) {
       param.modal = new SourceWindow(1, (sourceValues) => {
-        // 1. Przepisz do values - teraz z meta-polami z rzeczywistym stanem visibility
         values[param.NAME] = param.modal.processSourceValues();
-
-        // 2. Uaktualnij displayValues dla całego obiektu sourceWindow
         buildValuesToDisplay(allOptionsByParameter, param.modal.sourceDisplayValues, param.NAME, displayValues, 'BUTTON');
 
         inputFlags[paramName] = true;
@@ -111,15 +127,10 @@ export async function generateForm(
         enabledParams[paramName] = true;
         const dv = displayValues.get(param.NAME);
         if (dv) {
-          // Możesz wybrać display tekstu — np. sam opis:
           inputs[param.NAME].value = param.modal.sourceDisplayValues;
-
           inputs[param.NAME].innerText = `${dv.option_description || ''}`;
 
-          // lub krótki value
-          // inputs[param.NAME].innerText = `${param.DESCRIPTION}: ${dv.option_value || ''}`;
         }
-
 
         updateProcedure({
           params,
@@ -203,7 +214,7 @@ export async function generateForm(
       }
     }
     else {
-      // tryb edycji (jeśli potrzebny)
+
     }
 
     if (isSource(param)) {
@@ -223,7 +234,7 @@ export async function generateForm(
     if (editFlag) {
       // Jeśli to nie jest SOURCE param, ustaw zwykłe wartości
       if (param.SOURCE != param.NAME) {
-        // zwykłe obsłużenie dla innych typów parametrów
+
       }
     }
     labelNumber++;
@@ -263,38 +274,50 @@ export async function generateForm(
 
 
   const COMMON_PARAMS = { params, inputs, values, displayValues, allOptionsByParameter, groupNumber, calculatedParams };
+  window.uid = await getUid();
 
   if (editFlag) { fillFields(displayValues, inputs, values) }
 
+
   for (let key in inputs) {
 
+    // Debounce timer dla każdego inputa
 
-
-    inputs[key].addEventListener("input", function () {
-      if (this.tagName === "INPUT") {
-        values[this.name] = roundInputValue(this.value);
-        updateProcedure({
-          ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
-          flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true, attrValues: semafor.attrValues }
-        });
-      }
-
-    });
 
     if (inputs[key].tagName === "INPUT") {
-      inputs[key].addEventListener('blur', function () {
-        values[this.name] = roundInputValue(this.value);
-        inputs[this.name].value = values[this.name];
-        updateProcedure({
-          ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
-          flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true, attrValues: semafor.attrValues }
-        });
+      let inputDebounceTimer = null;
+
+      inputs[key].addEventListener("input", function () {
+        if (this.tagName === "INPUT") {
+          values[this.name] = roundInputValue(this.value);
+
+          // Anuluj poprzedni timer
+          if (inputDebounceTimer) {
+            clearTimeout(inputDebounceTimer);
+          }
+
+          // Ustaw nowy timer - akcja wykona się po 1 sekundzie bez pisania
+          inputDebounceTimer = setTimeout(() => {
+            updateProcedure({
+              ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
+              flags: { updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true, attrValues: semafor.attrValues }
+            });
+          }, 500);
+        }
       });
+
 
     } else {
       inputs[key].addEventListener('change', function () {
-        console.log('select 3 @@@@@@@@@@@@@@@@@@@@@@@@@')
+
         values[this.name] = this.value;
+
+        window.lastChangedField = {
+          name: this.name,
+          value: this.value,
+          tagName: this.tagName,
+          timestamp: Date.now()
+        };
         updateProcedure({
           ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters, attrValues: semafor.attrValues,
           flags: { buildValues: true, updateInputs: true, updateStates: true }
@@ -303,19 +326,18 @@ export async function generateForm(
     }
 
   }
-  // console.log('przed onclick', values)
+
   document.getElementById('dialog-confirm').onclick = async () => {
 
 
     let valueToUpdate;
-    // console.log('przed oknem dialogowym', values)
     let [selectedValue, paramName] = getInfoFromDialog(values, inputs, allOptionsByParameter);
 
-     let descValue = selectedValue.replace(/~\d+$/g, '');
-    
+    let descValue = selectedValue.replace(/~\d+$/g, '');
+
     values = setDescription(values, selectedValue, allOptionsByParameter, paramName)
     values[paramName] = descValue;
-    // console.log('wartość z okna dialogowego:', selectedValue, 'dla parametru:', paramName);
+
     if (selectedValue.includes('|') && params[paramName]?.MULTI) {
       valueToUpdate = (selectedValue.split("|"))[0];
     } else {
@@ -328,7 +350,12 @@ export async function generateForm(
     });
   };
 
-  return [inputs, values, displayValues];
+  window.formInputs = inputs;
+  window.formValues = values;
+  window.formDisplayValues = displayValues;
+  window.allOptionsByParameter = allOptionsByParameter;
+
+  return [inputs, values, displayValues, shortJson];
 }
 
 export async function updateProcedure({
@@ -343,59 +370,94 @@ export async function updateProcedure({
     updateStates = false,
     percent = false
   } = flags;
+
+  // Dodaj zadanie do kolejki i poczekaj na swoją kolej
+  const taskId = Date.now() + Math.random();
+  window.calculationQueue.push(taskId);
+
+  // Czekaj aż będziesz pierwszy w kolejce
+  while (window.calculationQueue[0] !== taskId) {
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+
+  // Teraz jesteś pierwszy - zablokuj UI
+  window.isCalculating = true;
+  window.isPriceCalculating = false;
+  disableFormButtons(true);
+
+  console.log('🔒 updateProcedure rozpoczęte, UI zablokowane');
+
   window.finishFlag = false;
-  startSpin()
-  setTimeout(() => {
-    for (let [param, input] of Object.entries(calculatedParams)) {
-      // console.log('calculatedParams pętla', param, input.value)
-      values[param] = input.value
+  if (spin) {
+    startSpin()
+  }
+
+  for (let [param, input] of Object.entries(calculatedParams)) {
+    if (input && input.value !== undefined) {
+      values[param] = input.value;
     }
-  }, 150)
+  }
 
   values = setDescription(values, value, allOptionsByParameter, name)
-  // console.log(values, 'po setDescription')
   if (percent) values = convertIntoPercent(values, name, value, inputs, params)
-
   displayValues = hideLocked(inputs, displayValues)
-
   if (buildValues) buildValuesToDisplay(allOptionsByParameter, value, name, displayValues, tagName);
   displayValues = setListRow(params, displayValues)
-  // console.log('displayValues po setListRow', displayValues)
-  // console.log('displayValues wejscie', allOptionsByParameter, value, name, displayValues, tagName)
-  // problem z resetowaniem sterowania jest w updateFieldInputs
-
+  values['uid'] = window.uid;
   if (updateInputs) updateFieldInputs(params, inputs, values, displayValues, allOptionsByParameter, options, name, value, tagName, filters, attrValues);
-
-  if (validate) validateFormInput(values, inputs[name]);
-
+  getProcedures(inputs, allOptionsByParameter, values, options, name, value, tagName, displayValues, params)
+  validateFormInput(values, inputs[name]);
   values = setDescription(values, value, allOptionsByParameter, name)
-  if (updateStates) updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value);
-
+  if (updateStates) {
+    await updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value);
+  }
   window.checkedParams = findParamFromValues(values, allOptionsByParameter);
-
   if (afterSend) validateAllFieldsOnSubmit(inputs, values)
   if (resetDeps) resetDependences([params, displayValues], name, inputs, values, allOptionsByParameter);
-
-
-  ({ values, displayValues } = clearDisabledValues(values, displayValues))
-
+  window.shortJson = generateShortJson(params, values);
+  fillLocalPositionObject(values, displayValues);
   hideParams(params, inputs)
-
   fillInputDescription(inputs, params, values, allOptionsByParameter)
-  stopSpin()
-  console.log(values, 'valuesss')
-  console.log('ceny after', values['CENAPASEK'], values['CENA'], values['DOPLATA'], values['DOPLATA_EL'], values['CENA_SUMA'], values['SUMA_BRUTTO'], values['CENA_RABAT'], values['DOPLATA_EL_RABAT'], values['CENA_KONCOWA'])
-  console.log('CENA, CENAPASEK, DOPLATA, DOPLATA_EL, CENA_SUMA, SUMA_BRUTTO, CENA_RABAT, DOPLATA_EL_RABAT, CENA_KONCOWA')
-  console.log(displayValues, 'displayValuess')
+  console.log('AKTUALNY JSON', values)
+  if (spin) {
+    stopSpin()
+  }
+  // Usuń się z kolejki
+  window.calculationQueue.shift();
 
-
-  // values = setDescription(values, value, allOptionsByParameter, name)
-  // console.log('values po updateProcedure', values)
-  console.log('ustawiam flagę')
+  if (window.calculationQueue.length === 0) {
+    window.isCalculating = false;
+    window.isPriceCalculating = true; 
+    disableFormButtons(false);
+    console.log('🔓 Wszystkie obliczenia zakończone, UI odblokowane');
+  }
+  console.log('display values 123', displayValues);
   setTimeout(() => {
     window.finishFlag = true;
   }, 1300)
 
+}
+
+// Funkcja blokowania/odblokowywania przycisków formularza
+function disableFormButtons(disable) {
+  const buttons = [
+    document.getElementById('show-button'),
+    document.getElementById('reset-button'),
+    document.getElementById('dialog-confirm')
+  ].filter(btn => btn !== null);
+
+  buttons.forEach(btn => {
+    btn.disabled = disable;
+    if (disable) {
+      btn.classList.add('disabled', 'opacity-50', 'cursor-not-allowed');
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.5';
+    } else {
+      btn.classList.remove('disabled', 'opacity-50', 'cursor-not-allowed');
+      btn.style.pointerEvents = '';
+      btn.style.opacity = '';
+    }
+  });
 }
 
 export function isSource(param) {
@@ -455,3 +517,66 @@ export function buildCommentSpace(destinationNode, comment = '') {
   return textarea;
 }
 
+export function getTotal(displayValues) {
+  const totalObj = {};
+  for (let [key, value] of displayValues) {
+    if (value?.listsum) {
+      if (value?.locked) {
+        totalObj['total_hidden'] = parseFloat(value.option_value);
+      }
+      else {
+        totalObj['total'] = parseFloat(value.option_value);
+      }
+    }
+  }
+  return totalObj;
+}
+
+
+export async function recalculateLastChangedField() {
+
+  if (!window.lastChangedField) {
+
+    return;
+  }
+  startSpin();
+  const { name, value, tagName, timestamp } = window.lastChangedField;
+  const timeSinceChange = Date.now() - timestamp;
+
+  const params = window.params;
+  const inputs = window.formInputs;
+  const values = window.formValues;
+
+  const displayValues = window.formDisplayValues;
+  const allOptionsByParameter = window.allOptionsByParameter;
+  const groupNumber = window.tempGroupNumber;
+
+  if (!params || !inputs || !values) {
+    return;
+  }
+
+  // Pobierz dodatkowe wymagane dane
+  const calculatedParams = {};
+  const options = {};
+  const filters = {};
+
+  await updateProcedure({
+    params,
+    inputs,
+    values,
+    displayValues,
+    allOptionsByParameter,
+    options,
+    name,
+    value,
+    groupNumber,
+    tagName,
+    filters,
+    calculatedParams,
+    flags: {
+      updateInputs: true, validate: true, buildValues: true, updateStates: true, percent: true
+    }
+  });
+
+  stopSpin();
+}

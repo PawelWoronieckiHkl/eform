@@ -1,6 +1,8 @@
 import {
     generateForm,
     buildCommentSpace,
+    getTotal,
+    recalculateLastChangedField
 
 } from "/scripts/form.js";
 import {
@@ -10,6 +12,8 @@ import { FormsManager } from './formTools/getAvailableForms.js'
 import { showToast } from "/scripts/components/toast.js";
 import { createElement, editElementById } from "./components/htmlManipulator.js";
 import { validateAllFieldsOnSubmit } from './formTools/validateUtils.js'
+import { checkIfPriceIsCorrect } from './formTools/pricesCalculator.js'
+import { startSpin, stopSpin } from "./components/hourglass.js";
 
 
 function getPositionIdFromUrl() {
@@ -18,7 +22,7 @@ function getPositionIdFromUrl() {
     const queryId = params.get('id');
 
     if (queryId) {
-        console.log('ID z query params:', queryId);
+        //    console.log('ID z query params:', queryId);
         return queryId;
     }
 
@@ -28,15 +32,15 @@ function getPositionIdFromUrl() {
 
     if (positionIndex !== -1 && pathParts[positionIndex + 1]) {
         const pathId = pathParts[positionIndex + 1];
-        console.log('ID z URL path:', pathId);
+        //    console.log('ID z URL path:', pathId);
         return pathId;
     }
 
-    console.log('Nie znaleziono ID w URL');
+    //    console.log('Nie znaleziono ID w URL');
     return null;
 }
 async function getPositionInfo(id) {
-    console.log(id, 'semaasdsad')
+    //    console.log(id, 'semaasdsad')
     try {
         const response = await fetch(`/position/${id}/data`, {
             method: "GET",
@@ -77,7 +81,7 @@ async function init() {
 
     formsManager.setCurrentRootPath(position.asortment_group_number);
     formsManager.setCurrentGroup(position.asortment_group_number);
-    const [editInputs, editValues, editValuesToDisplay] = await generateForm(version, position.asortment_group_number, values, valuesToDisplay, lang, true)
+    const [editInputs, editValues, editValuesToDisplay] = await generateForm(version, position.asortment_group_number, values, valuesToDisplay, true, lang)
 
     setupResetButton(editInputs, editValues, editValuesToDisplay)
     const editComment = buildCommentSpace(formDiv, comment)
@@ -96,14 +100,82 @@ function setupResetButton(inputs, values, valuesToDisplay) {
 }
 
 function setUpSaveButton(id, values, valuesToDisplay, comment, orderId, inputs) {
-    const sendBtn = document.getElementById('show-button')
-    sendBtn.onclick = async function () {
-        if (!await validateForm(inputs, values)) {
-            showToast('error', t("form.incorrect_data"));
+    let sentState = false;
+
+    console.log('setupShowButton')
+    const showButton = document.getElementById('show-button');
+
+    showButton.onclick = function () {
+        // Sprawdź czy już wysłano
+        if (sentState) {
+            console.log('⚠️ Formularz już został wysłany');
+            showToast('warning', 'Formularz już został wysłany');
+            throw new Error('Already sent');
+        }
+
+        // Sprawdź czy trwają obliczenia
+        if (window.isCalculating) {
+            showToast('warning', 'Trwają obliczenia, poczekaj...');
             return;
         }
-        sendData(id, values, valuesToDisplay, comment, orderId)
+
+        // 🔥 KROK 1: Wymuś przeliczenie ostatnio zmienionego pola
+        console.log('🚀 Wymuszam przeliczenie przed zapisem...');
+        recalculateLastChangedField()
+            .then(() => {
+                // KROK 2: Czekaj aż kolejka się opróżni
+                console.log('⏳ Czekam na zakończenie wszystkich obliczeń...');
+                return new Promise(resolve => {
+                    const checkQueue = () => {
+                        if (!window.calculationQueue || window.calculationQueue.length === 0) {
+                            resolve();
+                        } else {
+                            setTimeout(checkQueue, 50);
+                        }
+                    };
+                    checkQueue();
+                });
+            })
+            .then(() => {
+                // KROK 2.5: Wymuś sprawdzenie cen i aktualizację displayValues
+                console.log('💰 Sprawdzam i aktualizuję ceny...');
+                valuesToDisplay = checkIfPriceIsCorrect(values, inputs, valuesToDisplay);
+                console.log('✅ DisplayValues zaktualizowane:', valuesToDisplay);
+            })
+            .then(() => {
+                // KROK 3: Walidacja
+                console.log('✅ Przeliczenie zakończone, przechodzę do walidacji...');
+                return validateForm(inputs, values);
+            })
+            .then((isValid) => {
+                if (!isValid) {
+                    showToast('error', t("form.incorrect_data"));
+                    throw new Error('Validation failed');
+                }
+
+                // KROK 4: Ostateczne sprawdzenie flag
+
+
+                console.log('✅ Wszystkie warunki spełnione, wysyłam dane...');
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        sendData(id, values, valuesToDisplay, comment, orderId)
+                            .then(() => {
+                                
+                                resolve();
+                                sentState = true;
+                            });
+                    }, 1000);
+                });
+            })
+            .catch((error) => {
+                if (error.message !== 'Validation failed' && error.message !== 'Form not ready' && error.message !== 'Already sent') {
+                    console.error('Błąd podczas zapisywania:', error);
+                    showToast('error', t("form.error_saving_form"));
+                }
+            });
     }
+
 }
 
 
@@ -111,13 +183,21 @@ function setUpSaveButton(id, values, valuesToDisplay, comment, orderId, inputs) 
 async function sendData(id, values, valuesToDisplay, comment, orderId) {
     const commission = document.getElementById('commission-name');
     const jsonValuesToDisplay = JSON.stringify(Array.from(valuesToDisplay.entries()));
+
+
     const postBody = {
         id: id,
         commission: commission.value,
         jsonValues: values,
         jsonValuesToDisplay: jsonValuesToDisplay,
-        comment: comment.value
+        comment: comment.value,
+        jsonShort: window.shortJson
+
     }
+    const total = getTotal(valuesToDisplay);
+    //    console.log(total, 'TOTAL')
+    postBody.total = total;
+
     const json = JSON.stringify(postBody);
 
     try {
@@ -128,25 +208,30 @@ async function sendData(id, values, valuesToDisplay, comment, orderId) {
         });
         const result = await response.json();
         showToast('success', `${t('form.saved_form_success')}`);
-        setTimeout(() => {
-            window.location.href = `/orders/order/${orderId}`;
-            return result;
-        }, 3000);
+        return new Promise(resolve => {
+            console.log(window.jsonShort, 'JSON SHORT')
+            setTimeout(() => {
+                
+                window.location.href = `/orders/order/${orderId}`;
+                resolve(result);
+            }, 3000);
+        });
     } catch (error) {
         console.error("Bład przy wysyłaniu", error);
         showToast('error', t("form.error_saving_form"));
+        throw error;
     }
 
 }
 
 export async function validateForm(inputs, values) {
-    console.log('validateForm')
+    //    console.log('validateForm')
     const visibleInputsObj = Object.fromEntries(
         Object.entries(inputs).filter(
             ([key, elem]) => getComputedStyle(elem).display !== 'none'
         )
     );
-    console.log(visibleInputsObj)
+    //    console.log(visibleInputsObj)
     validateAllFieldsOnSubmit(visibleInputsObj, values)
     const correctFlag = await checkFlags();
     if (typeof correctFlag !== 'boolean') {
@@ -158,7 +243,7 @@ export async function validateForm(inputs, values) {
 }
 
 function highlightInvalidFields(flags) {
-    console.log('highlightInvalidFields')
+    //    console.log('highlightInvalidFields')
     for (let { key } of flags) {
         let elem = document.getElementById(key);
         if (elem) {

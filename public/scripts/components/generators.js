@@ -1,94 +1,536 @@
 import { showToast } from "../components/toast.js";
 
-export function generateExcel() {
-  const comment = document.getElementById('comment')
-  const commision = document.getElementById('commission-name') || document.getElementById('commission-name-mobile')
+/**
+ * Konfiguracja dla generatora Excel
+ */
+const EXCEL_CONFIG = {
+  HEADER_BG_COLOR: 'E0E0E0',
+  HEADER_TEXT_COLOR: '000000',
+  BORDER_COLOR: '000000',
+  BORDER_STYLE: 'thin',
+  MIN_COLUMN_WIDTH: 10,
+  COLUMN_WIDTH_PADDING: 2,
+  MAX_SHEET_NAME_LENGTH: 30,
+  SKIP_FIRST_ROW: true,
+  SKIP_FIRST_COLUMN: true,
+  LOGO_SPACE_ROWS: 6  // Liczba wierszy zarezerwowanych na logo
+};
 
-
-
-  const tables = document.querySelectorAll('#print-template-container table');
-  console.log(tables)
-  const wb = XLSX.utils.book_new();
-
-  const combinedData = [];
-  const headerRows = [];
-  const separatorRows = [];
-
-  tables.forEach(table => {
-    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText.trim());
-    combinedData.push(headers);
-    headerRows.push(combinedData.length - 1);
-
-    const rows = table.querySelectorAll('tbody tr');
-    if (rows.length > 0) {
-      rows.forEach(tr => {
-        const rowData = Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim());
-        combinedData.push(rowData);
-      });
-    } else {
-
-      const bodyRows = table.querySelectorAll('tr');
-
-      for (let i = 1; i < bodyRows.length; i++) {
-        const rowData = Array.from(bodyRows[i].querySelectorAll('td')).map(td => td.innerText.trim());
-        combinedData.push(rowData);
-      }
-    }
-
-
-    combinedData.push(Array(headers.length).fill(''));
-    separatorRows.push(combinedData.length - 1);
-  });
-
-  if (combinedData.length && combinedData[combinedData.length - 1].every(cell => cell === '')) {
-    separatorRows.pop();
-    combinedData.pop();
+/**
+ * Klasa odpowiedzialna za generowanie plików Excel z tabel HTML
+ */
+class ExcelGenerator {
+  constructor(config = EXCEL_CONFIG) {
+    this.config = { ...EXCEL_CONFIG, ...config };
+    this.workbook = null;
+    this.combinedData = [];
+    this.headerRows = [];
+    this.separatorRows = [];
   }
 
-  const ws = XLSX.utils.aoa_to_sheet(combinedData);
+  /**
+   * Główna metoda generująca plik Excel
+   */
+  async generate(containerId = '#print-template-container') {
+    try {
+      const metadata = this._getDocumentMetadata();
+      const tables = this._getTablesFromContainer(containerId);
+      const logoData = await this._extractLogo(containerId);
 
-  headerRows.forEach(rowIdx => {
-    for (let col = 0; col < combinedData[rowIdx].length; col++) {
-      const cellAddress = XLSX.utils.encode_cell({ r: rowIdx, c: col });
-      if (ws[cellAddress]) {
-        ws[cellAddress].s = {
-          fill: { patternType: "solid", fgColor: { rgb: "E0E0E0" } },
-          font: { color: { rgb: "000000" }, bold: true }
+      this._extractDataFromTables(tables);
+      this._addEmptyRowAndColumn();
+      this._adjustIndicesForOffset();
+
+      const worksheet = this._createWorksheet();
+      this._applyHeaderStyles(worksheet);
+      this._applyBorderStyles(worksheet);
+      this._applyColumnWidths(worksheet);
+      await this._addLogoToWorksheet(worksheet, logoData);
+
+      this._saveWorkbook(worksheet, metadata);
+
+      console.log('Excel generated successfully');
+    } catch (error) {
+      console.error('Error generating Excel:', error);
+      showToast('error', 'Błąd podczas generowania pliku Excel');
+    }
+  }
+
+  /**
+   * Pobiera metadane dokumentu (ID, nazwa komisji)
+   */
+  _getDocumentMetadata() {
+    const comment = document.getElementById('comment');
+    const commision = document.getElementById('commission-name') ||
+      document.getElementById('commission-name-mobile');
+
+    if (!comment || !commision) {
+      throw new Error('Missing required document metadata elements');
+    }
+
+    return {
+      id: comment.dataset.id,
+      name: commision.dataset.name
+    };
+  }
+
+  /**
+   * Pobiera wszystkie tabele z kontenera
+   */
+  _getTablesFromContainer(containerId) {
+    const tables = document.querySelectorAll(`${containerId} table`);
+
+    if (tables.length === 0) {
+      throw new Error(`No tables found in container: ${containerId}`);
+    }
+
+    return tables;
+  }
+
+  /**
+   * Ekstraktuje logo z kontenera i konwertuje do base64
+   */
+  async _extractLogo(containerId) {
+    try {
+      const container = document.querySelector(containerId);
+      let logoUrl = null;
+      
+      if (container) {
+        const logoImg = container.querySelector('img[alt="logo"], .print-logo');
+        if (logoImg && logoImg.src) {
+          logoUrl = logoImg.src;
+          console.log('Found logo in container:', logoUrl);
+        }
+      }
+      
+      // Jeśli nie znaleziono logo w kontenerze, użyj domyślnego
+      if (!logoUrl) {
+        console.log('Logo not found in container, using default /img/logo.png');
+        logoUrl = '/img/logo.png';
+      }
+
+      // Jeśli logo już jest w base64, zwróć je
+      if (logoUrl.startsWith('data:')) {
+        console.log('Logo is already base64');
+        return {
+          base64: logoUrl.split(',')[1],
+          mimeType: logoUrl.match(/data:(.*?);/)?.[1] || 'image/png'
         };
       }
+
+      // W przeciwnym razie pobierz i skonwertuj
+      console.log('Converting image to base64:', logoUrl);
+      return await this._imageToBase64(logoUrl);
+    } catch (error) {
+      console.error('Error extracting logo:', error);
+      return null;
     }
-  });
+  }
 
-  const range = XLSX.utils.decode_range(ws['!ref']);
-  for (let row = range.s.r; row <= range.e.r; ++row) {
+  /**
+   * Konwertuje obraz do base64
+   */
+  async _imageToBase64(url) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      
+      // Nie ustawiaj crossOrigin dla lokalnych ścieżek
+      if (!url.startsWith('http')) {
+        // Dla lokalnych ścieżek nie potrzebujemy CORS
+        console.log('Local image path detected');
+      } else {
+        img.crossOrigin = 'Anonymous';
+      }
 
-    if (separatorRows.includes(row)) continue;
-    for (let col = range.s.c; col <= range.e.c; ++col) {
-      const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
-      if (!ws[cellAddress]) continue;
-      ws[cellAddress].s = ws[cellAddress].s || {};
-      ws[cellAddress].s.border = {
-        top: { style: "thin", color: { rgb: "000000" } },
-        bottom: { style: "thin", color: { rgb: "000000" } },
-        left: { style: "thin", color: { rgb: "000000" } },
-        right: { style: "thin", color: { rgb: "000000" } }
+      img.onload = () => {
+        console.log('Image loaded successfully:', img.width, 'x', img.height);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        try {
+          const dataUrl = canvas.toDataURL('image/png');
+          const base64Data = dataUrl.split(',')[1];
+          console.log('Image converted to base64, length:', base64Data.length);
+          resolve({
+            base64: base64Data,
+            mimeType: 'image/png',
+            width: img.width,
+            height: img.height
+          });
+        } catch (error) {
+          console.error('Error converting to base64:', error);
+          reject(error);
+        }
       };
+
+      img.onerror = (error) => {
+        console.error('Failed to load image:', url, error);
+        reject(new Error('Failed to load image: ' + url));
+      };
+      
+      console.log('Loading image from:', url);
+      img.src = url;
+    });
+  }
+
+  /**
+   * Dodaje logo do arkusza Excel
+   */
+  async _addLogoToWorksheet(worksheet, logoData) {
+    if (!logoData || !logoData.base64) {
+      console.log('No logo data to add to worksheet');
+      return;
+    }
+
+    try {
+      const range = XLSX.utils.decode_range(worksheet['!ref']);
+      const numCols = range.e.c + 1;
+      const startCol = this.config.SKIP_FIRST_COLUMN ? 1 : 0;
+
+      // Wiersz 2 (indeks 1) - na środku tabeli
+      const logoRow = 1;
+      const middleCol = Math.floor(numCols / 2);
+
+      // Merguj komórki na logo (od środka-2 do środka+2)
+      const mergeStart = Math.max(startCol, middleCol - 2);
+      const mergeEnd = Math.min(numCols - 1, middleCol + 2);
+
+      if (!worksheet['!merges']) {
+        worksheet['!merges'] = [];
+      }
+
+      worksheet['!merges'].push({
+        s: { r: logoRow, c: mergeStart },
+        e: { r: logoRow + 3, c: mergeEnd }
+      });
+
+      // Ustaw wysokość wierszy dla logo
+      if (!worksheet['!rows']) {
+        worksheet['!rows'] = [];
+      }
+      for (let i = 0; i < this.config.LOGO_SPACE_ROWS; i++) {
+        worksheet['!rows'][i] = { hpt: 20 };
+      }
+      worksheet['!rows'][logoRow] = { hpt: 60 };
+      worksheet['!rows'][logoRow + 1] = { hpt: 60 };
+
+      // Spróbuj dodać obraz używając różnych metod
+      const cellAddress = XLSX.utils.encode_cell({ r: logoRow, c: middleCol });
+
+      // Metoda 1: Użyj !images jeśli jest dostępne
+      if (!worksheet['!images']) {
+        worksheet['!images'] = [];
+      }
+
+      worksheet['!images'].push({
+        '!pos': {
+          x: mergeStart,
+          y: logoRow,
+          w: mergeEnd - mergeStart + 1,
+          h: 4
+        },
+        '!data': logoData.base64,
+        '!datatype': 'base64'
+      });
+
+      // Metoda 2: Dodaj jako komentarz z obrazem (fallback)
+      if (!worksheet[cellAddress]) {
+        worksheet[cellAddress] = { t: 's', v: '' };
+      }
+
+      worksheet[cellAddress].s = {
+        alignment: {
+          horizontal: 'center',
+          vertical: 'center'
+        }
+      };
+
+      // Metoda 3: Dodaj hyperlink do obrazu jako fallback
+      worksheet[cellAddress].l = {
+        Target: `data:image/png;base64,${logoData.base64}`,
+        Tooltip: 'Logo'
+      };
+
+      console.log('Logo added to worksheet at row', logoRow, 'col', middleCol);
+    } catch (error) {
+      console.warn('Could not add logo to worksheet:', error);
     }
   }
 
-  const columnWidths = [];
-  for (let col = 0; col < combinedData[0].length; col++) {
-    let maxLength = 10;
-    for (let row = 0; row < combinedData.length; row++) {
-      const cellValue = combinedData[row][col] || '';
-      if (cellValue.length > maxLength) maxLength = cellValue.length;
-    }
-    columnWidths.push({ wch: maxLength + 2 });
-  }
-  ws['!cols'] = columnWidths;
+  /**
+   * Ekstraktuje dane ze wszystkich tabel
+   */
+  _extractDataFromTables(tables) {
+    tables.forEach(table => {
+      this._processTable(table);
+      this._addSeparator();
+    });
 
-  XLSX.utils.book_append_sheet(wb, ws, commision.dataset.name);
-  XLSX.writeFile(wb, `${comment.dataset.id}"${commision.dataset.name}".xlsx`);
+    this._removeTrailingSeparator();
+  }
+
+  /**
+   * Przetwarza pojedynczą tabelę
+   */
+  _processTable(table) {
+    const headers = this._extractHeaders(table);
+    this.combinedData.push(headers);
+    this.headerRows.push(this.combinedData.length - 1);
+
+    const rows = this._extractRows(table);
+    rows.forEach(row => this.combinedData.push(row));
+  }
+
+  /**
+   * Ekstraktuje nagłówki z tabeli
+   */
+  _extractHeaders(table) {
+    return Array.from(table.querySelectorAll('thead th'))
+      .map(th => th.innerText.trim());
+  }
+
+  /**
+   * Ekstraktuje wiersze danych z tabeli
+   */
+  _extractRows(table) {
+    const tbodyRows = table.querySelectorAll('tbody tr');
+
+    if (tbodyRows.length > 0) {
+      return Array.from(tbodyRows).map(tr =>
+        Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim())
+      );
+    }
+
+    // Fallback dla tabel bez tbody
+    const allRows = table.querySelectorAll('tr');
+    return Array.from(allRows).slice(1).map(tr =>
+      Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim())
+    );
+  }
+
+  /**
+   * Dodaje separator między tabelami
+   */
+  _addSeparator() {
+    const lastRow = this.combinedData[this.combinedData.length - 1];
+    const separator = Array(lastRow.length).fill('');
+    this.combinedData.push(separator);
+    this.separatorRows.push(this.combinedData.length - 1);
+  }
+
+  /**
+   * Usuwa ostatni separator jeśli jest pusty
+   */
+  _removeTrailingSeparator() {
+    const lastRow = this.combinedData[this.combinedData.length - 1];
+    if (lastRow && lastRow.every(cell => cell === '')) {
+      this.separatorRows.pop();
+      this.combinedData.pop();
+    }
+  }
+
+  /**
+   * Dodaje pusty wiersz i kolumnę na początku oraz przestrzeń na logo
+   */
+  _addEmptyRowAndColumn() {
+    if (!this.config.SKIP_FIRST_COLUMN && !this.config.SKIP_FIRST_ROW) {
+      return;
+    }
+
+    if (this.config.SKIP_FIRST_COLUMN) {
+      this.combinedData.forEach(row => row.unshift(''));
+    }
+
+    if (this.config.SKIP_FIRST_ROW) {
+      // Dodaj wiersze na logo (zamiast tylko jednego pustego wiersza)
+      const numCols = this.combinedData[0]?.length || 1;
+      for (let i = 0; i < this.config.LOGO_SPACE_ROWS; i++) {
+        const emptyRow = Array(numCols).fill('');
+        this.combinedData.unshift(emptyRow);
+      }
+    }
+  }
+
+  /**
+   * Dostosowuje indeksy po dodaniu offsetu
+   */
+  _adjustIndicesForOffset() {
+    const offset = this.config.SKIP_FIRST_ROW ? this.config.LOGO_SPACE_ROWS : 0;
+
+    if (offset > 0) {
+      this.headerRows = this.headerRows.map(idx => idx + offset);
+      this.separatorRows = this.separatorRows.map(idx => idx + offset);
+    }
+  }
+
+  /**
+   * Tworzy worksheet z danych
+   */
+  _createWorksheet() {
+    return XLSX.utils.aoa_to_sheet(this.combinedData);
+  }
+
+  /**
+   * Aplikuje style dla nagłówków
+   */
+  _applyHeaderStyles(worksheet) {
+    const startCol = this.config.SKIP_FIRST_COLUMN ? 1 : 0;
+
+    this.headerRows.forEach(rowIdx => {
+      const row = this.combinedData[rowIdx];
+
+      for (let col = startCol; col < row.length; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: rowIdx, c: col });
+
+        if (worksheet[cellAddress]) {
+          worksheet[cellAddress].s = {
+            fill: {
+              patternType: "solid",
+              fgColor: { rgb: this.config.HEADER_BG_COLOR }
+            },
+            font: {
+              color: { rgb: this.config.HEADER_TEXT_COLOR },
+              bold: true
+            }
+          };
+        }
+      }
+    });
+  }
+
+  /**
+   * Aplikuje obramowania dla komórek
+   */
+  _applyBorderStyles(worksheet) {
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    const startCol = this.config.SKIP_FIRST_COLUMN ? 1 : 0;
+
+    for (let row = range.s.r; row <= range.e.r; row++) {
+      if (this.separatorRows.includes(row)) continue;
+
+      for (let col = startCol; col <= range.e.c; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+
+        if (!worksheet[cellAddress]) continue;
+
+        worksheet[cellAddress].s = worksheet[cellAddress].s || {};
+        worksheet[cellAddress].s.border = this._createBorderStyle();
+      }
+    }
+  }
+
+  /**
+   * Tworzy obiekt stylu obramowania
+   */
+  _createBorderStyle() {
+    const borderConfig = {
+      style: this.config.BORDER_STYLE,
+      color: { rgb: this.config.BORDER_COLOR }
+    };
+
+    return {
+      top: borderConfig,
+      bottom: borderConfig,
+      left: borderConfig,
+      right: borderConfig
+    };
+  }
+
+  /**
+   * Ustawia szerokości kolumn
+   */
+  _applyColumnWidths(worksheet) {
+    const columnWidths = this._calculateColumnWidths();
+    worksheet['!cols'] = columnWidths;
+  }
+
+  /**
+   * Kalkuluje optymalne szerokości kolumn
+   */
+  _calculateColumnWidths() {
+    const widths = [];
+    const numCols = this.combinedData[0]?.length || 0;
+
+    for (let col = 0; col < numCols; col++) {
+      let maxLength = this.config.MIN_COLUMN_WIDTH;
+
+      for (let row = 0; row < this.combinedData.length; row++) {
+        const cellValue = this.combinedData[row][col] || '';
+        if (cellValue.length > maxLength) {
+          maxLength = cellValue.length;
+        }
+      }
+
+      widths.push({ wch: maxLength + this.config.COLUMN_WIDTH_PADDING });
+    }
+
+    return widths;
+  }
+
+  /**
+   * Zapisuje workbook do pliku
+   */
+  _saveWorkbook(worksheet, metadata) {
+    this.workbook = XLSX.utils.book_new();
+
+    const sheetName = this._sanitizeSheetName(metadata.name);
+    XLSX.utils.book_append_sheet(this.workbook, worksheet, sheetName);
+
+    const fileName = this._generateFileName(metadata);
+    XLSX.writeFile(this.workbook, fileName);
+  }
+
+  /**
+   * Sanityzuje nazwę arkusza (maksymalna długość)
+   */
+  _sanitizeSheetName(name) {
+    return name.slice(0, this.config.MAX_SHEET_NAME_LENGTH);
+  }
+
+  /**
+   * Generuje nazwę pliku
+   */
+  _generateFileName(metadata) {
+    const sanitizedName = this._sanitizeSheetName(metadata.name);
+    return `${metadata.id}"${sanitizedName}".xlsx`;
+  }
+
+  async fetchOrderData() {
+    return fetch(`/order-details/${this.orderId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          return data.data;
+        } else {
+          throw new Error('Failed to fetch order data');
+        }
+      });
+  }
+
+
+  reset() {
+    this.workbook = null;
+    this.combinedData = [];
+    this.headerRows = [];
+    this.separatorRows = [];
+  }
+}
+
+/**
+ * Funkcja fasadowa dla zachowania kompatybilności wstecznej
+ */
+export async function generateExcel() {
+  const generator = new ExcelGenerator();
+  await generator.generate();
 }
 
 export async function generatePdf(isShort = false) {
@@ -98,14 +540,24 @@ export async function generatePdf(isShort = false) {
 
 
   const orderId = comment.dataset.id;
-  if (!orderId) {
-    alert('Nie znaleziono ID zamówienia');
-    return;
-  }
+
 
   try {
     // Sprawdź czy kłódka jest otwarta (sprawdź po ID kłódki)
-    const hasPricesAccess = document.getElementById('lock-btn') !== null; // otwarta kłódka ma id="lock-btn"
+    let hasPricesAccess = false;
+    let printBtns = document.querySelectorAll('[id="print-button"]')
+    let shortPrintBtns = document.querySelectorAll('[id="short-print-button"]')
+
+    // Sprawdź wszystkie przyciski odpowiedniego typu
+    const buttonsToCheck = isShort ? shortPrintBtns : printBtns;
+    for (const btn of buttonsToCheck) {
+      if (btn.dataset.lock === 'true') {
+        hasPricesAccess = true;
+        break;
+      }
+    }
+    console.log('Has prices access:', hasPricesAccess, 'isShort:', isShort);
+
     const downloadUrl = `/orders/orderpdf/${orderId}/${hasPricesAccess ? 'true' : 'false'}/${isShort ? 'true' : 'false'}`;
     console.log('Generating PDF from URL:', downloadUrl);
     const response = await fetch(downloadUrl);

@@ -87,11 +87,10 @@ async function jsonTextBackToMap(orderItems) {
       }
       let value = "-";
       if (param) {
+
         if ("row" in param) {
-          // console.log(param.row);
         }
         if ('listsum' in param) {
-          console.log(param, 'LISTSUM')
         }
         if (!('option_value' in param)) {
           value = "-";
@@ -102,12 +101,7 @@ async function jsonTextBackToMap(orderItems) {
         }
 
         if ('locked' in param && 'param_description' in param) {
-          if (!isNaN(param.option_value) && param?.option_value != undefined && 'listsum' in param) {
-            let totalkey = total[param.param_description] || { price: 0, locked: !!param.locked };
-            totalkey.price = (totalkey.price || 0) + Number(param.option_value || 0);
-            totalkey.locked = !!param.locked;
-            total[param.param_description] = totalkey;
-          }
+
           if (param.locked) {
 
             if (!table.locked.includes(param.param_description)) {
@@ -186,17 +180,56 @@ function removeEmptyColumns(table) {
     const mappedRows = rows.map(r => {
       const row1 = {};
       const row2 = {};
-      // map headers1
-      for (let i = 0; i < headers1.length; i++) {
-        const headerKey = headerKeys1[i];
-        const cell = r.row[headerKey] || { row1: "-", row2: "-" };
-        row1[headers1[i]] = cell.row1;
+      
+      // Sort headerKeys to process non-formula values first, then formulas
+      // This ensures real values are not overwritten by formulas
+      const sortedHeaderKeys1 = headerKeys1.slice().sort((a, b) => {
+        const cellA = r.row[a] || { row1: "-" };
+        const cellB = r.row[b] || { row1: "-" };
+        const valA = cellA.row1;
+        const valB = cellB.row1;
+        const isFormulaA = typeof valA === 'string' && valA.includes('(');
+        const isFormulaB = typeof valB === 'string' && valB.includes('(');
+        return isFormulaA === isFormulaB ? 0 : (isFormulaA ? 1 : -1);
+      });
+      
+      const sortedHeaderKeys2 = headerKeys2.slice().sort((a, b) => {
+        const cellA = r.row[a] || { row2: "-" };
+        const cellB = r.row[b] || { row2: "-" };
+        const valA = cellA.row2;
+        const valB = cellB.row2;
+        const isFormulaA = typeof valA === 'string' && valA.includes('(');
+        const isFormulaB = typeof valB === 'string' && valB.includes('(');
+        return isFormulaA === isFormulaB ? 0 : (isFormulaA ? 1 : -1);
+      });
+      
+      
+      for (let i = 0; i < sortedHeaderKeys1.length; i++) {
+        const headerKey = sortedHeaderKeys1[i];
+        const headerIdx = headerKeys1.indexOf(headerKey);
+        const display = headers1[headerIdx];
+        const cell = r.row[headerKey] || { row1: "-" };
+        const value = cell.row1;
+        
+        // Skip if display already exists and this is a formula
+        if (row1[display] !== undefined && typeof value === 'string' && value.includes('(')) {
+          continue;
+        }
+        row1[display] = value;
       }
-      // map headers2
-      for (let i = 0; i < headers2.length; i++) {
-        const headerKey = headerKeys2[i];
-        const cell = r.row[headerKey] || { row1: "-", row2: "-" };
-        row2[headers2[i]] = cell.row2;
+      
+      for (let i = 0; i < sortedHeaderKeys2.length; i++) {
+        const headerKey = sortedHeaderKeys2[i];
+        const headerIdx = headerKeys2.indexOf(headerKey);
+        const display = headers2[headerIdx];
+        const cell = r.row[headerKey] || { row2: "-" };
+        const value = cell.row2;
+        
+        // Skip if display already exists and this is a formula
+        if (row2[display] !== undefined && typeof value === 'string' && value.includes('(')) {
+          continue;
+        }
+        row2[display] = value;
       }
       return { item: r.item, row: { row1, row2 } };
     });
@@ -219,17 +252,54 @@ function removeEmptyColumns(table) {
 
   const newRows = rows.map(rowObj => {
     const filteredRow = { row1: {}, row2: {} };
-    for (let i = 0; i < newHeaders1.length; i++) {
-      const display = newHeaders1[i];
-      const headerKey = newHeaderKeys1[i];
-      const cell = rowObj.row[headerKey] || { row1: "-", row2: "-" };
-      filteredRow.row1[display] = cell.row1;
+    
+    // Sort to process non-formula values first
+    const sortedNewHeaderKeys1 = newHeaderKeys1.slice().sort((a, b) => {
+      const cellA = rowObj.row[a] || { row1: "-" };
+      const cellB = rowObj.row[b] || { row1: "-" };
+      const valA = cellA.row1;
+      const valB = cellB.row1;
+      const isFormulaA = typeof valA === 'string' && valA.includes('(');
+      const isFormulaB = typeof valB === 'string' && valB.includes('(');
+      return isFormulaA === isFormulaB ? 0 : (isFormulaA ? 1 : -1);
+    });
+    
+    const sortedNewHeaderKeys2 = newHeaderKeys2.slice().sort((a, b) => {
+      const cellA = rowObj.row[a] || { row2: "-" };
+      const cellB = rowObj.row[b] || { row2: "-" };
+      const valA = cellA.row2;
+      const valB = cellB.row2;
+      const isFormulaA = typeof valA === 'string' && valA.includes('(');
+      const isFormulaB = typeof valB === 'string' && valB.includes('(');
+      return isFormulaA === isFormulaB ? 0 : (isFormulaA ? 1 : -1);
+    });
+    
+    for (let i = 0; i < sortedNewHeaderKeys1.length; i++) {
+      const headerKey = sortedNewHeaderKeys1[i];
+      const headerIdx = newHeaderKeys1.indexOf(headerKey);
+      const display = newHeaders1[headerIdx];
+      const cell = rowObj.row[headerKey] || { row1: "-" };
+      const value = cell.row1;
+      
+      // Skip if display already exists and new value is formula
+      if (filteredRow.row1[display] !== undefined && typeof value === 'string' && value.includes('(')) {
+        continue;
+      }
+      filteredRow.row1[display] = value;
     }
-    for (let i = 0; i < newHeaders2.length; i++) {
-      const display = newHeaders2[i];
-      const headerKey = newHeaderKeys2[i];
-      const cell = rowObj.row[headerKey] || { row1: "-", row2: "-" };
-      filteredRow.row2[display] = cell.row2;
+    
+    for (let i = 0; i < sortedNewHeaderKeys2.length; i++) {
+      const headerKey = sortedNewHeaderKeys2[i];
+      const headerIdx = newHeaderKeys2.indexOf(headerKey);
+      const display = newHeaders2[headerIdx];
+      const cell = rowObj.row[headerKey] || { row2: "-" };
+      const value = cell.row2;
+      
+      // Skip if display already exists and new value is formula
+      if (filteredRow.row2[display] !== undefined && typeof value === 'string' && value.includes('(')) {
+        continue;
+      }
+      filteredRow.row2[display] = value;
     }
     return { item: rowObj.item, row: filteredRow };
   });

@@ -1,5 +1,4 @@
 {% block title %}{% endblock title %}
-
 {% block head %}
   <style>
     .order-print {
@@ -16,7 +15,6 @@
       margin: 0;
       display: block;
     }
-
     .print-header {
       font-size: 18px;
       font-weight: bold;
@@ -24,25 +22,21 @@
       margin: 0 0 10px;
       padding: 0;
     }
-
     .print-header-subtitle {
       font-size: 16px;
       text-align: center;
       margin: 0 0 5px;
     }
-
     .print-header-comment {
       text-align: center;
       margin: 0 0 10px;
       font-size: 14px;
     }
-
     .print-table-container {
       margin-bottom: 40px !important;
       page-break-inside: avoid;
       break-inside: avoid;
     }
-
     .print-table {
       width: 100%;
       border-collapse: collapse;
@@ -52,7 +46,6 @@
       page-break-inside: avoid;
       break-inside: avoid;
     }
-
     .print-table td,
     .print-table th {
       border: 1px solid #000;
@@ -63,28 +56,23 @@
       overflow-wrap: break-word;
       hyphens: auto;
     }
-
     .print-table th {
       background-color: #e0e0e0;
       font-weight: bold;
       font-size: 14px;
     }
-
     .print-table td {
       font-size: 14px;
     }
-
     /* Zapobieganie dzieleniu wierszy na stronie */
     .print-table tr {
       page-break-inside: avoid;
       break-inside: avoid;
     }
-
     /* Grupowanie wierszy pozycji razem (główny wiersz + ceny) */
     .print-table tbody tr:not(.print-price-row) {
       page-break-after: avoid;
     }
-
     .print-price-row td {
       background-color: #f5f5f5;
       font-size: 14px;
@@ -94,7 +82,6 @@
       padding-bottom: 10px !important;
       font-size: 14px;
     }
-
     .print-price-label {
       font-weight: bold;
       margin-right: 3px;
@@ -103,7 +90,6 @@
       background-color: #b7b8a8ff !important;
       font-size: 14px !important;
       padding-bottom: 10px !important;
-
     }
     .print-total-price {
       display: flex;
@@ -115,7 +101,33 @@
       margin-top: 20px;
       padding: 10px;
     }
-
+    .order-details {
+      font-size: 12px !important;
+      line-height: 1.4 !important;
+      border: 1px solid #ccc !important;
+      border-radius: 5px !important;
+      padding: 10px !important;
+      margin: 20px 0 !important;
+      width: 40% !important;
+      min-width: 40% !important;
+      max-width: 40% !important;
+      box-sizing: border-box !important;
+    }
+    .client-details {
+      display: flex !important;
+      gap: 270px !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .order-details-line {
+      font-size: 20px !important;
+      margin: 4px 0 !important;
+    }
+    .header-3 {
+      font-size: 26px !important;
+      font-weight: bold !important;
+      margin-bottom: 10px !important;
+    }
     /* Usuń marginesy Bootstrap */
     .mb-4,
     .p-4,
@@ -123,159 +135,161 @@
       margin: 0 !important;
       padding: 0 !important;
     }
-
     .d-flex {
       display: flex;
     }
-
     .justify-content-end {
       justify-content: flex-end;
     }
-
     .align-items-center {
       align-items: center;
     }
-
     /* Reguły page-break dla PDF */
     @media print {
       .print-table-container {
         page-break-inside: avoid !important;
       }
-
       .print-table {
         page-break-inside: avoid !important;
       }
-
       .print-table tr {
         page-break-inside: avoid !important;
       }
     }
   </style>
 {% endblock head %}
-
 <div class="order-print">
-  <div class="position-relative mb-4">
+  <div
+    class="position-relative mb-4">
     <!-- Debug: logoPath = {{ logoPath }} -->
     {% if logoPath %}
       <img alt="logo" class="print-logo" src="{{ logoPath }}">
-    {% else %}
-      <img alt="logo" class="print-logo" src="/img/logo.png">
-    {% endif %}
-    <h2 class="fw-bold print-header text-center p-4">
-      {{ __('order.title') }}
-      {{ orderDetails.order_idx}}
-    </h2>
-    {% if orderDetails.commision %}
-      <h2 class="print-header-subtitle">"{{ orderDetails.commision }}"</h2>
-    {% endif %}
-    {% if orderDetails.comment %}
-      <div class="print-header-comment">
-        <strong>{{ __('order.comment') }}:</strong>
-        {{ orderDetails.comment }}
+      {% else %}
+        <img alt="logo" class="print-logo" src="/img/logo.png">
+        {% endif %}
+        <h2 class="fw-bold print-header text-center p-4">
+          {{ __('order.title') }}
+          {{ orderDetails.order_idx }}
+        </h2>
+        {% if orderDetails.commision %}
+          <h2 class="print-header-subtitle">"{{ orderDetails.commision }}"</h2>
+        {% endif %}
+        {% if orderDetails.comment %}
+          <div class="print-header-comment">
+            <strong>{{ __('order.comment') }}:</strong>
+            {{ orderDetails.comment }}
+          </div>
+        {% endif %}
       </div>
-    {% endif %}
-  </div>
-
-  {% set globalIndex = 1 %}
-  {% for table in cleanOrderItems %}
-    <div class="print-table-container">
-      <table class="print-table table align-left table-bordered">
-        <thead>
-          <tr>
-            <th>#</th>
-
-            {% for header in table.headers1 %}
-              {% if not(header in table.locked) %}
-                <th class="print-th-field">{{ header }}</th>
-              {% endif %}
-            {% endfor %}
-            <th>{{ __('order.department') }}</th>
-            <th>{{ __('order.group_name') }}</th>
-            <th>{{ __('order.name') }}</th>
-            <th>{{ __('order.comment') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for rowObj in table.rows %}
-            <tr>
-              <td>{{ globalIndex }}</td>
-
-              {% for header in table.headers1 %}
-                {% if not(header in rowObj.item.lockedParams) %}
-                  {% block values_representation %}
-                    <td class="print-td-val">{{ rowObj.row.row1[header] or '-' }}</td>
-                  {% endblock %}
-                {% endif %}
-              {% endfor %}
-              <td>{{ rowObj.item.department or '-' }}</td>
-              <td>{{ rowObj.item.group_name or '-' }}</td>
-              <td>{{ rowObj.item.commision or '-' }}</td>
-              <td>{{ rowObj.item.comment or '-' }}</td>
-
-            </tr>
-            <tr class="print-price-row">
-              {% for header in table.headers2 %}
-                {% if not(header in rowObj.item.lockedParams) %}
-                  <td class="print-price" colspan="2">
-                    <span class="print-price-label">{{ header }}:</span>
-                    <b>{{ rowObj.row.row2[header] or '-' }}</b>
-                  </td>
-                {% endif %}
-              {% endfor %}
-            </tr>
-            {% if prices %}
-              <tr class="print-price-row">
+      {% set globalIndex = 1 %}
+      {% for table in cleanOrderItems %}
+        <div class="print-table-container">
+          <table class="print-table table align-left table-bordered">
+            <thead>
+              <tr>
+                <th>#</th>
                 {% for header in table.headers1 %}
-                  {% if header in rowObj.item.lockedParams %}
-                    <td class="print-price" colspan="2">
-                      <span class="print-price-label">{{ header }}:</span>
-                      <b>{{ rowObj.row.row1[header] or rowObj.row.row2[header] or '-' }}</b>
-                    </td>
+                  {% if not(header in table.locked) %}
+                    <th class="print-th-field">{{ header }}</th>
                   {% endif %}
                 {% endfor %}
-                {% for header in table.headers2 %}
-                  {% if header in rowObj.item.lockedParams %}
-                    <td class="print-hidden-price" colspan="2">
-                      <span class="print-price-label">{{ header }}:</span>
-                      <b>{{ rowObj.row.row1[header] or rowObj.row.row2[header] or '-' }}</b>
-                    </td>
-                  {% endif %}
-                {% endfor %}
+                <th>{{ __('order.department') }}</th>
+                <th>{{ __('order.group_name') }}</th>
+                <th>{{ __('order.name') }}</th>
+                <th>{{ __('order.comment') }}</th>
               </tr>
-            {% endif %}
-            {% set globalIndex = globalIndex + 1 %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  {% endfor %}
-
-  {% if total %}
-    <div id="print-total-container">
-      <div class="print-total-price d-flex justify-content-end align-items-center">
-        {% for key, value in total %}
-          {% if value.locked == false %}
-            <span class="print-price-label">{{ key }}:
-              {{ value.price.toFixed(2) }}
-              &#8364;</span>
-          {% endif %}
-        {% endfor %}
-      </div>
-      {% if prices %}
-        <div class="print-total-price d-flex justify-content-end align-items-center">
-          {% for key, value in total %}
-            {% if value.locked %}
-              <span class="print-price-label">{{ key }}:
-                {{ value.price.toFixed(2) }}
-                &#8364;</span>
-            {% endif %}
-          {% endfor %}
+            </thead>
+            <tbody>
+              {% for rowObj in table.rows %}
+                <tr>
+                  <td>{{ globalIndex }}</td>
+                  {% for header in table.headers1 %}
+                    {% if not(header in rowObj.item.lockedParams) %}
+                      {% block values_representation %}
+                        <td class="print-td-val">{{ rowObj.row.row1[header] or '-' }}</td>
+                      {% endblock %}
+                    {% endif %}
+                  {% endfor %}
+                  <td>{{ rowObj.item.department or '-' }}</td>
+                  <td>{{ rowObj.item.group_name or '-' }}</td>
+                  <td>{{ rowObj.item.commision or '-' }}</td>
+                  <td>{{ rowObj.item.comment or '-' }}</td>
+                </tr>
+                <tr class="print-price-row">
+                  {% for header in table.headers2 %}
+                    {% if not(header in rowObj.item.lockedParams) %}
+                      <td class="print-price" colspan="2">
+                        <span class="print-price-label">{{ header }}:</span>
+                        <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                      </td>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+                {% if prices %}
+                  <tr class="print-price-row">
+                    {% for header in table.headers1 %}
+                      {% if header in rowObj.item.lockedParams %}
+                        <td class="print-price" colspan="2">
+                          <span class="print-price-label">{{ header }}:</span>
+                          <b>{{ rowObj.row.row1[header] or rowObj.row.row2[header] or '-' }}</b>
+                        </td>
+                      {% endif %}
+                    {% endfor %}
+                    {% for header in table.headers2 %}
+                      {% if header in rowObj.item.lockedParams %}
+                        <td class="print-hidden-price" colspan="2">
+                          <span class="print-price-label">{{ header }}:</span>
+                          <b>{{ rowObj.row.row1[header] or rowObj.row.row2[header] or '-' }}</b>
+                        </td>
+                      {% endif %}
+                    {% endfor %}
+                  </tr>
+                {% endif %}
+                {% set globalIndex = globalIndex + 1 %}
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-      {% endif %}
+      {% endfor %}
+      {% if totalPrice %}
+        <div id='total-container'>
+          <div class="total-price d-flex justify-content-end align-items-center col-12">
+            <span class='total price-label col-3 text-center'>
+              {% if totalPrice.visible != '0.00' %}
+                {{ __('order.total') }}: {{ totalPrice.visible }}&#8364;</span>
+            {% else %}
+              Według cennika</span>
+          {% endif %}
+        </div>
+        {% if prices %}
+          <div class="total-price d-flex justify-content-end align-items-center row ms-1 col-12">
+            <span class='total gold price-label col-3  text-center'>
+              {% if totalPrice.hidden != '0.00' %}
+                {{ __('order.total_hidden') }}: {{ totalPrice.hidden }}&#8364;</span>
+            {% else %}
+              Według cennika</span>
+          {% endif %}
+        {% endif %}
+      </div>
     </div>
   {% endif %}
-</div>
-
-{% block scripts %}
-  <script type='module' src='/scripts/base.js'></script>
-{% endblock %}
+  <div class='client-details'>
+    <div class="order-details">
+      <h3 class='header-3'>{{ __('order.client_data') }}</h3>
+      <div class="order-details-line">{{ __('new-order.client_name') }}: {{ sendData.client }}</div>
+      <div class="order-details-line">{{ __('base.nip') }}: {{ sendData.tax }}</div>
+      <div class="order-details-line">{{ __('orders.created_date') }}: {{ sendData.created_date }}</div>
+    </div>
+    <div class="order-details">
+      <h3 class='header-3'>{{ __('order.send_data') }}</h3>
+      <div class="order-details-line">{{ __('new-order.street') }}: {{ sendData.address }}</div>
+      <div class="order-details-line">{{ __('new-order.city') }}: {{ sendData.zip }}
+        {{ sendData.city }}</div>
+      <div class="order-details-line">{{ __('new-order.country') }}: {{ sendData.country }}</div>
+      <div class="order-details-line">{{ __('new-order.email_placeholder') }}:
+      {{ sendData.email }}</div>
+      <div class="order-details-line">{{ __('new-order.phone') }}: {{ sendData.phone }}</div>
+    </div>
+  </div>
+</div></div>{% block scripts %}
+<script type='module' src='/scripts/base.js'></script>{% endblock %}

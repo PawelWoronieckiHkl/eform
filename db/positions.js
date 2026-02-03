@@ -3,7 +3,7 @@ const { selectQuery, insertQuery, updateQuery, deleteQuery, connetToDb } = requi
 const connection = connetToDb()
 
 async function insertNewForm(formData) {
-    const insertFormQuery = 'INSERT INTO order_item(order_id, name, commision, json_parameters, json_parameters_desc, amount, list_price, discount_percentage, discount, unit_price, total_price,comment,ver,asortment_group_number,lang,department,group_name) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)'
+    const insertFormQuery = 'INSERT INTO order_item(order_id, name, commision, json_parameters, json_parameters_desc, amount, list_price, discount_percentage, discount, unit_price, total_price,comment,ver,asortment_group_number,lang,department,group_name,parameters_short) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)'
     console.log('siema')
     const fields = [
         formData.order,
@@ -22,7 +22,8 @@ async function insertNewForm(formData) {
         formData.groupNumber,
         formData.lang,
         formData.department,
-        formData.group
+        formData.group,
+        JSON.stringify(formData.parameters_short)
     ];
     console.log(fields)
     const response = await insertQuery(insertFormQuery, fields);
@@ -31,6 +32,33 @@ async function insertNewForm(formData) {
 
 }
 
+async function updateOrderPrice(orderId, newPrice) {
+    let total = 0;
+    let total_hidden = 0;
+    const getItemPrices = `SELECT oi.unit_price , oi.total_price 
+    FROM eform.order_item oi
+    join eform.\`order\` o on oi.order_id = o.id where o.id =?;`;
+
+    const currentPrices = await selectQuery(getItemPrices, orderId);
+    console.log(currentPrices, "CURRENT PRICE @@@@@@@@@@@@")
+    if (currentPrices.length == 0) {
+        throw new Error(`Order with ID ${orderId} not found.`);
+    }
+
+    for (let price of Object.entries(currentPrices)) {
+        price = price[1];
+        console.log(price, price.unit_price,price.total_price, "PRICE ITEM @@@@@@@@@@@@")
+        total += parseFloat(price.unit_price);
+        total_hidden += parseFloat(price?.total_price ?? 0);
+    }
+    total = parseFloat(total.toFixed(2));
+    total_hidden = parseFloat(total_hidden.toFixed(2));
+    newPrice = { total: total, total_hidden: total_hidden };
+
+    const updateQueryStr = 'UPDATE `order` SET total_price = ?, total_price_hidden=? WHERE id = ?';
+    const response = await updateQuery(updateQueryStr, [total, total_hidden, orderId]);
+    return response;
+}
 
 async function getPosition(positionId) {
     const query = 'SELECT * FROM order_item WHERE id LIKE ?'
@@ -44,7 +72,7 @@ async function getLastChoice(userId) {
     return result[0];
 }
 
-async function updatePosition(positionData) {
+async function updatePosition(positionData,total) {
     const query = `
     UPDATE order_item
     SET 
@@ -52,7 +80,10 @@ async function updatePosition(positionData) {
         name = ?,
         json_parameters = ?,
         json_parameters_desc = ?,
-        comment = ?
+        comment = ?,
+        unit_price = ?,
+        total_price = ?,
+        parameters_short = ?
     WHERE id = ?
   `;
     const values = [
@@ -61,9 +92,13 @@ async function updatePosition(positionData) {
         JSON.stringify(positionData.jsonValues),
         JSON.stringify(positionData.jsonValuesToDisplay),
         positionData.comment,
+        total.total,
+        total.total_hidden,
+        JSON.stringify(positionData.jsonShort),
         parseInt(positionData.id)
     ]
-    const response = updateQuery(query, values);
+    const response = await updateQuery(query, values);
+    console.log(response)
     return response
 }
 
@@ -342,5 +377,6 @@ module.exports = {
     duplicateSendAddress,
     removeFavorite,
     movePositionUp,
-    movePositionDown
+    movePositionDown,
+    updateOrderPrice
 }

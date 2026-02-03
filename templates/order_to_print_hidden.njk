@@ -1,0 +1,134 @@
+{% extends "order.njk" %}
+{% block print_space %}
+  <div id="generate-container" class='me-3 d-none d-md-flex'>
+    <button id="lockBtn" class="btn">
+      <img src="/img/open-padlock.png" alt="padlock icon" class='icon'></button>
+      <button class="btn has-tooltip" data-lock='true' data-tooltip="{{ __('base.generate_short_pdf_tooltip') }}" id='short-print-button'>
+        <img src="/img/pdf-short.png" alt="pdf icon" class='icon'></button>
+        <button class="btn has-tooltip" data-lock='true' data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'>
+          <img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
+          <button id="generate-excel-btn" data-lock="true" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip') }}">
+            <img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
+          </div>
+        </div>
+        <div class="floating-order w-100 mobile d-block d-md-none">
+          <h2 class="fw-bold header text-center p-4" id='order-title-mobile' data-id="{{ orderDetails.id }}">
+            {{ __('order.title') }}
+            {{ orderDetails.order_idx }} <br/>
+            {% if orderDetails.commision %}
+              <p id='commission-name-mobile' data-name='{{ orderDetails.commision }}'>"{{ orderDetails.commision }}"</p>
+            {% endif %}
+          </h2>
+        </div>
+        <!-- Komentarz pod tytułem -->
+        {% if orderDetails.comment and orderDetails.comment.trim() and orderDetails.comment.trim() != '' and orderDetails.comment.trim() != '-' %}
+          <div class="comment-space d-flex align-items-center justify-content-center w-100">
+            <h3 id='comment' class='h3 fw-bold btn' data-id="{{ orderDetails.id }}">
+              {{ __('order.comment') }}: {{ orderDetails.comment }}
+            </h3>
+          </div>
+        {% else %}
+          <div class="comment-space d-flex align-items-center justify-content-center w-100">
+            <h3 id='comment' class='h3 fw-bold btn' data-id="{{ orderDetails.id }}"></h3>
+          </div>
+        {% endif %}
+      </div>
+    {% endblock %}
+    {% block table %}
+      {% set globalIndex = 1 %}
+      {% for table in cleanOrderItems %}
+        <div class="table-scroll mb-5">
+          {% block table_style %}
+            <!-- Desktop table -->
+            <table class="table align-left table-bordered order-table mt-5 d-none d-md-table">
+              <thead>
+              {% endblock %}
+              <tr>
+                {% block btns_head %}
+                  <th class="edit-buttons">{{ __('order.action') }}</th>
+                {% endblock %}
+                <th class="edit-buttons">#</th>
+                {% for header in table.headers1 %}
+                  {% if not(header in table.locked) %}
+                    <th class="th-field">{{ header }}</th>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for rowObj in table.rows %}
+              </td>
+              <th scope="row">{{ globalIndex }}</th>
+              {% for header in table.headers1 %}
+                {% if (not(header in rowObj.item.lockedParams)) %}
+                  <td class="td-val">{{ rowObj.row.row1[header] or '-' }}</td>
+                {% endif %}
+              {% endfor %}
+              <td>{{ rowObj.item.department or '-' }}</td>
+              <td>{{ rowObj.item.group_name or '-' }}</td>
+              <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-" }}</td>
+              <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
+            </tr>
+            <tr id='price-row'>
+              {% set idx = 0 %}
+              {% for header in table.headers2 %}
+                {% if (not(header in rowObj.item.lockedParams)) %}
+                  {% set value = rowObj
+                .row
+                .row2[header] %}
+                  {% if value and value != '-' and value != '' %}
+                    {% if idx == 0 %}
+                      <td class="price" colspan="1">
+                      {% endif %}
+                      <td class="price" colspan="2">
+                        <span class="price-label">{{ header }}:</span>
+                        <b>{{ value }}</b>
+                      </td>
+                      {% set idx = idx + 1 %}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </tr>
+              {% if total %}
+                <tr id='price-row'>
+                  {% set idx = 0 %}
+                  {% for header in table.headers1 %}
+                    {% if (header in rowObj.item.lockedParams) %}
+                      {% if idx == 0 %}
+                        <td class="price" colspan="1">
+                        {% endif %}
+                        <td class="price" colspan="2">
+                          <span class="price-label gold">{{ header }}:</span>
+                          <b>{{ rowObj.row.row1[header] or  rowObj.row.row2[header]  or '-' }}</b>
+                        </td>
+                        {% set idx = idx + 1 %}
+                      {% endif %}
+                    {% endfor %}
+                    {% for header in table.headers2 %}
+                      {% if (header in rowObj.item.lockedParams) %}
+                        {% set value = rowObj
+                      .row
+                      .row1[header] or rowObj
+                      .row
+                      .row2[header] %}
+                        {% if value and value != '-' and value != '' %}
+                          {% if idx == 0 %}
+                            <td class="price" colspan="1">
+                            {% endif %}
+                            <td class="price" colspan="2">
+                              <span class="price-label gold">{{ header }}:</span>
+                              <b>{{ value }}</b>
+                            </td>
+                            {% set idx = idx + 1 %}
+                          {% endif %}
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                  {% endif %}
+                  {% set globalIndex = globalIndex + 1 %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% endfor %}
+      {% endblock %}

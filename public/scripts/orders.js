@@ -49,6 +49,7 @@ async function createOrder() {
 				"Content-Type": "application/json",
 			},
 			body: requestBody,
+			isEmployee: window.isEmployee
 		});
 		const result = await response.json();
 

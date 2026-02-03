@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
             filterItems(searchTerm);
         });
 
- 
+
         userDropdown.addEventListener('click', function (e) {
             if (e.target.classList.contains('dropdown-item')) {
                 const selectedName = e.target.textContent.trim();
@@ -63,8 +63,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 selectedUserIdent = selectedIdent;
                 userDropdown.classList.remove('show');
 
-                // Redirect to orders page for selected user
-                window.location.href = `/orders/userOrders?userIdent=${encodeURIComponent(selectedIdent)}`;
+                const targetPath = `/orders/userOrders?userIdent=${encodeURIComponent(selectedIdent)}`;
+                localStorage.setItem('lastUserPath', targetPath);
+
+                // Poczekaj na zapisanie orgIdent przed przekierowaniem
+                getOrgIdent().then(() => {
+                    window.location.href = targetPath;
+                });
             }
         });
 
@@ -146,3 +151,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
+function getOrgIdent() {
+    return fetch('/get-org-ident', {
+        method: 'GET',
+        credentials: 'include'
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.organization) {
+                localStorage.setItem('orgIdent', `${data.organization}`);
+                console.log(data.organization, 'zapisano pomyślnie');
+                return data.organization;
+            }
+        })
+        .catch(err => {
+            console.error('Błąd pobierania orgIdent:', err);
+        });
+}

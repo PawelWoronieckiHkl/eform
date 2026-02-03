@@ -126,10 +126,13 @@ body {
 }
 .order-details-line {
     margin: 4px 0 !important;
+    font-size: 16px !important;
 }
-
+#total-container {
+    margin-right: 30px !important;
+}
 .header-3 {
-    font-size: 14px !important;
+    font-size: 20px !important;
     font-weight: bold !important;
     margin-bottom: 10px !important;
 }
@@ -145,19 +148,15 @@ body {
     font-weight: bold !important;
     text-align: right !important;
     margin: 5px 0 !important;
+    margin-top: 15px !important;
+    margin-right: 120px !important;
 }
 
-/* Zapobieganie dzieleniu wierszy */
-#table tr {
-
-}
-
-/* Pasek naprzemienny wierszy – opcjonalne */
 #table tbody tr:nth-child(even) {
     background-color: #fafafa;
 }
 
-/* Linki w A3 (raczej nieużywane w druku) */
+
 a {
     color: inherit;
     text-decoration: none;

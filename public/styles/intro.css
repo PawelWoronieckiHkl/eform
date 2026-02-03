@@ -70,7 +70,9 @@
 #new-order-nav-btn.introjs-showElement,
 #orders-nav-btn.introjs-showElement,
 #new-order-nav-btn.introjs-relativePosition,
-#orders-nav-btn.introjs-relativePosition,
+#employee-panel-nav-btn.introjs-relativePosition,
+#employee-panel-nav-btn.introjs-showElement,
+#new-order-nav-btn.introjs-relativePosition,
 #orders-history-nav-btn.introjs-showElement,
 #orders-history-nav-btn.introjs-relativePosition {
     z-index: 99999999 !important;
@@ -130,11 +132,11 @@ html.nav-collapsed .introjs-showElement {
 
 /* Ensure navbar buttons are visible during intro */
 #new-order-nav-btn.introjs-showElement,
-#orders-nav-btn.introjs-showElement {
+#orders-nav-btn.introjs-showElement
+ {
     z-index: 198 !important;
-    position: relative !important;
-
-    border: 2px solid #3f4750  !important;
+    border: 2px solid #3f4750 !important;
+    
 }
 
 /* Fix for mobile navbar issues */
@@ -162,12 +164,15 @@ html.nav-collapsed .desktop-nav .introjs-showElement {
 
 /* Fix tooltip positioning */
 .introjs-tooltip {
+    position:absolute !important;
+    min-width: 400px !important;
     max-width: 400px !important;
     font-size: 14px !important;
     line-height: 1.5 !important;
 }
 
 .introjs-tooltip .introjs-tooltiptext {
+
     padding: 15px !important;
 }
 
@@ -179,4 +184,8 @@ html.nav-collapsed .desktop-nav .introjs-showElement {
     padding: 8px 16px !important;
     margin: 5px !important;
     border-radius: 4px !important;
+}
+.active {
+    border: 1px solid #6b6b6b46 !important;
+    z-index: 1!important;
 }

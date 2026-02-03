@@ -1,7 +1,7 @@
 import {
   logFunctionName,
   buildValuesToDisplay,
-  resetDependences,
+
   updateFieldInputs,
   updateFieldStates,
 } from './formTools.js';
@@ -13,6 +13,7 @@ import { createElement } from '../components/htmlManipulator.js'
 import { stopSpin, startSpin } from "../components/hourglass.js";
 import { getEnvVersion } from "../getEnv.js";
 import { getUserName } from "../base.js";
+import { chcekIfDateDeliveryCorrect } from './checkIfDateDeliveryCorrect.js';
 
 
 export class DialogManager {
@@ -33,7 +34,8 @@ export class DialogManager {
     this.param = null;
     this.groupNumber = null;
     this.activeFilters = {};
-
+    this.favList = [];
+    this.deleteFavsBtn = '';
 
     if (this.confirmButton) {
       this.confirmButton.addEventListener('click', () => this.handleConfirm());
@@ -42,11 +44,13 @@ export class DialogManager {
     if (this.closeButton) {
       this.closeButton.addEventListener('click', () => this.handleCancel());
     }
+
+
   }
 
 
   async initialize(param, options, groupNumber, filters, attrs) {
-    startSpin()
+
     logFunctionName('DialogManager.initialize');
     this.param = param;
     this.user = await getUserName();
@@ -54,6 +58,8 @@ export class DialogManager {
     this.groupNumber = groupNumber;
     this.filters = filters
     this.attrValues = attrs
+    this.org = await window.formsManager.getOrgIdent();
+
     this.isMultiChoice = param?.MULTI == 'true' ?? false;
     // do zmiany oficjalnie
     this.isLink = param?.LINK == 'true' ?? false;
@@ -94,6 +100,10 @@ export class DialogManager {
     }
 
     stopSpin()
+
+    if (this.deleteFavsBtn) {
+      this.clearFavs()
+    }
   }
 
   // Pobranie mapy obrazów z serwera
@@ -324,10 +334,18 @@ export class DialogManager {
     ];
 
     const sortingContainer = createElement('div', {
-      class: ['sorting-controls', 'mb-2'],
+      class: ['sorting-controls', 'mb-2', 'd-flex', 'align-items-center', 'justify-content-end'],
 
     });
 
+    this.deleteFavsBtn = createElement('button', {
+      class: ['btn', 'btn-outline-secondary', 'me-2', 'clear-favorites-btn'],
+      type: 'button',
+      id: `clear-favorites-btn`,
+      'aria-expanded': 'false',
+      text: `${t("form.clear_favorites")}`,
+      style: { backgroundColor: '#fff', color: '#000' }
+    }, sortingContainer);
 
     const select = createElement('select', {
       id: 'sortOptions',
@@ -339,6 +357,9 @@ export class DialogManager {
         }
       }
     }, sortingContainer);
+
+
+
 
     for (const [idx, opt] of options.entries()) {
       const option = createElement('option', {
@@ -365,7 +386,6 @@ export class DialogManager {
   createSearchField() {
     const searchContainer = document.createElement('div');
     searchContainer.classList.add('search-container', 'mb-2');
-
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.placeholder = t('form.search_input_placeholder');
@@ -385,8 +405,10 @@ export class DialogManager {
       style: { border: '1px solid gray' },
       existingControls
     });
-
-    const isFilters = Object.keys(this.filters).length > 0;
+    let isFilters = false;
+    if (this.filters) {
+      isFilters = Object?.keys(this?.filters).length ?? 0 > 0;
+    }
     if (!isFilters) {
       filterControls.classList.add('d-none')
       return filterControls;
@@ -440,7 +462,6 @@ export class DialogManager {
       // text: this.formatFilterName(filterName) + ': '
       // }, filterGroup);
 
-      // Dropdown Bootstrap
       const dropdown = createElement('div', { class: ['dropdown', 'd-inline-block'] }, filterGroup);
 
       const dropdownToggle = createElement('button', {
@@ -473,21 +494,81 @@ export class DialogManager {
       }, allLi);
 
       // Pozostałe opcje (posortowane)
-      const sortedValues = Array.isArray(filterValues)
+
+
+      let sortedValues = Array.isArray(filterValues)
+
         ? Array.from(filterValues).sort((a, b) => {
-          // Zamień przecinki na kropki i spróbuj sparsować jako liczby
+
+          if (a.includes('#') && b.includes('#')) {
+
+            const extractValue = (str) => {
+
+              const match = String(str).match(/#(.+)$/);
+              // console.log(match[1].trim().slice(0,1), 'extracted')
+              return match ? match[1].trim().slice(0, 1) : '';
+
+            };
+
+            const aValue = extractValue(a);
+            const bValue = extractValue(b);
+
+            const aIsNumber = /^\d+$/.test(aValue);
+            const bIsNumber = /^\d+$/.test(bValue);
+
+            // Jeśli oba są literami, sortuj alfabetycznie
+            if (!aIsNumber && !bIsNumber) {
+              return aValue.localeCompare(bValue, undefined, {
+                sensitivity: 'base',
+                numeric: false
+              });
+            }
+
+            // Jeśli jeden jest liczbą, a drugi literą, litery mają priorytet
+            if (!aIsNumber && bIsNumber) {
+              return -1;
+            }
+
+            if (aIsNumber && !bIsNumber) {
+              return 1;
+            }
+
+            // Jeśli oba są liczbami, sortuj numerycznie
+            return parseInt(aValue, 10) - parseInt(bValue, 10);
+          }
+
+          // Domyślne sortowanie dla innych filtrów
           const aNum = parseFloat(String(a).replace(',', '.'));
           const bNum = parseFloat(String(b).replace(',', '.'));
 
-          // Jeśli oba są liczbami, sortuj numerycznie
           if (!isNaN(aNum) && !isNaN(bNum)) {
             return aNum - bNum;
           }
 
-          // Jeśli oba są tekstem, sortuj alfabetycznie
+          if (!isNaN(aNum) && isNaN(bNum)) {
+            return 1;
+          }
+
+          if (isNaN(aNum) && !isNaN(bNum)) {
+            return -1;
+          }
+
           return String(a).localeCompare(String(b), undefined, { sensitivity: 'base' });
+
         })
         : [];
+      if (this.org.toUpperCase() == 'COZY' && window.tempGroupNumber == '59') {
+        sortedValues = [
+          'Prijsgroup #Bamboe Pk1',
+          'Prijsgroup #Bamboe Pk2',
+          'Prijsgroup #Eco Pk1',
+          'Prijsgroup #Eco Pk2',
+          'Prijsgroup #Retro Pk 1',
+          'Prijsgroup #Structuur Pk2',
+          'Prijsgroup #Mat Pk3',
+          'Prijsgroup #Luxe Pk4'];
+
+      }
 
       sortedValues.forEach(value => {
         if (!value || value.trim() === '' || value.trim() === '-' || value.trim() === '?') return;
@@ -506,7 +587,8 @@ export class DialogManager {
             'ZERO': t('form.status_zero') || 'Niedostępne',
             'SAFE': t('form.status_safe') || 'Dostępne',
             'LOW': t('form.status_low') || 'Niski stan',
-            'CRITICAL': t('form.status_critical') || 'Stan krytyczny'
+            'CRITICAL': t('form.status_critical') || 'Stan krytyczny',
+            'OBSOLETE': t('form.status_obsolete') || 'Obsolet'
           };
           displayText = translations[value] || value;
         }
@@ -557,18 +639,15 @@ export class DialogManager {
     return filterControls;
   }
 
-  // Formatowanie nazwy filtra (pierwsza litera duża, reszta małe)
   formatFilterName(name) {
     return name
   }
 
-  // Pobieranie dostępnych filtrów z opcji
   getAvailableFilters() {
 
     return this.filters
   }
 
-  // Pobranie unikalnych kategorii z opcji
   getUniqueCategories() {
 
     const attrVals = this.attrValues.STAN
@@ -577,6 +656,7 @@ export class DialogManager {
     const categories = new Set();
     const stockStatuses = new Set();
     const missingStanOptions = [];
+    const pricesGroups = new Set();
 
     this.options.forEach(option => {
       if (attrVals) {
@@ -601,20 +681,27 @@ export class DialogManager {
         if (foundEntry) {
           const entryKey = Object.keys(foundEntry)[0];
 
-          // Sprawdź czy to wpis z -OBS czy normalny
           if (entryKey.endsWith('-OBS')) {
             option.STAN = foundEntry[entryKey];
+
           } else {
             option.STAN = foundEntry[normalizedValue];
           }
 
-          // Wyciągnij status
           const match = String(option.STAN).match(/ZERO|SAFE|LOW|CRITICAL/i);
-          if (match) {
+
+          if (match && match[0] != 'ZERO') {
             stockStatuses.add(match[0].toUpperCase());
           }
+          else {
+            if (option.OBSOLETE) {
+              stockStatuses.add('OBSOLETE')
+            }
+            else {
+              stockStatuses.add(match[0].toUpperCase());
+            }
+          }
         } else {
-          // Dodaj opcję do listy brakujących STAN
           missingStanOptions.push(option.VALUE);
         }
 
@@ -630,21 +717,35 @@ export class DialogManager {
       }
     });
 
-    // Log brakujących opcji STAN w nowej linii
     if (missingStanOptions.length > 0) {
     }
 
     // Dodaj filtr STAN
     if (stockStatuses.size > 0 && (this.env || this.user.pin == '0000')) {
+      // console.log(this.env, 'env version')
       this.stan = t('form.warehouse_stock') || 'Stan magazynowy';
       this.filters[this.stan] = Array.from(stockStatuses);
     }
 
+    if (this.param.NAME == 'KOLOR') {
+      this.options.forEach(option => {
+        if (option?.ALIAS) {
+          pricesGroups.add(option.ALIAS_DESCRIPTION)
+        }
+        else {
+          pricesGroups.add(option.DESCRIPTION)
+        }
+
+
+      });
+      this.prices = t('form.price_groups') || 'Grupa cenowa';
+      this.filters[this.prices] = Array.from(pricesGroups);
+    }
+
+
     return Array.from(categories);
   }
 
-
-  // Renderowanie opcji
   async renderOptions(imageMap) {
     if (!this.listContainer) return;
 
@@ -660,6 +761,7 @@ export class DialogManager {
     for (const option of this.options) {
       if (safeFavs.includes(option.VALUE)) {
         favoriteOptions.push(option);
+        this.favList.push(option.VALUE)
       } else {
         otherOptions.push(option);
       }
@@ -684,7 +786,6 @@ export class DialogManager {
     }
   }
 
-  // Tworzenie elementu opcji
   createOptionElement(option, imageMap, isFav) {
     const colorBox = document.createElement('div');
     colorBox.classList.add('image-box');
@@ -698,7 +799,6 @@ export class DialogManager {
     if (this.isMultiChoice) {
       colorBox.classList.add('multi-selectable'); // Nowa klasa dla stylizacji
     }
-    // Dodanie wszystkich właściwości opcji jako atrybuty data-*
     for (const [key, value] of Object.entries(option)) {
       // Pomijamy standardowe pola
       if (['VALUE', 'DESCRIPTION', 'ROW_NUM'].includes(key)) continue;
@@ -728,7 +828,6 @@ export class DialogManager {
           };
           const info = map[status] || { class: 'stock-unknown' };
 
-          // create a tiny dot badge and append it to the option box (color via CSS)
           if (status == 'ZERO' && option.OBSOLETE) {
             colorBox.classList.add("obsolete")
           }
@@ -736,6 +835,7 @@ export class DialogManager {
             colorBox.classList.add("unavailable")
           }
           if (option?.ATTR_DESC) {
+            let date = chcekIfDateDeliveryCorrect(option.ATTR_DESC)
             circleElem = createElement('span', {
               class: ['stock-badge', info.class,],
               'aria-hidden': 'true'
@@ -743,7 +843,7 @@ export class DialogManager {
             deliveryInfo = createElement('div', {
               class: ['delivery-info'],
               'aria-hidden': 'true',
-              text: option.ATTR_DESC
+              text: date
             });
           }
 
@@ -762,7 +862,6 @@ export class DialogManager {
     if (option.ATTRIBUTES) {
       try {
 
-
         for (const [attrKey, attrValue] of Object.entries(option.ATTRIBUTES)) {
           const sanitizedKey = attrKey.replace(/ /g, '-').toLowerCase();
           colorBox.setAttribute(`data-${sanitizedKey}`, attrValue);
@@ -770,10 +869,9 @@ export class DialogManager {
       }
       catch (err) { 'blad' }
     }
-    // Dodanie obsługi kliknięcia
+
     colorBox.addEventListener('click', () => this.handleOptionClick(colorBox));
 
-    // Dodanie obrazu jeśli istnieje
     const filename = imageMap[option.VALUE];
 
     if (filename) {
@@ -781,14 +879,16 @@ export class DialogManager {
       top.appendChild(imageWrapper);
     }
 
-    // Dodanie nazwy i opisu
     const colorName = document.createElement('p');
     colorName.classList.add('image-name');
-    
+
     if (option?.ALIAS) {
+      option.PRESENATION = { value: option.ALIAS, description: option.ALIAS_DESCRIPTION }
       colorName.innerHTML = `${option.ALIAS}<br>${option.ALIAS_DESCRIPTION}`;
     }
     else {
+      option.PRESENATION = { value: option.VALUE, description: option.DESCRIPTION }
+
       colorName.innerHTML = `${option.VALUE}<br>${option.DESCRIPTION}`;
     }
 
@@ -807,18 +907,14 @@ export class DialogManager {
       }
     });
 
-    // stock status indicator based on option.STAN (ZERO, SAFE, LOW)
-    // create a small colored dot on the option box (no text)
-
-
-
-
-
-    if (isFav) { bottom.classList.add('favorite'); }
+    if (isFav) {
+      colorBox.classList.add('favorite');
+      bottom.classList.add('favorite');
+    }
     if (circleElem) {
       bottom.appendChild(circleElem);
     }
-    else{
+    else {
       colorName.classList.add('ml-3');
     }
     bottom.appendChild(colorName);
@@ -851,7 +947,6 @@ export class DialogManager {
       }
 
       const data = await response.json();
-      // data.success === true, data.favorites - tablica ulubionych
       return data.favorites;
     } catch (error) {
       console.error('Błąd pobierania ulubionych:', error);
@@ -865,14 +960,12 @@ export class DialogManager {
     const container = this.listContainer;
     if (!container) return;
 
-    // Pobierz elementy (np. divy .image-box)
     const items = Array.from(container.querySelectorAll('.image-box'));
 
-    // Sortuj według wybranej metody
     items.sort((a, b) => {
       switch (sortMethod) {
         case 'default':
-          // Sortuj według oryginalnej kolejności (ROW_NUM lub kolejności w this.options)
+
           const aValue = a.querySelector('.image-name').dataset.value;
           const bValue = b.querySelector('.image-name').dataset.value;
           const aIndex = this.options.findIndex(opt => opt.VALUE === aValue);
@@ -887,22 +980,26 @@ export class DialogManager {
             a.querySelector('.image-name').textContent
           );
         case 'favorites':
-          // Załóżmy, że ulubione mają klasę 'favorite'
-          const aFav = a.classList.contains('favorite') ? 1 : 0;
-          const bFav = b.classList.contains('favorite') ? 1 : 0;
-          return bFav - aFav;
+          const aFav = a.classList.contains('favorite');
+          const bFav = b.classList.contains('favorite');
+
+          if (aFav && !bFav) return -1;
+          if (!aFav && bFav) return 1;
+
+          const aVal = a.querySelector('.image-name').dataset.value;
+          const bVal = b.querySelector('.image-name').dataset.value;
+          const aIdx = this.options.findIndex(opt => opt.VALUE === aVal);
+          const bIdx = this.options.findIndex(opt => opt.VALUE === bVal);
+          return aIdx - bIdx;
         default:
-          return 0; // brak sortowania
+          return 0;
       }
     });
 
-    // Wyczyść kontener i dodaj posortowane elementy
     container.innerHTML = '';
     items.forEach(item => container.appendChild(item));
   }
 
-
-  // favouriteBehavior wywoływana przy kliknięciu serduszka
   async favouriteBehavior(element, option) {
     try {
       const productValue = option.VALUE;
@@ -924,15 +1021,23 @@ export class DialogManager {
           parent.classList.toggle('favorite', result.isFavorite);
         }
       } else {
-        // Obsługa błędu serwera
         console.error('Błąd serwera:', response.status);
       }
     } catch (error) {
       console.error('Błąd połączenia:', error);
-      // Możesz dodać fallback do localStorage, jeśli chcesz
     }
   }
+  closeDialog() {
+    const imagePreviewDialog = document.getElementById('image-preview-dialog');
+    if (imagePreviewDialog.open) {
+      const closeBtn = document.querySelectorAll('.close-dialog-btn');
+      closeBtn.forEach(btn => btn.addEventListener('click', () => {
+        imagePreviewDialog.close();
 
+      }));
+
+    }
+  }
   // Tworzenie wrappera dla obrazu
   createImageWrapper(option, filename) {
 
@@ -1000,6 +1105,13 @@ export class DialogManager {
     const previewImage = document.getElementById('preview-image');
     previewImage.src = imageSrc;
     previewDialog.showModal();
+
+    // Zamknij dialog przy kliknięciu poza nim
+    previewDialog.addEventListener('click', (e) => {
+      if (e.target === previewDialog) {
+        previewDialog.close();
+      }
+    });
   }
 
   // Obsługa wyszukiwania
@@ -1062,11 +1174,24 @@ export class DialogManager {
 
         // Filtr STAN
         if (filterName === this.stan && selectedValues.length > 0) {
-          const stanValue = option.STAN || '';
-          const match = String(stanValue).match(/ZERO|SAFE|LOW|CRITICAL/i);
+          let stanValue = option.STAN || '';
+          if (stanValue == "ZERO" && option.OBSOLETE) { stanValue = "OBSOLETE" }
+          const match = String(stanValue).match(/ZERO|SAFE|LOW|CRITICAL|OBSOLETE/i);
           const status = match ? match[0].toUpperCase() : '';
 
           if (!selectedValues.includes(status)) {
+            matchesFilters = false;
+            break;
+          }
+          continue;
+        }
+
+        // Filtr Grupa cenowa (PRICES)
+        if (filterName === this.prices && selectedValues.length > 0) {
+
+          const priceGroup = option?.ALIAS ? option.ALIAS_DESCRIPTION : option.DESCRIPTION;
+
+          if (!selectedValues.includes(priceGroup)) {
             matchesFilters = false;
             break;
           }
@@ -1129,7 +1254,41 @@ export class DialogManager {
     }));
   }
 
+  clearFavs() {
+    if (this.favList.length === 0) {
+      showToastInContainer(this.dialog, 'info', t('form.favorites_cleared_no_favs'));
+      return;
+    }
+    this.deleteFavsBtn.addEventListener('click', async () => {
+      try {
+        const response = await fetch(`/position/favs/clear/${this.groupNumber}`, {
+          method: 'POST',
+          body: JSON.stringify({ favList: this.favList }),
+          credentials: 'include', // jeśli korzystasz z sesji/cookies
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
 
+        if (!response.ok) {
+          showToastInContainer(this.dialog, 'info', t('form.favorites_error'));
+          throw new Error(`Błąd czyszczenia ulubionych: ${response.status}`);
+
+
+
+        }
+        else if (response.ok) {
+          showToastInContainer(this.dialog, 'success', t('form.favorites_cleared_success'));
+          for (const box of document.querySelectorAll('.icon.heart-icon')) {
+            box.src = '/img/heart-off.png';
+          }
+        }
+      } catch (error) {
+        console.error('Błąd podczas czyszczenia ulubionych:', error);
+      }
+    });
+  }
 
 }
 
@@ -1187,23 +1346,17 @@ export function getInfoFromDialog(values, inputs, options, selectedData = null) 
 
   logFunctionName('getInfoFromDialog');
 
-  // Jeśli nie przekazano selectedData, pobierz wszystkie aktywne elementy
   if (!selectedData) {
     const activeBoxes = document.querySelectorAll('.image-box.active');
 
-    // Jeśli nie ma żadnych zaznaczonych elementów, zakończ
     if (activeBoxes.length === 0) return;
 
-    // Pobierz dane dla wszystkich zaznaczonych elementów
     const selectedItems = Array.from(activeBoxes).map(box => ({
       value: box.querySelector('.image-name').dataset.value,
       paramName: box.dataset.paramName,
       paramDescription: box.dataset.paramDescription
     }));
-    // console.log('majstruje przy', values, options, selectedItems)
-    // Ustaw selectedData w zależności od liczby elementów:
-    // - Dla 1 elementu: pojedynczy obiekt
-    // - Dla wielu elementów: tablica obiektów
+
     selectedData = selectedItems.length === 1 ? selectedItems[0] : selectedItems;
   }
 

@@ -10,8 +10,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: 'orderbot@e-orders.eu',
-    pass: 'H8$/8;N#.$qCR5fQHpak'
+    user: process.env.MAILBOT_USER,
+    pass: process.env.MAILBOT_PASSWORD
   },
   tls: {
     rejectUnauthorized: false
@@ -57,7 +57,7 @@ function sendMail(to, lang, pdfBuffer, templateVars = {}) {
   }
 
   const mailOptions = {
-    from: '"e-orders" <orderbot@e-orders.eu>',
+    from: `"${process.env.MAILBOT_ALIAS}" <${process.env.MAILBOT_USER}>`,
     to,
     subject,
     html: htmlContent,

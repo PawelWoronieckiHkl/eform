@@ -129,24 +129,6 @@
         width: 100% !important;
     }
 
-    .form-control .form-select {
-        padding: 15px !important;
-        border-radius: 10px !important;
-        font-size: 1.1rem !important;
-        border: 2px solid #e0e0e0 !important;
-        width: 70% !important;
-        background: white !important;
-        box-shadow: none !important;
-        margin-bottom: 15px !important;
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #007bff !important;
-        box-shadow: none !important;
-        outline: none !important;
-    }
-
     #buttons-space {
         display: flex !important;
         flex-direction: column !important;
@@ -315,6 +297,7 @@
     }
 
     [class*="-select-area"] label {
+        font-family: "Roboto", "semi-bold", sans-serif !important;
         font-size: 1.1rem !important;
         font-weight: 600 !important;
         color: #333 !important;
@@ -322,10 +305,12 @@
         padding: 0 5px !important;
 
     }
-
+    #orderComment{
+        margin-left: 5% !important;
+    }
     [class*="-select-area"] button,
     [class*="-select-area"] .btn {
-        width: 100% !important;
+        width: 89% !important;
         padding: 15px 20px !important;
         font-size: 1.1rem !important;
         font-weight: 600 !important;
@@ -370,6 +355,12 @@
         margin-left: 15px !important;
     }
 
+    .last-config-info{
+        left: 50% !important;
+        bottom:2vh !important;
+        top: unset !important;
+        
+    }
     /* Mobile filter controls */
     .filter-controls.mb-2 {
         background: white !important;

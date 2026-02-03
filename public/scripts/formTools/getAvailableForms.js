@@ -100,7 +100,7 @@ export class FormsManager {
 
                     allObjects[foundAlias.param] = objects;
                 } catch (error) {
-                    console.error(`Błąd podczas ładowania pliku ${foundAlias.file}:`, error);
+                    // console.error(`Błąd podczas ładowania pliku ${foundAlias.file}:`, error);
                 }
             }
 
@@ -115,11 +115,13 @@ export class FormsManager {
         // Sprawdź czy this.groupsDetails istnieje i nie jest puste
         if (!this.groupsDetails || !Array.isArray(this.groupsDetails)) {
             console.warn('groupsDetails nie jest zdefiniowane lub nie jest tablicą');
+            console.log('DEBUG SCRIPTS 1')
             return false;
         }
 
         // Sprawdź czy window.tempGroupNumber istnieje
         if (!window.tempGroupNumber) {
+            console.log('DEBUG SCRIPTS 2')
             console.warn('window.tempGroupNumber nie jest zdefiniowane');
             return false;
         }
@@ -128,6 +130,7 @@ export class FormsManager {
 
         // Sprawdź czy grupa została znaleziona
         if (!groupDetails) {
+            console.log('DEBUG SCRIPTS 3')
             console.warn(`Nie znaleziono grupy z kodem: ${window.tempGroupNumber}`);
             return false;
         }
@@ -143,6 +146,8 @@ export class FormsManager {
         }
 
         if (!foundScripts.length) {
+            console.log('DEBUG SCRIPTS 4')
+
             console.warn('Brak pasujących aliasów dla:', this.clientData);
             return false;
         }
@@ -173,7 +178,7 @@ export class FormsManager {
         const objects = []
         const department = this.departments.find(department => department.num === departmentNumber);
         const user = this.clientData.userIdent
-        
+
         for (const asortment of department.products) {
             const path = `${this.mainPath}/${asortment}/data/${this.language}/`
             const prodFilePath = `${path}${this.groupFileName}`;
@@ -223,6 +228,12 @@ export class FormsManager {
 
     }
 
+    async getUserIdent() {
+        return this.clientData.userIdent;
+    }
+    async getOrgIdent() {
+        return this.clientData.orgIdent;
+    }
     async prepareData(strings) {
         const arr = [];
         const stringList = strings.split(',');
@@ -286,6 +297,17 @@ export class FormsManager {
         } catch (error) {
             console.error('Błąd podczas pobierania właściciela:', error.message);
             throw error;
+        }
+    }
+
+    getGroupTextAndGroupDesc(groupNumber, departmentNumber) {
+        //    console.log('resume', groupNumber, departmentNumber, this.groupsDetails, this.departments)
+        this.currentGroup = this.groupsDetails.find(group => group.code == groupNumber)
+        this.currentDepartment = this.departments.find(dept => dept.num == departmentNumber)
+        // console.log('siemanko 4 ','currentGroup:', this.currentGroup, 'currentDepartment:', this.currentDepartment)
+        return {
+            groupText: this.currentGroup.description,
+            deptText: this.currentDepartment.description
         }
     }
 

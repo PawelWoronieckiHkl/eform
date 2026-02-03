@@ -5,14 +5,15 @@ import { isEnabled } from '../components/htmlManipulator.js';
 import { validateFormInput, setInputValid } from './validateUtils.js';
 import { showToast } from '../components/toast.js';
 import { loadScript } from './scriptLoader.js';
-import { findAllValidatorsForInput } from './validateUtils.js'
+import { findAllValidatorsForInput, clearDisabledValues } from './validateUtils.js'
+import { calculateFromScript, calculateFromFormula, checkIfPriceIsCorrect } from './pricesCalculator.js';
 
 
 
 
 export function resetDependences([params, display], name, inputs, values, allOptionsByParameter) {
     logFunctionName('resetDependences');
-
+    // console.log('resetDependences for', name);
     let param = params.find((obj) => obj.NAME === name);
     if (param && param.DEPENDENCES && typeof param.DEPENDENCES === "string") {
 
@@ -51,14 +52,31 @@ export function resetDependences([params, display], name, inputs, values, allOpt
 
 
 //tu zajrzyj 
-export function resetSelectValues([parameters, display], inputs, values) {
+export function resetSelectValues([parameters, display], inputs, values, skipCalculated = true) {
     logFunctionName('resetSelectValues')
-
     window.checkedParams = {}
+    let commInput = document.getElementById('commission-input');
+    if (commInput && !skipCalculated) {
+        commInput.value = '';
+    }
+
     for (let idx = 0; idx < parameters.length; idx++) {
         let paramName = parameters[idx];
         const param = params.find(obj => obj.NAME === paramName);
         // console.log('reset input', paramName)
+
+        // NIE resetuj parametrów INPUT które są kalkulowalne (mają FORMULA lub SOURCE)
+        if (inputs[paramName] && inputs[paramName].tagName == 'INPUT') {
+            let isCalculated = param && ((
+                (param.FORMULA && param.FORMULA !== '<NULL>') ||
+                (param.SOURCE && param.SOURCE !== '<NULL>' && param.SOURCE !== param.NAME)));
+
+            if (isCalculated && skipCalculated) {
+                // console.log(`Pomijam reset dla kalkulowalnego INPUT: ${paramName}`);
+                continue; // Pomiń ten parametr - nie resetuj
+            }
+        }
+
         if (inputs[paramName]) {
             inputs[paramName].selectedIndex = 0;
             values[paramName] = "";
@@ -92,15 +110,46 @@ export function resetDisplayEntry(param, display) {
     }
 }
 
-export function buildValuesToDisplay(dictValues, value, paramName, displayValues, tagName) {
+export function buildValuesToDisplay(dictValues, value, paramName, displayValues, tagName, calculated = false) {
 
 
     logFunctionName('buildValuesToDisplay');
 
 
     // Pobieramy aktualny obiekt z displayValues lub tworzymy pusty
-    let currentValue = displayValues.get(paramName) || {};
-    console.log('currentValue before:', currentValue);
+    let currentValue = displayValues?.get(paramName) || {};
+
+    if (currentValue == {} && !calculated) {
+        displayValues.set(paramName, {
+            locked: false,
+            option_value: '',
+            option_description: '',
+            row: ""
+        })
+    }
+
+    else if (Object.keys(currentValue).length <= 1 && calculated) {
+        // console.log(dictValues, 'dictValues dla calculated', paramName, window.lockedParams)
+        let param = params.find(p => p.NAME === paramName);
+        let locked;
+        // if (param?.LISTROW) {
+        // console.log('param ma listrow', paramName, window.lockedParams, window.lockedParams.includes(paramName))
+        // }
+        if (window.lockedParams && window.lockedParams.includes(paramName)) {
+            locked = true;
+        } else {
+            locked = false;
+        }
+        // console.log(param, 'param dla calculated')
+        displayValues.set(paramName, {
+            param_description: param?.DESCRIPTION || '',
+            locked: locked,
+            option_value: value,
+            option_description: '',
+            row: param?.LISTROW || '1'
+        });
+
+    }
     if (currentValue['option_value'] || currentValue['option_value'] != undefined
     ) {
 
@@ -121,6 +170,7 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
         currentValue['option_value'] = '';
         currentValue['option_description'] = '';
         displayValues.set(paramName, currentValue);
+        //    console.log('TO sprawdzamy dv-2 ', currentValue)
         // console.log('NONE - cleared values for:', paramName, currentValue);
         return;
     }
@@ -129,45 +179,45 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
     if (value && typeof value === 'object' && !Array.isArray(value)) {
         const valueParts = [];
         const descParts = [];
-
+        console.log('budujemy display dla obiektu', value)
         for (let [fieldName, fieldVal] of Object.entries(value)) {
+            if (fieldName==='TYP'){continue}
             if (!fieldVal || value === '<NONE>') {
-
-                // Zamiast usuwać klucz, wyczyść wszystkie wartości w obiekcie
                 let currentValue = displayValues.get(paramName) || {};
-                // Wyczyść wszystkie właściwości obiektu
                 for (let key in currentValue) {
                     currentValue[key] = '';
                 }
-                // Upewnij się, że podstawowe właściwości istnieją jako puste
+
                 currentValue['option_value'] = '';
                 currentValue['option_description'] = '';
                 displayValues.set(paramName, currentValue);
                 continue;
-            }            // zapisz surową wartość do valueParts
+            }
+            descParts.push(fieldName.split(' ')[0] + ':' + fieldVal);
             valueParts.push(fieldVal);
 
-            // spróbuj znaleźć opis
-            if (dictValues[fieldName]) {
-                const match = dictValues[fieldName].find(v => v.VALUE === fieldVal);
-                if (match) {
 
-                    if (match.ALIAS) {
-                        descParts.push(match.ALIAS_DESCRIPTION ?? '');
-                    } else {
-                        descParts.push(match.DESCRIPTION ?? '');
-                    }
-                } else {
-                    descParts.push(fieldVal); // brak w słowniku → surowa wartość
-                }
-            } else {
-                descParts.push(fieldVal);
-            }
+            // if (dictValues[fieldName]) {
+            // const match = dictValues[fieldName].find(v => v.VALUE === fieldVal);
+            // if (match) {
+            // 
+            // if (match.ALIAS) {
+            // descParts.push(match.ALIAS_DESCRIPTION ?? '');
+            // } else {
+            // descParts.push(match.DESCRIPTION ?? '');
+            // }
+            // } else {
+            // descParts.push(fieldVal); // brak w słowniku → surowa wartość
+            // }
+            // } else {
+            // descParts.push(fieldVal);
+            // }
         }
 
-        currentValue['option_value'] = valueParts.join(', ');
-        currentValue['option_description'] = descParts.join(' / ');
 
+        currentValue['option_value'] = ''
+        currentValue['option_description'] = descParts.join(' / ');
+        console.log('TO sprawdzamy dv-1 ', valueParts, descParts)
         displayValues.set(paramName, currentValue);
 
         return;
@@ -197,7 +247,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
     enabledParams = {}
     logFunctionName('updateFieldInputs')
 
-    getProcedures(inputs, allOptionsByParameter, values, options, actualParameter, value, tagName, displayValues, params)
+
     let btns = [];
     const allowedOptions = {};
     const allowedParameters = {};
@@ -232,7 +282,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
             }
 
             catch (error) {
-                console.log('mamy error')
+                //    console.log('mamy error')
 
                 showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`)
             }
@@ -250,24 +300,18 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
     }
 
     for (const paramName in inputs) {
-
         let param = params.find((param) => param.NAME === paramName);
         const currentSelect = inputs[paramName];
-
-        if (currentSelect.tagName === "INPUT") {
-        }
-
+        if (currentSelect.tagName === "INPUT") { };
         const allowed = allowedOptions[paramName];
 
         if (currentSelect.tagName === 'BUTTON' & !(param.SOURCE == param.NAME)) {
-
             currentSelect.onclick = function () {
                 createDialog(param, allowedParameters[paramName], tempGroupNumber, filters[paramName], attrVals);
             };
         }
 
         for (const child of currentSelect.children) {
-
             const optionValue = child.id.replace(/\s+/g, " ").trim();
 
             if (!allowed.has(optionValue)) {
@@ -282,7 +326,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
 }
 
 
-export function updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value) {
+export async function updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value) {
 
     logFunctionName('updateFieldStates')
     for (let key in inputs) {
@@ -303,20 +347,26 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
                 "param",
                 param.NAME
             );
-
+            // console.log('shouldEnable', shouldEnable, 'for', param)
             if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE && !shouldEnable) {
-                window.skipCountParams.push(param.NAME)
+                if (!window.skipCountParams.includes(param.NAME)) {
+                    window.skipCountParams.push(param.NAME);
+                }
             }
+            else if (window.skipCountParams.includes(param.NAME) && shouldEnable) {
 
-            if (shouldEnable == 'password') { shouldEnable = false }
+                window.skipCountParams = window.skipCountParams.filter(name => name !== param.NAME);
 
+            }
+            // console.log('shouldEnable', shouldEnable, 'for', param)
+            if (shouldEnable == 'password' || param.FORMROW == '0') { shouldEnable = false }
+            // console.log(window.skipCountParams, 'shouldEnable dla', param.NAME);
         }
         catch (error) {
-            console.log('mamy error')
             showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`)
         }
         let paramDiv = inputs[key].parentNode;
-
+        // console.log(window.skipCountParams, 'skipujemy', param.NAME)
         if (shouldEnable) {
             paramDiv.style.display = 'grid';
             window.enabledParams[param.NAME] = true;
@@ -330,113 +380,100 @@ export function updateFieldStates(params, inputs, values, displayValues, groupNu
         if (inputs[key].tagName == 'INPUT') {
             validateFormInput(values, inputs[key]);
         }
-        let paramName;
-
-        if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE) {
-
-            const wrongValues = ['', 0, null, undefined, NaN]
-            const checkParams = ['SZEROKOSC', 'WYSOKOSC'].filter(p => {
-                let input = inputs[p];
-                if (input !== undefined) {
-
-                    let parentDiv = input.parentNode;
-                    return parentDiv && parentDiv.style.display !== 'none';
-                }
-                return false;
-            });
-            const hasValidValues = checkParams.length === 0 || checkParams.every(p => !wrongValues.includes(values[p]));
-
-            if (hasValidValues &&
-                !(window.skipCountParams.includes(param.NAME))) {
-
-                try {
-                    // console.log(param.NAME, "SKRyPTy2")
-                    loadScript(param.SOURCE, values, displayValues, groupNumber, allOptionsByParameter, param, function (scriptResult) {
-
-                        if (scriptResult) {
-
-                            for ([paramName, value] of Object.entries(scriptResult)) {
-                                if (inputs && inputs[paramName]) {
-                                    let key = Object.keys(scriptResult)[0]
-                                    let val = Object.values(scriptResult)[0]
-
-                                    let strVal;
-                                    if (param.FORMAT == 'n%') {
-                                        strVal = `${parseInt(val * 100)}%`;
-                                        inputs[paramName].value = val;
-                                    }
-                                    else {
-                                        strVal = String(value)
-                                        inputs[paramName].value = value;
-                                    }
-
-                                    values[paramName] = value;
-                                    buildValuesToDisplay(allOptionsByParameter, strVal, param.NAME, displayValues, 'INPUT ');
-
-                                }
-                            }
-                        }
-                    });
-                }
-                catch (error) {
-                    console.log('mamy error')
-                    inputs[paramName].value = '0'
-                    values[param.NAME] = 0
-                    // console.log('PARAM NAME:', param.NAME);
-                }
-            }
-            else {
-                inputs[param.NAME].value = '0'
-                values[param.NAME] = 0
-                // setTimeout(() => {
-                // console.log('PARAM NAME:', param.NAME, values);
-                // }, 1000);
-            }
-        }
-
-        if (param.FORMULA != "<NULL>" &&
-            !(window.skipCountParams.includes(param.NAME))
-
-        ) {
-            setTimeout(() => {
-                if (param.FORMULA.includes('RABAT')) {
-                }
-                try {
-                    let result = window.FormulaHandler.evaluateFormula(
-                        param.FORMULA,
-                        values,
-                        "formula"
-
-                    );
-                    // console.log(values['CENA'], values['DOPLATA'], values['CENA_RABAT'],values['DOPLATA_EL'],values['DOPLATA_EL_RABAT'], values, '=>', param.FORMULA)
-                    console.log(`${param.NAME} ==== `, param.FORMULA, '=>', result)
-                    if (result === false || result === null || result < 0) {
-                        inputs[key].value = '0';
-                        values[key] = 0;
-                    } else {
-                        result = parseFloat(result);
-                        inputs[key].value = result?.toFixed(2) ?? '0';
-                        values[key] = parseFloat(result?.toFixed(2)) ?? 0;
-                        buildValuesToDisplay(allOptionsByParameter, result.toFixed(2), param.NAME, displayValues, 'INPUT ');
-                    }
-                    validateFormInput(values, inputs[key]);
-                } catch (error) {
-                    const result = window.FormulaHandler.evaluateFormula(
-                        param.FORMULA,
-                        values,
-                        "formula"
-
-                    );
-                    console.log('mamy error', error, param.FORMULA, param.NAME, result, typeof result);
-                    showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`);
-                }
-            }, 300); // tutaj ustawiasz liczbę milisekund opóźnienia
-        }
-
-
-
     }
+    ({ values, displayValues } = clearDisabledValues(values, displayValues))
+    const scriptOperations = [];
+    const formulaOperations = [];
+
+    for (let key in inputs) {
+        let param = params.find(p => p.NAME === key);
+        if (!param) continue;
+
+        const hasSource = param.SOURCE != "<NULL>" && param.NAME != param.SOURCE;
+        const hasFormula = param.FORMULA != "<NULL>" && !(window.skipCountParams.includes(param.NAME));
+
+        if (hasSource && hasFormula) {
+
+            scriptOperations.push({ param, key, hasFormula: true });
+        } else if (hasSource) {
+            window.calculatedParams.add(param.NAME);
+            scriptOperations.push({ param, key, hasFormula: false });
+        } else if (hasFormula) {
+            window.calculatedParams.add(param.NAME);
+            // Tylko formuła (nie zależy od skryptu)
+            formulaOperations.push({ param, key });
+        }
+    }
+    // console.log(scriptOperations, 'scriptOperations do wykonania', formulaOperations, 'formulaOperations do wykonania')
+    return new Promise((resolveAll) => {
+        let scriptIndex = 0;
+
+        const executeNextScript = () => {
+            if (scriptIndex >= scriptOperations.length) {
+                formulaOperations.forEach(operation => {
+                    calculateFromFormula(
+                        operation.param,
+                        values,
+                        inputs,
+                        displayValues,
+                        groupNumber,
+                        allOptionsByParameter,
+                        operation.key,
+                        operation.param.NAME
+                    );
+                });
+                resolveAll();
+                return;
+            }
+
+            const operation = scriptOperations[scriptIndex];
+            scriptIndex++;
+
+            calculateFromScript(
+                operation.param,
+                values,
+                inputs,
+                displayValues,
+                groupNumber,
+                allOptionsByParameter,
+                operation.key,
+                operation.param.NAME,
+                function () {
+                    if (operation.hasFormula) {
+                        formulaOperations.push({
+                            param: operation.param,
+                            key: operation.key
+                        });
+                    }
+                    executeNextScript();
+                }
+            );
+
+        };
+
+        if (scriptOperations.length > 0) {
+            executeNextScript();
+        }
+        else {
+            formulaOperations.forEach(operation => {
+                calculateFromFormula(
+                    operation.param,
+                    values,
+                    inputs,
+                    displayValues,
+                    groupNumber,
+                    allOptionsByParameter,
+                    operation.key,
+                    operation.param.NAME
+                );
+            });
+            resolveAll();
+        }
+    }).then(() => {
+        displayValues = checkIfPriceIsCorrect(values, inputs, displayValues);
+    });
 }
+
 
 export function setListRow(params, displayValues) {
     for (let param of params) {
@@ -518,7 +555,7 @@ export function checkRelated(params, values) {
 
     let parameters = Object.values(params);
 
-    console.log("checkRelated");
+    //    console.log("checkRelated");
     for (let idx = 0; idx < parameters.length; idx++) {
         let param = parameters[idx];
         let relatedValue = param.RELATED;
@@ -540,7 +577,7 @@ export function checkRelated(params, values) {
 }
 
 export function resetAllDOM() {
-    console.log('resetAllDOM')
+    //    console.log('resetAllDOM')
     for (const [category, models] of Object.entries(window.inputsDefaults)) {
 
         for (const [modelName, modelConfig] of Object.entries(models)) {

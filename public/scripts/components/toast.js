@@ -42,6 +42,7 @@ export function showToastInContainer(parent,type,message){
 
     const customToastContainer = document.createElement('div');
     customToastContainer.id = 'custom-toast-container';
+    
     customToastContainer.classList.add('toast-container', 'toast-top-right');
     parent.appendChild(customToastContainer);
     toastr.options.containerId= customToastContainer.id;

@@ -1,160 +1,155 @@
 {% extends "base.njk" %}
-{% block title %}{{ __('orders.title') }}
+{% block title %}
+    {{ __('orders.title') }}
 {% endblock title %}
 {% block head %}
     <link rel="stylesheet" href="/styles/orders.css">
-    <link rel="stylesheet" href="/styles/mobile/orders.css">
-    <link rel="stylesheet" href="/styles/dialog.css">
-    <link rel="stylesheet" href="/styles/mobile/dialog.css">
-{% endblock head %}
-{% block key_nav %}
-    window.location.href='/'
-{% endblock %}
-{% block back_link %}
-    <button class="modern-back-btn" onclick="window.location.href='/'">
-    {% endblock %}
-    {% block content %}
-        <div class="content center-content">
-            <div class="container my-5 w-100 mobile-rm-card">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    {% block site_title %}
-                        <h2 class="fw-bold header">{{ __('orders.title') }}</h2>
-                    {% endblock site_title %}
-                    {% block site_buttons %}
-                        <a href="/delivery-time" class='btn btn-light' id='delivery-btn'>
-                            <img src="/img/fast-delivery.png" alt="delivery bus button" style='height:50px;width:50px; border:0px white solid !important'>
-                        </a>
+        <link rel="stylesheet" href="/styles/mobile/orders.css">
+            <link rel="stylesheet" href="/styles/dialog.css">
+                <link rel="stylesheet" href="/styles/mobile/dialog.css">
+                {% endblock head %}
+                {% block key_nav %}
+                    window.location.href='/'
+                {% endblock %}
+                {% block back_link %}
+                    <button class="modern-back-btn" onclick="window.location.href='/'">
                     {% endblock %}
-                </div>
-                {% block users %}{% endblock %}
-                {% block orders %}
-                    {% if orders %}
-
-                        <!-- Desktop table version -->
-                        <table class="table align-middle d-none d-md-table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">{{ __('orders.order_no') }}</th>
-                                    <th scope="col">{{ __('orders.client_ident') }}</th>
-                                    <th scope="col">{{ __('orders.commission') }}
-                                    </th>
-                                    <th scope="col">{{ __('orders.created_date') }}</th>
-                                    {% block extra_heads%}{% endblock %}
-                                    {% block action_th %}
-                                        <th scope="col">{{ __('orders.action') }}</th>
+                    {% block content %}
+                    <div class="content center-content">
+                        <div class="container my-5 w-100 mobile-rm-card">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                {% block site_title %}
+                                    <h2 class="fw-bold header">{{ __('orders.title') }}</h2>
+                                {% endblock site_title %}
+                                {% block site_buttons %}
+                                    <a href="/delivery-time" class='btn btn-light' id='delivery-btn'>
+                                        <img
+                                            src="/img/fast-delivery.png"
+                                            alt="delivery bus button"
+                                            style='height:50px;width:50px; border:0px white solid !important'></a>
                                     {% endblock %}
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                {% for order in orders %}
-                                    <!--onclick="window.location.href='/orders/order/{{ order.id }}'"-->
-                                    {% block order_item_link %}
-                                        <tr onclick="window.location.href='/orders/order/{{ order.id }}'" class="order-row">
-                                        {% endblock %}
-                                        <th scope="row">{{ order.id }}</th>
-                                        <td>({{ order.user_ident }})</td>
-
-                                        <td>{{ order.commision }}</td>
-                                        <td>{{ order.created_date }}</td>
-                                        {% block extra_rows%}{% endblock %}
-                                        {% block buttons_space %}
-                                            <td class='buttons'>
-                                                <button class="btn btn-outline-danger p-1 delete-position-btn stop-propagation has-tooltip" data-tooltip="{{ __('orders.delete_order') }}" id="delete-order-btn" data-href='/orders/order/{{ order.id }}/delete' type='button' onclick="event.stopPropagation()" '>
-                                                    <img src="/img/delete.png" alt="{{ __('order.delete') }}" style="height: 24px;"/>
-                                                </button>
-                                                <a class="btn btn-outline-secondary p-1 stop-propagation has-tooltip" data-tooltip="{{ __('orders.edit_order_tooltip') }}" href='/orders/edit/{{ order.id }}'>
-                                                    <img src="/img/edit-text.png" alt="{{ __('orders.edit') }}">
-                                                </a>
-                                                <button class="btn btn-outline-success p-1 stop-propagation send-order-btn has-tooltip" data-tooltip="{{ __('orders.send_order_tooltip') }}" type="button" id='send-order' data-id="{{ order.id }}">
-                                                    <img src="/img/send.png" alt="{{ __('orders.send') }}">
-                                                </button>
-
-                                            </td>
-                                        {% endblock buttons_space %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-
-                        <!-- Mobile card version -->
-                        <div class="mobile-orders-list d-block d-md-none">
-                            {% for order in orders %}
-                                <div class="mobile-order-card" onclick="window.location.href='/orders/order/{{ order.id }}'">
-                                    <div class="mobile-order-header">
-                                        <span class="mobile-order-number">#{{ order.order_idx }}</span>
-                                        <span class="mobile-order-date">{{ order.created_date }}</span>
-                                    </div>
-                                    <div class="mobile-order-commission">{{ order.commision }}</div>
-                                    <div class="mobile-order-actions">
-                                        <button class="btn btn-outline-danger btn-sm delete-position-btn stop-propagation" data-href='/orders/order/{{ order.id }}/delete' type='button' onclick="event.stopPropagation()">
-                                            {{ __('orders.delete') }}
-                                        </button>
-                                        <a class="btn btn-outline-secondary stop-propagation" href='/orders/edit/{{ order.id }}'>
-                                            {{ __('orders.edit') }}
-                                        </a>
-                                        <button class="btn btn-outline-success btn-sm stop-propagation send-order-btn" type="button" data-id="{{ order.id }}">
-                                            {{ __('orders.send') }}
-                                        </button>
-                                    </div>
                                 </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="text-center py-5" data-id='siema'>
-                            {% block empty %}
-                                <div class="text-center py-5">
-                                    <h3 class="mb-4">{{ __('orders.no_orders') }}</h3>
-                                    <p class="lead">{{ __('orders.add_first_order') }}</p>
-                                </div>
-                                <a href="/orders/add-order" class="btn btn-outline-success p-2 mb-5" id='new-order-button' type='button'>
-                                    {{ __('orders.add_order_btn') }}
-                                </a>
-                            {% endblock empty %}
-                        {% endif %}
-                    </div>
-                    {% block pagination %}
-
-                        {% if range(totalPages).length > 1 %}
-                            <nav aria-label="Paginate">
-                                <ul class="pagination justify-content-center">
-                                    {% for i in range(1, totalPages + 1) %}
-
-                                        <li class="page-item {% if i == page %}active{% endif %}">
-                                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                                <p>{{ __('orders.page_word') }}
-                                    {{ page }}
-                                    z
-                                    {{ totalPages }}</p>
-                            </nav>
-                        {% endif %}
-                    {% endblock %}
-                </div>
-            </div>
-            <div id='dialog-container'>
-                <dialog id='dialog-space'></dialog>
-                <dialog id="delete-dialog">
-                    <h3 class="text-center" id='dialog-title'>{{ __('order.delete_element') }}</h3>
-                    <p class="text-center" id='for-sure'>{{ __('order.delete_confirm') }}</p>
-                    <div class="alert" id='status-info'></div>
-                    <div class="confirmattion-buttons">
-                        <button id="cancel-btn" class="btn btn-secondary me-1" type="button">{{ __('order.cancel') }}</button>
-                        <button id="confirm-btn" class="btn btn-danger ms-1" type="button">{{ __('order.confirm') }}</button>
-                    </div>
-                </dialog>
-            </div>
-
-        {% endblock %}
-    {% endblock %}
-    {% block scripts %} 
-           <script>
-                let orderNavBtn = document.getElementById('orders-nav-btn');
-            if (orderNavBtn) {
-                orderNavBtn.classList.add('active');
-            }        
-            </script>
-        <script type="module" src="/scripts/orders.js"></script>
-    {% endblock scripts %}
+                                {% block users %}{% endblock %}
+                                {% block orders %}
+                                    {% if orders %}
+                                        <!-- Desktop table version -->
+                                        <table class="table align-middle d-none d-md-table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">{{ __('orders.order_no') }}</th>
+                                                    <th scope="col">{{ __('orders.client_ident') }}</th>
+                                                    <th scope="col">{{ __('orders.commission') }}
+                                                    </th>
+                                                    <th scope="col">{{ __('orders.created_date') }}</th>
+                                                    {% block extra_heads %}{% endblock %}
+                                                    {% block action_th %}
+                                                        <th scope="col">{{ __('orders.action') }}</th>
+                                                    {% endblock %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for order in orders %}
+                                                    <!--onclick="window.location.href='/orders/order/{{ order.id }}'"-->
+                                                    {% block order_item_link %}
+                                                        <tr onclick="window.location.href='/orders/order/{{ order.id }}'" class="order-row">
+                                                        {% endblock %}
+                                                        <th scope="row">{{ order.id }}</th>
+                                                        <td>({{ order.user_ident }})</td>
+                                                        <td>{{ order.commision }}</td>
+                                                        <td>{{ order.created_date }}</td>
+                                                        {% block extra_rows %}{% endblock %}
+                                                        {% block buttons_space %}
+                                                            <td class='buttons'>
+                                                                <button class="action-btn action-btn-delete p-1 delete-position-btn stop-propagation has-tooltip" data-tooltip="{{ __('orders.delete_order') }}" id="delete-order-btn" data-href='/orders/order/{{ order.id }}/delete' type='button' onclick="event.stopPropagation()" '>
+                                                                    <img src="/img/delete.png" alt="{{ __('order.delete') }}" style="height: 24px;"/>
+                                                                </button>
+                                                                <a class="action-btn action-btn-edit p-1 stop-propagation has-tooltip" data-tooltip="{{ __('orders.edit_order_tooltip') }}" href='/orders/edit/{{ order.id }}'>
+                                                                    <img src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
+                                                                    <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn has-tooltip" data-tooltip="{{ __('orders.send_order_tooltip') }}" type="button" id='send-order' data-id="{{ order.id }}">
+                                                                        <img src="/img/send.png" alt="{{ __('orders.send') }}"></button>
+                                                                    </td>
+                                                                {% endblock buttons_space %}
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                                <!-- Mobile card version -->
+                                                <div class="mobile-orders-list d-block d-md-none">
+                                                    {% for order in orders %}
+                                                        <div class="mobile-order-card" onclick="window.location.href='/orders/order/{{ order.id }}'">
+                                                            <div class="mobile-order-header">
+                                                                <span class="mobile-order-number">#{{ order.order_idx }}</span>
+                                                                <span class="mobile-order-date">{{ order.created_date }}</span>
+                                                            </div>
+                                                            <div class="mobile-order-commission">{{ order.commision }}</div>
+                                                            <div class="mobile-order-actions">
+                                                                <button
+                                                                    class="action-btn action-btn-delete delete-position-btn stop-propagation"
+                                                                    data-href='/orders/order/{{ order.id }}/delete'
+                                                                    type='button'
+                                                                    onclick="event.stopPropagation()">
+                                                                    {{ __('orders.delete') }}
+                                                                </button>
+                                                                <a class="action-btn action-btn-edit stop-propagation" href='/orders/edit/{{ order.id }}'>
+                                                                    {{ __('orders.edit') }}
+                                                                </a>
+                                                                <button class="btn btn-outline-success btn-sm stop-propagation send-order-btn" type="button" data-id="{{ order.id }}">
+                                                                    {{ __('orders.send') }}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <div class="text-center py-5" data-id='siema'>
+                                                    {% block empty %}
+                                                        <div class="text-center py-5">
+                                                            <h3 class="mb-4">{{ __('orders.no_orders') }}</h3>
+                                                            <p class="lead">{{ __('orders.add_first_order') }}</p>
+                                                        </div>
+                                                        <a href="/orders/add-order" class="btn btn-outline-success p-2 mb-5" id='new-order-button' type='button'>
+                                                            {{ __('orders.add_order_btn') }}
+                                                        </a>
+                                                    {% endblock empty %}
+                                                {% endif %}
+                                            </div>
+                                            {% block pagination %}
+                                                {% if range(totalPages).length > 1 %}
+                                                    <nav aria-label="Paginate">
+                                                        <ul class="pagination justify-content-center">
+                                                            {% for i in range(1, totalPages + 1) %}
+                                                                <li class="page-item {% if i == page %}active{% endif %}">
+                                                                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                        <p>{{ __('orders.page_word') }}
+                                                            {{ page }} z {{ totalPages }}</p>
+                                                    </nav>
+                                                {% endif %}
+                                            {% endblock %}
+                                        </div>
+                                    </div>
+                                    <div id='dialog-container'>
+                                        <dialog id='dialog-space'></dialog>
+                                        <dialog id="delete-dialog">
+                                            <h3 class="text-center" id='dialog-title'>{{ __('order.delete_element') }}</h3>
+                                            <p class="text-center" id='for-sure'>{{ __('order.delete_confirm') }}</p>
+                                            <div class="alert" id='status-info'></div>
+                                            <div class="confirmattion-buttons">
+                                                <button id="cancel-btn" class="btn btn-secondary me-1" type="button">{{ __('order.cancel') }}</button>
+                                                <button id="confirm-btn" class="btn btn-danger ms-1" type="button">{{ __('order.confirm') }}</button>
+                                            </div>
+                                        </dialog>
+                                    </div>
+                                {% endblock %}
+                            {% endblock %}
+                            {% block scripts %}
+                                <script>
+                                    let orderNavBtn = document.getElementById('orders-nav-btn');
+                                    if (orderNavBtn) {
+                                        orderNavBtn.classList.add('active');
+                                    }
+                                </script>
+                                <script type="module" src="/scripts/orders.js"></script>
+                            {% endblock scripts %}

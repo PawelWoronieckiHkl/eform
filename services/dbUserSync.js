@@ -27,6 +27,22 @@ async function updateClients() {
     await insertClients(diff.toAdd);
   }
 
+  // Aktualizacja danych istniejących klientów
+  if (diff.toUpdate && diff.toUpdate.length > 0) {
+    console.log(`\nRozpoczynam aktualizację danych ${diff.toUpdate.length} klientów...`);
+    await updateExistingClients(diff.toUpdate);
+  } else {
+    console.log('Brak klientów do aktualizacji');
+  }
+
+  // Usuwanie klientów, których nie ma w pliku
+  if (diff.toRemove.length > 0) {
+    console.log(`\nRozpoczynam usuwanie ${diff.toRemove.length} nieaktualnych klientów...`);
+    await deleteNonExistingClients(diff.toRemove);
+  } else {
+    console.log('Brak klientów do usunięcia');
+  }
+
   // Aktualizacja haseł sekwencyjnie, aby uniknąć "Too many connections"
   // if(process.env.NODE_ENV === 'test'){
   if (false) {
@@ -64,7 +80,10 @@ function getClientKey(client) {
   return `${pinPart}|${identPart}`;
 }
 
+
+
 function compareClients(fileClients, dbClients) {
+
   const pinsInDb = new Set(dbClients.map(c => (c.pin || '').toUpperCase()));
   const identsInDb = new Set(dbClients.map(c => (c.ident || '').toUpperCase()));
 
@@ -83,7 +102,44 @@ function compareClients(fileClients, dbClients) {
     return !pinsInFile.has(pin) && !identsInFile.has(ident);
   });
 
-  return { toAdd, toRemove, fileClients };
+  // Sprawdź aktualizacje dla istniejących klientów
+  const toUpdate = [];
+  const fieldsToCheck = ['name', 'address', 'city', 'zip', 'taxid', 'phone','kraj'];
+
+  for (const fileClient of fileClients) {
+    const pin = (fileClient.pin || '').toUpperCase();
+    const ident = (fileClient.ident || '').toUpperCase();
+
+    // Znajdź klienta w bazie
+    const dbClient = dbClients.find(c =>
+      (c.pin || '').toUpperCase() === pin && (c.ident || '').toUpperCase() === ident
+    );
+
+    if (dbClient) {
+      let needsUpdate = false;
+      const changes = {};
+
+      for (const field of fieldsToCheck) {
+        const fileValue = (fileClient[field] || '').trim();
+        const dbValue = (dbClient[field] || '').trim();
+
+        if (fileValue !== dbValue) {
+          needsUpdate = true;
+          changes[field] = fileValue;
+        }
+      }
+
+      if (needsUpdate) {
+        toUpdate.push({
+          pin: fileClient.pin,
+          ident: fileClient.ident,
+          changes
+        });
+      }
+    }
+  }
+
+  return { toAdd, toRemove, toUpdate, fileClients };
 }
 
 
@@ -117,12 +173,104 @@ function parseClients(inputArray) {
 async function insertClients(clientsObj) {
   for (const client of clientsObj) {
     try {
+      if (process.env.NODE_ENV != 'prod') {
+        result = await db.insertUserIntousrtble(client.ident, client.pin, client.password);
+      }
       const newUserId = await db.addUser(client);
       console.log(`Dodano klienta ${client.ident} (ID: ${newUserId})`);
     } catch (err) {
       console.error(`Błąd przy dodawaniu ${client.ident}:`, err.message);
     }
   }
+}
+
+async function updateExistingClients(clientsToUpdate) {
+  console.log(clientsToUpdate);
+  const fieldMapping = {
+    name: 'client_name',
+    address: 'street',
+    city: 'city',
+    zip: 'zip',
+    taxid: 'tax_id',
+    phone: 'phone',
+    kraj: 'country',
+  };
+
+  let updated = 0;
+  let skipped = 0;
+  let failed = 0;
+
+  for (const clientUpdate of clientsToUpdate) {
+    try {
+      const { pin, ident, changes } = clientUpdate;
+      const updateFields = [];
+      const updateValues = [];
+
+      // Mapuj pola z nazw w pliku na nazwy kolumn w bazie
+      for (const [fileField, dbValue] of Object.entries(changes)) {
+        const dbField = fieldMapping[fileField];
+        if (dbField) {
+          updateFields.push(`\`${dbField}\` = ?`);
+          updateValues.push(dbValue);
+        }
+      }
+
+      if (updateFields.length === 0) {
+        skipped++;
+        continue;
+      }
+
+      updateValues.push(pin);
+      const sql = `UPDATE eform.\`user\` SET ${updateFields.join(', ')} WHERE pin = ?`;
+
+      await db.updateQuery(sql, updateValues);
+      updated++;
+      // console.log(`[${updated}] Zaktualizowano klienta ${ident} (PIN: ${pin}). Zmiany: ${JSON.stringify(changes)}`);
+    } catch (err) {
+      failed++;
+      console.error(`Błąd przy aktualizacji klienta ${clientUpdate.ident} (PIN: ${clientUpdate.pin}):`, err.message);
+    }
+  }
+
+  console.log(`Zakończono aktualizację klientów. Zaktualizowano: ${updated}, Pominięto: ${skipped}, Błędy: ${failed}`);
+}
+
+async function deleteNonExistingClients(clientsToDelete) {
+  const excludedPins = new Set(['0000', 'admin', '000000']);
+
+  let deleted = 0;
+  let skipped = 0;
+  let failed = 0;
+
+  for (const client of clientsToDelete) {
+    const pin = (client.pin || '').toLowerCase();
+
+    // Sprawdź czy pin jest wykluczony
+    if (excludedPins.has(pin)) {
+      skipped++;
+      console.log(`Pominięto klienta z wykluczonym pinem: ${client.ident} (PIN: ${client.pin})`);
+      continue;
+    }
+
+    try {
+      if (client.pin) {
+        // Poczekaj chwilę między operacjami
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        await db.deleteUserByPin(client.pin);
+        deleted++;
+        console.log(`[${deleted}] Usunięto klienta ${client.ident} (PIN: ${client.pin})`);
+      } else {
+        skipped++;
+        console.log(`Pominięto klienta bez pinu: ${client.ident}`);
+      }
+    } catch (err) {
+      failed++;
+      console.error(`Błąd przy usuwaniu klienta ${client.ident} (PIN: ${client.pin}):`, err.message);
+    }
+  }
+
+  console.log(`Zakończono usuwanie klientów. Usunięto: ${deleted}, Pominięto: ${skipped}, Błędy: ${failed}`);
 }
 
 async function fixEncodingInDatabase() {
@@ -240,4 +388,4 @@ async function fixEncodingInDatabase() {
   }
   console.log(`Zakończono naprawę kodowania. Naprawiono: ${fixed}, Pominięto: ${skipped}`);
 }
-module.exports = { updateClients, fixEncodingInDatabase };
+module.exports = { updateClients, fixEncodingInDatabase, updateExistingClients };

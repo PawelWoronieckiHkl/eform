@@ -41,8 +41,6 @@ export class AttrLoader {
             for (let row = 1; row < csvData.length; row++) {
                 const valueKey = csvData[row][0].trim();
 
-                if(valueKey.endsWith('-OBS')){
-                console.log('VALUE KEY:', valueKey);}
                 let value = csvData[row][col] ? csvData[row][col].trim() : '';
                 value = value.replace(/\r/g, '');
 
@@ -58,7 +56,7 @@ export class AttrLoader {
                 // Jeśli wartość to <NULL>, pomijamy ją (nie dodajemy do tablicy)
             }
         }
-        console.log(result, 'result z attrLoader')
+        // console.log(result, 'result z attrLoader')
         return result;
     }
 

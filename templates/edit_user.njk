@@ -1,0 +1,61 @@
+{% extends "base.njk" %}
+{% block head %}
+    <link rel="stylesheet" href="/styles/mobile/edit-user.css">
+    {% endblock head %}
+    {% block content %}
+        <div id='main-content' class="content">
+            <div class="container mb-5 col-3 w-50 mobile-rm-card">
+                {% if user %}
+                    <div class="row justify-content-center">
+                        <div class=" ms-4 col-6 col-md-8 col-lg-10">
+                            <h3 class="text-center mb-4">{{ __('base.user_data') }}</h3>
+                            {% if error %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ error }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endif %}
+                            {% if success %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    Dane zostały pomyślnie zaktualizowane
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endif %}
+                            <form id="edit-user-form" method="POST" action="/user/update-user">
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" id="client_name" name="client_name" value="{{ user.client_name }}" readonly disabled></div>
+                                    <div class="mb-3">
+                                        <label for="tax_id" class="form-label">{{ __('base.nip') }}</label>
+                                        <input type="text" class="form-control" id="tax_id" name="tax_id" value="{{ user.tax_id }}" required></div>
+                                        <div class="mb-3">
+                                            <label for="street" class="form-label">{{ __('base.street') }}</label>
+                                            <input type="text" class="form-control" id="street" name="street" value="{{ user.street }}" required></div>
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="zip" class="form-label">{{ __('new-order.zip') }}</label>
+                                                    <input type="text" class="form-control" id="zip" name="zip" value="{{ user.zip }}" required></div>
+                                                    <div class="col-md-7 ms-4 mb-3">
+                                                        <label for="city" class="form-label">{{ __('base.city_country') }}</label>
+                                                        <input type="text" class="form-control" id="city" name="city" value="{{ user.city }}" required></div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="country" class="form-label">{{ __('new-order.country') }}</label>
+                                                        <input type="text" class="form-control" id="country" name="country" value="{{ user.country }}" readonly disabled></div>
+                                                        <div class="mb-3 col-11">
+                                                            <label for="email" class="form-label">E-mail</label>
+                                                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required></div>
+                                                            <div class="d-flex gap-2 justify-content-center mt-4">
+                                                                <button type="submit" class="btn btn-outline-success">{{ __('form.save_button') }}</button>
+                                                                <a href="/" class="btn btn-outline-secondary">{{ __('order.cancel') }}</a>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <div class="alert alert-warning mt-4 text-center" role="alert">
+                                                    {{ __('base.no_user_data') }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endblock content %}

@@ -1,6 +1,8 @@
 import {
 	generateForm,
-	buildCommentSpace
+	buildCommentSpace,
+	recalculateLastChangedField,
+	getTotal
 } from "/scripts/form.js";
 import {
 	resetSelectValues,
@@ -11,9 +13,11 @@ import { buildOrderItemStructure } from '/scripts/orderBuilder.js';
 import { showToast } from "/scripts/components/toast.js";
 import { FormsManager } from './formTools/getAvailableForms.js'
 import { createElement } from './components/htmlManipulator.js'
-import { createChecboxField, checkBoxReaction } from './components/lastGroupSelected.js'
+import { createChecboxField, checkBoxReaction, createLastConfigInfoPopUp } from './components/lastGroupSelected.js'
 import { validateAllFieldsOnSubmit } from './formTools/validateUtils.js'
 import { validate } from './base.js'
+import { getLocalPositionObject, checkIfLocalPositionObjectExists } from './formTools/localStorageManager.js'
+import { startSpin, stopSpin } from "./components/hourglass.js";
 
 
 const asortmentGroupSelect = document.getElementById("asortment-group-select");
@@ -46,6 +50,31 @@ async function loadJsonConfig() {
 export async function buildMainSelect(files) {
 	const inputContainer = document.querySelector(".asortment-inputs");
 	createChecboxField(inputContainer);
+
+	// Dodaj przycisk ładowania ostatniej konfiguracji
+	const { container, lastConfigButton } = createLastConfigInfoPopUp();
+	window.lastConfigButton = lastConfigButton
+	lastConfigButton.addEventListener('click', async () => {
+		console.log('🎯 Kliknięto przycisk ładowania ostatniej konfiguracji');
+		let config = getLocalPositionObject();
+		console.log('📦 Pobrana konfiguracja:', config);
+
+		if (!config) {
+			container.style.display = 'none';
+
+		}
+
+		await refreshFormBehaviour(config);
+		container.style.display = 'none';
+	});
+
+	// Sprawdź czy jest zapisana konfiguracja i pokaż/ukryj przycisk
+	const hasConfig = checkIfLocalPositionObjectExists();
+	if (hasConfig) {
+		container.style.display = 'flex';
+	} else {
+		container.style.display = 'none';
+	}
 
 	departmentSelect.innerHTML = `<option value="" disabled selected>${t("form.department_label")}</option>`;
 	// console.log('buildMainSelect', files)
@@ -124,7 +153,7 @@ function setupMainSelectListener(asortmentGroupSelect, departmentSelect) {
 }
 
 
-async function prepareForm(asortmentGroup, department) {
+async function prepareForm(asortmentGroup, department, config = null) {
 	if (isPreparingForm) {
 		console.warn("prepareForm is already in progress. Skipping duplicate call.");
 		return;
@@ -139,7 +168,7 @@ async function prepareForm(asortmentGroup, department) {
 		const groupNumber = asortmentGroup;
 		let version = await getAppVersion(groupNumber);
 		showOrderReminder();
-		await buildDynamicForm(version, groupNumber);
+		await buildDynamicForm(version, groupNumber, config);
 	} catch (err) {
 		handleFormLoadError(err);
 	} finally {
@@ -152,18 +181,35 @@ function showOrderReminder() {
 }
 
 
-async function buildDynamicForm(version, groupNumber) {
-	console.log('buildDynamicForm')
+async function buildDynamicForm(version, groupNumber, config = null) {
 
-	showVersion(version)
-
-	const [inputs, values, valuesToDisplay] = await generateForm(version, groupNumber);
+	showVersion(version);
+	let lastConfigDiv = document.getElementById('last-config-info')
+	lastConfigDiv.style.display = 'none'
+	let inputs, values, valuesToDisplay;
+	if (config && config.values && config.displayValues) {
+		console.log('🔄 Ładowanie z konfiguracją:', config);
+		[inputs, values, valuesToDisplay] = await generateForm(
+			version,
+			groupNumber,
+			config.values,
+			config.displayValues,
+			true
+		);
+		window.finishFlag = true;
+	} else {
+		[inputs, values, valuesToDisplay] = await generateForm(version, groupNumber);
+	}
 
 	const orderId = document.getElementById('orderId').textContent;
 	const comment = buildCommentSpace(formContainer);
+	setTimeout(() => {
+		console.log('siema eniu shortjson')
 
-	setupShowButton(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
-	setupResetButton(inputs, values, valuesToDisplay);
+		setupShowButton(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
+
+		setupResetButton(inputs, values, valuesToDisplay);
+	}, 10000);
 }
 
 
@@ -173,20 +219,34 @@ function setupShowButton(inputs, values, valuesToDisplay, orderId, comment, vers
 
 	showButton.onclick = async function () {
 		setTimeout(async () => {
-		showToast('success', `${t('form.saved_form_success')}`);
-		if (!await validateForm(inputs, values)) {
-			showToast('error', t("form.incorrect_data"));
-			return;
-		}
-		if (!sentState && window.finishFlag == true) {
-			await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
-			sentState = true;
-		}
-		else{
-			showToast('error', t("form.try_again"));
-		}
+			showToast('success', `${t('form.saved_form_success')}`);
+			if (!await validateForm(inputs, values)) {
 
-	}, 2000);}
+				showToast('error', t("form.incorrect_data"));
+				return;
+			}
+			if (!sentState && window.finishFlag == true) {
+				recalculateLastChangedField();
+				setTimeout(async () => {
+				await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
+				sentState = true;
+				}, 1200);
+			}
+			else {
+				startSpin();
+				setTimeout(async () => {
+				recalculateLastChangedField();
+				setTimeout(async () => {
+				await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
+				sentState = true;
+				stopSpin();
+				}, 1200);
+
+				}, 1200);
+			}
+
+		}, 500);
+	}
 }
 
 
@@ -195,7 +255,7 @@ function setupResetButton(inputs, values, valuesToDisplay) {
 	const resetButton = document.getElementById('reset-button');
 	resetButton.onclick = function () {
 		showToast('info', t('form.loading_data'));
-		resetSelectValues([Object.keys(values), valuesToDisplay], inputs, values);
+		resetSelectValues([Object.keys(values), valuesToDisplay], inputs, values, false);
 		afterSend = false;
 	};
 }
@@ -205,6 +265,7 @@ export async function validateForm(inputs, values) {
 	console.log('validateForm')
 	validateAllFieldsOnSubmit(inputs, values)
 	const correctFlag = await checkFlags();
+	console.log('validateForm correctFlag:', correctFlag)
 	if (typeof correctFlag !== 'boolean') {
 		highlightInvalidFields(correctFlag);
 
@@ -233,11 +294,14 @@ async function sendData(inputs, values, valuesToDisplay, orderId, comment, versi
 	const commission = document.getElementById('commission-input').value;
 	const selectedDepartment = departmentSelect.options[departmentSelect.selectedIndex].text;
 	const selectedGroup = asortmentGroupSelect.options[asortmentGroupSelect.selectedIndex].text;
+	const total = getTotal(valuesToDisplay);
+
 
 	const jsonValuesToDisplay = JSON.stringify(Array.from(valuesToDisplay.entries()));
+
 	const postBody = buildOrderItemStructure(
-		parseInt(orderId), {}, 0, 0, 0, 0,
-		commission, commission, values, jsonValuesToDisplay, 1, comment.value, version, groupNumber, document.documentElement.lang, selectedDepartment, selectedGroup
+		parseInt(orderId), {}, 0, 0, total.total, total.total_hidden,
+		commission, commission, values, jsonValuesToDisplay, 1, comment.value, version, groupNumber, document.documentElement.lang, selectedDepartment, selectedGroup, window.shortJson
 	);
 	const json = JSON.stringify(postBody);
 
@@ -246,13 +310,14 @@ async function sendData(inputs, values, valuesToDisplay, orderId, comment, versi
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: json,
+			total: [10, 10]
 		});
 		const result = await response.json();
 
 		setTimeout(() => {
 			window.location.href = `/orders/order/${orderId}`;
 			return result;
-		}, 750);
+		}, 500);
 	} catch (error) {
 		console.error("Bład przy wysyłaniu", error);
 		showToast('error', t("form.error_saving_form"));
@@ -325,14 +390,26 @@ async function handleImagePreviewClick(e) {
 	}
 }
 
-async function resumeForm(choice) {
+async function resumeForm(choice, config = null) {
+
 	const depSelect = document.getElementById("department-select");
 	const asortSelect = document.getElementById("asortment-group-select");
-	await window.formsManager.getAvailableForms();
+
+	// Upewnij się, że departments są załadowane
+	const departments = await window.formsManager.getAvailableForms();
+
+	// Znajdź department i sprawdź czy istnieje - porównaj jako string
+	const department = departments.find(d => String(d.num) === String(choice.department));
+	if (!department) {
+
+		showToast('error', 'Nie znaleziono działu');
+		return;
+	}
+
 	depSelect.value = choice.department;
 	await buildGroupSelect(choice.department, asortSelect);
 	asortSelect.value = choice.group;
-	await prepareForm(choice.group, choice.department);
+	await prepareForm(choice.group, choice.department, config);
 }
 
 async function getAppVersion(groupNumber) {
@@ -353,16 +430,28 @@ async function getAppVersion(groupNumber) {
 	}
 }
 
-async function refreshFormBehaviour() {
+async function refreshFormBehaviour(config = null) {
 
 	const lastCommission = localStorage.getItem('commission');
 
 	processCommissionInput(lastCommission)
 
-	let lastConfig = JSON.parse(localStorage.getItem('lastChoice'))
-	console.log('lastConfig', lastConfig)
+	let lastChoice = JSON.parse(localStorage.getItem('lastChoice'))
+	console.log('lastChoice z localStorage:', lastChoice)
+
+	if (!lastChoice || !lastChoice.department || !lastChoice.group) {
+		console.warn('Brak poprawnej konfiguracji lastChoice w localStorage');
+		return;
+	}
+
 	setTimeout(async () => {
-		await resumeForm(lastConfig);
+		console.log(config, 'KONFIGURACJAAA')
+		if (config) {
+			await resumeForm(lastChoice, config);
+		}
+		else {
+			await resumeForm(lastChoice);
+		}
 	}, 1500);
 }
 

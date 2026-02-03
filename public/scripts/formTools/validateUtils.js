@@ -1,3 +1,4 @@
+import { isEnabled } from '../components/htmlManipulator.js';
 import { showToast } from '../components/toast.js';
 import { logFunctionName, resetAllDOM } from './formTools.js';
 import {
@@ -21,7 +22,20 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
     // PROBLEM JEST Z RESETOWANIEM DOM KILKA RAZY NIEPOTRZEBNIE
 
     if (tagName != "INPUT") {
+        // Sprawdź czy actualParameter istnieje w allOptionsByParameter
+        if (!allOptionsByParameter || !allOptionsByParameter[actualParameter]) {
+            console.warn(`Parametr ${actualParameter} nie istnieje w allOptionsByParameter`);
+            return;
+        }
+
+        // console.log(actualParameter, 'siema')
         let selectedValue = allOptionsByParameter[actualParameter].find(v => v.VALUE == value);
+
+        // Sprawdź czy znaleziono selectedValue
+        if (!selectedValue) {
+            console.warn(`Nie znaleziono wartości ${value} dla parametru ${actualParameter}`);
+            return;
+        }
 
         window.actualParam = actualParameter;
         window.actualValue = value;
@@ -31,10 +45,13 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
             window.inputsValidators[window.actualParam] = {};
         }
 
-        window.inputsValidators[window.actualParam][window.actualValue] = {};
+        if (!window.inputsValidators[window.actualParam][window.actualValue]) {
+            window.inputsValidators[window.actualParam][window.actualValue] = {};
+        }
 
 
         try {
+            //    console.log('essa', selectedValue.PROC, '2');
             const checkProcedure = window.FormulaHandler.evaluateFormula(
                 selectedValue.PROC,
                 values,
@@ -55,7 +72,7 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
     }
 
     if (window.checkedParams) {
-        console.log('jestem w środku');
+        //    console.log('jestem w środku');
 
         Object.entries(window.checkedParams).forEach(([paramName, paramValue]) => {
 
@@ -75,7 +92,17 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
 
                         //tu jest probem 
                         window.ignoreDom = true
+
+                        // Zapisz obecne wartości
+                        const prevParam = window.actualParam;
+                        const prevValue = window.actualValue;
+
+                        // Ustaw kontekst dla tego parametru
+                        window.actualParam = paramName;
+                        window.actualValue = paramValue.VALUE;
+
                         try {
+                            //    console.log('essa', paramName, paramValue.PROC, '1');
                             const checkProcedure = window.FormulaHandler.evaluateFormula(
                                 paramValue.PROC,
                                 values,
@@ -83,11 +110,15 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
                                 true
 
                             );
-                            window.ignoreDom = false
 
                             resetAllDOM()
                         } catch (error) {
                             console.error(`Błąd procedury dla ${paramName}/${paramValue.VALUE}:`, error);
+                        } finally {
+                            // Przywróć poprzednie wartości
+                            window.actualParam = prevParam;
+                            window.actualValue = prevValue;
+                            window.ignoreDom = false;
                         }
                     } else {
                         console.warn(`Brak wartości VALUE dla parametru: ${paramName}`);
@@ -105,17 +136,13 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
 
 export function setDefaultValues(inputs, values, allOptionsByParameter, displayValues, fromChecked = false) {
     logFunctionName('setDefaultValues');
-    console.log(JSON.stringify(inputsDefaults), 'inputsDefaults w getProcedures');
+    let resetFlag = true;
     if (fromChecked) { return false }
-    // Iterujemy po inputsDefaults zamiast inputsValidators
     Object.entries(inputsDefaults).forEach(([firstParam, models]) => {
         Object.entries(models).forEach(([modelName, defaults]) => {
             Object.entries(defaults).forEach(([param, functions]) => {
-
                 const input = inputs[param];
-
                 let currentParam = searchForParameter(functions.DOM, allOptionsByParameter, param);
-
                 if (!currentParam && input && input.tagName != "INPUT") {
 
                     if (typeof functions.DOM === 'string') {
@@ -124,23 +151,18 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                     return;
                 }
                 if ('DOM' in functions && functions.DOM) {
-                    console.log("DOMOM", functions.DOM);
                     const domValue = functions.DOM;
                     values[param] = domValue;
                     setDescription(values, domValue, allOptionsByParameter, param)
-                    console.log(domValue, input?.id, 'domValue w setDefaultValues');
+                    // console.log(domValue, input?.id, 'domValue w setDefaultValues');
                     try {
-
                         const curPar = buildValuesToDisplay(allOptionsByParameter, domValue, input?.id, displayValues, input.tagName);
-                        console.log(curPar, 'domValue w setDefaultValues 1')
+                        // console.log(curPar, 'domValue w setDefaultValues 1')
                         // Ustawianie wartości DOM w UI
                         if (input.tagName === 'INPUT') {
-
                             input.value = domValue;
                         }
                         else if (input.tagName === 'BUTTON') {
-
-
                             let buttonLabel;
                             let buttonVal;
                             if (currentParam?.ALIAS) {
@@ -149,7 +171,7 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                             }
                             else {
                                 if (domValue === '<NONE>') {
-                                    console.log(curPar,'domValue w setDefaultValues 2')
+                                    // console.log(curPar, 'domValue w setDefaultValues 2')
                                     buttonLabel = currentParam?.DESCRIPTION ?? ""
                                 }
                                 else {
@@ -179,7 +201,10 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
             });
         });
     });
-    resetAllDOM()
+    if (resetFlag) {
+        resetAllDOM()
+    }
+
 }
 
 
@@ -237,6 +262,7 @@ export function validateFormInput(values, actualInput) {
 export function findAllValidatorsForInput(actualInput, values) {
     logFunctionName('findAllValidatorsForInput');
     const result = [];
+    //    console.log('essa @@@@@@@@@@@@@@@@@@@@', window.inputsValidators);
     for (const [param, models] of Object.entries(inputsValidators)) {
         for (const [model, validators] of Object.entries(models)) {
             if (Object.values(values).includes(model) && Object.keys(validators).length !== 0) {
@@ -268,9 +294,10 @@ export function setInputValid(input, isValid, min, max) {
 
 
     input.classList.remove("invalid-input", "warning-warranty-input");
+    const label = document.createElement('label');
 
     if (!isValid) {
-        const label = document.createElement('label');
+        //    console.log('ustawiam na invalid');
         label.id = labelId;
         label.setAttribute('for', input.id);
         res = false;
@@ -312,8 +339,10 @@ export function setInputValid(input, isValid, min, max) {
 }
 
 export function validateAllFieldsOnSubmit(inputs, values) {
+    // console.log(window.calculatedParams, 'sisa')
 
     for (const key of Object.keys(inputFlags)) {
+
         if (!enabledParams.hasOwnProperty(key)) {
             delete inputFlags[key];
         }
@@ -322,12 +351,19 @@ export function validateAllFieldsOnSubmit(inputs, values) {
 
 
     for (const param of Object.keys(enabledParams)) {
+        // Automatycznie waliduj parametry kalkulowane
+        if (window.calculatedParams && window.calculatedParams.has(param)) {
+            inputFlags[param] = true;
+            continue;
+        }
+
         let invalidLabel;
 
         const input = inputs[param];
+        if (!input) continue;
         let isValid = true;
 
-
+        console.log(inputs,input, param, 'input w validateAllFieldsOnSubmit');
         if (input.tagName === 'BUTTON') {
             isValid = !!input.value && input.value.trim() !== '';
 
@@ -371,6 +407,7 @@ export function validateAllFieldsOnSubmit(inputs, values) {
                 isValid = validateFormInput(values, inputs[param])
             }
         }
+        // console.log(inputFlags, param, inputFlags[param], 'inputFlags[param] przed ustawieniem')
         inputFlags[param] = isValid;
 
     }
@@ -384,19 +421,21 @@ export function validateAllFieldsOnSubmit(inputs, values) {
 // POPRCUJ TUTAJ
 export function clearDisabledValues(values, displayValues) {
     const enabledParamsKeys = new Set(Object.keys(enabledParams));
-    console.log('CLEAR DISABLED VALUES')
+    //    console.log('CLEAR DISABLED VALUES')
     for (const key of Object.keys(values)) {
 
         const baseParam = key.replace(/___DESCRIPTION$/, '');
+
         if (key.includes('___VISIBLE') || baseParam.includes('___TITLE') || baseParam.includes('___DICT')) {
+            // console.log(key, 'baseParam w clearDisabledValues')
             continue;
         }
 
         if (!enabledParamsKeys.has(baseParam) && !baseParam.endsWith('_ALIAS')) {
             const desc = `${baseParam}___DESCRIPTION`;
             const visibleKey = `${baseParam}___VISIBLE`;
-
-
+            const alias_desc = `${baseParam}_ALIAS___DESCRIPTION`;
+            const alias_key = `${baseParam}_ALIAS`;
             values[visibleKey] = false;
 
             // Usuń lub ustaw na pusty string zarówno dla klucza jak i desc
@@ -406,15 +445,39 @@ export function clearDisabledValues(values, displayValues) {
             if (values[key] !== undefined && key !== desc) {
                 values[key] = '';
             }
+            if (values[alias_desc] !== undefined) {
+                values[alias_desc] = '';
+            }
+            if (values[alias_key] !== undefined) {
+                values[alias_key] = '';
+            }
+
 
             const isDescription = key.endsWith('___DESCRIPTION');
             const displayKey = isDescription ? baseParam : key;
             const displayParam = displayValues.get(displayKey);
             // console.log(displayKey, displayParam, 'displayParam przed oczyszczeniem', (displayParam && displayParam.locked !== true) );
+
             if (displayParam && displayParam.locked !== true) {
                 isDescription || displayParam.option_value != 'undefined' || !displayParam.option_value
                     ? delete displayParam.option_description
                     : delete displayParam.option_value;
+            }
+            if (displayParam && displayParam.locked !== true && (displayParam.row == '1' || displayParam.row == '0')) {
+                delete displayParam.option_description
+                delete displayParam.option_value;
+            }
+
+            for (const skipParam of window.skipCountParams) {
+                if (displayKey === skipParam) {
+                    // Zamiast usuwać, ustaw row = '0' dla kalkulowanych parametrów
+                    const displayParam = displayValues.get(displayKey);
+                    if (displayParam) {
+                        displayParam.row = '0';
+                        displayValues.set(displayKey, displayParam);
+                    }
+                    // console.log(`Ustawiono row='0' dla ${displayKey}`);
+                }
             }
 
         } else if (enabledParamsKeys.has(baseParam)) {

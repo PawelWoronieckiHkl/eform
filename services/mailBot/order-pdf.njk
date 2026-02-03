@@ -88,17 +88,19 @@
 </div>
 <div class='client-details'>
     <div class="order-details">
-        <h3 class='header-3'>{{ __('order.client_data') }}</h3>
+        <h2 class='header-3'>{{ __('order.client_data') }}</h2>
         <div class="order-details-line">{{ __('new-order.client_name') }}:
             {{sendData.client}}</div>
         <div class="order-details-line">{{ __('base.nip') }}:
             {{sendData.tax}}</div>
-        <div class="order-details-line">{{ __('orders.sent_date') }}:
-            {{sendData.sendDate}}</div>
+        <div class="order-details-line">{{ __('orders.created_date') }}:
+                {{sendData.created_date}}</div>
+            <div class="order-details-line">{{ __('orders.sent_date') }}:
+                {{sendData.sentDate}}</div>
     </div>
 
     <div class="order-details">
-        <h3 class='header-3'>{{ __('order.send_data') }}</h3>
+        <h2 class='header-3'>{{ __('order.send_data') }}</h2>
         <div class="order-details-line">{{ __('new-order.street') }}:
             {{sendData.address}}</div>
         <div class="order-details-line">{{ __('new-order.city') }}:

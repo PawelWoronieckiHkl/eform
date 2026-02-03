@@ -15,7 +15,8 @@ function buildOrderItemStructure(
     groupNumber,
     lang,
     department,
-    groupName
+    groupName,
+    shortJson
 
 ) {
     let body = {}
@@ -36,6 +37,7 @@ function buildOrderItemStructure(
     body['lang'] = lang
     body['department']= department
     body['group'] = groupName
+    body['parameters_short'] = shortJson;
     return body;
 }
 

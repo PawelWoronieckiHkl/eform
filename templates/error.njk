@@ -1,48 +1,42 @@
 {% extends "base.njk" %}
-
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="/styles/home.css">
-    <link rel="stylesheet" href="/styles/rodo.css">
-    <link rel="stylesheet" href="/styles/mobile/home.css">
-    <link rel="stylesheet" href="/styles/mobile/rodo.css">
-{% endblock head %}
-
-{% block content %}
-    {% block nav%}{%endblock nav%}
-    {% block back_link %}{% endblock %}
-
-    <div class="container my-5 col-12 w-100">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-8 col-lg-6 text-center">
-                <h3 class="mb-3">{{ __('base.error_occurred') }}</h3>
-                <h5>{{ __('base.error_message') }}</h5>
-                <p>{{ __('base.error_destination') }}
-                    <strong>{{ attemptedPath }}</strong>
-                </p>
-
-                <p>
-                    <strong>{{ __('base.status_code') }}:</strong>
-                    {{ status }}</p>
-                <p>{{ message }}</p>
-                <a href="/" class="btn btn-secondary">{{ __('base.return_home') }}</a>
-                <button class='btn btn-danger'>{{ __('base.send_ticket') }}</button>
-
-            </div>
-        </div>
-        <style>
-            .rodo-info-text {
-                color: #555;
-                font-style: italic;
-                margin-bottom: 1rem;
-            }
-
-            .arrow {
-                display: none !important;
-            }
-            .back-text {
-                display: none !important;
-            }
-        </style>
-        {% block footer %}{% endblock %}
-    {% endblock content %}
+        <link rel="stylesheet" href="/styles/rodo.css">
+            <link rel="stylesheet" href="/styles/mobile/home.css">
+                <link rel="stylesheet" href="/styles/mobile/rodo.css">
+                {% endblock head %}
+                {% block content %}
+                    {% block nav %}{% endblock nav %}
+                    {% block back_link %}{% endblock %}
+                    <div class="container my-5 col-12 w-100">
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-md-8 col-lg-6 text-center">
+                                <h3 class="mb-3">{{ __('base.error_occurred') }}</h3>
+                                <h5>{{ __('base.error_message') }}</h5>
+                                <p>{{ __('base.error_destination') }}
+                                    <strong>{{ attemptedPath }}</strong>
+                                </p>
+                                <p>
+                                    <strong>{{ __('base.status_code') }}:</strong>
+                                    {{ status }}</p>
+                                <p>{{ message }}</p>
+                                <a href="/" class="btn btn-secondary">{{ __('base.return_home') }}</a>
+                                <button class='btn btn-danger'>{{ __('base.send_ticket') }}</button>
+                            </div>
+                        </div>
+                        <style>
+                            .rodo-info-text {
+                                color: #555;
+                                font-style: italic;
+                                margin-bottom: 1rem;
+                            }
+                            .arrow {
+                                display: none !important;
+                            }
+                            .back-text {
+                                display: none !important;
+                            }
+                        </style>
+                        {% block footer %}{% endblock %}
+                    {% endblock content %}

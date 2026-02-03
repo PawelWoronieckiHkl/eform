@@ -1,11 +1,12 @@
 const path = require('path');
-const { outputData } = require('../config')
+const { outputData, shortJsonDir } = require('../config')
 const fs = require('fs');
 
 class OrderSender {
 
     constructor(order, orderItems) {
-        console.log(order)
+        console.log(order, 'siemacho @@@@@@@@@@@@@@')
+        this.shortItems = [];
         this.data = {
             orderno: order?.order_idx ?? 0,
             orderid: order?.id ?? 0,
@@ -13,6 +14,7 @@ class OrderSender {
             client: order.client_name,
             organizationIdent: order.org_ident,
             userIdent: order.user_ident,
+            created_date: order.created_date,
             tax: order.tax_id,
             comment: order.comment,
             sentDate: order.sent_date,
@@ -40,34 +42,56 @@ class OrderSender {
                     return acc;
                 }, {});
 
-  
+
             this.data.items.push({
                 posid: item?.id ?? 0,
                 orderpos: idx,
                 product: item?.asortment_group_number,
+                department: item?.department ?? '',
                 product_description: item?.group_name ?? '',
                 commission: item?.commision ?? "",
                 parameters: sortedFilteredObj,
                 comment: item.comment,
                 asortment: item.asrotment_group_number
             })
+
+            this.shortItems.push({
+                posid: item?.id ?? 0,
+                orderpos: idx,
+                product: item?.asortment_group_number,
+                product_description: item?.group_name ?? '',
+                commission: item?.commision ?? "",
+                parameters_short: item.parameters_short
+            })
             idx++;
         }
         this.output_path = outputData
-        this.fileName = `${this.data.organizationIdent}_${this.data.orderno}.json`;
+        this.fileName = `${this.data.organizationIdent}_${this.data.orderid}_${this.data.userIdent}_${this.data.orderno}.json`;
     }
 
     async init() {
-        this.saveToFile()
+        await this.saveToFile()
+        return this.data
+    }
+
+    getData() {
         return this.data
     }
 
     async saveToFile() {
+        try {
+            const shortJsonPath = path.join(shortJsonDir, `${process.env.NODE_ENV}_${this.fileName}`);
+            await fs.promises.writeFile(shortJsonPath, JSON.stringify(this.shortItems, null, 2), 'utf-8');
+        }
+        catch (err) {
+            console.error(`Failed to save short JSON file: ${err.message}`);
+        }
         if (!process.env?.PRODUCTION) {
             const filePath = path.join(this.output_path, this.fileName);
-       
+
             try {
                 await fs.promises.writeFile(filePath, JSON.stringify(this.data, null, 2), 'utf-8');
+
 
             } catch (error) {
                 console.error(`Failed to save file: ${error.message}`);

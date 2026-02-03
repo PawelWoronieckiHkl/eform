@@ -17,6 +17,7 @@ async function getLanguage(pin) {
     }
 }
 
+
 async function getFirstLogonInfo(pin) {
     const query = 'SELECT first_login_at from `user` where pin like ?'
     let result = await selectQuery(query, pin)
@@ -51,6 +52,12 @@ async function getPolicyState(pin) {
     return result[0].privacy_policy_accepted_at
 }
 
+async function insertUserIntousrtble(ident,pin,password){
+    const query = `INSERT INTO eform.usrtblpsswd (ident, pin, password) VALUES (?, ?, ?)`;
+    let result = await insertQuery(query, [ident, pin, password]);
+    return result;
+}
+
 async function getAllOrganizations() {
     const query = 'SELECT * FROM organization'
     let result = await selectQuery(query)
@@ -68,7 +75,7 @@ async function getUserLogo(pin) {
     let result = await selectQuery(query, pin)
     return result && result.length > 0 ? result[0].photo_path : 'hkl.png';
 }
-async function getLogo(id){
+async function getLogo(id) {
     const query = `select photo_path from organization where id = ?`;
     let result = await selectQuery(query, [id])
     return result && result.length > 0 ? result[0].photo_path : 'hkl.png';
@@ -79,6 +86,12 @@ async function getUserMail(pin) {
     return result[0];
 }
 
+async function logEmployeeLogin(employeeId) {
+    const sql = `update employee set last_login = ? where id = ?`;
+    const now = dateUtils.getDbTimestamp();
+    const result = await updateQuery(sql, [now, employeeId]);
+    return result;
+}
 
 async function getOwner(pin) {
     const query = `select o.ident as orgIdent, o.id as orgId, u.ident as userIdent from user u join organization o on u.organization_id = o.id
@@ -134,7 +147,7 @@ async function getUserIdent(pin) {
     const query = `SELECT ident FROM user WHERE pin LIKE ?`;
     const result = await selectQuery(query, [pin])
 
-    return result[0].id;
+    return result[0].ident;
 }
 async function getUserData(pin) {
     const query = `SELECT * FROM \`user\` WHERE pin LIKE ?`;
@@ -166,6 +179,12 @@ async function getUsers() {
     `;
     const result = await selectQuery(sql);
 
+    return result;
+}
+
+async function deleteUserByPin(pin) {
+    const sql = `DELETE FROM eform.\`user\` WHERE pin = ?`;
+    const result = await deleteQuery(sql, [pin]);
     return result;
 }
 
@@ -298,16 +317,25 @@ async function addEmployee(employeeData) {
 
     try {
         const result = await insertQuery(sql, [name, surname, login, hashedPassword, phone, userId]);
-        return result.insertId;
+        return { insertId: result.insertId , success: true };
     } catch (err) {
         throw new Error('Błąd przy dodawaniu pracownika: ' + err.message);
     }
 }
 
 async function deleteEmployee(employeeId) {
-    const sql = `DELETE FROM employee WHERE id = ?`;
-    const result = await deleteQuery(sql, [employeeId]);
-    return result;
+    try {
+        // Usunij powiązanie: ustaw employee_id na NULL dla wszystkich zamówień
+        const updateSql = `UPDATE \`order\` SET employee_id = NULL WHERE employee_id = ?`;
+        await updateQuery(updateSql, [employeeId]);
+        
+        // Następnie usuń pracownika
+        const deleteSql = `DELETE FROM employee WHERE id = ?`;
+        return await deleteQuery(deleteSql, [employeeId]);
+    } catch (error) {
+        console.error('Błąd przy usuwaniu pracownika:', error);
+        throw error;
+    }
 }
 
 async function getEmployeeOrders(employeeId, limit = 50, offset = 0) {
@@ -318,7 +346,7 @@ async function getEmployeeOrders(employeeId, limit = 50, offset = 0) {
             o.created_date,
             o.sent_date,
             o.status,
-            o.total_price,
+            o.total_float,
             COUNT(oi.id) as items_count
         FROM \`order\` o
         LEFT JOIN order_item oi ON o.id = oi.order_id
@@ -328,7 +356,8 @@ async function getEmployeeOrders(employeeId, limit = 50, offset = 0) {
         LIMIT ? OFFSET ?
     `;
     const result = await selectQuery(query, [employeeId, limit, offset]);
-    return result || [];
+    const resultWithHumanizedDates = dateUtils.humanizeData(result);
+    return resultWithHumanizedDates || [];
 }
 
 async function countEmployeeOrders(employeeId) {
@@ -343,6 +372,37 @@ async function updateEmployeeLastLogin(employeeId) {
     const result = await updateQuery(sql, [now, employeeId]);
     return result;
 }
+async function updateEmployee(employeeId, updatedData) {
+    const fields = [];
+    const values = [];
+
+    for (const [key, value] of Object.entries(updatedData)) {
+        fields.push(`${key} = ?`);
+        values.push(value);
+    }
+    values.push(employeeId);
+
+    const sql = `UPDATE employee SET ${fields.join(', ')} WHERE id = ?`;
+
+    try {
+        const result = await updateQuery(sql, values);
+        return result;
+    }       catch (err) {
+        throw new Error('Błąd przy aktualizacji pracownika: ' + err.message);
+    }
+}
+
+async function getOrgInfo(id) {
+    const query = 'SELECT * FROM organization where id like ?'
+    let result = await selectQuery(query, id)
+    return result[0]
+}
+
+async function updateUserData(pin, updatedData) {
+    const query = 'UPDATE eform.`user` set tax_id = ?, street = ?, zip = ?, city = ?, email = ? WHERE pin = ?';
+    let result = await selectQuery(query, [updatedData.tax_id, updatedData.street, updatedData.zip, updatedData.city, updatedData.email, pin]);
+
+}
 
 module.exports = {
     getLanguage,
@@ -350,6 +410,7 @@ module.exports = {
     getPolicyState,
     getUserLogo,
     getOwner,
+    updateUserData,
     getOwnerByUserId,
     updateUserPasswordByPin,
     getDbPassword,
@@ -364,7 +425,7 @@ module.exports = {
     setUserAcceptedRODO,
     uodateFirstLogonInfo,
     getUserIdent,
-
+    updateEmployee,
     getEmployeesByUserId,
     getEmployeeById,
     getEmployeeByLogin,
@@ -377,5 +438,9 @@ module.exports = {
     getUserByEmployye,
     getEmployyeInfo,
     getAllOrganizations,
-    getLogo
+    getLogo,
+    deleteUserByPin,
+    logEmployeeLogin,
+    getOrgInfo,
+    insertUserIntousrtble
 }

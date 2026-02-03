@@ -37,14 +37,11 @@
         <div class="commission">"{{ orderDetails.commision }}"</div>
     {% endif %}
 </h2>
-
 {% if orderDetails.comment %}
     <div class="comment">
-        {{ __('order.comment') }}:
-        {{ orderDetails.comment }}
+        {{ __('order.comment') }}: {{ orderDetails.comment }}
     </div>
 {% endif %}
-
 {% if cleanOrderItems.length > 0 %}
     {% set globalIndex = 1 %}
     {% for table in cleanOrderItems %}
@@ -75,20 +72,16 @@
         </table>
     {% endfor %}
     <button onclick="eksportujDoExcel()">Eksportuj do Excel</button>
-
 {% else %}
     <div class="text-center py-5">
         <h3>{{ __('order.no_positions') }}</h3>
         <p>{{ __('order.add_position') }}</p>
     </div>
 {% endif %}
-
 <script>
     function eksportujDoExcel() {
         var tabela = document.getElementById('tabela');
-        var wb = XLSX
-            .utils
-            .table_to_book(tabela, {sheet: "Arkusz1"});
+        var wb = XLSX.utils.table_to_book(tabela, {sheet: "Arkusz1"});
         XLSX.writeFile(wb, 'tabela.xlsx');
     }
 </script>

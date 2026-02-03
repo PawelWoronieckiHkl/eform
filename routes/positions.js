@@ -23,13 +23,30 @@ function normalizeFilename(filename) {
   return '';
 }
 
+// Middleware do automatycznego dodawania users dla owner'ów
+router.use(async (req, res, next) => {
+    // Ustaw owner dla wszystkich widoków
+    res.locals.owner = req.session?.user?.isOwner || false;
+    res.locals.admin = req.session?.user?.isAdmin || false;
+    res.locals.isEmployee = req.session?.user?.isEmployee || false;
 
+    if (req.session?.user?.isOwner) {
+        try {
+            res.locals.users = await db.getUsersByOwner(req);
+        } catch (error) {
+            console.error('Error loading users for owner:', error);
+            res.locals.users = [];
+        }
+    }
+    next();
+});
 
 router.post('/save', requireLogin, async (req, res) => {
   try {
     const formData = req.body;
-
+    const total = req.body.total;
     const result = await db.insertNewForm(formData);
+
     res.json({ status: "success", message: "Dane zapisane poprawnie" });
   } catch (err) {
     return res.status(400).json({ error: "Niepoprawne dane" });
@@ -39,11 +56,12 @@ router.post('/save', requireLogin, async (req, res) => {
 router.patch('/edit/save', requireLogin, async (req, res) => {
   try {
     const formData = req.body;
-
-    const result = await db.updatePosition(formData);
+    const total = req.body.total;
+    const result = await db.updatePosition(formData, total);
 
     res.json({ status: "success", message: "Dane zapisane poprawnie" });
   } catch (err) {
+    console.error('Błąd podczas zapisu pozycji:', err);
     return res.status(400).json({ error: "Niepoprawne dane" });
   }
 });
@@ -80,7 +98,7 @@ router.delete('/:positionId/delete', requireLogin, async (req, res) => {
 router.get('/photo', requireLogin, async (req, res) => {
   try {
     const { photoName, groupNumber, folderName } = req.query;
-    console.log('Odebrano zapytanie o zdjęcie:', { photoName, groupNumber, folderName });
+
 
     if (!photoName || !groupNumber || !folderName) {
       return res.status(400).json({ error: 'Brak wymaganych danych' });
@@ -158,15 +176,14 @@ router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
       position.asortment_group_number,
       position.lang,
       position.department,
-      position.group_name
+      position.group_name,
+      position.parameters_short
     )
 
   )
 
   if (result) {
-    console.log('DUPLIKOWANIE POZYCJI - WYNIK:', result[0]);
     const newPositionId = result[0].insertId;
-    console.log('Nowe ID pozycji:', newPositionId);
     return res.status(200).json({ redirect: `/position/${newPositionId}/edit` })
   }
   else {
@@ -201,7 +218,7 @@ router.post('/favorites/toggle', requireLogin, async (req, res) => {
   // Sprawdź, czy już istnieje ulubiony
   try {
     const exists = await db.checkFavoriteExists(userId, productValue, groupNumber);
-    console.log(exists)
+
     if (exists) {
       await db.removeFavorite(userId, productValue, groupNumber);
       res.json({ isFavorite: false });
@@ -220,13 +237,15 @@ router.get('/:positionId', requireLogin, async (req, res) => {
 
   const parametersDesc = JSON.parse(result.json_parameters_desc);
   const values = result.json_parameters
+  const parameters_short = result.parameters_short || {};
+  console.log('PARAMETERS SHORT:', parameters_short);
   if (result) {
     console.log('SPRAWDZAMY POZYCJE', req.session.user?.showPrices)
     if (!req.session.user?.showPrices) {
-      return res.render('position_sent.njk', { position: result, parameters: parametersDesc, values: values })
+      return res.render('position_sent.njk', { position: result, parameters: parametersDesc, values: values, parameters_short: parameters_short, isAdmin: req.session.user?.isAdmin })
     }
     else {
-      return res.render('position_sent-prices.njk', { position: result, parameters: parametersDesc, values: values })
+      return res.render('position_sent-prices.njk', { position: result, parameters: parametersDesc, values: values, parameters_short: parameters_short, isAdmin: req.session.user?.isAdmin })
     }
   }
   else {
@@ -241,7 +260,6 @@ router.get('/favs/:groupNr', requireLogin, async (req, res) => {
   const currentUser = ownerService.getCurrentUser(req);
   const userId = currentUser.userId; // lub z JWT: req.user.id}
   const favs = await db.getFavs(userId, groupNumber);
-  console.log(favs)
   if (!favs || favs.length === 0) {
     return res.status(200).json({
       success: true,
@@ -267,14 +285,12 @@ router.post('/check-images', requireLogin, async (req, res) => {
 
     const result = {};
     const basePath = path.join(photoPath, groupNumber.toString(), folderName);
-    console.log('Sprawdzana ścieżka:', basePath);
     const files = fs.readdirSync(basePath);
 
     const normalizedFiles = {};
     for (const file of files) {
       const normalized = normalizeFilename(file);
       normalizedFiles[normalized] = file;
-      console.log(file)
     }
 
     for (const opt of options) {
@@ -365,4 +381,21 @@ router.post('/:id/move-down', requireLogin, async (req, res) => {
   }
 });
 
+router.post('/favs/clear/:groupNr', requireLogin, async (req, res) => {
+  try {
+    const groupNumber = req.params.groupNr;
+    const favsToDelete = req.body.favList;
+    const currentUser = ownerService.getCurrentUser(req);
+    const userId = currentUser.userId;
+    for (const fav of favsToDelete) {
+
+      await db.removeFavorite(userId, fav, groupNumber);
+    }
+    return res.status(200).json({ success: true });
+
+  } catch (error) {
+    console.error('Database error:', error);
+    return res.status(500).json({ error: 'Database operation failed' });
+  }
+});
 module.exports = router;

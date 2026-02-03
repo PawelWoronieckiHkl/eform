@@ -1,3 +1,4 @@
+import { createElement } from "./components/htmlManipulator.js";
 import { getEnvVersion } from "./getEnv.js";
 async function getLogo() {
     try {
@@ -36,13 +37,13 @@ async function getLogo() {
 getLogo()
     .catch(err => console.error('Final error:', err));
 
-async function getEmployyeInfo(){
-    try{
+async function getEmployyeInfo() {
+    try {
         await fetch('/user/employee-info', {
             method: 'GET',
             credentials: 'include'
         });
-    } catch(err) {
+    } catch (err) {
         console.error('getEmployyeInfo Error:', err);
     }
 }
@@ -112,7 +113,8 @@ export async function getUserName() {
                 });
                 contextInfo = `<br>(${contextData.ident})`;
             }
-            else{window.context = false
+            else {
+                window.context = false
                 contextBtns.forEach(contextBtn => {
                     contextBtn.classList.add('d-none');
                 });
@@ -123,33 +125,27 @@ export async function getUserName() {
     }
 
     setTimeout(() => {
-        console.log(t('base.user'), data.name);
-        document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${data.name}${contextInfo}`;
+        // console.log(t('base.user'), data.name);
+        document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${data.name}
+        </br> <p class='pt-2'>Mail: </br> ${data.email}</p>  ${contextInfo}`;
+        getEmp();
     }, 100);
     return data;
 }
-
-
-
-
 
 async function getConfigNum() {
     const version = await getEnvVersion();
     const user = await fetch('/config-num', {
         method: 'GET',
-
     });
     const data = await user.json();
-
     if (!data.success) {
-
         throw new Error('Błąd pobierania nazwy użytkownika: ' + data.message);
-
     }
 
 
 
-    console.log('wersja', data);
+    // console.log('wersja', data);
 
     document.getElementById('config-number-info').innerHTML =
 
@@ -158,8 +154,44 @@ async function getConfigNum() {
 
 }
 
+function getEmp() {
+    let empBtn = document.getElementById('employee-panel-nav-btn');
+    let UserNameDiv = document.getElementById('user-info');
 
+    if (empBtn) {
+        fetch('/employee-status', {
+            method: 'GET',
+            credentials: 'include'
+        })
+            .then(response => response.json())
 
+            .then(data => {
+                // console.log('siema', data)
+                if (data.success && !data.isEmployee) {
+                    empBtn.classList.remove('d-none');
+                    empBtn.href = data?.path ?? '/';
+                    window.isEmployee = data.isEmployee
+
+                } else {
+                    empBtn.classList.add('d-none');
+                    createElement(
+                        'div',
+                        {
+                            id: 'employee-info',
+                            class: ['employee-info', 'mt-2'],
+                            text: (`${t('base.employee_panel_active')}:`)
+                        },
+                        UserNameDiv
+                    );
+                    createElement('span', { text: data.name }, UserNameDiv);
+                }
+            })
+            .catch(err => {
+                console.error('Błąd pobierania statusu pracownika:', err);
+                empBtn.classList.add('d-none');
+            });
+    }
+}
 
 getConfigNum()
 
@@ -168,6 +200,7 @@ getUserName()
 
 // Desktop navigation toggle functionality
 document.addEventListener('DOMContentLoaded', function () {
+    const lastUserBtn = document.getElementById('last-user-btn')
     const navToggleBtn = document.getElementById('navToggleBtn');
     const desktopNav = document.querySelector('.desktop-nav');
 
@@ -193,10 +226,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+    if (lastUserBtn) {
+        lastUserBtn.addEventListener('click', function () {
+            getLocalStorageUsers();
+        });
+    }
 });
 
 // Logout functionality for both desktop and mobile nav
 document.addEventListener('DOMContentLoaded', function () {
+
     const desktopLogoutLink = document.querySelector('[data-action="logout"]');
     const mobileLogoutLink = document.getElementById('mobile-logout-link');
 
@@ -219,3 +258,46 @@ document.addEventListener('DOMContentLoaded', function () {
         mobileLogoutLink.addEventListener('click', handleLogout);
     }
 });
+
+function getLocalStorageUsers() {
+    let orgIdent = localStorage.getItem('orgIdent');
+    console.log('orgIdent:', orgIdent);
+    let userPath = localStorage.getItem('lastUserPath');
+
+    if (!orgIdent || !userPath) {
+        console.error('Missing orgIdent or userPath in localStorage');
+        return;
+    }
+
+    console.log('Organization Ident:', orgIdent);
+    console.log('Last User Path:', userPath);
+
+    fetch('/set-last-user', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            orgIdent: orgIdent,
+            userPath: userPath
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Pomyślnie ustawiono organizację i kontekst użytkownika');
+                // Przekieruj na odpowiednią ścieżkę
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                }
+            } else {
+                console.error('Błąd:', data.message);
+            }
+        })
+        .catch(err => {
+            console.error('Błąd podczas ustawiania użytkownika:', err);
+        });
+}
+
+
