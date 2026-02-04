@@ -32,7 +32,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+        
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@13.0.0/dist/css/shepherd.css" />
+    {% if admin %}
+    <link rel="stylesheet" href="/styles/admin_section.css">
+    {% endif %}
     <script type="module" src="https://cdn.jsdelivr.net/npm/shepherd.js@13.0.0/dist/esm/shepherd.mjs"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -168,7 +172,7 @@
                 </a>
 
                 {% block user_select %}
-                {% if admin or owner %}
+                {% if owner and not admin %}
                 <div id='userSelectContainer'>
                     <label for='userSelect' id='userSelectLabel' class="mt-5">{{ __('orders.users_list') }}</label>
                     <div class="dropdown-container">
@@ -183,7 +187,7 @@
                             </div>
                             {% if users %}
                             {% for user in users %}
-                            <div class="dropdown-item" data-value="{{ user.ident }}">{{ user.ident }}</div>
+                            <div class="dropdown-item pt-5 pb-5" data-value="{{ user.ident }}">{{ user.ident }}</div>
                             {% endfor %}
                             {% endif %}
                         </div>
@@ -191,27 +195,7 @@
                 </div>
                 {% endif %}
                 {% endblock %}
-                {% if admin %}
-
-                <div class="custom-dropdown" id='org-dropdown-container'>
-                    <button class="custom-nav-link dropdown-toggle has-tooltip" type="button" id="organizationDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="nav-text">{{ __('base.organization') }}</span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        {% for org in organizations %}
-                        <li>
-                            <a class="dropdown-item" href="/set-organization/{{ org.id }}">{{ org.ident | upper }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <a href="/admin" id='admin-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="Admin Panel">
-                    <span class="nav-text">Admin panel</span>
-                </a>
-                <button id='last-user-btn' class='custom-nav-link has-tooltip w-75'>
-                    Ostatni klient</button>
-                {% endif %}
+               
                 <div class="side-nav" id="bottom-nav-menu">
                     <ul class="nav flex-column">
                         <li class="nav-item">
@@ -255,6 +239,57 @@
         </span>
         <span class="back-text fw-bold">{{ __('base.back_button') }}</span>
         </button>
+                {# ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+{% if admin %}
+            <div class='admin-section'>
+           
+            <div  id='org-dropdown-container'>
+                <button class="admin-btn" type="button" id="organizationDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="nav-text">{{ __('base.organization') }}</span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% for org in organizations %}
+                    <li>
+                        <a class="dropdown-item pt-3 pb-3" href="/set-organization/{{ org.id }}">{{ org.ident | upper }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+             <div id='userSelectContainer'>
+                <div class="dropdown-container">
+                    <input type='text' id="userSelect" class="dropdown-input admin-btn admin-input"
+                        autocomplete="off"
+                        placeholder='{{ __('orders.select_user') }}' {% if selectedUser %}
+                        value="{{ selectedUser.client_name }}" {% endif %} />
+                    <div id="userDropdown" class="dropdown-menu custom-dropdown">
+                        <div class="dropdown-item context-button">
+                            <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
+                                <span class="nav-text">{{ __('base.turn_off_context') }}</span>
+                            </a>
+                        </div>
+                        {% if users %}
+                        {% for user in users %}
+                        <div class="dropdown-item pt-5 pb-5" data-value="{{ user.ident }}">{{ user.ident }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+                        <button id='last-user-btn' class='admin-btn custom-nav-link has-tooltip'>
+                Ostatni klient</button>
+            <button class='admin-btn'>
+            <a href="/admin" id='admin-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="Admin Panel">
+                <span class="nav-text">Admin panel</span>
+            </a>
+            </button>
+
+                </div>
+{% endif %}
+        {# END ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+
+
+
         {% block content %}{% endblock %}
         <div id='dialog-container'>
             <dialog id='dialog-space'></dialog>
@@ -311,6 +346,7 @@
         window.loadTranslations(document.documentElement.lang || 'en');
         window.loadLangs()
     </script>
+ 
     {% block scripts %}{% endblock scripts %}
 </body>
 

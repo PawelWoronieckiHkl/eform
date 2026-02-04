@@ -1,5 +1,6 @@
 const db = require("../db/db_helper.js");
 const usersDb = require("../db/users.js");
+const { customOrgSorting } = require('../utils/otherBossUtilities.js');
 
 function requireLogin(req, res, next) {
   if (!req.session.user) {
@@ -15,7 +16,8 @@ async function addOrganizationsForAdmin(req, res, next) {
   res.render = async function (view, options = {}) {
     if (req.session.user && req.session.user.isAdmin) {
       try {
-        options.organizations = await usersDb.getAllOrganizations();
+        const orgs = await usersDb.getAllOrganizations();
+        options.organizations = customOrgSorting(orgs);
         options.admin = true;
       } catch (error) {
         console.error('Error fetching organizations:', error);

@@ -6,7 +6,7 @@ const adminDb = require("../db/admin/db_helper.js");
 const usersDb = require("../db/users.js");
 const ownerService = require('../services/owner.js');
 const path = require('path')
-
+const { customOrgSorting } = require('../utils/otherBossUtilities.js');
 const fs = require('fs');
 const langManager = require('../services/setLanguage')
 const verManager = require('../services/versionManager.js')
@@ -95,6 +95,8 @@ router.get("/", requireLogin, async (req, res) => {
   let organizations = [];
   if (req.session.user.isAdmin) {
     organizations = await db.getAllOrganizations();
+    organizations = customOrgSorting(organizations);
+    console.log('Organizations for admin:', organizations);
   }
 
 

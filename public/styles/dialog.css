@@ -559,6 +559,9 @@ dialog::backdrop {
 	margin-bottom: 1.5rem;
 	text-align: center;
 }
+.discount-amount {
+max-width: 10% !important;
+}
 
 .current-discount-label {
 	font-size: 0.95rem;

@@ -329,7 +329,7 @@ export async function updateDiscountDisplay() {
     }
     
     const discountSpace = createElement('div', { id: 'discount-space', class: ['total-price', 'd-flex', 'justify-content-end', 'align-items-center'] }, totalContainer);
-    const discountValueContainer = createElement('div', { id: 'discount-info', class: ['total', 'price-label', 'col-3', 'text-center', 'fw-bold', 'bg-discount', 'text-white', 'justify-content-end'] }, discountSpace)
+    const discountValueContainer = createElement('div', { id: 'discount-amount', class: ['total', 'price-label', 'col-3', 'text-center', 'fw-bold', 'bg-discount', 'text-white', 'justify-content-end'] }, discountSpace)
     const discountContainer = createElement('div', { id: 'discount-info', class: ['total', 'price-label', 'col-3', 'text-center', 'fw-bold', 'bg-discount', 'text-white', 'justify-content-end'] }, discountSpace)
     
     
