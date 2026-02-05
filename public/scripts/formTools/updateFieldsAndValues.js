@@ -181,7 +181,7 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
         const descParts = [];
         console.log('budujemy display dla obiektu', value)
         for (let [fieldName, fieldVal] of Object.entries(value)) {
-            if (fieldName==='TYP'){continue}
+            if (fieldName === 'TYP') { continue }
             if (!fieldVal || value === '<NONE>') {
                 let currentValue = displayValues.get(paramName) || {};
                 for (let key in currentValue) {
@@ -306,9 +306,16 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
         const allowed = allowedOptions[paramName];
 
         if (currentSelect.tagName === 'BUTTON' & !(param.SOURCE == param.NAME)) {
-            currentSelect.onclick = function () {
+            // Usuń wszystkie stare click listenery i dodaj nowy
+            const newBtn = currentSelect.cloneNode(true);
+            currentSelect.parentNode.replaceChild(newBtn, currentSelect);
+
+            newBtn.addEventListener('click', function () {
                 createDialog(param, allowedParameters[paramName], tempGroupNumber, filters[paramName], attrVals);
-            };
+            });
+
+            // Zaktualizuj inputs[paramName] aby wskazywał nowy element
+            inputs[paramName] = newBtn;
         }
 
         for (const child of currentSelect.children) {

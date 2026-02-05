@@ -262,7 +262,7 @@ export function validateFormInput(values, actualInput) {
 export function findAllValidatorsForInput(actualInput, values) {
     logFunctionName('findAllValidatorsForInput');
     const result = [];
-    //    console.log('essa @@@@@@@@@@@@@@@@@@@@', window.inputsValidators);
+
     for (const [param, models] of Object.entries(inputsValidators)) {
         for (const [model, validators] of Object.entries(models)) {
             if (Object.values(values).includes(model) && Object.keys(validators).length !== 0) {
@@ -339,19 +339,20 @@ export function setInputValid(input, isValid, min, max) {
 }
 
 export function validateAllFieldsOnSubmit(inputs, values) {
-    // console.log(window.calculatedParams, 'sisa')
 
     for (const key of Object.keys(inputFlags)) {
 
         if (!enabledParams.hasOwnProperty(key)) {
             delete inputFlags[key];
+
         }
     }
 
 
 
     for (const param of Object.keys(enabledParams)) {
-        // Automatycznie waliduj parametry kalkulowane
+
+
         if (window.calculatedParams && window.calculatedParams.has(param)) {
             inputFlags[param] = true;
             continue;
@@ -363,7 +364,6 @@ export function validateAllFieldsOnSubmit(inputs, values) {
         if (!input) continue;
         let isValid = true;
 
-        console.log(inputs,input, param, 'input w validateAllFieldsOnSubmit');
         if (input.tagName === 'BUTTON') {
             isValid = !!input.value && input.value.trim() !== '';
 
@@ -383,7 +383,11 @@ export function validateAllFieldsOnSubmit(inputs, values) {
 
 
         input.classList.toggle("invalid-input", !isValid);
-
+        let fullParam = window.params.find(p => p.NAME === param);
+        let isRequired = fullParam?.REQUIRED ?? true;
+        if (!isRequired){
+            isValid = true;
+        }
 
         const labelId = `${input.id}-label`;
         const existingLabel = document.getElementById(labelId);
@@ -405,6 +409,8 @@ export function validateAllFieldsOnSubmit(inputs, values) {
 
             if (paramsToValidate?.[param]) {
                 isValid = validateFormInput(values, inputs[param])
+
+
             }
         }
         // console.log(inputFlags, param, inputFlags[param], 'inputFlags[param] przed ustawieniem')

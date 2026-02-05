@@ -1,11 +1,12 @@
 const path = require('path');
 const { outputData, shortJsonDir } = require('../config')
 const fs = require('fs');
+const {slopePhotoPath} = require('../config');
 
 class OrderSender {
 
     constructor(order, orderItems) {
-        console.log(order, 'siemacho @@@@@@@@@@@@@@')
+        this.slopePaths = [];
         this.shortItems = [];
         this.data = {
             orderno: order?.order_idx ?? 0,
@@ -32,6 +33,8 @@ class OrderSender {
         }
         let idx = 1;
         for (let item of orderItems) {
+            this.attachSlopePhoto(item,idx);
+
 
             const rawObj = item.json_parameters;
 
@@ -127,5 +130,19 @@ class OrderSender {
 
     }
 
+    attachSlopePhoto(item, idx) {
+            const slopeType = item?.parameters_short?.data?.WYMIAROWANIE_SLOPOW?.TYP ?? false;
+            if (slopeType) {
+                const slopePhotoFileName = `${slopeType}.png`;
+                const slopePhotoFullPath = path.join(slopePhotoPath, slopePhotoFileName);
+                this.slopePaths.push({photoPath:slopePhotoFullPath,
+                    attachmentName: `pos_${idx}_slope.png`
+                });
+            }
+    
 }
+
+}
+
+
 module.exports = { OrderSender };

@@ -43,10 +43,10 @@ export function checkIfPriceIsCorrect(values, inputs, displayValues) {
                     // console.log('Ustawiamy według cennika dla', paramName, displayValue.locked);
                     if (inputs[paramName]) {
                         inputs[paramName].type = 'text';
-                        inputs[paramName].value = 'Według cennika';
+                        inputs[paramName].value = t('form.pricelist_info')
                         displayValues.set(paramName, {
                             param_description: displayValue?.param_description ?? '',
-                            option_value: 'Według cennika',
+                            option_value: t('form.pricelist_info'),
                             option_description: '',
                             locked: displayValue?.locked ?? false,
                             row: '2'

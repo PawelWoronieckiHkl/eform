@@ -1,8 +1,8 @@
 import { logFunctionName, searchForParameter } from './formTools.js';
 import { createDialog } from './dialogUtils_copy.js'
-import { isEnabled } from '../components/htmlManipulator.js';
+import { isEnabled, createElement } from '../components/htmlManipulator.js';
 import { SourceWindow } from './slope.js';
-
+import { attachmentBehaviorOnClick, changeAttachmentAppearance } from './attachment.js';
 
 export function processCommissionInput(labelValue = false) {
     logFunctionName('processCommissionInput')
@@ -32,54 +32,68 @@ export async function getPossibleValues(dictValues, values) {
     return { possibleElements };
 }
 
-export function createInputField(param, options, groupNumber, filters, allOptions, values, attrs) {
+export function createInputField(param, options, groupNumber, filters, allOptions, values, attrs = [], parrent = null) {
 
     logFunctionName('createInputField')
-    options = options.possibleElements;
-    if (param.SOURCE == param.NAME) {
-        let btn = document.createElement("button");
-        btn.classList.add("button");
-        btn.id = param.NAME;
-        btn.type = 'button';
-        btn.innerHTML = `${t('Uzupełnij')}`;
-        btn.onclick = async function () {
-        //    console.log('btn click slope')
-            await param.modal.show()
 
-        };
+    options = options.possibleElements;
+
+    if (param.SOURCE == param.NAME) {
+        createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+
+        let btn = createElement("button", {
+            class: ["button"],
+            id: param.NAME,
+            type: 'button',
+            html: `${t('Uzupełnij')}`,
+            onclick: async function () {
+                await param.modal.show()
+            }
+        }, parrent);
+        parrent.appendChild(createElement('br'));
         return btn;
     }
 
     if (param.GRAPHICS == 'true' && Array.isArray(options) && (param.TYPE != 'link')) {
-        let btn = document.createElement("button");
-        btn.classList.add("button");
-        btn.id = param.NAME;
-        btn.type = 'button';
-        if (param.DEFAULT != '<NULL>') {
-            let val = options.find(val => val.VALUE == param.DEFAULT)
-            if (param.DEFAULT == '<NONE>') {
-                btn.textContent = ` ${val.DESCRIPTION}`;
-            }
-            else {
-                btn.textContent = `${val?.VALUE}-${val?.DESCRIPTION}`
-            }
-        }
-        else {
-            btn.innerHTML = `${t('form.check_word')}`;
-        }
+        createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+        let btn = createElement("button", {
+            class: ["button"],
+            id: param.NAME,
+            type: 'button',
+            text: param.DEFAULT != '<NULL>'
+                ? (param.DEFAULT == '<NONE>'
+                    ? ` ${options.find(val => val.VALUE == param.DEFAULT)?.DESCRIPTION}`
+                    : `${options.find(val => val.VALUE == param.DEFAULT)?.VALUE}-${options.find(val => val.VALUE == param.DEFAULT)?.DESCRIPTION}`)
+                : `${t('form.check_word')}`
+        }, parrent);
 
-
-        btn.onclick = function () {
+        // Użyj addEventListener zamiast onclick, aby umożliwić zarządzanie handlerami
+        btn.addEventListener('click', function () {
             createDialog(param, options, groupNumber, filters[param.NAME], attrs);
-        };
+        });
+
+        parrent.appendChild(createElement('br'));
         return btn;
     }
     if (allOptions?.length ?? 0 > 1) {
-        let select = document.createElement("select");
-        select.classList.add("select");
+        createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+
+        let select = createElement("select", { class: ["select"] }, parrent);
+
         select.appendChild(new Option(t('form.check_option'), ""));
+
+        // Deduplikacja opcji na podstawie ROW_NUM + VALUE
+        const seenOptions = new Set();
         for (let idx = 0; idx < allOptions.length; idx++) {
             let row = allOptions[idx];
+            const optionKey = `${row.ROW_NUM}-${row.VALUE}`;
+
+            // Pomiń duplikaty
+            if (seenOptions.has(optionKey)) {
+                continue;
+            }
+            seenOptions.add(optionKey);
+
             let optionText;
 
             if (row?.ALIAS) {
@@ -91,17 +105,16 @@ export function createInputField(param, options, groupNumber, filters, allOption
             let option = new Option(optionText || row.VALUE, row.VALUE);
             option.id = `${row.ROW_NUM}-${param.NAME}`;
             if (!isEnabled(row.ENABLE, values)) {
-
                 option.style.display = 'none'
             }
             select.appendChild(option);
         }
+        parrent.appendChild(createElement('br'));
         return select;
     }
 
-    let input = document.createElement("input");
-    input.classList.add("input-form");
-//    console.log("!JEST FORMUŁAAAAA", param.FORMULA)
+    let input = createElement("input", { class: ["input-form"] }, null);
+
     if (param.TYPE === "numeric") {
         input.type = "number";
         input.addEventListener('input', function (event) {
@@ -110,51 +123,103 @@ export function createInputField(param, options, groupNumber, filters, allOption
             }
         });
     }
-
-
     else {
         input.type = "text";
     }
+
     if (param.FORMULA != "<NULL>") {
-    //    console.log("JEST FORMUŁAAAAA", param.FORMULA)
         input.type = "text";
     }
     if (param.TYPE === 'link') {
-
-        const linkBtn = document.createElement("a");
-        linkBtn.href = param.URL || "#";
-        linkBtn.textContent = param.DESCRIPTION || "Otwórz";
-        linkBtn.classList.add("link-btn", "tiny-link-btn"); // dodaj dodatkową klasę
-        linkBtn.value = param.NAME
-        linkBtn.rel = "noopener noreferrer";
-
+        const linkBtn = createElement("a", {
+            href: param.URL || "#",
+            text: param.DESCRIPTION || "Otwórz",
+            class: ["link-btn", "tiny-link-btn"],
+            value: param.NAME,
+            rel: "noopener noreferrer"
+        }, parrent);
 
         setTimeout(() => {
-            // Wyszukaj rodzica po klasie w DOM
             const parentDiv = document.querySelector(`.${param.NAME}-select-area`);
             if (parentDiv) {
-                // Usuń starą klasę (przykładowa nazwa, dostosuj do istniejącej)
                 parentDiv.classList.remove(`${param.NAME}-select-area`);
-                // Dodaj nową klasę dla linków, np. 'link-select-area'
                 parentDiv.classList.add('link-area');
             }
         }, 0);
-
+        createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+        parrent.appendChild(createElement('br'));
         return linkBtn;
     }
+    if (param.TYPE === 'file') {
+        param.REQUIRED = false;
+        input.classList.remove("input-form");
+        input.classList.add("file-input");
+        input.style.display = 'none';
+        const attachmentContainer = document.getElementById('attachment-container');
+        const attachmentsLabel = document.querySelector('.attachment-label');
+        console.log(attachmentsLabel.textContent, 'labelka załączników')
+        if (attachmentsLabel.textContent == '') {
+            attachmentsLabel.textContent = t('form.attachments_label')
+        }
+        const attachmentItemWrapper = createElement('div', {
+            class: ['attachment-item-wrapper']
+        }, attachmentContainer);
 
+
+        const fileIcon = createElement('button', {
+            type: 'button',
+            class: ['file-upload-icon', 'has-tooltip'],
+            title: 'Kliknij aby wybrać plik',
+        }, attachmentItemWrapper);
+
+        const attachmentImage = createElement('img', { src: '/img/attachment.png', class: ['icon'], alt: 'Załącznik', width: '24', height: '24' }, fileIcon);
+
+        fileIcon.dataset.tooltip = `${param.DESCRIPTION}`
+        fileIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            input.click();
+        });
+
+        // Przycisk do usuwania załącznika
+        const removeBtn = createElement('button', {
+            type: 'button',
+            class: ['file-remove-btn'],
+            text: '✕',
+            title: 'Usuń załącznik'
+        }, attachmentItemWrapper);
+
+        removeBtn.style.display = 'none';
+        removeBtn.addEventListener('click', (e) => {
+            attachmentBehaviorOnClick(input, attachmentImage, fileIcon, removeBtn, param, e);
+        });
+
+        input.type = "file";
+        console.log(input, 'input załącznik')
+        input.addEventListener('change', function () {
+            changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, 10)
+        });
+
+        attachmentItemWrapper.appendChild(input);
+        return input
+    }
+
+    createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+    parrent.appendChild(input);
+    parrent.appendChild(createElement('br'));
     return input;
+
+
 }
 
 export function fillFields(displayValues, inputs, values) {
-//    console.log('fillFields')
+    //    console.log('fillFields')
     for (let input of Object.values(inputs)) {
         const tag = input.tagName
         const labelData = displayValues.get(input.name)
         // console.log(input.name, labelData)
         if (values[input.name] == "<NONE>") {
             let description = input?.name + '___DESCRIPTION' || '';
-        //    console.log(`Użycie wartości dla description: ${description}, wartość: ${values[description]}`);
+            //    console.log(`Użycie wartości dla description: ${description}, wartość: ${values[description]}`);
             if (labelData) {
                 labelData.option_description = values[description];
                 input.textContent = `${labelData.option_description}`;
@@ -175,7 +240,9 @@ export function fillFields(displayValues, inputs, values) {
                 }
                 break;
             case "INPUT":
-                input.value = labelData?.option_value ?? fillCalculated(values, input);
+                if (input.type !== 'file') {
+                    input.value = labelData?.option_value ?? fillCalculated(values, input);
+                }
                 break;
             case "SELECT":
                 input.value = labelData?.option_value ?? fillCalculated(values, input);
@@ -220,14 +287,14 @@ export function checkIfParamHidden(formula, values, param) {
         if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE && !shouldEnable) {
             window.skipCountParams.push(param.NAME)
         }
-    //    console.log(shouldEnable, 'SHOULD ENABLE')
+        //    console.log(shouldEnable, 'SHOULD ENABLE')
         if (shouldEnable == 'password') { shouldEnable = false }
 
 
     }
     catch (error) {
 
-    //    console.log('mamy error')
+        //    console.log('mamy error')
 
         showToast('error', `Error:  ${error.message}`)
     }

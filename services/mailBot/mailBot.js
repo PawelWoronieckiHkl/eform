@@ -19,9 +19,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-
-
-function sendMail(to, lang, pdfBuffer, templateVars = {}) {
+function sendMail(to, lang, pdfBuffer, attachmentsBuffer=[], templateVars = {}) {
   const i18n = confLang(lang)
 
   const __ = (key) => i18n.__(key, { locale: lang });
@@ -56,6 +54,18 @@ function sendMail(to, lang, pdfBuffer, templateVars = {}) {
     console.warn('Plik logo nie istnieje:', templateVars.logoPath);
   }
 
+  // Dodaj dodatkowe załączniki z attachmentsBuffer
+  if (attachmentsBuffer && Array.isArray(attachmentsBuffer)) {
+    attachmentsBuffer.forEach(attachment => {
+      if (attachment.filename && attachment.content) {
+        attachments.push({
+          filename: attachment.filename,
+          content: attachment.content
+        });
+      }
+    });
+  }
+
   const mailOptions = {
     from: `"${process.env.MAILBOT_ALIAS}" <${process.env.MAILBOT_USER}>`,
     to,
@@ -69,7 +79,7 @@ function sendMail(to, lang, pdfBuffer, templateVars = {}) {
     if (error) {
       console.log('Błąd wysyłki:', error);
     } else {
-      console.log('Stylizowany e-mail wysłany:', info.response,to);
+      console.log('Stylizowany e-mail wysłany:', info.response, to);
     }
   });
 }

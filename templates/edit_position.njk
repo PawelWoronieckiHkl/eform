@@ -39,40 +39,43 @@
                           <button class="btn mt-3" type='button' id='reset-button'>
                             {{ __('form.reset_button') }}
                           </button>
+                          <div id="attachment-space">
+                            <div class="attachment-label"></div>
+                            <div id="attachment-container"></div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </form>
-                  <dialog id="color-dialog">
-                    <div id="dialog-toast-container"></div>
-                    <div id="dialog-container" class="d-grid">
-                      <h3 id="dialog-title" class="text-center">{{ __('form.dialog_title') }}</h3>
-                      <p class="text-center">{{ __('form.dialog_subtitle') }}</p>
-                      <div id="dynamic-options-list" class="options-scrollable"></div>
-                      <div class="bottom mt-3">
-                        <div class="button-wrapper">
-                          <button id="dialog-confirm" class="btn btn-success me-2" type="button">
-                            {{ __('form.apply_button') }}
-                          </button>
-                          <button id="dialog-close" class="btn btn-secondary" type="button">
-                            {{ __('form.cancel_button') }}
-                          </button>
-                        </div>
-                        <div class="obj-counter">
-                          <label for="object-count">{{ __('form.object_count') }}:</label>
-                          <span id="object-count">sdassd</span>
+                    </form>
+                    <dialog id="color-dialog">
+                      <div id="dialog-toast-container"></div>
+                      <div id="dialog-container" class="d-grid">
+                        <h3 id="dialog-title" class="text-center">{{ __('form.dialog_title') }}</h3>
+                        <p class="text-center">{{ __('form.dialog_subtitle') }}</p>
+                        <div id="dynamic-options-list" class="options-scrollable"></div>
+                        <div class="bottom mt-3">
+                          <div class="button-wrapper">
+                            <button id="dialog-confirm" class="btn btn-success me-2" type="button">
+                              {{ __('form.apply_button') }}
+                            </button>
+                            <button id="dialog-close" class="btn btn-secondary" type="button">
+                              {{ __('form.cancel_button') }}
+                            </button>
+                          </div>
+                          <div class="obj-counter">
+                            <label for="object-count">{{ __('form.object_count') }}:</label>
+                            <span id="object-count">sdassd</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </dialog>
-                  <dialog id="image-preview-dialog" class="image-preview-dialog">
-                    <button id="close-dialog-btn" class="close-dialog-btn" type='button'>✖</button>
-                    <img id="preview-image" src="" alt="{{ __('form.preview_alt') }}"/>
-                  </dialog>
-                  <div id='version-space'>{{ position.ver }}</div>
-                  <div class="hourglass"></div>
-                  <div class="overlay"></div>
-                {% endblock content %}
-                {% block scripts %}
-                  <script type='module' src="/scripts/edit_form.js"></script>
-                {% endblock scripts %}
+                    </dialog>
+                    <dialog id="image-preview-dialog" class="image-preview-dialog">
+                      <button id="close-dialog-btn" class="close-dialog-btn" type='button'>✖</button>
+                      <img id="preview-image" src="" alt="{{ __('form.preview_alt') }}"/>
+                    </dialog>
+                    <div id='version-space'>{{ position.ver }}</div>
+                    <div class="hourglass"></div>
+                    <div class="overlay"></div>
+                  {% endblock content %}
+                  {% block scripts %}
+                    <script type='module' src="/scripts/edit_form.js"></script>
+                  {% endblock scripts %}

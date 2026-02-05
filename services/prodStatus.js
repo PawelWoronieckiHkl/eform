@@ -100,7 +100,9 @@ class SyncProdStatus {
 }
 
 function setParcelHref(statuses) {
-
+    if (!Array.isArray(statuses)) {
+        return statuses;
+    }
     for (const status of statuses) {
         let [parcel, code] = status.parcel_code?.split(' ') ?? ['', ''];
         if (code) {

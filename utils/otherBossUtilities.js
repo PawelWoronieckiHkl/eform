@@ -18,7 +18,6 @@ function customOrgSorting(organizations) {
             }
         });
     }
-    console.log('Sorted Orgs:', sortedOrgs);
     return sortedOrgs;
 }
 

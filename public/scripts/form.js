@@ -29,7 +29,7 @@ import { Translator } from "./formTools/fileTranslator.js"
 import { stopSpin, startSpin } from "./components/hourglass.js";
 import { fillLocalPositionObject } from "./formTools/localStorageManager.js";
 import { getUid } from './formTools/getUid.js';
-import {generateShortJson} from './formTools/shortJsonGen.js';
+import { generateShortJson } from './formTools/shortJsonGen.js';
 
 
 export async function generateForm(
@@ -89,14 +89,17 @@ export async function generateForm(
   window.actualParam = '';
   window.actualValue = '';
   const form = document.getElementById("dynamic-form");
+  const attachmentContainer = document.getElementById('attachment-container');
+  const attachmentsLabel = document.querySelector('.attachment-label');
   const linkContainer = document.createElement("div");
-  linkContainer.id = "link-buttons-container"; 
+  linkContainer.id = "link-buttons-container";
   let labelNumber = 1;
   const inputs = {};
 
   let options = {};
   form.innerHTML = "";
-
+  attachmentContainer.innerHTML = '';
+  attachmentsLabel.textContent = '';
   for (let i = 0; i < params.length; i++) {
     let param = params[i];
     options = await getPossibleValues(allOptionsByParameter[param.NAME], values);
@@ -115,7 +118,7 @@ export async function generateForm(
 
     const div = createElement('div', { class: [`${param.NAME}-select-area`] }, form);
 
-    createElement('label', { text: `${param.DESCRIPTION} ` }, div);
+
 
     if (param.SOURCE == param.NAME) {
       param.modal = new SourceWindow(1, (sourceValues) => {
@@ -163,7 +166,7 @@ export async function generateForm(
           }
         }
 
-        input = createInputField(param, options, groupNumber, filters, allOptionsByParameter[param.NAME], values);
+        input = createInputField(param, options, groupNumber, filters, allOptionsByParameter[param.NAME], values, semafor.attrValues, div);
       } catch (err) {
         console.error(err);
         return;
@@ -172,21 +175,18 @@ export async function generateForm(
 
     else {
 
-      input = createInputField(param, options, groupNumber, filters, allOptionsByParameter[param.NAME], values, semafor.attrValues);
+      input = createInputField(param, options, groupNumber, filters, allOptionsByParameter[param.NAME], values, semafor.attrValues, div);
     }
 
 
     input.name = param.NAME;
     input.id = param.NAME;
-    div.appendChild(input);
-    div.appendChild(createElement('br'));
+
 
     inputs[param.NAME] = input;
     if (!editFlag) {
       displayValues.set(param.NAME, { 'param_description': param?.ALIAS_DESCRIPTION ?? param.DESCRIPTION });
 
-    } else {
-      // jakieś akcje w trybie edycji (jeśli potrzebne)
     }
 
     if (!editFlag) {
@@ -197,7 +197,9 @@ export async function generateForm(
         else {
           values[param.NAME] = param.DEFAULT;
         }
-        inputs[param.NAME].value = param.DEFAULT;
+        if (inputs[param.NAME]?.type !== 'file') {
+          inputs[param.NAME].value = param.DEFAULT;
+        }
         buildValuesToDisplay(allOptionsByParameter, param.DEFAULT, param.NAME, displayValues, 'INPUT ');
       } else {
         values[param.NAME] = "";
@@ -224,10 +226,12 @@ export async function generateForm(
     else if (param.SCRIPTS != "<NULL>" || param.FORMULA != "<NULL>") {
       calculatedParams[param.NAME] = input;
       input.disabled = true;
-      if (!editFlag) {
-        input.value = 0
-      } else {
-        input.value = values[param.NAME]
+      if (input.type !== 'file') {
+        if (!editFlag) {
+          input.value = 0
+        } else {
+          input.value = values[param.NAME]
+        }
       }
 
     }
@@ -256,7 +260,7 @@ export async function generateForm(
       }
     }
 
-    if (isEnabled && editFlag) {
+    if (isEnabled && editFlag && input.type !== 'file') {
       if (values[param.NAME] != '') {
         input.value = values[param.NAME]
       }
@@ -427,7 +431,7 @@ export async function updateProcedure({
 
   if (window.calculationQueue.length === 0) {
     window.isCalculating = false;
-    window.isPriceCalculating = true; 
+    window.isPriceCalculating = true;
     disableFormButtons(false);
     console.log('🔓 Wszystkie obliczenia zakończone, UI odblokowane');
   }

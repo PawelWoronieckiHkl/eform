@@ -15,39 +15,59 @@ toastr.options = {
     "hideEasing": "linear",
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
-  };
- 
+};
 
-export function showToast(type, message) {
+
+function normalizeToastPosition(position) {
+    if (!position) {
+        return 'toast-top-right';
+    }
+    if (position.startsWith('toast-')) {
+        return position;
+    }
+    const map = {
+        'top-right': 'toast-top-right',
+        'top-left': 'toast-top-left',
+        'bottom-right': 'toast-bottom-right',
+        'bottom-left': 'toast-bottom-left',
+        'top-center': 'toast-top-center',
+        'bottom-center': 'toast-bottom-center'
+    };
+    return map[position] || 'toast-top-right';
+}
+
+export function showToast(type, message, timeOut = 1.5, position = 'top-right') {
     logFunctionName('showToast');
+    const previousOptions = { ...toastr.options };
+    toastr.options.positionClass = normalizeToastPosition(position);
     if (type === 'success') {
         toastr.success(message);
     }
     else if (type === 'error') {
-        const previousOptions = {...toastr.options};
-        toastr.options.timeOut = '1500';
+        toastr.options.timeOut = timeOut * 1000; // Convert seconds to milliseconds
         toastr.error(message);
-        toastr.options = previousOptions;
-    } 
+    }
     else if (type === 'info') {
         toastr.info(message);
-    } 
+    }
     else if (type === 'warning') {
         toastr.warning(message);
     }
 
+    toastr.options = previousOptions;
+
 }
-export function showToastInContainer(parent,type,message){
-    const previousOptions = {...toastr.options};
+export function showToastInContainer(parent, type, message, position = 'toast-top-right') {
+    const previousOptions = { ...toastr.options };
 
     const customToastContainer = document.createElement('div');
     customToastContainer.id = 'custom-toast-container';
-    
-    customToastContainer.classList.add('toast-container', 'toast-top-right');
-    parent.appendChild(customToastContainer);
-    toastr.options.containerId= customToastContainer.id;
 
-    showToast(type,message);
+    customToastContainer.classList.add('toast-container', normalizeToastPosition(position));
+    parent.appendChild(customToastContainer);
+    toastr.options.containerId = customToastContainer.id;
+
+    showToast(type, message, 1.5, position);
 
     toastr.options = previousOptions;
 }

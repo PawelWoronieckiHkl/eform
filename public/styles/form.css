@@ -17,7 +17,7 @@
 	position: fixed;
 	z-index: 121;
 	left: calc(43% + 230px);
-	top: 28vh ;
+	top: 28vh;
 	transform: translate(-50%, -50%);
 	min-width: 400px;
 	max-width: 650px;
@@ -28,8 +28,8 @@
 	animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.last-config-info .collapsed{
-		left: 40%;
+.last-config-info .collapsed {
+	left: 40%;
 }
 
 @keyframes slideIn {
@@ -154,6 +154,20 @@ input[type="number"]:focus {
 	transition: all 0.3s ease;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 	z-index: 10;
+}
+
+#attachment-space {
+	position: absolute;
+	top: -2vh !important;
+	right: 0;
+
+}
+
+#attachment-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: flex-start;
 }
 
 #show-comment-button:hover {
@@ -488,4 +502,80 @@ input[type="number"]:focus {
 #buttons-space {
 	margin-top: 20px !important;
 	margin-bottom: 30px !important;
+}
+
+.attachment-label {
+	font-family: "Roboto", "semi-bold", sans-serif !important;
+	font-size: 1.1rem !important;
+	font-weight: 600 !important;
+	color: #333 !important;
+	margin-bottom: 8px !important;
+	padding: 0 5px !important;
+}
+
+/* Stylizacja ikony do uploadu pliku */
+.attachment-item-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 5px;
+	position: relative;
+}
+
+.file-upload-icon {
+	background: none;
+	border: none;
+	font-size: 28px;
+	cursor: pointer;
+	padding: 5px 10px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+	color: #495057;
+}
+
+.file-upload-icon:hover {
+	background-color: #f0f0f0;
+	transform: scale(1.1);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.file-upload-icon:active {
+	transform: scale(0.95);
+}
+
+.file-remove-btn {
+	background: none;
+	border: none;
+	font-size: 20px;
+	cursor: pointer;
+	padding: 2px 8px;
+	margin-left:30% !important;
+	color: #dc3545;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	border-radius: 50%;
+	transition: all 0.3s ease;
+	width: 24px;
+	height: 24px;
+	min-width: 24px;
+	min-height: 24px;
+	font-weight: bold;
+}
+
+.file-remove-btn:hover {
+	background-color: #f8d7da;
+	transform: scale(1.15);
+}
+
+.file-remove-btn:active {
+	transform: scale(0.95);
+}
+
+.file-input {
+	display: none;
 }

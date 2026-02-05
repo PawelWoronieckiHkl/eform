@@ -23,6 +23,8 @@ import { startSpin, stopSpin } from "./components/hourglass.js";
 const asortmentGroupSelect = document.getElementById("asortment-group-select");
 const departmentSelect = document.getElementById("department-select");
 const formContainer = document.getElementById("dynamic-form");
+const attachmentContainer = document.getElementById('attachment-container');
+const attachmentsLabel = document.querySelector('.attachment-label');
 let sentState = false;
 let isPreparingForm = false; // Flag to prevent duplicate calls
 
@@ -87,6 +89,9 @@ export async function buildMainSelect(files) {
 
 	departmentSelect.addEventListener("change", async () => {
 		formContainer.innerHTML = "";
+		attachmentContainer.innerHTML = '';
+		attachmentsLabel.textContent = '';
+
 		const selectedDepartment = departmentSelect.value;
 		await buildGroupSelect(selectedDepartment, asortmentGroupSelect);
 	});
@@ -228,19 +233,19 @@ function setupShowButton(inputs, values, valuesToDisplay, orderId, comment, vers
 			if (!sentState && window.finishFlag == true) {
 				recalculateLastChangedField();
 				setTimeout(async () => {
-				await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
-				sentState = true;
+					await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
+					sentState = true;
 				}, 1200);
 			}
 			else {
 				startSpin();
 				setTimeout(async () => {
-				recalculateLastChangedField();
-				setTimeout(async () => {
-				await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
-				sentState = true;
-				stopSpin();
-				}, 1200);
+					recalculateLastChangedField();
+					setTimeout(async () => {
+						await sendData(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber);
+						sentState = true;
+						stopSpin();
+					}, 1200);
 
 				}, 1200);
 			}

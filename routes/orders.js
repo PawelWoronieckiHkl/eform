@@ -12,7 +12,7 @@ const { generatePdf } = require('../services/mailBot/pdfGenerator');
 const { buildOrderItemStructure } = require('../services/itemBuilder.js');
 const { getPriceAfterDiscount } = require('../services/getDiscount.js');
 const { SyncProdStatus, setParcelHref } = require('../services/prodStatus.js');
-
+const {getExtraAttachments} = require('../services/mailBot/extraAttachments');
 router.use(async (req, res, next) => {
     // Ustaw owner dla wszystkich widoków
     res.locals.owner = req.session?.user?.isOwner || false;
@@ -110,7 +110,7 @@ router.get("/", requireLogin, async (req, res) => {
             db.countUserOrders(currentUser.userId)
         ]);
     }
-    console.log(req.session.user.isOwner, 'IS OWNER IN ORDERS LIST@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    // console.log(req.session.user.isOwner, 'IS OWNER IN ORDERS LIST@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     const totalPages = Math.ceil(totalOrders / limit);
     if (req.session.user?.isOwner) {
         res.render("orders_owner.njk", {
@@ -241,7 +241,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
 
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
     const currentUser = ownerService.getCurrentUser(req);
-    console.log(orderDetails, 'CURRENT USER IN ORDER HISTORY VIEW');
+    // console.log(orderDetails, 'CURRENT USER IN ORDER HISTORY VIEW');
     let statuses = await db.getUserStatuses(currentUser.ident, orderDetails.order_idx);
     statuses = setParcelHref(statuses);
     
@@ -293,7 +293,7 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
         const totalPrice = await db.getTotal(orderDetails.id)
 
-        console.log(total, ' total order')
+        // console.log(total, ' total order')
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render('order_prices.njk', {
                 orderDetails,
@@ -399,7 +399,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
         const sender = new OrderSender.OrderSender(order.orderDetails, order.orderItems);
         const sendData = sender.getData();
-        console.log('SEND DATA IN ORDER PDF', sendData);
+        // console.log('SEND DATA IN ORDER PDF', sendData);
         const totalPrice = await db.getTotal(order.orderDetails.id)
         const currentUser = ownerService.getCurrentUser(req);
         const photoFile = await db.getUserLogo(currentUser?.pin);
@@ -447,7 +447,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         // Określ czy pokazać ceny (sprawdź przed resetowaniem showPricesOnce)
         const shouldShowPrices = req.session.user?.showPrices || req.session.user?.showPricesOnce || req.params.showPrices === 'true';
         const isShort = req.params.short === 'true';
-        console.log(req.params.short, isShort, 'isShort param', req.params.showPrices, shouldShowPrices, 'should show prices in pdf');
+        // console.log(req.params.short, isShort, 'isShort param', req.params.showPrices, shouldShowPrices, 'should show prices in pdf');
         // Wyrenderuj template do HTML
         let html;
         if (!isShort) {
@@ -541,17 +541,17 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
         if (orderItems || orderItems.length > 0) {
             const sender = new OrderSender.OrderSender(orderDetails, orderItems);
             const sendData = await sender.init()
+
             const currentUser = ownerService.getCurrentUser(req);
             const user = await db.getUserData(currentUser?.pin)
             const clientName = user.client_name
             const photoFile = await db.getUserLogo(currentUser?.pin)
             const logoPath = path.join(__dirname, '../img/', photoFile)
             const heads = Object.keys(orderItems[0].json_parameters);
-
             let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
-            console.log('START @@@@@@@@@@@@', cleanOrderItems, 'CLEAN ORDER ITEMS IN SEND ORDER');
+            // console.log('START @@@@@@@@@@@@', cleanOrderItems, 'CLEAN ORDER ITEMS IN SEND ORDER');
             // { orderDetails: orderDetails[0], orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems }
-
+            const attachments = await getExtraAttachments(sender.slopePaths);
             const lang = req.getLocale();
             const mail = await db.getUserMail(currentUser?.pin)
             const orderIdx = await db.getUserOrderId(req.params.orderId)
@@ -562,11 +562,13 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev') {
                 mailList = [extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu']
             }
-            console.log(clientName, orderDetails, 'CLIENT NAME IN SEND ORDER ?@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+            // console.log(clientName, orderDetails, 'CLIENT NAME IN SEND ORDER ?@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
             mailBot.sendMail(
                 mailList,
                 lang,
                 pdf,
+                attachments,
                 {
                     klient: clientName,
                     orderNr: orderIdx,
@@ -615,7 +617,7 @@ router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res
     }
     for (const item of orderItems) {
 
-        console.log(item, 'ITEM TO COPY');
+        // console.log(item, 'ITEM TO COPY');
         let body = buildOrderItemStructure(
             newOrderId,
             item.list_price,
@@ -636,8 +638,8 @@ router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res
             item.group_name,
             item.parameters_short
         );
-        console.log(body, 'BODY TO INSERT AS NEW ITEM');
-        console.log(item.total_price, item.unit_price, 'PRICES IN ITEM TO COPY');
+        // console.log(body, 'BODY TO INSERT AS NEW ITEM');
+        // console.log(item.total_price, item.unit_price, 'PRICES IN ITEM TO COPY');
         const newItem = await db.insertNewForm(body);
     }
     return res.json({ status: "success", message: "Zamówienie skopiowane poprawnie", redirect: `/orders/order/${newOrderId}` });
