@@ -25,7 +25,7 @@ async function insertNewForm(formData) {
         formData.group,
         JSON.stringify(formData.parameters_short)
     ];
-    console.log(fields)
+
     const response = await insertQuery(insertFormQuery, fields);
 
     return response;

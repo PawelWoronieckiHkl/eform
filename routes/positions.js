@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 const { requireLogin } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
 const adminDb = require("../db/admin/db_helper.js");
@@ -10,6 +11,12 @@ const itemBuilder = require('../services/itemBuilder')
 const versionManager = require("../services/versionManager")
 const { photoPath, dataDir } = require('../config');
 const { group } = require('console');
+
+// Konfiguracja multer do przechowywania plików tymczasowo
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
 function normalizeFilename(filename) {
   if (filename) {
@@ -25,31 +32,59 @@ function normalizeFilename(filename) {
 
 // Middleware do automatycznego dodawania users dla owner'ów
 router.use(async (req, res, next) => {
-    // Ustaw owner dla wszystkich widoków
-    res.locals.owner = req.session?.user?.isOwner || false;
-    res.locals.admin = req.session?.user?.isAdmin || false;
-    res.locals.isEmployee = req.session?.user?.isEmployee || false;
+  // Ustaw owner dla wszystkich widoków
+  res.locals.owner = req.session?.user?.isOwner || false;
+  res.locals.admin = req.session?.user?.isAdmin || false;
+  res.locals.isEmployee = req.session?.user?.isEmployee || false;
 
-    if (req.session?.user?.isOwner) {
-        try {
-            res.locals.users = await db.getUsersByOwner(req);
-        } catch (error) {
-            console.error('Error loading users for owner:', error);
-            res.locals.users = [];
-        }
+  if (req.session?.user?.isOwner) {
+    try {
+      res.locals.users = await db.getUsersByOwner(req);
+    } catch (error) {
+      console.error('Error loading users for owner:', error);
+      res.locals.users = [];
     }
-    next();
+  }
+  next();
 });
 
-router.post('/save', requireLogin, async (req, res) => {
+router.post('/save', requireLogin, upload.any(), async (req, res) => {
   try {
-    const formData = req.body;
-    const total = req.body.total;
+    // Parsuj JSON z pola 'data'
+    const formData = JSON.parse(req.body.data);
+    const total = formData.total;
+
+    // Odczytaj pliki z req.files
+    const files = req.files || [];
+
+    console.log('📁 Otrzymane pliki:', files.map(f => ({
+      fieldname: f.fieldname,
+      originalname: f.originalname,
+      size: f.size
+    })));
+
+    // Przetwórz pliki (np. zapisz na dysk, wysyłaj do serwera itp.)
+    const processedFiles = files.map(file => ({
+      paramName: file.fieldname.replace('file_', ''),
+      filename: file.originalname,
+      buffer: file.buffer,
+      mimetype: file.mimetype,
+      size: file.size
+    }));
+
     const result = await db.insertNewForm(formData);
 
-    res.json({ status: "success", message: "Dane zapisane poprawnie" });
-  } catch (err) {
-    return res.status(400).json({ error: "Niepoprawne dane" });
+    res.json({
+      status: "success",
+      message: "Dane zapisane poprawnie",
+      filesProcessed: processedFiles.length
+    });
+  } catch (error) {
+    console.error('Błąd przy zapisywaniu:', error);
+    res.status(500).json({
+      status: "error",
+      message: error.message
+    });
   }
 });
 

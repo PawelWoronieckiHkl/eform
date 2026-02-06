@@ -1,7 +1,8 @@
 const path = require('path');
 const { outputData, shortJsonDir } = require('../config')
 const fs = require('fs');
-const {slopePhotoPath} = require('../config');
+const { slopePhotoPath } = require('../config');
+const { KeyObject } = require('crypto');
 
 class OrderSender {
 
@@ -33,7 +34,7 @@ class OrderSender {
         }
         let idx = 1;
         for (let item of orderItems) {
-            this.attachSlopePhoto(item,idx);
+            this.attachSlopePhoto(item, idx);
 
 
             const rawObj = item.json_parameters;
@@ -131,17 +132,29 @@ class OrderSender {
     }
 
     attachSlopePhoto(item, idx) {
-            const slopeType = item?.parameters_short?.data?.WYMIAROWANIE_SLOPOW?.TYP ?? false;
-            if (slopeType) {
-                const slopePhotoFileName = `${slopeType}.png`;
-                const slopePhotoFullPath = path.join(slopePhotoPath, slopePhotoFileName);
-                this.slopePaths.push({photoPath:slopePhotoFullPath,
-                    attachmentName: `pos_${idx}_slope.png`
-                });
-            }
-    
-}
+        const slopeVals = item?.parameters_short?.data?.WYMIAROWANIE_SLOPOW;
+        let dimensions = [];
 
+        for (const [key, value] of Object.entries(slopeVals || {})) {
+            if (key.endsWith("_VISIBLE") && value == true) {
+                let baseKey = key.split('___VISIBLE')[0];
+                dimensions.push(
+                    { [baseKey.split('_')[1] || baseKey]: slopeVals[baseKey] });
+            }
+        }
+
+        const slopeType = item?.parameters_short?.data?.WYMIAROWANIE_SLOPOW?.TYP ?? false;
+        if (slopeType) {
+            const slopePhotoFileName = `${slopeType}.png`;
+            const slopePhotoFullPath = path.join(slopePhotoPath, slopePhotoFileName);
+            this.slopePaths.push({
+                photoPath: slopePhotoFullPath,
+                attachmentName: `pos_${idx}_slope.png`,
+                dimensions: dimensions
+            });
+        }
+
+    }
 }
 
 

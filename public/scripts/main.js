@@ -301,21 +301,30 @@ async function sendData(inputs, values, valuesToDisplay, orderId, comment, versi
 	const selectedGroup = asortmentGroupSelect.options[asortmentGroupSelect.selectedIndex].text;
 	const total = getTotal(valuesToDisplay);
 
-
 	const jsonValuesToDisplay = JSON.stringify(Array.from(valuesToDisplay.entries()));
 
 	const postBody = buildOrderItemStructure(
 		parseInt(orderId), {}, 0, 0, total.total, total.total_hidden,
 		commission, commission, values, jsonValuesToDisplay, 1, comment.value, version, groupNumber, document.documentElement.lang, selectedDepartment, selectedGroup, window.shortJson
 	);
-	const json = JSON.stringify(postBody);
+
+	// Utwórz FormData zamiast JSON
+	const formData = new FormData();
+	formData.append('data', JSON.stringify(postBody));
+
+	// Dodaj wszystkie pliki z input[type=file]
+	const fileInputs = formContainer.querySelectorAll('input[type="file"]');
+	fileInputs.forEach(fileInput => {
+		if (fileInput.files && fileInput.files.length > 0) {
+			formData.append(`file_${fileInput.name}`, fileInput.files[0]);
+		}
+	});
 
 	try {
 		const response = await fetch("/position/save", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: json,
-			total: [10, 10]
+			body: formData
+			// Nie ustawiaj Content-Type, przeglądarka ustawi multipart/form-data
 		});
 		const result = await response.json();
 
