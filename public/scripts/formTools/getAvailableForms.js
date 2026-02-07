@@ -75,8 +75,10 @@ export class FormsManager {
             const foundAliases = this.aliases[group].filter(entry =>
                 entry.organization.trim().toUpperCase() === this.clientData.orgIdent.trim().toUpperCase() &&
                 entry.client.trim().toUpperCase() === this.clientData.userIdent.trim().toUpperCase()
-            );
 
+            );
+                console.log('DEBUG ALIASES 1', foundAliases, 'clientData:', this.clientData)
+                
             if (!foundAliases.length) {
                 console.warn('Brak pasujących aliasów dla:', this.clientData);
                 return {};
@@ -189,9 +191,9 @@ export class FormsManager {
 
 
                 if (object.paramdict_aliases) {
+
                     this.aliases[asortment] = await this.prepareData(object.paramdict_aliases)
                     object.paramdict_aliases = this.aliases[asortment]
-
                 }
 
                 if (object?.users) {

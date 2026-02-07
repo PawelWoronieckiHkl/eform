@@ -19,6 +19,7 @@ async function setContextUserByIdent(req, userIdent) {
 
         // Pobranie danych użytkownika z bazy danych
         const userData = await getUserByIdent(userIdent);
+        console.log('user data from DB:', userData);
 
         if (!userData) {
             console.warn(`[OwnerService] Nie znaleziono użytkownika o ident: ${userIdent}`);
@@ -32,7 +33,7 @@ async function setContextUserByIdent(req, userIdent) {
             password: userData.password,
             showPrices: false,
             organization: userData.org_ident ? userData.org_ident.toUpperCase() : '',
-            organizationId: userData.organization_id,
+            orgId: userData.organization_id,
             clientName: userData.client_name,
             ident: userData.ident,
             setAt: new Date().toISOString()

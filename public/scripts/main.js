@@ -220,6 +220,14 @@ async function buildDynamicForm(version, groupNumber, config = null) {
 
 function setupShowButton(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber) {
 	console.log('setupShowButton')
+	console.log('inputs object keys:', Object.keys(inputs));
+	// Sprawdź czy są file inputy w obiekcie
+	const fileInputsInObject = Object.values(inputs).filter(inp => inp?.type === 'file');
+	console.log('File inputs w obiekcie inputs:', fileInputsInObject.length);
+	fileInputsInObject.forEach((inp, i) => {
+		console.log(`  File input ${i}: name="${inp.name}", id="${inp.id}"`);
+	});
+
 	const showButton = document.getElementById('show-button');
 
 	showButton.onclick = async function () {
@@ -312,21 +320,35 @@ async function sendData(inputs, values, valuesToDisplay, orderId, comment, versi
 	const formData = new FormData();
 	formData.append('data', JSON.stringify(postBody));
 
-	// Dodaj wszystkie pliki z input[type=file]
-	const fileInputs = formContainer.querySelectorAll('input[type="file"]');
+	// Dodaj wszystkie pliki z input[type=file] - szukaj we CAŁYM dokumencie, nie tylko w formContainer!
+	const fileInputs = document.querySelectorAll('input[type="file"]');
+	console.log('Found file inputs:', fileInputs.length);
 	fileInputs.forEach(fileInput => {
 		if (fileInput.files && fileInput.files.length > 0) {
-			formData.append(`file_${fileInput.name}`, fileInput.files[0]);
+			console.log(`Adding file: ${fileInput.name} =`, fileInput.files[0].name);
+			formData.append(fileInput.name, fileInput.files[0]);
 		}
 	});
 
 	try {
+		// Debug: wyświetl FormData zawartość
+		console.log('=== WYSYŁANIE FORMDATA ===');
+		for (let [key, value] of formData.entries()) {
+			if (value instanceof File) {
+				console.log(`${key}: File(${value.name}, ${value.size} bytes)`);
+			} else {
+				console.log(`${key}: ${typeof value === 'string' ? value.substring(0, 100) : value}`);
+			}
+		}
+		console.log('========================');
+
 		const response = await fetch("/position/save", {
 			method: "POST",
 			body: formData
 			// Nie ustawiaj Content-Type, przeglądarka ustawi multipart/form-data
 		});
 		const result = await response.json();
+		console.log('Odpowiedź serwera:', result);
 
 		setTimeout(() => {
 			window.location.href = `/orders/order/${orderId}`;

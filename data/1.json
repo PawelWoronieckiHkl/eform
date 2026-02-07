@@ -1,2656 +1,1526 @@
-DOM w pełni załadowany i przetworzony [
-{"headers1":["ILOŚĆ",
-"MODEL",
-"KOLOR",
-"KOLOR SYSTEMU",
-"SZEROKOŚĆ [MM]",
-"WYSOKOŚĆ [MM]",
-"MOTOR",
-"ZASILANIE",
-"PILOT",
-"AUTOMATYKA",
-"MONTAŻ"],
-"headers2":["POW.[M2]",
-"CENA DET. [€] brutto",
-"DOPŁATA DET. [€] brutto",
-"DOPŁATA EL DET. [€] brutto",
-"CENA ŁĄCZNA  [€] (za szt)",
-"WARTOŚĆ BR.[€]",
-"RABAT %",
-"RABAT EL %",
-"CENA NETTO PO RABACIE [€]",
-"WART. NET. PO RABACIE [€]"],
-"rows":[{"item":{"id":5134,
-"order_id":2109,
-"name":"",
-"commision":"",
-"json_parameters":{"POW":1.52,
-"uid":"a1b93033eeebf83a0a2cbc9729d3656b",
-"CENA":416,
-"ILOSC":1,
-"KOLOR":"3009-P20",
-"MODEL":"AE20",
-"MOTOR":"M08",
-"PILOT":"R02",
-"MONTAZ":"2978040952",
-"DODATKI":"",
-"DOPLATA":0,
-"FUNKCJA":"",
-"WYSOKOSC":1232,
-"CENA_SUMA":810,
-"OPIS_CENY":"CENA DET. [€] brutto=416,
-DOPŁATA EL DET. [€] brutto=394",
-"POW_ALIAS":"",
-"SZEROKOSC":1232,
-"ZASILANIE":"<NONE>",
-"AUTOMATYKA":"<NONE>",
-"CENA_ALIAS":"",
-"CENA_RABAT":0.6,
-"DOPLATA_EL":394,
-"POW___DICT":false,
-"PROWADNICE":"",
-"PROW_KOLOR":"",
-"STEROWANIE":"",
-"CENA___DICT":false,
-"ILOSC_ALIAS":"",
-"KOLOR_ALIAS":"2005-P20",
-"KOLOR_SYSTE":"0150CHR",
-"MODEL_ALIAS":"",
-"MOTOR_ALIAS":"",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT EL %=30.00%",
-"PILOT_ALIAS":"",
-"POW___TITLE":"POW.[M2]",
-"SUMA_BRUTTO":810,
-"CENA_KONCOWA":442.2,
-"CENA___TITLE":"CENA DET. [€] brutto",
-"DLUGOSC_STER":"",
-"ILOSC___DICT":false,
-"KOLOR___DICT":true,
-"MODEL___DICT":true,
-"MONTAZ_ALIAS":"",
-"MOTOR___DICT":true,
-"OPIS_POZYCJI":"MODEL=AE20,
-KOLOR=2005-P20,
-KOLOR SYSTEMU=0150CHR,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-MOTOR=M08,
-PILOT=R02,
-MONTAŻ=2978040952",
-"PILOT___DICT":true,
-"DODATKI_ALIAS":"",
-"DOPLATA_ALIAS":"",
-"DOPLATA_RABAT":0,
-"FUNKCJA_ALIAS":"",
-"ILOSC___TITLE":"ILOŚĆ",
-"KOLOR___TITLE":"KOLOR",
-"MODEL___TITLE":"MODEL",
-"MONTAZ___DICT":true,
-"MOTOR___TITLE":"MOTOR",
-"PILOT___TITLE":"PILOT",
-"POW___VISIBLE":true,
-"uid___VISIBLE":false,
-"CENA___VISIBLE":true,
-"DODATKI___DICT":true,
-"DOPLATA___DICT":false,
-"FUNKCJA___DICT":true,
-"MONTAZ___TITLE":"MONTAŻ",
-"WYSOKOSC_ALIAS":"",
-"CENA_SUMA_ALIAS":"",
-"DODATKI___TITLE":"DODATKI",
-"DOPLATA___TITLE":"DOPŁATA DET. [€] brutto",
-"FUNKCJA___TITLE":"FUNKCJE SZNURA",
-"ILOSC___VISIBLE":true,
-"KOLOR_DODATKOWY":"",
-"KOLOR___VISIBLE":true,
-"MODEL___VISIBLE":true,
-"MOTOR___VISIBLE":true,
-"OPIS_CENY_ALIAS":"",
-"PILOT___VISIBLE":true,
-"SZEROKOSC_ALIAS":"",
-"WARTOSC_KONCOWA":442.2,
-"WYSOKOSC___DICT":false,
-"ZASILANIE_ALIAS":"",
-"AUTOMATYKA_ALIAS":"",
-"CENA_RABAT_ALIAS":"",
-"CENA_SUMA___DICT":false,
-"DOPLATA_EL_ALIAS":"",
-"DOPLATA_EL_RABAT":0.3,
-"KOLOR_STEROWANIA":"",
-"MONTAZ___VISIBLE":true,
-"OPIS_CENY___DICT":false,
-"PROWADNICE_ALIAS":"",
-"PROW_KOLOR_ALIAS":"",
-"STEROWANIE_ALIAS":"",
-"STRONA_LADOWANIA":"",
-"SZEROKOSC___DICT":false,
-"WYSOKOSC_MONTAZU":"",
-"WYSOKOSC___TITLE":"WYSOKOŚĆ [MM]",
-"ZASILANIE___DICT":true,
-"AUTOMATYKA___DICT":true,
-"CENA_RABAT___DICT":false,
-"CENA_SUMA___TITLE":"CENA ŁĄCZNA  [€] (za szt)",
-"DODATKI___VISIBLE":false,
-"DOPLATA_EL___DICT":false,
-"DOPLATA___VISIBLE":true,
-"FUNKCJA___VISIBLE":false,
-"KOLOR_SYSTE_ALIAS":"",
-"OPIS_CENY___TITLE":"OPIS_CENY",
-"OPIS_RABATU_ALIAS":"",
-"POW___DESCRIPTION":"",
-"PROWADNICE___DICT":true,
-"PROW_KOLOR___DICT":true,
-"STEROWANIE___DICT":true,
-"STRONA_STEROWANIA":"",
-"SUMA_BRUTTO_ALIAS":"",
-"SZEROKOSC___TITLE":"SZEROKOŚĆ [MM]",
-"ZASILANIE___TITLE":"ZASILANIE",
-"AUTOMATYKA___TITLE":"AUTOMATYKA",
-"CENA_KONCOWA_ALIAS":"",
-"CENA_RABAT___TITLE":"RABAT %",
-"CENA___DESCRIPTION":"",
-"DLUGOSC_STER_ALIAS":"",
-"DOPLATA_EL___TITLE":"DOPŁATA EL DET. [€] brutto",
-"KOLOR_SYSTE___DICT":true,
-"OPIS_POZYCJI_ALIAS":"",
-"OPIS_RABATU___DICT":false,
-"PROWADNICE___TITLE":"PROWADNICE",
-"PROW_KOLOR___TITLE":"KOLOR PROWADNICY",
-"STEROWANIE___TITLE":"STEROWANIE",
-"SUMA_BRUTTO___DICT":false,
-"WYSOKOSC___VISIBLE":true,
-"CENA_KONCOWA___DICT":false,
-"CENA_SUMA___VISIBLE":true,
-"DLUGOSC_STER___DICT":false,
-"DOPLATA_RABAT_ALIAS":"",
-"ILOSC___DESCRIPTION":"",
-"KOLOR_SYSTE___TITLE":"KOLOR SYSTEMU",
-"KOLOR___DESCRIPTION":"PG #3",
-"MODEL___DESCRIPTION":"ELEKRTRICHES MODEL",
-"MOTOR___DESCRIPTION":"2 SILNIKI Z ZINTERGOWANĄ BATERIĄ",
-"OPIS_CENY___VISIBLE":false,
-"OPIS_POZYCJI___DICT":false,
-"OPIS_RABATU___TITLE":"OPIS_RABATU",
-"PILOT___DESCRIPTION":"Coulisse CM-12 (5 kanałów)",
-"SUMA_BRUTTO___TITLE":"WARTOŚĆ BR.[€]",
-"SZEROKOSC___VISIBLE":true,
-"WYMIAROWANIE_SLOPOW":"",
-"ZASILANIE___VISIBLE":true,
-"AUTOMATYKA___VISIBLE":true,
-"CENA_KONCOWA___TITLE":"CENA NETTO PO RABACIE [€]",
-"CENA_RABAT___VISIBLE":false,
-"DLUGOSC_STER___TITLE":"DŁUGOŚĆ STEROWANIA [MM]",
-"DOPLATA_EL___VISIBLE":true,
-"DOPLATA_RABAT___DICT":false,
-"MONTAZ___DESCRIPTION":"Kątownik uniwersalny 5mm szary",
-"OCHRONA_CHILD_SAFETY":"",
-"OPIS_POZYCJI___TITLE":"OPIS_POZYCJI",
-"PROWADNICE___VISIBLE":false,
-"PROW_KOLOR___VISIBLE":false,
-"STEROWANIE___VISIBLE":false,
-"DODATKI___DESCRIPTION":"",
-"DOPLATA_RABAT___TITLE":"RABAT DODATKOWY %",
-"DOPLATA___DESCRIPTION":"",
-"FUNKCJA___DESCRIPTION":"",
-"KOLOR_DODATKOWY_ALIAS":"",
-"KOLOR_SYSTE___VISIBLE":true,
-"OPIS_RABATU___VISIBLE":false,
-"SUMA_BRUTTO___VISIBLE":true,
-"WARTOSC_KONCOWA_ALIAS":"",
-"CENA_KONCOWA___VISIBLE":false,
-"DLUGOSC_STER___VISIBLE":false,
-"DOPLATA_EL_RABAT_ALIAS":"",
-"KOLOR_DODATKOWY___DICT":true,
-"KOLOR_STEROWANIA_ALIAS":"",
-"OPIS_POZYCJI___VISIBLE":false,
-"STEROWANIE_ELEKTRYCZNE":"",
-"STRONA_LADOWANIA_ALIAS":"",
-"WARTOSC_KONCOWA___DICT":false,
-"WYSOKOSC_MONTAZU_ALIAS":"",
-"WYSOKOSC___DESCRIPTION":"",
-"CENA_SUMA___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___DICT":false,
-"DOPLATA_RABAT___VISIBLE":false,
-"KOLOR_DODATKOWY___TITLE":"KOLOR DODATKOWY",
-"KOLOR_STEROWANIA___DICT":true,
-"OPIS_CENY___DESCRIPTION":"",
-"POW_ALIAS___DESCRIPTION":"",
-"STRONA_LADOWANIA___DICT":true,
-"STRONA_STEROWANIA_ALIAS":"",
-"STRONA_WYJSCIA_PRZEWODU":"",
-"SZEROKOSC___DESCRIPTION":"",
-"WARTOSC_KONCOWA___TITLE":"WART. NET. PO RABACIE [€]",
-"WYSOKOSC_MONTAZU___DICT":false,
-"ZASILANIE___DESCRIPTION":"BEZ ZASILANIA",
-"AUTOMATYKA___DESCRIPTION":"BEZ AUTOMATYKI",
-"CENA_ALIAS___DESCRIPTION":"",
-"CENA_RABAT___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___TITLE":"RABAT EL %",
-"DOPLATA_EL___DESCRIPTION":"",
-"KOLOR_STEROWANIA___TITLE":"KOLOR STEROWANIA",
-"PROWADNICE___DESCRIPTION":"",
-"PROW_KOLOR___DESCRIPTION":"",
-"STEROWANIE___DESCRIPTION":"",
-"STRONA_LADOWANIA___TITLE":"STRONA ŁADOWANIA",
-"STRONA_STEROWANIA___DICT":true,
-"WYSOKOSC_MONTAZU___TITLE":"WYSOKOŚĆ MONTAŻU [MM]",
-"ILOSC_ALIAS___DESCRIPTION":"",
-"KOLOR_ALIAS___DESCRIPTION":"PG #3",
-"KOLOR_DODATKOWY___VISIBLE":false,
-"KOLOR_SYSTE___DESCRIPTION":"BIAŁY",
-"MODEL_ALIAS___DESCRIPTION":"",
-"MOTOR_ALIAS___DESCRIPTION":"",
-"OPIS_RABATU___DESCRIPTION":"",
-"PILOT_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA___TITLE":"STRONA STEROWANIA",
-"SUMA_BRUTTO___DESCRIPTION":"",
-"WARTOSC_KONCOWA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW_ALIAS":"",
-"CENA_KONCOWA___DESCRIPTION":"",
-"DLUGOSC_STER___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___VISIBLE":false,
-"KOLOR_STEROWANIA___VISIBLE":false,
-"MONTAZ_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY_ALIAS":"",
-"OPIS_POZYCJI___DESCRIPTION":"",
-"STRONA_LADOWANIA___VISIBLE":false,
-"WYSOKOSC_MONTAZU___VISIBLE":false,
-"DODATKI_ALIAS___DESCRIPTION":"",
-"DOPLATA_ALIAS___DESCRIPTION":"",
-"DOPLATA_RABAT___DESCRIPTION":"",
-"FUNKCJA_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___DICT":true,
-"STRONA_STEROWANIA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___TITLE":"WYMIAROWANIE SLOPÓW",
-"OCHRONA_CHILD_SAFETY___TITLE":"OCHRONA CHILD SAFETY",
-"STEROWANIE_ELEKTRYCZNE_ALIAS":"",
-"WYSOKOSC_ALIAS___DESCRIPTION":"",
-"CENA_SUMA_ALIAS___DESCRIPTION":"",
-"KOLOR_DODATKOWY___DESCRIPTION":"",
-"OPIS_CENY_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___DICT":true,
-"STRONA_WYJSCIA_PRZEWODU_ALIAS":"",
-"SZEROKOSC_ALIAS___DESCRIPTION":"",
-"WARTOSC_KONCOWA___DESCRIPTION":"",
-"WYMIAROWANIE_SLOPOW___VISIBLE":false,
-"ZASILANIE_ALIAS___DESCRIPTION":"",
-"AUTOMATYKA_ALIAS___DESCRIPTION":"",
-"CENA_RABAT_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___DESCRIPTION":"",
-"KOLOR_STEROWANIA___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___VISIBLE":false,
-"PROWADNICE_ALIAS___DESCRIPTION":"",
-"PROW_KOLOR_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___TITLE":"STEROWANIE ELEKTRYCZNE",
-"STRONA_LADOWANIA___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___DICT":true,
-"WYSOKOSC_MONTAZU___DESCRIPTION":"",
-"KOLOR_SYSTE_ALIAS___DESCRIPTION":"",
-"OPIS_RABATU_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___TITLE":"STRONA WYJŚCIA PRZEWODU",
-"SUMA_BRUTTO_ALIAS___DESCRIPTION":"",
-"CENA_KONCOWA_ALIAS___DESCRIPTION":"",
-"DLUGOSC_STER_ALIAS___DESCRIPTION":"",
-"OPIS_POZYCJI_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___VISIBLE":false,
-"DOPLATA_RABAT_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___DESCRIPTION":"",
-"KOLOR_DODATKOWY_ALIAS___DESCRIPTION":"",
-"WARTOSC_KONCOWA_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_RABAT_ALIAS___DESCRIPTION":"",
-"KOLOR_STEROWANIA_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___DESCRIPTION":"",
-"STRONA_LADOWANIA_ALIAS___DESCRIPTION":"",
-"WYSOKOSC_MONTAZU_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___DESCRIPTION":"",
-"WYMIAROWANIE_SLOPOW_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU_ALIAS___DESCRIPTION":""},
-"amount":1,
-"list_price":{},
-"discount_percentage":"0.00",
-"discount":"0.00",
-"unit_price":"810.00",
-"total_price":"442.20",
-"json_parameters_desc":"[[\"ILOSC\",
-{\"param_description\":\"ILOŚĆ\",
-\"option_value\":\"1\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MODEL\",
-{\"param_description\":\"MODEL\",
-\"locked\":false,
-\"option_value\":\"AE20\",
-\"option_description\":\"ELEKRTRICHES MODEL\",
-\"row\":\"1\"}],
-[\"KOLOR\",
-{\"param_description\":\"KOLOR\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"2005-P20\",
-\"option_description\":\"PG #3\"}],
-[\"KOLOR_DODATKOWY\",
-{\"param_description\":\"KOLOR DODATKOWY\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"KOLOR_SYSTE\",
-{\"param_description\":\"KOLOR SYSTEMU\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"0150CHR\",
-\"option_description\":\"BIAŁY\"}],
-[\"SZEROKOSC\",
-{\"param_description\":\"SZEROKOŚĆ [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1232\"}],
-[\"WYSOKOSC\",
-{\"param_description\":\"WYSOKOŚĆ [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1232\"}],
-[\"WYMIAROWANIE_SLOPOW\",
-{\"param_description\":\"WYMIAROWANIE SLOPÓW\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STEROWANIE\",
-{\"param_description\":\"STEROWANIE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MOTOR\",
-{\"param_description\":\"MOTOR\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"M08\",
-\"option_description\":\"2 SILNIKI Z ZINTERGOWANĄ BATERIĄ\"}],
-[\"ZASILANIE\",
-{\"param_description\":\"ZASILANIE\",
-\"locked\":false,
-\"option_value\":\"\",
-\"option_description\":\"\",
-\"row\":\"1\"}],
-[\"PILOT\",
-{\"param_description\":\"PILOT\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"R02\",
-\"option_description\":\"Coulisse CM-12 (5 kanałów)\"}],
-[\"AUTOMATYKA\",
-{\"param_description\":\"AUTOMATYKA\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"\",
-\"option_description\":\"\"}],
-[\"STRONA_STEROWANIA\",
-{\"param_description\":\"STRONA STEROWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"FUNKCJA\",
-{\"param_description\":\"FUNKCJE SZNURA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"KOLOR_STEROWANIA\",
-{\"param_description\":\"KOLOR STEROWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STEROWANIE_ELEKTRYCZNE\",
-{\"param_description\":\"STEROWANIE ELEKTRYCZNE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_LADOWANIA\",
-{\"param_description\":\"STRONA ŁADOWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_WYJSCIA_PRZEWODU\",
-{\"param_description\":\"STRONA WYJŚCIA PRZEWODU\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"OCHRONA_CHILD_SAFETY\",
-{\"param_description\":\"OCHRONA CHILD SAFETY\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"WYSOKOSC_MONTAZU\",
-{\"param_description\":\"WYSOKOŚĆ MONTAŻU [MM]\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"DLUGOSC_STER\",
-{\"param_description\":\"DŁUGOŚĆ STEROWANIA [MM]\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"PROWADNICE\",
-{\"param_description\":\"PROWADNICE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"PROW_KOLOR\",
-{\"param_description\":\"KOLOR PROWADNICY\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MONTAZ\",
-{\"param_description\":\"MONTAŻ\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"2978040952\",
-\"option_description\":\"Kątownik uniwersalny 5mm szary\"}],
-[\"DODATKI\",
-{\"param_description\":\"DODATKI\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"POW\",
-{\"param_description\":\"POW.[M2]\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"1.52\",
-\"option_description\":\"\"}],
-[\"CENA\",
-{\"param_description\":\"CENA DET. [€] brutto\",
-\"option_value\":\"416\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"DOPLATA\",
-{\"param_description\":\"DOPŁATA DET. [€] brutto\",
-\"option_value\":\"0\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"DOPLATA_EL\",
-{\"param_description\":\"DOPŁATA EL DET. [€] brutto\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"394\"}],
-[\"CENA_SUMA\",
-{\"param_description\":\"CENA ŁĄCZNA  [€] (za szt)\",
-\"option_value\":\"810\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"SUMA_BRUTTO\",
-{\"param_description\":\"WARTOŚĆ BR.[€]\",
-\"option_value\":\"810\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\",
-\"listsum\":true}],
-[\"CENA_RABAT\",
-{\"param_description\":\"RABAT %\",
-\"option_value\":\"60%\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_RABAT\",
-{\"param_description\":\"RABAT DODATKOWY %\",
-\"locked\":false,
-\"row\":\"0\"}],
-[\"DOPLATA_EL_RABAT\",
-{\"param_description\":\"RABAT EL %\",
-\"locked\":true,
-\"row\":\"2\",
-\"option_value\":\"30%\"}],
-[\"CENA_KONCOWA\",
-{\"param_description\":\"CENA NETTO PO RABACIE [€]\",
-\"option_value\":\"442.20\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"WARTOSC_KONCOWA\",
-{\"param_description\":\"WART. NET. PO RABACIE [€]\",
-\"option_value\":\"442.20\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\",
-\"listsum\":true}],
-[\"OPIS_POZYCJI\",
-{\"param_description\":\"OPIS_POZYCJI\",
-\"locked\":false,
-\"row\":\"0\",
-\"option_value\":\"MODEL=AE20,
-KOLOR=2005-P20,
-KOLOR SYSTEMU=0150CHR,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-MOTOR=M08,
-PILOT=R02,
-MONTAŻ=2978040952\"}],
-[\"OPIS_CENY\",
-{\"param_description\":\"OPIS_CENY\",
-\"locked\":false,
-\"row\":\"0\",
-\"option_value\":\"CENA DET. [€] brutto=416,
-DOPŁATA EL DET. [€] brutto=394\"}],
-[\"OPIS_RABATU\",
-{\"param_description\":\"OPIS_RABATU\",
-\"locked\":false,
-\"row\":\"0\",
-\"option_value\":\"RABAT %=60.00%,
-RABAT EL %=30.00%\"}]]",
-"comment":"",
-"ver":"0.3.576",
-"asortment_group_number":"71",
-"lang":"pl",
-"department":"PLISY",
-"group_name":"EOS",
-"parameters_short":{"data":{"POW":1.52,
-"CENA":416,
-"ILOSC":1,
-"KOLOR":"3009-P20",
-"MODEL":"AE20",
-"MOTOR":"M08",
-"PILOT":"R02",
-"MONTAZ":"2978040952",
-"WYSOKOSC":1232,
-"CENA_SUMA":810,
-"OPIS_CENY":"CENA DET. [€] brutto=416,
-DOPŁATA EL DET. [€] brutto=394",
-"SZEROKOSC":1232,
-"ZASILANIE":"<NONE>",
-"AUTOMATYKA":"<NONE>",
-"CENA_RABAT":0.6,
-"DOPLATA_EL":394,
-"KOLOR_ALIAS":"2005-P20",
-"KOLOR_SYSTE":"0150CHR",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT EL %=30.00%",
-"SUMA_BRUTTO":810,
-"CENA_KONCOWA":442.2,
-"OPIS_POZYCJI":"MODEL=AE20,
-KOLOR=2005-P20,
-KOLOR SYSTEMU=0150CHR,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-MOTOR=M08,
-PILOT=R02,
-MONTAŻ=2978040952",
-"WARTOSC_KONCOWA":442.2,
-"DOPLATA_EL_RABAT":0.3},
-"order":["ILOSC",
-"MODEL",
-"KOLOR",
-"KOLOR_ALIAS",
-"KOLOR_SYSTE",
-"SZEROKOSC",
-"WYSOKOSC",
-"MOTOR",
-"ZASILANIE",
-"PILOT",
-"AUTOMATYKA",
-"MONTAZ",
-"POW",
-"CENA",
-"DOPLATA_EL",
-"CENA_SUMA",
-"SUMA_BRUTTO",
-"CENA_RABAT",
-"DOPLATA_EL_RABAT",
-"CENA_KONCOWA",
-"WARTOSC_KONCOWA",
-"OPIS_POZYCJI",
-"OPIS_CENY",
-"OPIS_RABATU"]},
-"lockedParams":["RABAT %",
-"RABAT EL %",
-"CENA NETTO PO RABACIE [€]",
-"WART. NET. PO RABACIE [€]"],
-"posId":5134},
-"row":{"row1":{"ILOŚĆ":"1",
-"MODEL":"AE20 - ELEKRTRICHES MODEL",
-"KOLOR":"2005-P20 - PG #3",
-"KOLOR SYSTEMU":"0150CHR - BIAŁY",
-"SZEROKOŚĆ [MM]":"1232",
-"WYSOKOŚĆ [MM]":"1232",
-"MOTOR":"M08 - 2 SILNIKI Z ZINTERGOWANĄ BATERIĄ",
-"ZASILANIE":"",
-"PILOT":"R02 - Coulisse CM-12 (5 kanałów)",
-"AUTOMATYKA":"",
-"MONTAŻ":"2978040952 - Kątownik uniwersalny 5mm szary"},
-"row2":{"POW.[M2]":"1.52",
-"CENA DET. [€] brutto":"416",
-"DOPŁATA DET. [€] brutto":"0",
-"DOPŁATA EL DET. [€] brutto":"394",
-"CENA ŁĄCZNA  [€] (za szt)":"810",
-"WARTOŚĆ BR.[€]":"810",
-"RABAT %":"60%",
-"RABAT EL %":"30%",
-"CENA NETTO PO RABACIE [€]":"442.20",
-"WART. NET. PO RABACIE [€]":"442.20"}}}],
-"locked":["RABAT %",
-"RABAT EL %",
-"CENA NETTO PO RABACIE [€]",
-"WART. NET. PO RABACIE [€]",
-"RABAT DODATKOWY %",
-"CENA_S",
-"DOPLATA_S",
-"DOPLATA_EL_S"]},
-{"headers1":["ILOŚĆ",
-"MODEL",
-"KOLOR",
-"KOLOR DODATKOWY",
-"KOLOR SYSTEMU",
-"SZEROKOŚĆ [MM]",
-"WYSOKOŚĆ [MM]",
-"STEROWANIE",
-"FUNKCJE SZNURA",
-"OCHRONA CHILD SAFETY",
-"DŁUGOŚĆ STEROWANIA [MM]",
-"PROWADNICE",
-"KOLOR PROWADNICY",
-"MONTAŻ",
-"DODATKI"],
-"headers2":["POW.[M2]",
-"CENA DET. [€] brutto",
-"DOPŁATA DET. [€] brutto",
-"CENA ŁĄCZNA  [€] (za szt)",
-"WARTOŚĆ BR.[€]",
-"RABAT %",
-"RABAT DODATKOWY %",
-"CENA NETTO PO RABACIE [€]",
-"WART. NET. PO RABACIE [€]",
-"OPIS_POZYCJI",
-"OPIS_CENY",
-"OPIS_RABATU"],
-"rows":[{"item":{"id":5138,
-"order_id":2109,
-"name":"",
-"commision":"",
-"json_parameters":{"POW":1.52,
-"uid":"a1b93033eeebf83a0a2cbc9729d3656b",
-"CENA":239,
-"ILOSC":1,
-"KOLOR":"3003-P20",
-"MODEL":"AO20",
-"MOTOR":"",
-"PILOT":"",
-"CENA_S":"239(PG0)",
-"MONTAZ":"297800",
-"DODATKI":"<NONE>",
-"DOPLATA":48,
-"FUNKCJA":"AO20LR",
-"WYSOKOSC":1232,
-"CENA_SUMA":287,
-"DOPLATA_S":"48(AO20)",
-"OPIS_CENY":"CENA DET. [€] brutto=239,
-DOPŁATA DET. [€] brutto=48",
-"POW_ALIAS":"",
-"SZEROKOSC":1232,
-"ZASILANIE":"",
-"AUTOMATYKA":"",
-"CENA_ALIAS":"",
-"CENA_RABAT":0.6,
-"DOPLATA_EL":0,
-"POW___DICT":false,
-"PROWADNICE":"",
-"PROW_KOLOR":"",
-"STEROWANIE":"",
-"CENA___DICT":false,
-"ILOSC_ALIAS":"",
-"KOLOR_ALIAS":"2003-P20",
-"KOLOR_SYSTE":"7199EOS",
-"MODEL_ALIAS":"",
-"MOTOR_ALIAS":"",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%",
-"PILOT_ALIAS":"",
-"POW___TITLE":"POW.[M2]",
-"SUMA_BRUTTO":287,
-"CENA_KONCOWA":129.2,
-"CENA_S_ALIAS":"",
-"CENA___TITLE":"CENA DET. [€] brutto",
-"DLUGOSC_STER":1232,
-"DOPLATA_EL_S":"",
-"ILOSC___DICT":false,
-"KOLOR___DICT":true,
-"MODEL___DICT":true,
-"MONTAZ_ALIAS":"",
-"MOTOR___DICT":true,
-"OPIS_POZYCJI":"MODEL=AO20,
-KOLOR=2003-P20,
-KOLOR SYSTEMU=7199EOS,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-FUNKCJE SZNURA=AO20LR,
-OCHRONA CHILD SAFETY=CS_YES,
-DŁUGOŚĆ STEROWANIA [MM]=1232,
-MONTAŻ=297800",
-"PILOT___DICT":true,
-"CENA_S___DICT":false,
-"DODATKI_ALIAS":"",
-"DOPLATA_ALIAS":"",
-"DOPLATA_RABAT":0.3,
-"FUNKCJA_ALIAS":"",
-"ILOSC___TITLE":"ILOŚĆ",
-"KOLOR___TITLE":"KOLOR",
-"MODEL___TITLE":"MODEL",
-"MONTAZ___DICT":true,
-"MOTOR___TITLE":"MOTOR",
-"PILOT___TITLE":"PILOT",
-"POW___VISIBLE":true,
-"uid___VISIBLE":false,
-"CENA_S___TITLE":"CENA_S",
-"CENA___VISIBLE":true,
-"DODATKI___DICT":true,
-"DOPLATA___DICT":false,
-"FUNKCJA___DICT":true,
-"MONTAZ___TITLE":"MONTAŻ",
-"WYSOKOSC_ALIAS":"",
-"CENA_SUMA_ALIAS":"",
-"DODATKI___TITLE":"DODATKI",
-"DOPLATA_S_ALIAS":"",
-"DOPLATA___TITLE":"DOPŁATA DET. [€] brutto",
-"FUNKCJA___TITLE":"FUNKCJE SZNURA",
-"ILOSC___VISIBLE":true,
-"KOLOR_DODATKOWY":"",
-"KOLOR___VISIBLE":true,
-"MODEL___VISIBLE":true,
-"MOTOR___VISIBLE":false,
-"OPIS_CENY_ALIAS":"",
-"PILOT___VISIBLE":false,
-"SZEROKOSC_ALIAS":"",
-"WARTOSC_KONCOWA":129.2,
-"WYSOKOSC___DICT":false,
-"ZASILANIE_ALIAS":"",
-"AUTOMATYKA_ALIAS":"",
-"CENA_RABAT_ALIAS":"",
-"CENA_SUMA___DICT":false,
-"CENA_S___VISIBLE":false,
-"DOPLATA_EL_ALIAS":"",
-"DOPLATA_EL_RABAT":0,
-"DOPLATA_S___DICT":false,
-"KOLOR_STEROWANIA":"",
-"MONTAZ___VISIBLE":true,
-"OPIS_CENY___DICT":false,
-"PROWADNICE_ALIAS":"",
-"PROW_KOLOR_ALIAS":"",
-"STEROWANIE_ALIAS":"",
-"STRONA_LADOWANIA":"",
-"SZEROKOSC___DICT":false,
-"WYSOKOSC_MONTAZU":"",
-"WYSOKOSC___TITLE":"WYSOKOŚĆ [MM]",
-"ZASILANIE___DICT":true,
-"AUTOMATYKA___DICT":true,
-"CENA_RABAT___DICT":false,
-"CENA_SUMA___TITLE":"CENA ŁĄCZNA  [€] (za szt)",
-"DODATKI___VISIBLE":true,
-"DOPLATA_EL___DICT":false,
-"DOPLATA_S___TITLE":"DOPLATA_S",
-"DOPLATA___VISIBLE":true,
-"FUNKCJA___VISIBLE":true,
-"KOLOR_SYSTE_ALIAS":"",
-"OPIS_CENY___TITLE":"OPIS_CENY",
-"OPIS_RABATU_ALIAS":"",
-"POW___DESCRIPTION":"",
-"PROWADNICE___DICT":true,
-"PROW_KOLOR___DICT":true,
-"STEROWANIE___DICT":true,
-"STRONA_STEROWANIA":"",
-"SUMA_BRUTTO_ALIAS":"",
-"SZEROKOSC___TITLE":"SZEROKOŚĆ [MM]",
-"ZASILANIE___TITLE":"ZASILANIE",
-"AUTOMATYKA___TITLE":"AUTOMATYKA",
-"CENA_KONCOWA_ALIAS":"",
-"CENA_RABAT___TITLE":"RABAT %",
-"CENA___DESCRIPTION":"",
-"DLUGOSC_STER_ALIAS":"",
-"DOPLATA_EL_S_ALIAS":"",
-"DOPLATA_EL___TITLE":"DOPŁATA EL DET. [€] brutto",
-"KOLOR_SYSTE___DICT":true,
-"OPIS_POZYCJI_ALIAS":"",
-"OPIS_RABATU___DICT":false,
-"PROWADNICE___TITLE":"PROWADNICE",
-"PROW_KOLOR___TITLE":"KOLOR PROWADNICY",
-"STEROWANIE___TITLE":"STEROWANIE",
-"SUMA_BRUTTO___DICT":false,
-"WYSOKOSC___VISIBLE":true,
-"CENA_KONCOWA___DICT":false,
-"CENA_SUMA___VISIBLE":true,
-"DLUGOSC_STER___DICT":false,
-"DOPLATA_EL_S___DICT":false,
-"DOPLATA_RABAT_ALIAS":"",
-"DOPLATA_S___VISIBLE":false,
-"ILOSC___DESCRIPTION":"",
-"KOLOR_SYSTE___TITLE":"KOLOR SYSTEMU",
-"KOLOR___DESCRIPTION":"PG #0",
-"MODEL___DESCRIPTION":"EOS",
-"MOTOR___DESCRIPTION":"",
-"OPIS_CENY___VISIBLE":true,
-"OPIS_POZYCJI___DICT":false,
-"OPIS_RABATU___TITLE":"OPIS_RABATU",
-"PILOT___DESCRIPTION":"",
-"SUMA_BRUTTO___TITLE":"WARTOŚĆ BR.[€]",
-"SZEROKOSC___VISIBLE":true,
-"WYMIAROWANIE_SLOPOW":"",
-"ZASILANIE___VISIBLE":false,
-"AUTOMATYKA___VISIBLE":false,
-"CENA_KONCOWA___TITLE":"CENA NETTO PO RABACIE [€]",
-"CENA_RABAT___VISIBLE":false,
-"CENA_S___DESCRIPTION":"",
-"DLUGOSC_STER___TITLE":"DŁUGOŚĆ STEROWANIA [MM]",
-"DOPLATA_EL_S___TITLE":"DOPLATA_EL_S",
-"DOPLATA_EL___VISIBLE":false,
-"DOPLATA_RABAT___DICT":false,
-"MONTAZ___DESCRIPTION":"Uchwyt uniwersalny EOS",
-"OCHRONA_CHILD_SAFETY":"CS_YES",
-"OPIS_POZYCJI___TITLE":"OPIS_POZYCJI",
-"PROWADNICE___VISIBLE":false,
-"PROW_KOLOR___VISIBLE":false,
-"STEROWANIE___VISIBLE":false,
-"DODATKI___DESCRIPTION":"BEZ DODATKOW",
-"DOPLATA_RABAT___TITLE":"RABAT DODATKOWY %",
-"DOPLATA___DESCRIPTION":"",
-"FUNKCJA___DESCRIPTION":"LEWY SZNUR DOLNA BELKA",
-"KOLOR_DODATKOWY_ALIAS":"",
-"KOLOR_SYSTE___VISIBLE":true,
-"OPIS_RABATU___VISIBLE":true,
-"SUMA_BRUTTO___VISIBLE":true,
-"WARTOSC_KONCOWA_ALIAS":"",
-"CENA_KONCOWA___VISIBLE":false,
-"DLUGOSC_STER___VISIBLE":true,
-"DOPLATA_EL_RABAT_ALIAS":"",
-"DOPLATA_EL_S___VISIBLE":false,
-"KOLOR_DODATKOWY___DICT":true,
-"KOLOR_STEROWANIA_ALIAS":"",
-"OPIS_POZYCJI___VISIBLE":true,
-"STEROWANIE_ELEKTRYCZNE":"",
-"STRONA_LADOWANIA_ALIAS":"",
-"WARTOSC_KONCOWA___DICT":false,
-"WYSOKOSC_MONTAZU_ALIAS":"",
-"WYSOKOSC___DESCRIPTION":"",
-"CENA_SUMA___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___DICT":false,
-"DOPLATA_RABAT___VISIBLE":false,
-"DOPLATA_S___DESCRIPTION":"",
-"KOLOR_DODATKOWY___TITLE":"KOLOR DODATKOWY",
-"KOLOR_STEROWANIA___DICT":true,
-"OPIS_CENY___DESCRIPTION":"",
-"POW_ALIAS___DESCRIPTION":"",
-"STRONA_LADOWANIA___DICT":true,
-"STRONA_STEROWANIA_ALIAS":"",
-"STRONA_WYJSCIA_PRZEWODU":"",
-"SZEROKOSC___DESCRIPTION":"",
-"WARTOSC_KONCOWA___TITLE":"WART. NET. PO RABACIE [€]",
-"WYSOKOSC_MONTAZU___DICT":false,
-"ZASILANIE___DESCRIPTION":"",
-"AUTOMATYKA___DESCRIPTION":"",
-"CENA_ALIAS___DESCRIPTION":"",
-"CENA_RABAT___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___TITLE":"RABAT EL %",
-"DOPLATA_EL___DESCRIPTION":"",
-"KOLOR_STEROWANIA___TITLE":"KOLOR STEROWANIA",
-"PROWADNICE___DESCRIPTION":"",
-"PROW_KOLOR___DESCRIPTION":"",
-"STEROWANIE___DESCRIPTION":"",
-"STRONA_LADOWANIA___TITLE":"STRONA ŁADOWANIA",
-"STRONA_STEROWANIA___DICT":true,
-"WYSOKOSC_MONTAZU___TITLE":"WYSOKOŚĆ MONTAŻU [MM]",
-"ILOSC_ALIAS___DESCRIPTION":"",
-"KOLOR_ALIAS___DESCRIPTION":"PG #0",
-"KOLOR_DODATKOWY___VISIBLE":false,
-"KOLOR_SYSTE___DESCRIPTION":"SZARYMETAL",
-"MODEL_ALIAS___DESCRIPTION":"",
-"MOTOR_ALIAS___DESCRIPTION":"",
-"OPIS_RABATU___DESCRIPTION":"",
-"PILOT_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA___TITLE":"STRONA STEROWANIA",
-"SUMA_BRUTTO___DESCRIPTION":"",
-"WARTOSC_KONCOWA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW_ALIAS":"",
-"CENA_KONCOWA___DESCRIPTION":"",
-"CENA_S_ALIAS___DESCRIPTION":"",
-"DLUGOSC_STER___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___VISIBLE":false,
-"DOPLATA_EL_S___DESCRIPTION":"",
-"KOLOR_STEROWANIA___VISIBLE":false,
-"MONTAZ_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY_ALIAS":"",
-"OPIS_POZYCJI___DESCRIPTION":"",
-"STRONA_LADOWANIA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___DICT":false,
-"WYSOKOSC_MONTAZU___VISIBLE":false,
-"DODATKI_ALIAS___DESCRIPTION":"",
-"DOPLATA_ALIAS___DESCRIPTION":"",
-"DOPLATA_RABAT___DESCRIPTION":"",
-"FUNKCJA_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___DICT":true,
-"STRONA_STEROWANIA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___TITLE":"WYMIAROWANIE SLOPÓW",
-"OCHRONA_CHILD_SAFETY___TITLE":"OCHRONA CHILD SAFETY",
-"STEROWANIE_ELEKTRYCZNE_ALIAS":"",
-"WYSOKOSC_ALIAS___DESCRIPTION":"",
-"CENA_SUMA_ALIAS___DESCRIPTION":"",
-"DOPLATA_S_ALIAS___DESCRIPTION":"",
-"KOLOR_DODATKOWY___DESCRIPTION":"",
-"OPIS_CENY_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___DICT":true,
-"STRONA_WYJSCIA_PRZEWODU_ALIAS":"",
-"SZEROKOSC_ALIAS___DESCRIPTION":"",
-"WARTOSC_KONCOWA___DESCRIPTION":"",
-"WYMIAROWANIE_SLOPOW___VISIBLE":false,
-"ZASILANIE_ALIAS___DESCRIPTION":"",
-"AUTOMATYKA_ALIAS___DESCRIPTION":"",
-"CENA_RABAT_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___DESCRIPTION":"",
-"KOLOR_STEROWANIA___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___VISIBLE":true,
-"PROWADNICE_ALIAS___DESCRIPTION":"",
-"PROW_KOLOR_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___TITLE":"STEROWANIE ELEKTRYCZNE",
-"STRONA_LADOWANIA___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___DICT":true,
-"WYSOKOSC_MONTAZU___DESCRIPTION":"",
-"KOLOR_SYSTE_ALIAS___DESCRIPTION":"",
-"OPIS_RABATU_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___TITLE":"STRONA WYJŚCIA PRZEWODU",
-"SUMA_BRUTTO_ALIAS___DESCRIPTION":"",
-"CENA_KONCOWA_ALIAS___DESCRIPTION":"",
-"DLUGOSC_STER_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_S_ALIAS___DESCRIPTION":"",
-"OPIS_POZYCJI_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___VISIBLE":false,
-"DOPLATA_RABAT_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___DESCRIPTION":"TAK DIN EN 13120: 2009",
-"KOLOR_DODATKOWY_ALIAS___DESCRIPTION":"",
-"WARTOSC_KONCOWA_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_RABAT_ALIAS___DESCRIPTION":"",
-"KOLOR_STEROWANIA_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___DESCRIPTION":"",
-"STRONA_LADOWANIA_ALIAS___DESCRIPTION":"",
-"WYSOKOSC_MONTAZU_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___DESCRIPTION":"",
-"WYMIAROWANIE_SLOPOW_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU_ALIAS___DESCRIPTION":""},
-"amount":1,
-"list_price":{},
-"discount_percentage":"0.00",
-"discount":"0.00",
-"unit_price":"287.00",
-"total_price":"129.20",
-"json_parameters_desc":"[[\"ILOSC\",
-{\"param_description\":\"ILOŚĆ\",
-\"option_value\":\"1\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MODEL\",
-{\"param_description\":\"MODEL\",
-\"locked\":false,
-\"option_value\":\"AO20\",
-\"option_description\":\"EOS\",
-\"row\":\"1\"}],
-[\"KOLOR\",
-{\"param_description\":\"KOLOR\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"2003-P20\",
-\"option_description\":\"PG #0\"}],
-[\"KOLOR_DODATKOWY\",
-{\"param_description\":\"KOLOR DODATKOWY\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"KOLOR_SYSTE\",
-{\"param_description\":\"KOLOR SYSTEMU\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"7199EOS\",
-\"option_description\":\"SZARYMETAL\"}],
-[\"SZEROKOSC\",
-{\"param_description\":\"SZEROKOŚĆ [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1232\"}],
-[\"WYSOKOSC\",
-{\"param_description\":\"WYSOKOŚĆ [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1232\"}],
-[\"WYMIAROWANIE_SLOPOW\",
-{\"param_description\":\"WYMIAROWANIE SLOPÓW\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STEROWANIE\",
-{\"param_description\":\"STEROWANIE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MOTOR\",
-{\"param_description\":\"MOTOR\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"ZASILANIE\",
-{\"param_description\":\"ZASILANIE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"PILOT\",
-{\"param_description\":\"PILOT\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"AUTOMATYKA\",
-{\"param_description\":\"AUTOMATYKA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_STEROWANIA\",
-{\"param_description\":\"STRONA STEROWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"FUNKCJA\",
-{\"param_description\":\"FUNKCJE SZNURA\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"AO20LR\",
-\"option_description\":\"LEWY SZNUR DOLNA BELKA\"}],
-[\"KOLOR_STEROWANIA\",
-{\"param_description\":\"KOLOR STEROWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STEROWANIE_ELEKTRYCZNE\",
-{\"param_description\":\"STEROWANIE ELEKTRYCZNE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_LADOWANIA\",
-{\"param_description\":\"STRONA ŁADOWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_WYJSCIA_PRZEWODU\",
-{\"param_description\":\"STRONA WYJŚCIA PRZEWODU\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"OCHRONA_CHILD_SAFETY\",
-{\"param_description\":\"OCHRONA CHILD SAFETY\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"CS_YES\",
-\"option_description\":\"TAK DIN EN 13120: 2009\"}],
-[\"WYSOKOSC_MONTAZU\",
-{\"param_description\":\"WYSOKOŚĆ MONTAŻU [MM]\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"DLUGOSC_STER\",
-{\"param_description\":\"DŁUGOŚĆ STEROWANIA [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1232\"}],
-[\"PROWADNICE\",
-{\"param_description\":\"PROWADNICE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"PROW_KOLOR\",
-{\"param_description\":\"KOLOR PROWADNICY\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MONTAZ\",
-{\"param_description\":\"MONTAŻ\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"297800\",
-\"option_description\":\"Uchwyt uniwersalny EOS\"}],
-[\"DODATKI\",
-{\"param_description\":\"DODATKI\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"\",
-\"option_description\":\"\"}],
-[\"POW\",
-{\"param_description\":\"POW.[M2]\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"1.52\",
-\"option_description\":\"\"}],
-[\"CENA\",
-{\"param_description\":\"CENA DET. [€] brutto\",
-\"option_value\":\"239(PG0)\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"DOPLATA\",
-{\"param_description\":\"DOPŁATA DET. [€] brutto\",
-\"option_value\":\"48(AO20)\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"DOPLATA_EL\",
-{\"param_description\":\"DOPŁATA EL DET. [€] brutto\",
-\"locked\":false,
-\"row\":\"0\"}],
-[\"CENA_SUMA\",
-{\"param_description\":\"CENA ŁĄCZNA  [€] (za szt)\",
-\"option_value\":\"287\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"SUMA_BRUTTO\",
-{\"param_description\":\"WARTOŚĆ BR.[€]\",
-\"option_value\":\"287\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\",
-\"listsum\":true}],
-[\"CENA_RABAT\",
-{\"param_description\":\"RABAT %\",
-\"option_value\":\"60%\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_RABAT\",
-{\"param_description\":\"RABAT DODATKOWY %\",
-\"option_value\":\"30%\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_EL_RABAT\",
-{\"param_description\":\"RABAT EL %\",
-\"locked\":false,
-\"row\":\"0\"}],
-[\"CENA_KONCOWA\",
-{\"param_description\":\"CENA NETTO PO RABACIE [€]\",
-\"option_value\":\"129.20\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"WARTOSC_KONCOWA\",
-{\"param_description\":\"WART. NET. PO RABACIE [€]\",
-\"option_value\":\"129.20\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\",
-\"listsum\":true}],
-[\"OPIS_POZYCJI\",
-{\"param_description\":\"OPIS_POZYCJI\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"MODEL=AO20,
-KOLOR=2003-P20,
-KOLOR SYSTEMU=7199EOS,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-FUNKCJE SZNURA=AO20LR,
-OCHRONA CHILD SAFETY=CS_YES,
-DŁUGOŚĆ STEROWANIA [MM]=1232,
-MONTAŻ=297800\"}],
-[\"OPIS_CENY\",
-{\"param_description\":\"OPIS_CENY\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"CENA DET. [€] brutto=239,
-DOPŁATA DET. [€] brutto=48\"}],
-[\"OPIS_RABATU\",
-{\"param_description\":\"OPIS_RABATU\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%\"}],
-[\"CENA_S\",
-{\"param_description\":\"CENA_S\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_S\",
-{\"param_description\":\"DOPLATA_S\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_EL_S\",
-{\"param_description\":\"DOPLATA_EL_S\",
-\"locked\":true,
-\"row\":\"2\"}]]",
-"comment":"",
-"ver":"0.3.1",
-"asortment_group_number":"00",
-"lang":"pl",
-"department":"PLISY",
-"group_name":"EOS",
-"parameters_short":{"data":{"POW":1.52,
-"CENA":239,
-"ILOSC":1,
-"KOLOR":"3003-P20",
-"MODEL":"AO20",
-"CENA_S":"239(PG0)",
-"MONTAZ":"297800",
-"DODATKI":"<NONE>",
-"DOPLATA":48,
-"FUNKCJA":"AO20LR",
-"WYSOKOSC":1232,
-"CENA_SUMA":287,
-"DOPLATA_S":"48(AO20)",
-"OPIS_CENY":"CENA DET. [€] brutto=239,
-DOPŁATA DET. [€] brutto=48",
-"SZEROKOSC":1232,
-"CENA_RABAT":0.6,
-"KOLOR_ALIAS":"2003-P20",
-"KOLOR_SYSTE":"7199EOS",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%",
-"SUMA_BRUTTO":287,
-"CENA_KONCOWA":129.2,
-"DLUGOSC_STER":1232,
-"OPIS_POZYCJI":"MODEL=AO20,
-KOLOR=2003-P20,
-KOLOR SYSTEMU=7199EOS,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-FUNKCJE SZNURA=AO20LR,
-OCHRONA CHILD SAFETY=CS_YES,
-DŁUGOŚĆ STEROWANIA [MM]=1232,
-MONTAŻ=297800",
-"DOPLATA_RABAT":0.3,
-"WARTOSC_KONCOWA":129.2,
-"OCHRONA_CHILD_SAFETY":"CS_YES"},
-"order":["ILOSC",
-"MODEL",
-"KOLOR",
-"KOLOR_ALIAS",
-"KOLOR_SYSTE",
-"SZEROKOSC",
-"WYSOKOSC",
-"FUNKCJA",
-"OCHRONA_CHILD_SAFETY",
-"DLUGOSC_STER",
-"MONTAZ",
-"DODATKI",
-"POW",
-"CENA",
-"DOPLATA",
-"CENA_SUMA",
-"SUMA_BRUTTO",
-"CENA_RABAT",
-"DOPLATA_RABAT",
-"CENA_KONCOWA",
-"WARTOSC_KONCOWA",
-"OPIS_POZYCJI",
-"OPIS_CENY",
-"OPIS_RABATU",
-"CENA_S",
-"DOPLATA_S"]},
-"lockedParams":["RABAT %",
-"RABAT DODATKOWY %",
-"CENA NETTO PO RABACIE [€]",
-"WART. NET. PO RABACIE [€]",
-"CENA_S",
-"DOPLATA_S",
-"DOPLATA_EL_S"],
-"posId":5138},
-"row":{"row1":{"ILOŚĆ":"1",
-"MODEL":"AO20 - EOS",
-"KOLOR":"2003-P20 - PG #0",
-"KOLOR DODATKOWY":"-",
-"KOLOR SYSTEMU":"7199EOS - SZARYMETAL",
-"SZEROKOŚĆ [MM]":"1232",
-"WYSOKOŚĆ [MM]":"1232",
-"STEROWANIE":"-",
-"FUNKCJE SZNURA":"AO20LR - LEWY SZNUR DOLNA BELKA",
-"OCHRONA CHILD SAFETY":"CS_YES - TAK DIN EN 13120: 2009",
-"DŁUGOŚĆ STEROWANIA [MM]":"1232",
-"PROWADNICE":"-",
-"KOLOR PROWADNICY":"-",
-"MONTAŻ":"297800 - Uchwyt uniwersalny EOS",
-"DODATKI":""},
-"row2":{"POW.[M2]":"1.52",
-"CENA DET. [€] brutto":"239(PG0)",
-"DOPŁATA DET. [€] brutto":"48(AO20)",
-"CENA ŁĄCZNA  [€] (za szt)":"287",
-"WARTOŚĆ BR.[€]":"287",
-"RABAT %":"60%",
-"RABAT DODATKOWY %":"30%",
-"CENA NETTO PO RABACIE [€]":"129.20",
-"WART. NET. PO RABACIE [€]":"129.20",
-"OPIS_POZYCJI":"MODEL=AO20,
-KOLOR=2003-P20,
-KOLOR SYSTEMU=7199EOS,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-FUNKCJE SZNURA=AO20LR,
-OCHRONA CHILD SAFETY=CS_YES,
-DŁUGOŚĆ STEROWANIA [MM]=1232,
-MONTAŻ=297800",
-"OPIS_CENY":"CENA DET. [€] brutto=239,
-DOPŁATA DET. [€] brutto=48",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%"}}},
-{"item":{"id":5139,
-"order_id":2109,
-"name":"",
-"commision":"",
-"json_parameters":{"POW":1.51,
-"uid":"a1b93033eeebf83a0a2cbc9729d3656b",
-"CENA":239,
-"ILOSC":1,
-"KOLOR":"3005-P20",
-"MODEL":"BB24",
-"MOTOR":"",
-"PILOT":"",
-"CENA_S":"239(PG0)",
-"MONTAZ":"",
-"DODATKI":"297834",
-"DOPLATA":49.28,
-"FUNKCJA":"",
-"WYSOKOSC":1232,
-"CENA_SUMA":288.28,
-"DOPLATA_S":"49.28(PROWADNICAUS2)",
-"OPIS_CENY":"CENA DET. [€] brutto=239,
-DOPŁATA DET. [€] brutto=49.28",
-"POW_ALIAS":"",
-"SZEROKOSC":1223,
-"ZASILANIE":"",
-"AUTOMATYKA":"",
-"CENA_ALIAS":"",
-"CENA_RABAT":0.6,
-"DOPLATA_EL":0,
-"POW___DICT":false,
-"PROWADNICE":"US3",
-"PROW_KOLOR":"US37199",
-"STEROWANIE":"2972077178G",
-"CENA___DICT":false,
-"ILOSC_ALIAS":"",
-"KOLOR_ALIAS":"2007-P20",
-"KOLOR_SYSTE":"0952EOS",
-"MODEL_ALIAS":"",
-"MOTOR_ALIAS":"",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%",
-"PILOT_ALIAS":"",
-"POW___TITLE":"POW.[M2]",
-"SUMA_BRUTTO":288.28,
-"CENA_KONCOWA":130.1,
-"CENA_S_ALIAS":"",
-"CENA___TITLE":"CENA DET. [€] brutto",
-"DLUGOSC_STER":"",
-"DOPLATA_EL_S":"",
-"ILOSC___DICT":false,
-"KOLOR___DICT":true,
-"MODEL___DICT":true,
-"MONTAZ_ALIAS":"",
-"MOTOR___DICT":true,
-"OPIS_POZYCJI":"MODEL=BB24,
-KOLOR=2007-P20,
-KOLOR SYSTEMU=0952EOS,
-SZEROKOŚĆ [MM]=1223,
-WYSOKOŚĆ [MM]=1232,
-STEROWANIE=2972077178G,
-PROWADNICE=US3,
-KOLOR PROWADNICY=US37199,
-DODATKI=297834",
-"PILOT___DICT":true,
-"CENA_S___DICT":false,
-"DODATKI_ALIAS":"",
-"DOPLATA_ALIAS":"",
-"DOPLATA_RABAT":0.3,
-"FUNKCJA_ALIAS":"",
-"ILOSC___TITLE":"ILOŚĆ",
-"KOLOR___TITLE":"KOLOR",
-"MODEL___TITLE":"MODEL",
-"MONTAZ___DICT":true,
-"MOTOR___TITLE":"MOTOR",
-"PILOT___TITLE":"PILOT",
-"POW___VISIBLE":true,
-"uid___VISIBLE":false,
-"CENA_S___TITLE":"CENA_S",
-"CENA___VISIBLE":true,
-"DODATKI___DICT":true,
-"DOPLATA___DICT":false,
-"FUNKCJA___DICT":true,
-"MONTAZ___TITLE":"MONTAŻ",
-"WYSOKOSC_ALIAS":"",
-"CENA_SUMA_ALIAS":"",
-"DODATKI___TITLE":"DODATKI",
-"DOPLATA_S_ALIAS":"",
-"DOPLATA___TITLE":"DOPŁATA DET. [€] brutto",
-"FUNKCJA___TITLE":"FUNKCJE SZNURA",
-"ILOSC___VISIBLE":true,
-"KOLOR_DODATKOWY":"",
-"KOLOR___VISIBLE":true,
-"MODEL___VISIBLE":true,
-"MOTOR___VISIBLE":false,
-"OPIS_CENY_ALIAS":"",
-"PILOT___VISIBLE":false,
-"SZEROKOSC_ALIAS":"",
-"WARTOSC_KONCOWA":130.1,
-"WYSOKOSC___DICT":false,
-"ZASILANIE_ALIAS":"",
-"AUTOMATYKA_ALIAS":"",
-"CENA_RABAT_ALIAS":"",
-"CENA_SUMA___DICT":false,
-"CENA_S___VISIBLE":false,
-"DOPLATA_EL_ALIAS":"",
-"DOPLATA_EL_RABAT":0,
-"DOPLATA_S___DICT":false,
-"KOLOR_STEROWANIA":"",
-"MONTAZ___VISIBLE":false,
-"OPIS_CENY___DICT":false,
-"PROWADNICE_ALIAS":"",
-"PROW_KOLOR_ALIAS":"",
-"STEROWANIE_ALIAS":"",
-"STRONA_LADOWANIA":"",
-"SZEROKOSC___DICT":false,
-"WYSOKOSC_MONTAZU":"",
-"WYSOKOSC___TITLE":"WYSOKOŚĆ [MM]",
-"ZASILANIE___DICT":true,
-"AUTOMATYKA___DICT":true,
-"CENA_RABAT___DICT":false,
-"CENA_SUMA___TITLE":"CENA ŁĄCZNA  [€] (za szt)",
-"DODATKI___VISIBLE":true,
-"DOPLATA_EL___DICT":false,
-"DOPLATA_S___TITLE":"DOPLATA_S",
-"DOPLATA___VISIBLE":true,
-"FUNKCJA___VISIBLE":false,
-"KOLOR_SYSTE_ALIAS":"",
-"OPIS_CENY___TITLE":"OPIS_CENY",
-"OPIS_RABATU_ALIAS":"",
-"POW___DESCRIPTION":"",
-"PROWADNICE___DICT":true,
-"PROW_KOLOR___DICT":true,
-"STEROWANIE___DICT":true,
-"STRONA_STEROWANIA":"",
-"SUMA_BRUTTO_ALIAS":"",
-"SZEROKOSC___TITLE":"SZEROKOŚĆ [MM]",
-"ZASILANIE___TITLE":"ZASILANIE",
-"AUTOMATYKA___TITLE":"AUTOMATYKA",
-"CENA_KONCOWA_ALIAS":"",
-"CENA_RABAT___TITLE":"RABAT %",
-"CENA___DESCRIPTION":"",
-"DLUGOSC_STER_ALIAS":"",
-"DOPLATA_EL_S_ALIAS":"",
-"DOPLATA_EL___TITLE":"DOPŁATA EL DET. [€] brutto",
-"KOLOR_SYSTE___DICT":true,
-"OPIS_POZYCJI_ALIAS":"",
-"OPIS_RABATU___DICT":false,
-"PROWADNICE___TITLE":"PROWADNICE",
-"PROW_KOLOR___TITLE":"KOLOR PROWADNICY",
-"STEROWANIE___TITLE":"STEROWANIE",
-"SUMA_BRUTTO___DICT":false,
-"WYSOKOSC___VISIBLE":true,
-"CENA_KONCOWA___DICT":false,
-"CENA_SUMA___VISIBLE":true,
-"DLUGOSC_STER___DICT":false,
-"DOPLATA_EL_S___DICT":false,
-"DOPLATA_RABAT_ALIAS":"",
-"DOPLATA_S___VISIBLE":false,
-"ILOSC___DESCRIPTION":"",
-"KOLOR_SYSTE___TITLE":"KOLOR SYSTEMU",
-"KOLOR___DESCRIPTION":"PG #0",
-"MODEL___DESCRIPTION":"EOS",
-"MOTOR___DESCRIPTION":"",
-"OPIS_CENY___VISIBLE":true,
-"OPIS_POZYCJI___DICT":false,
-"OPIS_RABATU___TITLE":"OPIS_RABATU",
-"PILOT___DESCRIPTION":"",
-"SUMA_BRUTTO___TITLE":"WARTOŚĆ BR.[€]",
-"SZEROKOSC___VISIBLE":true,
-"WYMIAROWANIE_SLOPOW":"",
-"ZASILANIE___VISIBLE":false,
-"AUTOMATYKA___VISIBLE":false,
-"CENA_KONCOWA___TITLE":"CENA NETTO PO RABACIE [€]",
-"CENA_RABAT___VISIBLE":false,
-"CENA_S___DESCRIPTION":"",
-"DLUGOSC_STER___TITLE":"DŁUGOŚĆ STEROWANIA [MM]",
-"DOPLATA_EL_S___TITLE":"DOPLATA_EL_S",
-"DOPLATA_EL___VISIBLE":false,
-"DOPLATA_RABAT___DICT":false,
-"MONTAZ___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY":"",
-"OPIS_POZYCJI___TITLE":"OPIS_POZYCJI",
-"PROWADNICE___VISIBLE":true,
-"PROW_KOLOR___VISIBLE":true,
-"STEROWANIE___VISIBLE":true,
-"DODATKI___DESCRIPTION":"DYSTANS 1,
-5MM",
-"DOPLATA_RABAT___TITLE":"RABAT DODATKOWY %",
-"DOPLATA___DESCRIPTION":"",
-"FUNKCJA___DESCRIPTION":"",
-"KOLOR_DODATKOWY_ALIAS":"",
-"KOLOR_SYSTE___VISIBLE":true,
-"OPIS_RABATU___VISIBLE":true,
-"SUMA_BRUTTO___VISIBLE":true,
-"WARTOSC_KONCOWA_ALIAS":"",
-"CENA_KONCOWA___VISIBLE":false,
-"DLUGOSC_STER___VISIBLE":false,
-"DOPLATA_EL_RABAT_ALIAS":"",
-"DOPLATA_EL_S___VISIBLE":false,
-"KOLOR_DODATKOWY___DICT":true,
-"KOLOR_STEROWANIA_ALIAS":"",
-"OPIS_POZYCJI___VISIBLE":true,
-"STEROWANIE_ELEKTRYCZNE":"",
-"STRONA_LADOWANIA_ALIAS":"",
-"WARTOSC_KONCOWA___DICT":false,
-"WYSOKOSC_MONTAZU_ALIAS":"",
-"WYSOKOSC___DESCRIPTION":"",
-"CENA_SUMA___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___DICT":false,
-"DOPLATA_RABAT___VISIBLE":false,
-"DOPLATA_S___DESCRIPTION":"",
-"KOLOR_DODATKOWY___TITLE":"KOLOR DODATKOWY",
-"KOLOR_STEROWANIA___DICT":true,
-"OPIS_CENY___DESCRIPTION":"",
-"POW_ALIAS___DESCRIPTION":"",
-"STRONA_LADOWANIA___DICT":true,
-"STRONA_STEROWANIA_ALIAS":"",
-"STRONA_WYJSCIA_PRZEWODU":"",
-"SZEROKOSC___DESCRIPTION":"",
-"WARTOSC_KONCOWA___TITLE":"WART. NET. PO RABACIE [€]",
-"WYSOKOSC_MONTAZU___DICT":false,
-"ZASILANIE___DESCRIPTION":"",
-"AUTOMATYKA___DESCRIPTION":"",
-"CENA_ALIAS___DESCRIPTION":"",
-"CENA_RABAT___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___TITLE":"RABAT EL %",
-"DOPLATA_EL___DESCRIPTION":"",
-"KOLOR_STEROWANIA___TITLE":"KOLOR STEROWANIA",
-"PROWADNICE___DESCRIPTION":" U-Profil DO WKRĘCANIA",
-"PROW_KOLOR___DESCRIPTION":"METAL GREY",
-"STEROWANIE___DESCRIPTION":"Rączka plastikowa szara",
-"STRONA_LADOWANIA___TITLE":"STRONA ŁADOWANIA",
-"STRONA_STEROWANIA___DICT":true,
-"WYSOKOSC_MONTAZU___TITLE":"WYSOKOŚĆ MONTAŻU [MM]",
-"ILOSC_ALIAS___DESCRIPTION":"",
-"KOLOR_ALIAS___DESCRIPTION":"PG #0",
-"KOLOR_DODATKOWY___VISIBLE":false,
-"KOLOR_SYSTE___DESCRIPTION":"SZARY",
-"MODEL_ALIAS___DESCRIPTION":"",
-"MOTOR_ALIAS___DESCRIPTION":"",
-"OPIS_RABATU___DESCRIPTION":"",
-"PILOT_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA___TITLE":"STRONA STEROWANIA",
-"SUMA_BRUTTO___DESCRIPTION":"",
-"WARTOSC_KONCOWA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW_ALIAS":"",
-"CENA_KONCOWA___DESCRIPTION":"",
-"CENA_S_ALIAS___DESCRIPTION":"",
-"DLUGOSC_STER___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___VISIBLE":false,
-"DOPLATA_EL_S___DESCRIPTION":"",
-"KOLOR_STEROWANIA___VISIBLE":false,
-"MONTAZ_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY_ALIAS":"",
-"OPIS_POZYCJI___DESCRIPTION":"",
-"STRONA_LADOWANIA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___DICT":false,
-"WYSOKOSC_MONTAZU___VISIBLE":false,
-"DODATKI_ALIAS___DESCRIPTION":"",
-"DOPLATA_ALIAS___DESCRIPTION":"",
-"DOPLATA_RABAT___DESCRIPTION":"",
-"FUNKCJA_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___DICT":true,
-"STRONA_STEROWANIA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___TITLE":"WYMIAROWANIE SLOPÓW",
-"OCHRONA_CHILD_SAFETY___TITLE":"OCHRONA CHILD SAFETY",
-"STEROWANIE_ELEKTRYCZNE_ALIAS":"",
-"WYSOKOSC_ALIAS___DESCRIPTION":"",
-"CENA_SUMA_ALIAS___DESCRIPTION":"",
-"DOPLATA_S_ALIAS___DESCRIPTION":"",
-"KOLOR_DODATKOWY___DESCRIPTION":"",
-"OPIS_CENY_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___DICT":true,
-"STRONA_WYJSCIA_PRZEWODU_ALIAS":"",
-"SZEROKOSC_ALIAS___DESCRIPTION":"",
-"WARTOSC_KONCOWA___DESCRIPTION":"",
-"WYMIAROWANIE_SLOPOW___VISIBLE":false,
-"ZASILANIE_ALIAS___DESCRIPTION":"",
-"AUTOMATYKA_ALIAS___DESCRIPTION":"",
-"CENA_RABAT_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___DESCRIPTION":"",
-"KOLOR_STEROWANIA___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___VISIBLE":false,
-"PROWADNICE_ALIAS___DESCRIPTION":"",
-"PROW_KOLOR_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___TITLE":"STEROWANIE ELEKTRYCZNE",
-"STRONA_LADOWANIA___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___DICT":true,
-"WYSOKOSC_MONTAZU___DESCRIPTION":"",
-"KOLOR_SYSTE_ALIAS___DESCRIPTION":"",
-"OPIS_RABATU_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___TITLE":"STRONA WYJŚCIA PRZEWODU",
-"SUMA_BRUTTO_ALIAS___DESCRIPTION":"",
-"CENA_KONCOWA_ALIAS___DESCRIPTION":"",
-"DLUGOSC_STER_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_S_ALIAS___DESCRIPTION":"",
-"OPIS_POZYCJI_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___VISIBLE":false,
-"DOPLATA_RABAT_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___DESCRIPTION":"",
-"KOLOR_DODATKOWY_ALIAS___DESCRIPTION":"",
-"WARTOSC_KONCOWA_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_RABAT_ALIAS___DESCRIPTION":"",
-"KOLOR_STEROWANIA_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___DESCRIPTION":"",
-"STRONA_LADOWANIA_ALIAS___DESCRIPTION":"",
-"WYSOKOSC_MONTAZU_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___DESCRIPTION":"",
-"WYMIAROWANIE_SLOPOW_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU_ALIAS___DESCRIPTION":""},
-"amount":1,
-"list_price":{},
-"discount_percentage":"0.00",
-"discount":"0.00",
-"unit_price":"288.28",
-"total_price":"130.10",
-"json_parameters_desc":"[[\"ILOSC\",
-{\"param_description\":\"ILOŚĆ\",
-\"option_value\":\"1\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MODEL\",
-{\"param_description\":\"MODEL\",
-\"locked\":false,
-\"option_value\":\"BB24\",
-\"option_description\":\"EOS\",
-\"row\":\"1\"}],
-[\"KOLOR\",
-{\"param_description\":\"KOLOR\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"2007-P20\",
-\"option_description\":\"PG #0\"}],
-[\"KOLOR_DODATKOWY\",
-{\"param_description\":\"KOLOR DODATKOWY\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"KOLOR_SYSTE\",
-{\"param_description\":\"KOLOR SYSTEMU\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"0952EOS\",
-\"option_description\":\"SZARY\"}],
-[\"SZEROKOSC\",
-{\"param_description\":\"SZEROKOŚĆ [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1223\"}],
-[\"WYSOKOSC\",
-{\"param_description\":\"WYSOKOŚĆ [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1232\"}],
-[\"WYMIAROWANIE_SLOPOW\",
-{\"param_description\":\"WYMIAROWANIE SLOPÓW\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STEROWANIE\",
-{\"param_description\":\"STEROWANIE\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"2972077178G\",
-\"option_description\":\"Rączka plastikowa szara\"}],
-[\"MOTOR\",
-{\"param_description\":\"MOTOR\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"ZASILANIE\",
-{\"param_description\":\"ZASILANIE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"PILOT\",
-{\"param_description\":\"PILOT\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"AUTOMATYKA\",
-{\"param_description\":\"AUTOMATYKA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_STEROWANIA\",
-{\"param_description\":\"STRONA STEROWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"FUNKCJA\",
-{\"param_description\":\"FUNKCJE SZNURA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"KOLOR_STEROWANIA\",
-{\"param_description\":\"KOLOR STEROWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STEROWANIE_ELEKTRYCZNE\",
-{\"param_description\":\"STEROWANIE ELEKTRYCZNE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_LADOWANIA\",
-{\"param_description\":\"STRONA ŁADOWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_WYJSCIA_PRZEWODU\",
-{\"param_description\":\"STRONA WYJŚCIA PRZEWODU\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"OCHRONA_CHILD_SAFETY\",
-{\"param_description\":\"OCHRONA CHILD SAFETY\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"WYSOKOSC_MONTAZU\",
-{\"param_description\":\"WYSOKOŚĆ MONTAŻU [MM]\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"DLUGOSC_STER\",
-{\"param_description\":\"DŁUGOŚĆ STEROWANIA [MM]\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"PROWADNICE\",
-{\"param_description\":\"PROWADNICE\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"US3\",
-\"option_description\":\" U-Profil DO WKRĘCANIA\"}],
-[\"PROW_KOLOR\",
-{\"param_description\":\"KOLOR PROWADNICY\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"US37199\",
-\"option_description\":\"METAL GREY\"}],
-[\"MONTAZ\",
-{\"param_description\":\"MONTAŻ\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"DODATKI\",
-{\"param_description\":\"DODATKI\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"297834\",
-\"option_description\":\"DYSTANS 1,
-5MM\"}],
-[\"POW\",
-{\"param_description\":\"POW.[M2]\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"1.51\",
-\"option_description\":\"\"}],
-[\"CENA\",
-{\"param_description\":\"CENA DET. [€] brutto\",
-\"option_value\":\"239(PG0)\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"DOPLATA\",
-{\"param_description\":\"DOPŁATA DET. [€] brutto\",
-\"option_value\":\"49.28(PROWADNICAUS2)\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"DOPLATA_EL\",
-{\"param_description\":\"DOPŁATA EL DET. [€] brutto\",
-\"locked\":false,
-\"row\":\"0\"}],
-[\"CENA_SUMA\",
-{\"param_description\":\"CENA ŁĄCZNA  [€] (za szt)\",
-\"option_value\":\"288.28\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"SUMA_BRUTTO\",
-{\"param_description\":\"WARTOŚĆ BR.[€]\",
-\"option_value\":\"288.28\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\",
-\"listsum\":true}],
-[\"CENA_RABAT\",
-{\"param_description\":\"RABAT %\",
-\"option_value\":\"60%\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_RABAT\",
-{\"param_description\":\"RABAT DODATKOWY %\",
-\"option_value\":\"30%\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_EL_RABAT\",
-{\"param_description\":\"RABAT EL %\",
-\"locked\":false,
-\"row\":\"0\"}],
-[\"CENA_KONCOWA\",
-{\"param_description\":\"CENA NETTO PO RABACIE [€]\",
-\"option_value\":\"130.10\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"WARTOSC_KONCOWA\",
-{\"param_description\":\"WART. NET. PO RABACIE [€]\",
-\"option_value\":\"130.10\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\",
-\"listsum\":true}],
-[\"OPIS_POZYCJI\",
-{\"param_description\":\"OPIS_POZYCJI\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"MODEL=BB24,
-KOLOR=2007-P20,
-KOLOR SYSTEMU=0952EOS,
-SZEROKOŚĆ [MM]=1223,
-WYSOKOŚĆ [MM]=1232,
-STEROWANIE=2972077178G,
-PROWADNICE=US3,
-KOLOR PROWADNICY=US37199,
-DODATKI=297834\"}],
-[\"OPIS_CENY\",
-{\"param_description\":\"OPIS_CENY\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"CENA DET. [€] brutto=239,
-DOPŁATA DET. [€] brutto=49.28\"}],
-[\"OPIS_RABATU\",
-{\"param_description\":\"OPIS_RABATU\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%\"}],
-[\"CENA_S\",
-{\"param_description\":\"CENA_S\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_S\",
-{\"param_description\":\"DOPLATA_S\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_EL_S\",
-{\"param_description\":\"DOPLATA_EL_S\",
-\"locked\":true,
-\"row\":\"2\"}]]",
-"comment":"",
-"ver":"0.3.1",
-"asortment_group_number":"00",
-"lang":"pl",
-"department":"PLISY",
-"group_name":"EOS",
-"parameters_short":{"data":{"POW":1.51,
-"CENA":239,
-"ILOSC":1,
-"KOLOR":"3005-P20",
-"MODEL":"BB24",
-"CENA_S":"239(PG0)",
-"DODATKI":"297834",
-"DOPLATA":49.28,
-"WYSOKOSC":1232,
-"CENA_SUMA":288.28,
-"DOPLATA_S":"49.28(PROWADNICAUS2)",
-"OPIS_CENY":"CENA DET. [€] brutto=239,
-DOPŁATA DET. [€] brutto=49.28",
-"SZEROKOSC":1223,
-"CENA_RABAT":0.6,
-"PROWADNICE":"US3",
-"PROW_KOLOR":"US37199",
-"STEROWANIE":"2972077178G",
-"KOLOR_ALIAS":"2007-P20",
-"KOLOR_SYSTE":"0952EOS",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%",
-"SUMA_BRUTTO":288.28,
-"CENA_KONCOWA":130.1,
-"OPIS_POZYCJI":"MODEL=BB24,
-KOLOR=2007-P20,
-KOLOR SYSTEMU=0952EOS,
-SZEROKOŚĆ [MM]=1223,
-WYSOKOŚĆ [MM]=1232,
-STEROWANIE=2972077178G,
-PROWADNICE=US3,
-KOLOR PROWADNICY=US37199,
-DODATKI=297834",
-"DOPLATA_RABAT":0.3,
-"WARTOSC_KONCOWA":130.1},
-"order":["ILOSC",
-"MODEL",
-"KOLOR",
-"KOLOR_ALIAS",
-"KOLOR_SYSTE",
-"SZEROKOSC",
-"WYSOKOSC",
-"STEROWANIE",
-"PROWADNICE",
-"PROW_KOLOR",
-"DODATKI",
-"POW",
-"CENA",
-"DOPLATA",
-"CENA_SUMA",
-"SUMA_BRUTTO",
-"CENA_RABAT",
-"DOPLATA_RABAT",
-"CENA_KONCOWA",
-"WARTOSC_KONCOWA",
-"OPIS_POZYCJI",
-"OPIS_CENY",
-"OPIS_RABATU",
-"CENA_S",
-"DOPLATA_S"]},
-"lockedParams":["RABAT %",
-"RABAT DODATKOWY %",
-"CENA NETTO PO RABACIE [€]",
-"WART. NET. PO RABACIE [€]",
-"CENA_S",
-"DOPLATA_S",
-"DOPLATA_EL_S"],
-"posId":5139},
-"row":{"row1":{"ILOŚĆ":"1",
-"MODEL":"BB24 - EOS",
-"KOLOR":"2007-P20 - PG #0",
-"KOLOR DODATKOWY":"-",
-"KOLOR SYSTEMU":"0952EOS - SZARY",
-"SZEROKOŚĆ [MM]":"1223",
-"WYSOKOŚĆ [MM]":"1232",
-"STEROWANIE":"2972077178G - Rączka plastikowa szara",
-"FUNKCJE SZNURA":"-",
-"OCHRONA CHILD SAFETY":"-",
-"DŁUGOŚĆ STEROWANIA [MM]":"-",
-"PROWADNICE":"US3 -  U-Profil DO WKRĘCANIA",
-"KOLOR PROWADNICY":"US37199 - METAL GREY",
-"MONTAŻ":"-",
-"DODATKI":"297834 - DYSTANS 1,
-5MM"},
-"row2":{"POW.[M2]":"1.51",
-"CENA DET. [€] brutto":"239(PG0)",
-"DOPŁATA DET. [€] brutto":"49.28(PROWADNICAUS2)",
-"CENA ŁĄCZNA  [€] (za szt)":"288.28",
-"WARTOŚĆ BR.[€]":"288.28",
-"RABAT %":"60%",
-"RABAT DODATKOWY %":"30%",
-"CENA NETTO PO RABACIE [€]":"130.10",
-"WART. NET. PO RABACIE [€]":"130.10",
-"OPIS_POZYCJI":"MODEL=BB24,
-KOLOR=2007-P20,
-KOLOR SYSTEMU=0952EOS,
-SZEROKOŚĆ [MM]=1223,
-WYSOKOŚĆ [MM]=1232,
-STEROWANIE=2972077178G,
-PROWADNICE=US3,
-KOLOR PROWADNICY=US37199,
-DODATKI=297834",
-"OPIS_CENY":"CENA DET. [€] brutto=239,
-DOPŁATA DET. [€] brutto=49.28",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%"}}},
-{"item":{"id":5140,
-"order_id":2109,
-"name":"",
-"commision":"",
-"json_parameters":{"POW":1.52,
-"uid":"a1b93033eeebf83a0a2cbc9729d3656b",
-"CENA":531,
-"ILOSC":1,
-"KOLOR":"3003-P20",
-"MODEL":"AL30",
-"MOTOR":"",
-"PILOT":"",
-"CENA_S":"239(PG0)+292(PG1)",
-"MONTAZ":"297944",
-"DODATKI":"<NONE>",
-"DOPLATA":79,
-"FUNKCJA":"AL30LR",
-"WYSOKOSC":1232,
-"CENA_SUMA":610,
-"DOPLATA_S":"79(AU30)",
-"OPIS_CENY":"CENA DET. [€] brutto=531,
-DOPŁATA DET. [€] brutto=79",
-"POW_ALIAS":"",
-"SZEROKOSC":1232,
-"ZASILANIE":"",
-"AUTOMATYKA":"",
-"CENA_ALIAS":"",
-"CENA_RABAT":0.6,
-"DOPLATA_EL":0,
-"POW___DICT":false,
-"PROWADNICE":"",
-"PROW_KOLOR":"",
-"STEROWANIE":"",
-"CENA___DICT":false,
-"ILOSC_ALIAS":"",
-"KOLOR_ALIAS":"2003-P20",
-"KOLOR_SYSTE":"0150CHR",
-"MODEL_ALIAS":"",
-"MOTOR_ALIAS":"",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%",
-"PILOT_ALIAS":"",
-"POW___TITLE":"POW.[M2]",
-"SUMA_BRUTTO":610,
-"CENA_KONCOWA":267.7,
-"CENA_S_ALIAS":"",
-"CENA___TITLE":"CENA DET. [€] brutto",
-"DLUGOSC_STER":1232,
-"DOPLATA_EL_S":"",
-"ILOSC___DICT":false,
-"KOLOR___DICT":true,
-"MODEL___DICT":true,
-"MONTAZ_ALIAS":"",
-"MOTOR___DICT":true,
-"OPIS_POZYCJI":"MODEL=AL30,
-KOLOR=2003-P20,
-KOLOR DODATKOWY=2002-P20,
-KOLOR SYSTEMU=0150CHR,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-FUNKCJE SZNURA=AL30LR,
-OCHRONA CHILD SAFETY=CS_YES,
-DŁUGOŚĆ STEROWANIA [MM]=1232,
-MONTAŻ=297944",
-"PILOT___DICT":true,
-"CENA_S___DICT":false,
-"DODATKI_ALIAS":"",
-"DOPLATA_ALIAS":"",
-"DOPLATA_RABAT":0.3,
-"FUNKCJA_ALIAS":"",
-"ILOSC___TITLE":"ILOŚĆ",
-"KOLOR___TITLE":"KOLOR",
-"MODEL___TITLE":"MODEL",
-"MONTAZ___DICT":true,
-"MOTOR___TITLE":"MOTOR",
-"PILOT___TITLE":"PILOT",
-"POW___VISIBLE":true,
-"uid___VISIBLE":false,
-"CENA_S___TITLE":"CENA_S",
-"CENA___VISIBLE":true,
-"DODATKI___DICT":true,
-"DOPLATA___DICT":false,
-"FUNKCJA___DICT":true,
-"MONTAZ___TITLE":"MONTAŻ",
-"WYSOKOSC_ALIAS":"",
-"CENA_SUMA_ALIAS":"",
-"DODATKI___TITLE":"DODATKI",
-"DOPLATA_S_ALIAS":"",
-"DOPLATA___TITLE":"DOPŁATA DET. [€] brutto",
-"FUNKCJA___TITLE":"FUNKCJE SZNURA",
-"ILOSC___VISIBLE":true,
-"KOLOR_DODATKOWY":"3002-P20",
-"KOLOR___VISIBLE":true,
-"MODEL___VISIBLE":true,
-"MOTOR___VISIBLE":false,
-"OPIS_CENY_ALIAS":"",
-"PILOT___VISIBLE":false,
-"SZEROKOSC_ALIAS":"",
-"WARTOSC_KONCOWA":267.7,
-"WYSOKOSC___DICT":false,
-"ZASILANIE_ALIAS":"",
-"AUTOMATYKA_ALIAS":"",
-"CENA_RABAT_ALIAS":"",
-"CENA_SUMA___DICT":false,
-"CENA_S___VISIBLE":false,
-"DOPLATA_EL_ALIAS":"",
-"DOPLATA_EL_RABAT":0,
-"DOPLATA_S___DICT":false,
-"KOLOR_STEROWANIA":"",
-"MONTAZ___VISIBLE":true,
-"OPIS_CENY___DICT":false,
-"PROWADNICE_ALIAS":"",
-"PROW_KOLOR_ALIAS":"",
-"STEROWANIE_ALIAS":"",
-"STRONA_LADOWANIA":"",
-"SZEROKOSC___DICT":false,
-"WYSOKOSC_MONTAZU":"",
-"WYSOKOSC___TITLE":"WYSOKOŚĆ [MM]",
-"ZASILANIE___DICT":true,
-"AUTOMATYKA___DICT":true,
-"CENA_RABAT___DICT":false,
-"CENA_SUMA___TITLE":"CENA ŁĄCZNA  [€] (za szt)",
-"DODATKI___VISIBLE":true,
-"DOPLATA_EL___DICT":false,
-"DOPLATA_S___TITLE":"DOPLATA_S",
-"DOPLATA___VISIBLE":true,
-"FUNKCJA___VISIBLE":true,
-"KOLOR_SYSTE_ALIAS":"",
-"OPIS_CENY___TITLE":"OPIS_CENY",
-"OPIS_RABATU_ALIAS":"",
-"POW___DESCRIPTION":"",
-"PROWADNICE___DICT":true,
-"PROW_KOLOR___DICT":true,
-"STEROWANIE___DICT":true,
-"STRONA_STEROWANIA":"",
-"SUMA_BRUTTO_ALIAS":"",
-"SZEROKOSC___TITLE":"SZEROKOŚĆ [MM]",
-"ZASILANIE___TITLE":"ZASILANIE",
-"AUTOMATYKA___TITLE":"AUTOMATYKA",
-"CENA_KONCOWA_ALIAS":"",
-"CENA_RABAT___TITLE":"RABAT %",
-"CENA___DESCRIPTION":"",
-"DLUGOSC_STER_ALIAS":"",
-"DOPLATA_EL_S_ALIAS":"",
-"DOPLATA_EL___TITLE":"DOPŁATA EL DET. [€] brutto",
-"KOLOR_SYSTE___DICT":true,
-"OPIS_POZYCJI_ALIAS":"",
-"OPIS_RABATU___DICT":false,
-"PROWADNICE___TITLE":"PROWADNICE",
-"PROW_KOLOR___TITLE":"KOLOR PROWADNICY",
-"STEROWANIE___TITLE":"STEROWANIE",
-"SUMA_BRUTTO___DICT":false,
-"WYSOKOSC___VISIBLE":true,
-"CENA_KONCOWA___DICT":false,
-"CENA_SUMA___VISIBLE":true,
-"DLUGOSC_STER___DICT":false,
-"DOPLATA_EL_S___DICT":false,
-"DOPLATA_RABAT_ALIAS":"",
-"DOPLATA_S___VISIBLE":false,
-"ILOSC___DESCRIPTION":"",
-"KOLOR_SYSTE___TITLE":"KOLOR SYSTEMU",
-"KOLOR___DESCRIPTION":"PG #0",
-"MODEL___DESCRIPTION":"CHR",
-"MOTOR___DESCRIPTION":"",
-"OPIS_CENY___VISIBLE":true,
-"OPIS_POZYCJI___DICT":false,
-"OPIS_RABATU___TITLE":"OPIS_RABATU",
-"PILOT___DESCRIPTION":"",
-"SUMA_BRUTTO___TITLE":"WARTOŚĆ BR.[€]",
-"SZEROKOSC___VISIBLE":true,
-"WYMIAROWANIE_SLOPOW":"",
-"ZASILANIE___VISIBLE":false,
-"AUTOMATYKA___VISIBLE":false,
-"CENA_KONCOWA___TITLE":"CENA NETTO PO RABACIE [€]",
-"CENA_RABAT___VISIBLE":false,
-"CENA_S___DESCRIPTION":"",
-"DLUGOSC_STER___TITLE":"DŁUGOŚĆ STEROWANIA [MM]",
-"DOPLATA_EL_S___TITLE":"DOPLATA_EL_S",
-"DOPLATA_EL___VISIBLE":false,
-"DOPLATA_RABAT___DICT":false,
-"MONTAZ___DESCRIPTION":"Uchwyt uniwersalny CHR",
-"OCHRONA_CHILD_SAFETY":"CS_YES",
-"OPIS_POZYCJI___TITLE":"OPIS_POZYCJI",
-"PROWADNICE___VISIBLE":false,
-"PROW_KOLOR___VISIBLE":false,
-"STEROWANIE___VISIBLE":false,
-"DODATKI___DESCRIPTION":"BEZ DODATKOW",
-"DOPLATA_RABAT___TITLE":"RABAT DODATKOWY %",
-"DOPLATA___DESCRIPTION":"",
-"FUNKCJA___DESCRIPTION":"LEWY SZNUR DOLNA BELKA",
-"KOLOR_DODATKOWY_ALIAS":"2002-P20",
-"KOLOR_SYSTE___VISIBLE":true,
-"OPIS_RABATU___VISIBLE":true,
-"SUMA_BRUTTO___VISIBLE":true,
-"WARTOSC_KONCOWA_ALIAS":"",
-"CENA_KONCOWA___VISIBLE":false,
-"DLUGOSC_STER___VISIBLE":true,
-"DOPLATA_EL_RABAT_ALIAS":"",
-"DOPLATA_EL_S___VISIBLE":false,
-"KOLOR_DODATKOWY___DICT":true,
-"KOLOR_STEROWANIA_ALIAS":"",
-"OPIS_POZYCJI___VISIBLE":true,
-"STEROWANIE_ELEKTRYCZNE":"",
-"STRONA_LADOWANIA_ALIAS":"",
-"WARTOSC_KONCOWA___DICT":false,
-"WYSOKOSC_MONTAZU_ALIAS":"",
-"WYSOKOSC___DESCRIPTION":"",
-"CENA_SUMA___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___DICT":false,
-"DOPLATA_RABAT___VISIBLE":false,
-"DOPLATA_S___DESCRIPTION":"",
-"KOLOR_DODATKOWY___TITLE":"KOLOR DODATKOWY",
-"KOLOR_STEROWANIA___DICT":true,
-"OPIS_CENY___DESCRIPTION":"",
-"POW_ALIAS___DESCRIPTION":"",
-"STRONA_LADOWANIA___DICT":true,
-"STRONA_STEROWANIA_ALIAS":"",
-"STRONA_WYJSCIA_PRZEWODU":"",
-"SZEROKOSC___DESCRIPTION":"",
-"WARTOSC_KONCOWA___TITLE":"WART. NET. PO RABACIE [€]",
-"WYSOKOSC_MONTAZU___DICT":false,
-"ZASILANIE___DESCRIPTION":"",
-"AUTOMATYKA___DESCRIPTION":"",
-"CENA_ALIAS___DESCRIPTION":"",
-"CENA_RABAT___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___TITLE":"RABAT EL %",
-"DOPLATA_EL___DESCRIPTION":"",
-"KOLOR_STEROWANIA___TITLE":"KOLOR STEROWANIA",
-"PROWADNICE___DESCRIPTION":"",
-"PROW_KOLOR___DESCRIPTION":"",
-"STEROWANIE___DESCRIPTION":"",
-"STRONA_LADOWANIA___TITLE":"STRONA ŁADOWANIA",
-"STRONA_STEROWANIA___DICT":true,
-"WYSOKOSC_MONTAZU___TITLE":"WYSOKOŚĆ MONTAŻU [MM]",
-"ILOSC_ALIAS___DESCRIPTION":"",
-"KOLOR_ALIAS___DESCRIPTION":"PG #0",
-"KOLOR_DODATKOWY___VISIBLE":true,
-"KOLOR_SYSTE___DESCRIPTION":"BIAŁY",
-"MODEL_ALIAS___DESCRIPTION":"",
-"MOTOR_ALIAS___DESCRIPTION":"",
-"OPIS_RABATU___DESCRIPTION":"",
-"PILOT_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA___TITLE":"STRONA STEROWANIA",
-"SUMA_BRUTTO___DESCRIPTION":"",
-"WARTOSC_KONCOWA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW_ALIAS":"",
-"CENA_KONCOWA___DESCRIPTION":"",
-"CENA_S_ALIAS___DESCRIPTION":"",
-"DLUGOSC_STER___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___VISIBLE":false,
-"DOPLATA_EL_S___DESCRIPTION":"",
-"KOLOR_STEROWANIA___VISIBLE":false,
-"MONTAZ_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY_ALIAS":"",
-"OPIS_POZYCJI___DESCRIPTION":"",
-"STRONA_LADOWANIA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___DICT":false,
-"WYSOKOSC_MONTAZU___VISIBLE":false,
-"DODATKI_ALIAS___DESCRIPTION":"",
-"DOPLATA_ALIAS___DESCRIPTION":"",
-"DOPLATA_RABAT___DESCRIPTION":"",
-"FUNKCJA_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___DICT":true,
-"STRONA_STEROWANIA___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___TITLE":"WYMIAROWANIE SLOPÓW",
-"OCHRONA_CHILD_SAFETY___TITLE":"OCHRONA CHILD SAFETY",
-"STEROWANIE_ELEKTRYCZNE_ALIAS":"",
-"WYSOKOSC_ALIAS___DESCRIPTION":"",
-"CENA_SUMA_ALIAS___DESCRIPTION":"",
-"DOPLATA_S_ALIAS___DESCRIPTION":"",
-"KOLOR_DODATKOWY___DESCRIPTION":"PG #1",
-"OPIS_CENY_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___DICT":true,
-"STRONA_WYJSCIA_PRZEWODU_ALIAS":"",
-"SZEROKOSC_ALIAS___DESCRIPTION":"",
-"WARTOSC_KONCOWA___DESCRIPTION":"",
-"WYMIAROWANIE_SLOPOW___VISIBLE":false,
-"ZASILANIE_ALIAS___DESCRIPTION":"",
-"AUTOMATYKA_ALIAS___DESCRIPTION":"",
-"CENA_RABAT_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_RABAT___DESCRIPTION":"",
-"KOLOR_STEROWANIA___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___VISIBLE":true,
-"PROWADNICE_ALIAS___DESCRIPTION":"",
-"PROW_KOLOR_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___TITLE":"STEROWANIE ELEKTRYCZNE",
-"STRONA_LADOWANIA___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___DICT":true,
-"WYSOKOSC_MONTAZU___DESCRIPTION":"",
-"KOLOR_SYSTE_ALIAS___DESCRIPTION":"",
-"OPIS_RABATU_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___TITLE":"STRONA WYJŚCIA PRZEWODU",
-"SUMA_BRUTTO_ALIAS___DESCRIPTION":"",
-"CENA_KONCOWA_ALIAS___DESCRIPTION":"",
-"DLUGOSC_STER_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_S_ALIAS___DESCRIPTION":"",
-"OPIS_POZYCJI_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___VISIBLE":false,
-"DOPLATA_RABAT_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___VISIBLE":false,
-"WYMIAROWANIE_SLOPOW___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY___DESCRIPTION":"TAK DIN EN 13120: 2009",
-"KOLOR_DODATKOWY_ALIAS___DESCRIPTION":"PG #1",
-"WARTOSC_KONCOWA_ALIAS___DESCRIPTION":"",
-"DOPLATA_EL_RABAT_ALIAS___DESCRIPTION":"",
-"KOLOR_STEROWANIA_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE___DESCRIPTION":"",
-"STRONA_LADOWANIA_ALIAS___DESCRIPTION":"",
-"WYSOKOSC_MONTAZU_ALIAS___DESCRIPTION":"",
-"STRONA_STEROWANIA_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU___DESCRIPTION":"",
-"WYMIAROWANIE_SLOPOW_ALIAS___DESCRIPTION":"",
-"OCHRONA_CHILD_SAFETY_ALIAS___DESCRIPTION":"",
-"STEROWANIE_ELEKTRYCZNE_ALIAS___DESCRIPTION":"",
-"STRONA_WYJSCIA_PRZEWODU_ALIAS___DESCRIPTION":""},
-"amount":1,
-"list_price":{},
-"discount_percentage":"0.00",
-"discount":"0.00",
-"unit_price":"610.00",
-"total_price":"267.70",
-"json_parameters_desc":"[[\"ILOSC\",
-{\"param_description\":\"ILOŚĆ\",
-\"option_value\":\"1\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MODEL\",
-{\"param_description\":\"MODEL\",
-\"locked\":false,
-\"option_value\":\"AL30\",
-\"option_description\":\"CHR\",
-\"row\":\"1\"}],
-[\"KOLOR\",
-{\"param_description\":\"KOLOR\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"2003-P20\",
-\"option_description\":\"PG #0\"}],
-[\"KOLOR_DODATKOWY\",
-{\"param_description\":\"KOLOR DODATKOWY\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"2002-P20\",
-\"option_description\":\"PG #1\"}],
-[\"KOLOR_SYSTE\",
-{\"param_description\":\"KOLOR SYSTEMU\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"0150CHR\",
-\"option_description\":\"BIAŁY\"}],
-[\"SZEROKOSC\",
-{\"param_description\":\"SZEROKOŚĆ [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1232\"}],
-[\"WYSOKOSC\",
-{\"param_description\":\"WYSOKOŚĆ [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1232\"}],
-[\"WYMIAROWANIE_SLOPOW\",
-{\"param_description\":\"WYMIAROWANIE SLOPÓW\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STEROWANIE\",
-{\"param_description\":\"STEROWANIE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MOTOR\",
-{\"param_description\":\"MOTOR\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"ZASILANIE\",
-{\"param_description\":\"ZASILANIE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"PILOT\",
-{\"param_description\":\"PILOT\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"AUTOMATYKA\",
-{\"param_description\":\"AUTOMATYKA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_STEROWANIA\",
-{\"param_description\":\"STRONA STEROWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"FUNKCJA\",
-{\"param_description\":\"FUNKCJE SZNURA\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"AL30LR\",
-\"option_description\":\"LEWY SZNUR DOLNA BELKA\"}],
-[\"KOLOR_STEROWANIA\",
-{\"param_description\":\"KOLOR STEROWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STEROWANIE_ELEKTRYCZNE\",
-{\"param_description\":\"STEROWANIE ELEKTRYCZNE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_LADOWANIA\",
-{\"param_description\":\"STRONA ŁADOWANIA\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"STRONA_WYJSCIA_PRZEWODU\",
-{\"param_description\":\"STRONA WYJŚCIA PRZEWODU\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"OCHRONA_CHILD_SAFETY\",
-{\"param_description\":\"OCHRONA CHILD SAFETY\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"CS_YES\",
-\"option_description\":\"TAK DIN EN 13120: 2009\"}],
-[\"WYSOKOSC_MONTAZU\",
-{\"param_description\":\"WYSOKOŚĆ MONTAŻU [MM]\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"DLUGOSC_STER\",
-{\"param_description\":\"DŁUGOŚĆ STEROWANIA [MM]\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"1232\"}],
-[\"PROWADNICE\",
-{\"param_description\":\"PROWADNICE\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"PROW_KOLOR\",
-{\"param_description\":\"KOLOR PROWADNICY\",
-\"locked\":false,
-\"row\":\"1\"}],
-[\"MONTAZ\",
-{\"param_description\":\"MONTAŻ\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"297944\",
-\"option_description\":\"Uchwyt uniwersalny CHR\"}],
-[\"DODATKI\",
-{\"param_description\":\"DODATKI\",
-\"locked\":false,
-\"row\":\"1\",
-\"option_value\":\"\",
-\"option_description\":\"\"}],
-[\"POW\",
-{\"param_description\":\"POW.[M2]\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"1.52\",
-\"option_description\":\"\"}],
-[\"CENA\",
-{\"param_description\":\"CENA DET. [€] brutto\",
-\"option_value\":\"239(PG0)+292(PG1)\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"DOPLATA\",
-{\"param_description\":\"DOPŁATA DET. [€] brutto\",
-\"option_value\":\"79(AU30)\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"DOPLATA_EL\",
-{\"param_description\":\"DOPŁATA EL DET. [€] brutto\",
-\"locked\":false,
-\"row\":\"0\"}],
-[\"CENA_SUMA\",
-{\"param_description\":\"CENA ŁĄCZNA  [€] (za szt)\",
-\"option_value\":\"610\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\"}],
-[\"SUMA_BRUTTO\",
-{\"param_description\":\"WARTOŚĆ BR.[€]\",
-\"option_value\":\"610\",
-\"option_description\":\"\",
-\"locked\":false,
-\"row\":\"2\",
-\"listsum\":true}],
-[\"CENA_RABAT\",
-{\"param_description\":\"RABAT %\",
-\"option_value\":\"60%\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_RABAT\",
-{\"param_description\":\"RABAT DODATKOWY %\",
-\"option_value\":\"30%\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_EL_RABAT\",
-{\"param_description\":\"RABAT EL %\",
-\"locked\":false,
-\"row\":\"0\"}],
-[\"CENA_KONCOWA\",
-{\"param_description\":\"CENA NETTO PO RABACIE [€]\",
-\"option_value\":\"267.70\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"WARTOSC_KONCOWA\",
-{\"param_description\":\"WART. NET. PO RABACIE [€]\",
-\"option_value\":\"267.70\",
-\"option_description\":\"\",
-\"locked\":true,
-\"row\":\"2\",
-\"listsum\":true}],
-[\"OPIS_POZYCJI\",
-{\"param_description\":\"OPIS_POZYCJI\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"MODEL=AL30,
-KOLOR=2003-P20,
-KOLOR DODATKOWY=2002-P20,
-KOLOR SYSTEMU=0150CHR,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-FUNKCJE SZNURA=AL30LR,
-OCHRONA CHILD SAFETY=CS_YES,
-DŁUGOŚĆ STEROWANIA [MM]=1232,
-MONTAŻ=297944\"}],
-[\"OPIS_CENY\",
-{\"param_description\":\"OPIS_CENY\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"CENA DET. [€] brutto=531,
-DOPŁATA DET. [€] brutto=79\"}],
-[\"OPIS_RABATU\",
-{\"param_description\":\"OPIS_RABATU\",
-\"locked\":false,
-\"row\":\"2\",
-\"option_value\":\"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%\"}],
-[\"CENA_S\",
-{\"param_description\":\"CENA_S\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_S\",
-{\"param_description\":\"DOPLATA_S\",
-\"locked\":true,
-\"row\":\"2\"}],
-[\"DOPLATA_EL_S\",
-{\"param_description\":\"DOPLATA_EL_S\",
-\"locked\":true,
-\"row\":\"2\"}]]",
-"comment":"",
-"ver":"0.3.1",
-"asortment_group_number":"00",
-"lang":"pl",
-"department":"PLISY",
-"group_name":"EOS",
-"parameters_short":{"data":{"POW":1.52,
-"CENA":531,
-"ILOSC":1,
-"KOLOR":"3003-P20",
-"MODEL":"AL30",
-"CENA_S":"239(PG0)+292(PG1)",
-"MONTAZ":"297944",
-"DODATKI":"<NONE>",
-"DOPLATA":79,
-"FUNKCJA":"AL30LR",
-"WYSOKOSC":1232,
-"CENA_SUMA":610,
-"DOPLATA_S":"79(AU30)",
-"OPIS_CENY":"CENA DET. [€] brutto=531,
-DOPŁATA DET. [€] brutto=79",
-"SZEROKOSC":1232,
-"CENA_RABAT":0.6,
-"KOLOR_ALIAS":"2003-P20",
-"KOLOR_SYSTE":"0150CHR",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%",
-"SUMA_BRUTTO":610,
-"CENA_KONCOWA":267.7,
-"DLUGOSC_STER":1232,
-"OPIS_POZYCJI":"MODEL=AL30,
-KOLOR=2003-P20,
-KOLOR DODATKOWY=2002-P20,
-KOLOR SYSTEMU=0150CHR,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-FUNKCJE SZNURA=AL30LR,
-OCHRONA CHILD SAFETY=CS_YES,
-DŁUGOŚĆ STEROWANIA [MM]=1232,
-MONTAŻ=297944",
-"DOPLATA_RABAT":0.3,
-"KOLOR_DODATKOWY":"3002-P20",
-"WARTOSC_KONCOWA":267.7,
-"OCHRONA_CHILD_SAFETY":"CS_YES",
-"KOLOR_DODATKOWY_ALIAS":"2002-P20"},
-"order":["ILOSC",
-"MODEL",
-"KOLOR",
-"KOLOR_ALIAS",
-"KOLOR_DODATKOWY",
-"KOLOR_DODATKOWY_ALIAS",
-"KOLOR_SYSTE",
-"SZEROKOSC",
-"WYSOKOSC",
-"FUNKCJA",
-"OCHRONA_CHILD_SAFETY",
-"DLUGOSC_STER",
-"MONTAZ",
-"DODATKI",
-"POW",
-"CENA",
-"DOPLATA",
-"CENA_SUMA",
-"SUMA_BRUTTO",
-"CENA_RABAT",
-"DOPLATA_RABAT",
-"CENA_KONCOWA",
-"WARTOSC_KONCOWA",
-"OPIS_POZYCJI",
-"OPIS_CENY",
-"OPIS_RABATU",
-"CENA_S",
-"DOPLATA_S"]},
-"lockedParams":["RABAT %",
-"RABAT DODATKOWY %",
-"CENA NETTO PO RABACIE [€]",
-"WART. NET. PO RABACIE [€]",
-"CENA_S",
-"DOPLATA_S",
-"DOPLATA_EL_S"],
-"posId":5140},
-"row":{"row1":{"ILOŚĆ":"1",
-"MODEL":"AL30 - CHR",
-"KOLOR":"2003-P20 - PG #0",
-"KOLOR DODATKOWY":"2002-P20 - PG #1",
-"KOLOR SYSTEMU":"0150CHR - BIAŁY",
-"SZEROKOŚĆ [MM]":"1232",
-"WYSOKOŚĆ [MM]":"1232",
-"STEROWANIE":"-",
-"FUNKCJE SZNURA":"AL30LR - LEWY SZNUR DOLNA BELKA",
-"OCHRONA CHILD SAFETY":"CS_YES - TAK DIN EN 13120: 2009",
-"DŁUGOŚĆ STEROWANIA [MM]":"1232",
-"PROWADNICE":"-",
-"KOLOR PROWADNICY":"-",
-"MONTAŻ":"297944 - Uchwyt uniwersalny CHR",
-"DODATKI":""},
-"row2":{"POW.[M2]":"1.52",
-"CENA DET. [€] brutto":"239(PG0)+292(PG1)",
-"DOPŁATA DET. [€] brutto":"79(AU30)",
-"CENA ŁĄCZNA  [€] (za szt)":"610",
-"WARTOŚĆ BR.[€]":"610",
-"RABAT %":"60%",
-"RABAT DODATKOWY %":"30%",
-"CENA NETTO PO RABACIE [€]":"267.70",
-"WART. NET. PO RABACIE [€]":"267.70",
-"OPIS_POZYCJI":"MODEL=AL30,
-KOLOR=2003-P20,
-KOLOR DODATKOWY=2002-P20,
-KOLOR SYSTEMU=0150CHR,
-SZEROKOŚĆ [MM]=1232,
-WYSOKOŚĆ [MM]=1232,
-FUNKCJE SZNURA=AL30LR,
-OCHRONA CHILD SAFETY=CS_YES,
-DŁUGOŚĆ STEROWANIA [MM]=1232,
-MONTAŻ=297944",
-"OPIS_CENY":"CENA DET. [€] brutto=531,
-DOPŁATA DET. [€] brutto=79",
-"OPIS_RABATU":"RABAT %=60.00%,
-RABAT DODATKOWY %=30.00%"}}}],
-"locked":["RABAT %",
-"RABAT EL %",
-"CENA NETTO PO RABACIE [€]",
-"WART. NET. PO RABACIE [€]",
-"RABAT DODATKOWY %",
-"CENA_S",
-"DOPLATA_S",
-"DOPLATA_EL_S"]}]
+LUXANGMBH/TESTOWY/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+COZY/TESTOWY/KOLOR=paramdict-KOLOR-COZY.txt
+HKL/TESTOWY/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXAN_EWA_KRAWCZYK/TESTOWY/KOLOR=paramdict-KOLOR-COZY.txt
+LUXANGMBH/JC/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RIEPER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PLISSEEDE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+COZY/VANDE/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/COZY/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/PAUL HENZEPETER/KOLOR=paramdict-KOLOR-COZY.txt
+LUXANGMBH/LUXANGMBH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXAN_EWA_KRAWCZYK/KOWALSKI/KOLOR=paramdict-KOLOR--.txt
+COZY/THUIS_MET_GORDIJNEN /KOLOR=paramdict-KOLOR-COZY.txt
+COZY/BBB/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/AS_WONINGSTOFFEERDER/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/BBB/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/CAMPAERT/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/COZY/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/OERLEMANS_MOOI_WONEN/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/PAUL_HENZEPETER/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/PC_INTERIEUR/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/TAPIJT_DRIVE-IN/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/TEST_MAIZONCOZY/KOLOR=paramdict-KOLOR-COZY.txt
+LUXANGMBH/TEST_LUXANDE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+HKL/HEYTENS_TEST/KOLOR=paramdict-KOLOR-HEYTENS.txt
+HKL/AZRA/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+HKL/ARTELIOZ/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+HKL/BD-LINE/KOLOR=paramdict-KOLOR-BD.txt
+LUXANGMBH/TEST08/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TEST09/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TEST10/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+REMASUN/TEST01/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TEST02/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TEST04/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TEST05/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TEST06/KOLOR=paramdict-KOLOR-COZY.txt
+LUXANGMBH/TEST07/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+HKL/TEST03/KOLOR=paramdict-KOLOR-COZY.txt
+COZY/MEVR_J_BIJLEVELD/KOLOR=paramdict-KOLOR-COZY.txt
+HKL/MAXSOL/KOLOR=paramdict-KOLOR-COZY.txt
+HKL/BD-LINE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+HKL/NAOKNIEPL/KOLOR=paramdict-KOLOR-COZY.txt
+LUXANGMBH/1000&1JALOUSIE-AUE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/1000&1JALOUSIE-CENTR/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/1000&1JALOUSIE-FRIEDRICH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/1000&1JALOUSIE-HÖHNE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/A&A LOHNE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/A&L/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ABBAS_MEDIZINTECHNIK_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ABC/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ABENRIEB_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ADOLPHS_SCHREINEREI_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/AIGNER+GRAF_MÜNCHEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ALBRECHT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ALESSANDRI_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ALLBYONE_NIELSEN_SE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ALLES_MEYER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/AMEND/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/AMPERSBERGER_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ANDRÄ_WOHNIDEEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/APPELHOFF/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ARMBRUSTER_ERNST_RAUMA_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ARNOLD_RAABE__SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ASISOTECH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ASMUS_WOHNDESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ATTINGER_RAUMAUSSTATT-SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/AVAEKSPERDID_EE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/B&C/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/B_U_G_RAUMDESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/B+B_ROLLLADENTECHNIK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BACHMAIER_RAUMAUSST_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BACO_KARCHER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BADING/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BALZER_EDMUND_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BARON_RAUMSTUDIO_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BARTHEL_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAUER_ALFONS_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAUER_PETER_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAUHOF_WOHNIMPULS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAUMEISTER_KATHRIN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAUMGÄRTNER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAUR_RAUMGESTALTUNG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAUR_RUDOLF_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAUR_TRAUMAUS_PULLACH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAUTISCHLEREI_LAMPE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAYER_KLAUS_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BAYER_MARTIN_RAUMDESIGN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BBJZ_AUGSBURG_ST_ELISABETH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BECKER_POLSTEREI_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BECKER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BELLITTO_INNENEINR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BENDER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BERGERMEIER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BERNER_PETER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BERNER_RAUM_U_FARBE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BERNHARD_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BERNING_INNENDEKORATI_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BERTRAM/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BEST_U_SOHN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BEZOLD_GMBH_GROSCH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BFT MARKT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BIERMANNS_RAUMDES_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BIRMELE_GISELA_LÄDELE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLACK_BRIGITTA_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLANKE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLICKFANG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLICKFANG_DÜREN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLIND_HEIMTEX POLSTER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLOCKER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLOHBERGER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLOHBERGER&OLMA/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLUM_DANIEL_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BLÜMEL_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BÖCKMANN_HENRICHS_NEUSS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BÖCKMANN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BOEHLKE_RAUM-INSPIRAT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BOGENRIEDER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BOLDTMANUEL_RAUMDESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BOLT_MANUEL_RAUMDESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BONDECO_DESIGN_BENDER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BOSS_DECOR_FR/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BOVELET_RAUMB93_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRAATZ SONNENSCHUTZTECHNIK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRANDLER_MARTIN_POLST_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRANDMEIR_SIMONE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRANDT_ZÄUNER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRAUN_WOLFRAM_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BR-DESIGN_BAUSCH__SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRECHT_STUCKATEUR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BREIDENBACH_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRIGANTI_MALER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRÜGELMANN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRUNNER_RESCH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRUNNHÖLZL_GBR/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRUNSCH_REISCHL_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BRÜTTING_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BUCHNER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BUCHWIESER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BÜHLMANN_CLAUDIO_CH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BÜKER_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BURK_AALEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BURLEFINGER_TEXTIL_AMB_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BÜRO_KREFELD/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BÜSCHER_GMBH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/BÜTER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/CASA_BONITA_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/CAVDAR_BAU_CONSULTING/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/CLAUß_JENS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/COLLIP_GARDINENHAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/COSSMANN&SCHLÜTER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/COUTEX/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/CRON_FRIEDRICH_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DECO_WINDOW_SCHMIDT_PL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DECOCITY_BERLIN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DECOCITY_SCHNEEMEIER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DECORATION_SCHWEITZ_FR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DECOTEAMPOSSELT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEKO_KERN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEKO_STUDIO_SCHWERIN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEKOCITY-OSTERSTR/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-BERLIN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-BONN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-CENTR-KÖLN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-DÜSSELDORF/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-KÖLN-JO/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-MÜNCHEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEMMEL_FRITZ_AUTOSATTL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DEXTERA_LT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DGD_SERVICE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DIEHL_POLSTER_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DIETRICHHARALD/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DIETZ_MALER_SCHÖNSEE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DIJKSTRA_STOFFEER_NL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DOBNER_INNENAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DÖLLNER_SCHREINEREI/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DÖRFERBLICK_WERBE_KG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DOSADOS_MEYER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DRECHSLER_INTERIOR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DREIER_RAUMAUS_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DUCHARDT_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DÜKKANCI_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DURACH_GMBH_LEUTKIRCH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DUSCHEK_MALER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DÜSENBERG_BAUELEMENTE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/DÜSSMANN_WOHNAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EBERHARDT_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EBERT_FACHMARKT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EBERT_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EBNER_HELMUT_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EBSEN_WOHNDESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EDEN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EDENHOFER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EFKEN_TRAUTE_INNENAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EGGEN_R_S_RAUM_U_IDEE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EGGER_RAUMDESIGN_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/EINRICHTUNGSSTUD_STADE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ELSNER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ENGADINER_KULM_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ENGEL_HEIMDECOR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ENGELHARDT_LANG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ERHARDT_RAUMDESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FARBEN_DREHER_RAUMK_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FARBEN-GARDINENCENTER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FEITER_FRED_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FELLNER_STILVOLL_WOHN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FELSNER_MC_RAUMDES_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FENESTRA/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FENESTRA_MÜNCHEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FINK_IM_HAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FISCHER_FR_RAUMAUS_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FISCHER_PETER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FLECK_MARKUS_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FLECK_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FLOREK_IRENE_LINK_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FÖRSTER_GARDINENSTUDIO_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FRANK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FRANK_TOVORNIK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FRANZ_JOACHIM_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FRAUENDORFER_MÖBEL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FUCHS_BIRGIT_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/FURRER_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GÄCKLE_TANJA_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GANGL_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GARDINENSTUDIORAUM_ZEIBIG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GARDINENWERKST_EHMANN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GARDINRULLEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GAUL_STEFAN_POLSTER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GEBHARDT_LEIST_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GEBHART_TOG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GEBR_SAXER_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GEESE_TISCHLEREI_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GEIGER_SCHLESINGER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GENSCH_MARGIT_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GEOS_GEILFUß/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GERBL_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GERDT_STEFAN_MALER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GERLING_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GERSTNER_ANDREA_STOFF_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GERVERS_ROBERT_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GESCHWENTNER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GEYER_AHA_WOHNDEK_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GEYER_KARL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GHW/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GIOVANNI_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GLEIßNER_GEORG_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GLOOR_WOHNART_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GLÜCK&FRANKE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GOLDBERG_THILO_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GOLSER_RAUMAUS_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GOMESIA_MÖBEL_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GONSKA POLSTEREI_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GORILLA_DEKOR/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GÖTZ_WOHNEN_LEBEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GRABOWSKI_NORM_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GRAF_RAUMAU_HERRSCHING_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GRATZ_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GRIEGER_AXEL_INTERIEUR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GRIMM_NADINE_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GRIMM_RAUMAUS_RODGAU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GRUND_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GRUSSER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GSG_FARBEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GÜMPEL_POLSTERWERKST_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GÜNTER_KRÜGER_SÖHNE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/GUTSCHE&SCHAUB/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HABERL_POLSTERWERK_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HABERSTROH_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HACKER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HAFERMAS_AXEL_MALER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HAGENLOCHER_MAGSTADT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HAGENLOCHER_SINDELFING_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HALLER_SATTELBACH_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HANDELSRING MORTSCH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HANSING_ANDREAS_RAUMAU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HANUS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HARDER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HÄRING_WERNER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HARTUNG_HOFMANN_RAUMAU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HASTEDT_HESEDORF_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HÄUSL_RAUMAUSSTAT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HÄUSLER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HAUßMANN_WOHNWERKSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HAVERKAMP_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HBW_OBJEKT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HBZ_BTZ_ASCHERSLEBEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HEEPEN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HEIDUK_ALINA_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HEIGL_GBR_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HEIMDECOR_WOLF_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HEIMLICH_RAUM_RECH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HEIMLICH_RAUMDESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HEINIG_DOLORES_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HEINLEIN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HELDT_DAVID_INNENEIN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HELLER_TUCHFÜHLUNG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HENNIG_BEATRICE_WANDBODEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HENRIETTE_CASA_HU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HERSEL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HESS SONNENSCHUTZ/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HILLERSCHEIDT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HINTELMAN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HOFER_A_TISCHLER_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HOFFRICHTER_M_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HOFSTETTER INSEKTENSCHUTZ/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HÖHENBERGER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HOHENLEITNER_C_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HOHN_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HOPFFER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HOTZEL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HPM/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HSK_RAAMDECO_NL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HUBER_WOLFGANG_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HUETER_WOHNIDEEN_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HÜNEWINCKELL_MICHAEL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HÜTTER_JÜRGEN_MALER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/HÜTTER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ILG_RAUMAUSSTAT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/IMHOF_PARKETT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/INDES_FUGGERHAUS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/INFORM_EINRICHTUNGEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/INSECTOS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/INSIDE_RAUMAUS KILB_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JALOUSIEN.COM_DE_MARE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JALOUSIEN.COM_MARE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JALOUSIEN_DRESDEN_OHG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JALOUSIENLADEN-SCHON/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JALOUSIENTEAM/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JALOUSIENTEAMSCHÖN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JANSEN_GARDINE_BRÜHL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JANSEN_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-AACHEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-ALBOIN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-BAHNHOF/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-CLAYALLEE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-FORCKENBECK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-FRIEDRICH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-KANT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-KARL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-KLOSTER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-LIETZENBURGER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-MEIEROTTO/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-PRENZLAUERBERG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-SCHARNWEBER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BIELEFELD/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BOCHUM/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-BONN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-DORTMUND/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-DUISBURG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-DÜSSELDORF/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-DÜSSELDORF_RECHNUNG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-ESSEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-ESSEN-HUYSSEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-FRANKFURT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-FRANKFURT_RECH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-GO_PFEIFERS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-GO_PFEIFERS_RECH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-GO_SCHRÖDER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-HAMBURG-DEHNHAIDE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-HAMBURG-FLOTTBEK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-HAMBURG-SIEMERSPLATZ/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-HANNOVER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-INTERNET/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-KÖLN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-KÖLN-BONNER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-LEIPZIG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-LÜBECK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-MÖNCHENGLADBACH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-MÜNCHEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-STUTTGART/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-WIESBADEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JC-WUPPERTAL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JD_INTERIOR/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/JM_WOHNDESIGN_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KAHLERT_WALTER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KAINBACHER_HERBERT_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KAIROS_KLAUS_FÖRTSCH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KALSKI_HEIKE_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KAPSREITER_WOHNEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KARLE_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KASPER_SONNENSCHUTZ_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KATSCH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KATZENBACH_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KAUFHAUS_BIRKENMEIER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KAUFMANN_MEL_RAUMAU_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KAUFMANN_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KERN_ARMIN_RAUMAUS_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KERSCHBAUM_BETTEN_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KERSCHL_ROBERT_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KESSEL RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KLAGE_WABRO_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KLAUS_HEINZ_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KLEIDER_RAUMGESTALTUNG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KLEIER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KLEIN_MEISTERBETRIEB_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KLINKE_BAUELEMENTE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KLUGBAUER_POLSTER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KNIESS_BETTEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KNOLL_STEFAN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KNUTZEN_WOHNEN_ONLINE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KOBACHE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KOCH_U_MATTHES_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KOHN_RAUMGESTALT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KÖLL_RAUMAUS_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KOLLECK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KOMOOD_BECKER_PFÜTZ_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KÖNIG_KÖNIG_GARDINEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KONNERTZ_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KÖPKE_TEPPICHLAND_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KOSICK_MALERBETRIEB_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KRAMER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KRAUS_MICHAEL_ELZTAL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KREATIVREICH_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KREUTZ_FARBEN_HAMMEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KRÜPPEL_RAUMTEX_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KRYSIAK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KUGLER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/KUPPINGER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LANG_UWE_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LANTSCHNER_TAPEZI_IT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LAROSCHE_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LARS_LEPPIN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LAZARUS_RIPPL_CLAUDIA_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LE_COQ_HAHN_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LENZMEIER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LETTL_RAUMDEKOR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LEVERENZ_RAUMDESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LEYS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LF_GARDINENCENTER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LICHTBLAU_ANDREA_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LICHTBLICK_SONNENSCHUTZ/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LIEBLER_TEXTIL_GMBH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LIESKE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LIMBERGER_MALERBETRIEB_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LINDNER_DEKOATELIER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LINOTEX_DESIGN_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LINS_GEROLD_RAUM_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LITEX/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LOCH_VOLKER_RAUMAUSST_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LÖVENICH_JÄGER_RAUMAUS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LÜBBENJOSEF/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LÜCHTENBORG_WOHNSTIL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LUTZ_GISELA_KREA_GARDI_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/LUTZ_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MAGDALENC_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MAGER_WOHNBERATUNG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MAHNKE_RENO_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MAIR_M_RAUMAUS_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MALGIN_RUSLAN_RAUMDESIGN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MALL_WOHNKULTUR_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MALU_BRODERSEN_RAUMGE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MALZER_POLSTEREI_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MALZER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MALZKORN_INTERIORS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MARON_CH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MARTINEK_RAIN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MATHEIS_NIKO_RAUMGE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MATHES_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MATTHES/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MAUSKE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MB_FENSTERTECHNIK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MEIER_GEORG_MÖBEL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MEIERHOFER_RAUMAUS_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MEISEL_ROLLLADEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MENKEN_DIETER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MENSEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MERGET_NICOLE_RAUMAUS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MESCHEDE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/METSCHULAT_RAUMGESTALT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MEYER_HEINZ_JOSEF_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MEYER_HOLGER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MEYER_PETER_BLINDS_AU_RST/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MEYER_POLSTEREI_RAUMAU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MG_SYSTEMS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MIC/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/M-LINE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MÖDINGER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MOLL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MÖLLER_ANDREAS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MÖLLER_HOLZBAU/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MÖLTER_GEORG_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MOTSCH_KARLHEINZ_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MUCKE_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MÜLLER_HEIMDECOR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MÜLLER_R.O._RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MÜLLER_RAUMAUS_EBERN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MÜLLNER_FRANZ_RAUM_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MÜNSTER_NICOLE_TAPETEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/MW_TISCHLEREI/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NAMENDORF_A_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NANNI_RAUME/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NEFZGER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NEIDHARDT_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NEUENFELD/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NEUHAUSEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NEURAUM_EINRICHTUNG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NIEMANN_INTERIOR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NITZ+NITZ/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NOEBEL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NOE-GREMMINGER_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/NORDIC_BLINDS_AU_RST/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/OERTHER_MICHA_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/OLAFS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/OßWALD_SABINE_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/OTTEN_HAREN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ÖTTL_REGINA_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PAEDE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PAESLER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PARKETT_WELT_5/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PAULY_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PAWLAK_PLANUNG_DESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PETERS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PFALLER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PFEIFFER_R_RAUMDESIGN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PHILLIPPS_SARL_LU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PILS_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PLISSEE_DE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PLISSEEFEE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PLISSEEHELD/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PRANGENBERG_MALER_RAUM/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PRECHTL_WÖSSNER_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PREIßEL_GERRIT_RAUMAUS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PRELL_PAUL_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PRESTELE_FENSTERBAU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PROHNER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PRONTO/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PRORAUM_REICHL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PUNSCHER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/PUNTURA_RAUMG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/QUARZ_BODEN_GMBH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RAAB_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RAMM_RAUMGESTALT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RASE_KALLENBACH_HELMUT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RATIONELLSERVICE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RAUMAUSSTATTUNG_SPARLA/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RAUMDECOR_SCHNELL_GMBH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RAUMKLEIDER_FRÜHSTÜCK_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RAUMTEXTILIENSHOP GEIER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RAUMTEXTILIENSHOP K R/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RAUMTEXTILIENSHOP KAISER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REEH_VOLKER_RAUMGESTALT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REHM_C_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REHN_DIETER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REICH_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REICHART_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REICHERT_BERND_POLSTER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REIL_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REMASUN_TRADING/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RENK_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REUSCH_M_TÜB_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/REUTHER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RIBBE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RICHTER_THOMAS_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RIEDINGER_DEKORATION_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RIEPER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RINCK_STEPHAN_RAUMAUS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RINNERT_STEPH_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RITTER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RM_BODENBELÄGE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROHDE_OLAF_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROHN_H_SPAUTZ_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RÖHRIG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROLLADEN1_GMBH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROLLADENKEIMBURG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROLLFIX/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROLLOEXPRESS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROMMEL DESIGN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROSCHER_UWE_OBJ_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROSER_TOBIAS_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROVERTI/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ROYALGLAS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RUF_JALOUSIEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RUH_HARALD_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RUMPLER_GARDINEN_MALER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/RUOSS_ROBERT_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/S&V/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SAM_DESIGN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SAMLAND_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SANTANGELO_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SATTELBERG_SENGE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SATTELBERGER_POLSTEREI_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SAUER_IDEEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SAZOU_FIDLER_JUTTA_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SBZB_PETERS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHADEGG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHÄFER_DIRK_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHÄR_WOHNKULTUR_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHARBATKE_SILKE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHAUB_EDELMANN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHAUPP_FELIX_AUTOSATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHEER_RAUMGESTALTUNG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHENK_ANTON_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHENK_EXQUISIT_RAUMAU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHENK_RAUM_AUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHERER_GÜNCLA_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHERF_HOPF_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHEWE_TORSTEN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHIFTER_WOHNGESTALT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHILCHER_RAUMAUS_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHILLER_ASCHERL_ALEX_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHINDLER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHLECHTRIEM/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHLUTT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMEIDE_MARGIT_INTERIORS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMID_HEINR_PROJEKT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMID_HEINR_ZENTR_MA_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMID_LANDHAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMID_SUS_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMIDT_GARDINEN_JOACH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMIDT_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMIED_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMITT_LUISA_TRAUMHAF_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMITT_RAUM_FARBE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMITTINGER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMITZ_ANKE_RAUMDES_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMITZLINN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHMÖGER_SCHREINEREI _SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHNEIDER_BLICK_UG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHNEIDER_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHNEIDER_RAUMZEIT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHOBER_ROSA_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHÖLLHORN_CHRISTINA_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHOLZ_RAUMAUSSTATTER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHÖPF_INDESIGN_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHRAMM_ALEX_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHRETTENBRUNNER_RAUM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHREYER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHRIINER_KILCHENMA_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHRÖDER VANESSA/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHRÖDER_SCHALLSCHUTZ_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHRÖTER_RAUMAUSST_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHÜLER-SILKO/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHULZ-GOJOWY/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHUMACHER_MARTIN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHUMANN_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHUMANN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHUPFINGER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHÜR_GARDINEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHURAD_KARL-HEINZ_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHURIG/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHÜTTERLE_BODEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHWAB_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHWAIGHOFER_KITZBÜ_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHWEIGER_CHRIS_RAUMAU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHWEIZER_JÜRGEN POLS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCHWENK_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SCI_MATCH_NIMMLER_FR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SEIDEL_JÖRG_RAUMPROFIL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SELL_ANDREA_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SICHTSCHUTZ_BS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SILLER_MARK_RAUMAUS_IT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SOLARMATIC/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SONJAS_NAEHWELT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SONNENSCHUTZ_BERNAU/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SONNENSCHUTZ_DEKO_ELSNER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SORGENFREI_HERBERT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SPALLEK_EINMÖBLER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SPECKHARDT_HEINZ_RAUMG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STAEHLIN_EINRICHTUNG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STEIDEL_DIETER_RAUMDEK_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STELLMACHER_GA_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STILVAL/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STIPP-LIB/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STM/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STOCK/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STÖCKL_MANFRED_SCHREIN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STÖCKLE_ERNST_EINR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STOECKLE_GEORG_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STOFF_ART_POMPE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STOFF_WOHNKONTOR_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STOFFZENTR_AARAU_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STOHLER_ROLAND_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STOLL_RAUMAUSSTATTUNG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STÖPPLER_RAUMGESTALTER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STÖRMER_U_AMANN_RAUMGE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STRUBEGGER_POLSTER_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STUDIO1_SCHLAFWERKST_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STÜHLER_GARDINENSTUDIO/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/STYLTEX_CZ/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SUHR_CORNEL_DIE_PERLE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SUNBIENTE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SUNDRAPE_GMBH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SUN-LUX_SOLSKYDD_SE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SUNNYSTORE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SUNTEC-COESFELD/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/SWEEKHORST_W_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TABBERT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TAENZER_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TAKERER_JOHN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TATEX/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TEGGE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TENTE_BERLIN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TEPPICHLANDHAGEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TERES_ELKE_SCHNEIDER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TERSTEEGEN_EILRICH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TESCHNER_SUS_NÄHDIELE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/THALHUBER_INNENDEKO_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/THAREN_VOLKER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/THOMSEN_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TIEFEL_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TIESING_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TÖPFER_INES_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TREX_TRANSPORT_EXPRESS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TROMMERSHÄUSER_U_FUS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TRUNK_HEDWIG_KANAPEE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ULBER_GMBH_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/URSULA_BRANDSTÄTER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VAJE_WOHNEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VAN_DE_MÖTTER_ARMIN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VENDECO_AT/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VENDECO_DE/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VIKTOR_EINRICHTUNGEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VITZETHUM_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VOGELSBERGER_BODEN_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VON_FEILITZSCH_MARION_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VONNAHME_KANAPEE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VÖROKA_GMBH/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/VOßLER_THEO_POLSTEREI_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WAGNER_MÖBELMINDELHEIM_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WAGNER_TAPETEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WAHL_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WAHLER_RAUMWAHL_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WÄLBERS_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WALK_RAUMAUSSTATT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WAND_RAUM_HEESEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WANGER_PASTERNACK_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WASTIAN_RAUM_WALSER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WBRE_WATERBOUND_BERLIN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WEBER_INNENAUSSTAT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WEBER_LOTHAR_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WEBER_RALF_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WEBER-WERTH_STEFAN_RAU_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WEIL_TRÄUME_STEINER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WEIßENFELS_WALTER_GMBH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WELCOME_INTERIORS/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WERL_ALEXANDER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WERLEN_BABY_ROSE_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WESSER/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WESSLING/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WESTERMANN_WOHNCHIC_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WIDMER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WIEDENHOEFT_WOHNSTUDIO_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WIESER_MICHAEL_AT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WILLY_INNENEINR_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WINGEFELD_DAG_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WINKLER_THOMAS_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WINTER_MALER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WITTENBERG_BOHLMANN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WITTMANN_POLSTERLADEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WITTMANN_RAUMGESTALT_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WITZSCHEL_TEPPICH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WKS_WOHNRAUM_ES/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WOHNART/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WOHNTEXTIL_HAF_CENTER_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WOHNTEXTILIEN/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WOITASKE_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WOLFF_GERH_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WÖRZ_WOHNIDEEN_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WSA_SMART_HOME_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/WUTTKE_WOHNBERATUNG_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ZIHLMANN_INNENAUS_CH_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ZIMMER_RAUMIDEE_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ZÖLLER_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/ZÖLLIN_RAUMAUS_SV/KOLOR=paramdict-KOLOR-LUXAN2024.txt
+LUXANGMBH/TESTOWY/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+COZY/TESTOWY/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+HKL/TESTOWY/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXAN_EWA_KRAWCZYK/TESTOWY/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+LUXANGMBH/JC/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RIEPER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PLISSEEDE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+COZY/VANDE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/COZY/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/PAUL HENZEPETER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+LUXANGMBH/LUXANGMBH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXAN_EWA_KRAWCZYK/KOWALSKI/KOLOR_SYSTE=paramdict-KOLOR_SYSTE--.txt
+COZY/THUIS_MET_GORDIJNEN /KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/BBB/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/AS_WONINGSTOFFEERDER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/BBB/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/CAMPAERT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/COZY/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/OERLEMANS_MOOI_WONEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/PAUL_HENZEPETER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/PC_INTERIEUR/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/TAPIJT_DRIVE-IN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/TEST_MAIZONCOZY/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+LUXANGMBH/TEST_LUXANDE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+HKL/HEYTENS_TEST/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+HKL/AZRA/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+HKL/ARTELIOZ/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+HKL/BD-LINE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEST08/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEST09/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEST10/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+REMASUN/TEST01/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEST02/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEST04/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEST05/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEST06/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEST07/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+HKL/TEST03/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+COZY/MEVR_J_BIJLEVELD/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+HKL/MAXSOL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+HKL/BD-LINE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+HKL/NAOKNIEPL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-COZY.txt
+LUXANGMBH/1000&1JALOUSIE-AUE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/1000&1JALOUSIE-CENTR/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/1000&1JALOUSIE-FRIEDRICH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/1000&1JALOUSIE-HÖHNE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/A&A LOHNE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/A&L/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ABBAS_MEDIZINTECHNIK_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ABC/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ABENRIEB_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ADOLPHS_SCHREINEREI_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/AIGNER+GRAF_MÜNCHEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ALBRECHT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ALESSANDRI_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ALLBYONE_NIELSEN_SE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ALLES_MEYER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/AMEND/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/AMPERSBERGER_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ANDRÄ_WOHNIDEEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/APPELHOFF/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ARMBRUSTER_ERNST_RAUMA_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ARNOLD_RAABE__SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ASISOTECH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ASMUS_WOHNDESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ATTINGER_RAUMAUSSTATT-SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/AVAEKSPERDID_EE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/B&C/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/B_U_G_RAUMDESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/B+B_ROLLLADENTECHNIK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BACHMAIER_RAUMAUSST_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BACO_KARCHER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BADING/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BALZER_EDMUND_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BARON_RAUMSTUDIO_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BARTHEL_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAUER_ALFONS_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAUER_PETER_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAUHOF_WOHNIMPULS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAUMEISTER_KATHRIN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAUMGÄRTNER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAUR_RAUMGESTALTUNG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAUR_RUDOLF_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAUR_TRAUMAUS_PULLACH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAUTISCHLEREI_LAMPE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAYER_KLAUS_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BAYER_MARTIN_RAUMDESIGN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BBJZ_AUGSBURG_ST_ELISABETH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BECKER_POLSTEREI_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BECKER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BELLITTO_INNENEINR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BENDER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BERGERMEIER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BERNER_PETER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BERNER_RAUM_U_FARBE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BERNHARD_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BERNING_INNENDEKORATI_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BERTRAM/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BEST_U_SOHN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BEZOLD_GMBH_GROSCH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BFT MARKT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BIERMANNS_RAUMDES_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BIRMELE_GISELA_LÄDELE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLACK_BRIGITTA_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLANKE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLICKFANG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLICKFANG_DÜREN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLIND_HEIMTEX POLSTER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLOCKER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLOHBERGER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLOHBERGER&OLMA/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLUM_DANIEL_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BLÜMEL_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BÖCKMANN_HENRICHS_NEUSS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BÖCKMANN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BOEHLKE_RAUM-INSPIRAT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BOGENRIEDER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BOLDTMANUEL_RAUMDESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BOLT_MANUEL_RAUMDESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BONDECO_DESIGN_BENDER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BOSS_DECOR_FR/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BOVELET_RAUMB93_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRAATZ SONNENSCHUTZTECHNIK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRANDLER_MARTIN_POLST_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRANDMEIR_SIMONE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRANDT_ZÄUNER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRAUN_WOLFRAM_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BR-DESIGN_BAUSCH__SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRECHT_STUCKATEUR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BREIDENBACH_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRIGANTI_MALER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRÜGELMANN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRUNNER_RESCH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRUNNHÖLZL_GBR/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRUNSCH_REISCHL_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BRÜTTING_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BUCHNER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BUCHWIESER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BÜHLMANN_CLAUDIO_CH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BÜKER_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BURK_AALEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BURLEFINGER_TEXTIL_AMB_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BÜRO_KREFELD/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BÜSCHER_GMBH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/BÜTER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/CASA_BONITA_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/CAVDAR_BAU_CONSULTING/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/CLAUß_JENS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/COLLIP_GARDINENHAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/COSSMANN&SCHLÜTER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/COUTEX/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/CRON_FRIEDRICH_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DECO_WINDOW_SCHMIDT_PL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DECOCITY_BERLIN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DECOCITY_SCHNEEMEIER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DECORATION_SCHWEITZ_FR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DECOTEAMPOSSELT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEKO_KERN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEKO_STUDIO_SCHWERIN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEKOCITY-OSTERSTR/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-BERLIN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-BONN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-CENTR-KÖLN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-DÜSSELDORF/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-KÖLN-JO/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEKOFACTORY-MÜNCHEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEMMEL_FRITZ_AUTOSATTL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DEXTERA_LT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DGD_SERVICE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DIEHL_POLSTER_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DIETRICHHARALD/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DIETZ_MALER_SCHÖNSEE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DIJKSTRA_STOFFEER_NL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DOBNER_INNENAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DÖLLNER_SCHREINEREI/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DÖRFERBLICK_WERBE_KG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DOSADOS_MEYER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DRECHSLER_INTERIOR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DREIER_RAUMAUS_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DUCHARDT_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DÜKKANCI_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DURACH_GMBH_LEUTKIRCH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DUSCHEK_MALER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DÜSENBERG_BAUELEMENTE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/DÜSSMANN_WOHNAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EBERHARDT_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EBERT_FACHMARKT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EBERT_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EBNER_HELMUT_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EBSEN_WOHNDESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EDEN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EDENHOFER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EFKEN_TRAUTE_INNENAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EGGEN_R_S_RAUM_U_IDEE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EGGER_RAUMDESIGN_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/EINRICHTUNGSSTUD_STADE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ELSNER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ENGADINER_KULM_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ENGEL_HEIMDECOR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ENGELHARDT_LANG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ERHARDT_RAUMDESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FARBEN_DREHER_RAUMK_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FARBEN-GARDINENCENTER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FEITER_FRED_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FELLNER_STILVOLL_WOHN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FELSNER_MC_RAUMDES_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FENESTRA/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FENESTRA_MÜNCHEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FINK_IM_HAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FISCHER_FR_RAUMAUS_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FISCHER_PETER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FLECK_MARKUS_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FLECK_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FLOREK_IRENE_LINK_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FÖRSTER_GARDINENSTUDIO_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FRANK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FRANK_TOVORNIK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FRANZ_JOACHIM_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FRAUENDORFER_MÖBEL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FUCHS_BIRGIT_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/FURRER_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GÄCKLE_TANJA_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GANGL_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GARDINENSTUDIORAUM_ZEIBIG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GARDINENWERKST_EHMANN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GARDINRULLEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GAUL_STEFAN_POLSTER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GEBHARDT_LEIST_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GEBHART_TOG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GEBR_SAXER_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GEESE_TISCHLEREI_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GEIGER_SCHLESINGER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GENSCH_MARGIT_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GEOS_GEILFUß/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GERBL_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GERDT_STEFAN_MALER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GERLING_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GERSTNER_ANDREA_STOFF_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GERVERS_ROBERT_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GESCHWENTNER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GEYER_AHA_WOHNDEK_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GEYER_KARL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GHW/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GIOVANNI_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GLEIßNER_GEORG_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GLOOR_WOHNART_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GLÜCK&FRANKE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GOLDBERG_THILO_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GOLSER_RAUMAUS_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GOMESIA_MÖBEL_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GONSKA POLSTEREI_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GORILLA_DEKOR/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GÖTZ_WOHNEN_LEBEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GRABOWSKI_NORM_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GRAF_RAUMAU_HERRSCHING_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GRATZ_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GRIEGER_AXEL_INTERIEUR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GRIMM_NADINE_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GRIMM_RAUMAUS_RODGAU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GRUND_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GRUSSER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GSG_FARBEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GÜMPEL_POLSTERWERKST_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GÜNTER_KRÜGER_SÖHNE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/GUTSCHE&SCHAUB/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HABERL_POLSTERWERK_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HABERSTROH_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HACKER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HAFERMAS_AXEL_MALER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HAGENLOCHER_MAGSTADT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HAGENLOCHER_SINDELFING_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HALLER_SATTELBACH_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HANDELSRING MORTSCH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HANSING_ANDREAS_RAUMAU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HANUS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HARDER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HÄRING_WERNER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HARTUNG_HOFMANN_RAUMAU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HASTEDT_HESEDORF_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HÄUSL_RAUMAUSSTAT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HÄUSLER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HAUßMANN_WOHNWERKSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HAVERKAMP_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HBW_OBJEKT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HBZ_BTZ_ASCHERSLEBEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HEEPEN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HEIDUK_ALINA_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HEIGL_GBR_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HEIMDECOR_WOLF_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HEIMLICH_RAUM_RECH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HEIMLICH_RAUMDESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HEINIG_DOLORES_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HEINLEIN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HELDT_DAVID_INNENEIN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HELLER_TUCHFÜHLUNG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HENNIG_BEATRICE_WANDBODEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HENRIETTE_CASA_HU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HERSEL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HESS SONNENSCHUTZ/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HILLERSCHEIDT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HINTELMAN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HOFER_A_TISCHLER_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HOFFRICHTER_M_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HOFSTETTER INSEKTENSCHUTZ/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HÖHENBERGER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HOHENLEITNER_C_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HOHN_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HOPFFER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HOTZEL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HPM/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HSK_RAAMDECO_NL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HUBER_WOLFGANG_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HUETER_WOHNIDEEN_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HÜNEWINCKELL_MICHAEL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HÜTTER_JÜRGEN_MALER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/HÜTTER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ILG_RAUMAUSSTAT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/IMHOF_PARKETT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/INDES_FUGGERHAUS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/INFORM_EINRICHTUNGEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/INSECTOS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/INSIDE_RAUMAUS KILB_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JALOUSIEN.COM_DE_MARE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JALOUSIEN.COM_MARE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JALOUSIEN_DRESDEN_OHG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JALOUSIENLADEN-SCHON/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JALOUSIENTEAM/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JALOUSIENTEAMSCHÖN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JANSEN_GARDINE_BRÜHL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JANSEN_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-AACHEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-ALBOIN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-BAHNHOF/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-CLAYALLEE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-FORCKENBECK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-FRIEDRICH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-KANT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-KARL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-KLOSTER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-LIETZENBURGER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-MEIEROTTO/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-PRENZLAUERBERG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BERLIN-SCHARNWEBER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BIELEFELD/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BOCHUM/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-BONN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-DORTMUND/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-DUISBURG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-DÜSSELDORF/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-DÜSSELDORF_RECHNUNG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-ESSEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-ESSEN-HUYSSEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-FRANKFURT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-FRANKFURT_RECH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-GO_PFEIFERS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-GO_PFEIFERS_RECH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-GO_SCHRÖDER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-HAMBURG-DEHNHAIDE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-HAMBURG-FLOTTBEK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-HAMBURG-SIEMERSPLATZ/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-HANNOVER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-INTERNET/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-KÖLN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-KÖLN-BONNER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-LEIPZIG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-LÜBECK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-MÖNCHENGLADBACH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-MÜNCHEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-STUTTGART/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-WIESBADEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JC-WUPPERTAL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JD_INTERIOR/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/JM_WOHNDESIGN_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KAHLERT_WALTER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KAINBACHER_HERBERT_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KAIROS_KLAUS_FÖRTSCH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KALSKI_HEIKE_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KAPSREITER_WOHNEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KARLE_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KASPER_SONNENSCHUTZ_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KATSCH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KATZENBACH_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KAUFHAUS_BIRKENMEIER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KAUFMANN_MEL_RAUMAU_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KAUFMANN_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KERN_ARMIN_RAUMAUS_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KERSCHBAUM_BETTEN_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KERSCHL_ROBERT_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KESSEL RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KLAGE_WABRO_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KLAUS_HEINZ_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KLEIDER_RAUMGESTALTUNG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KLEIER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KLEIN_MEISTERBETRIEB_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KLINKE_BAUELEMENTE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KLUGBAUER_POLSTER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KNIESS_BETTEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KNOLL_STEFAN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KNUTZEN_WOHNEN_ONLINE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KOBACHE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KOCH_U_MATTHES_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KOHN_RAUMGESTALT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KÖLL_RAUMAUS_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KOLLECK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KOMOOD_BECKER_PFÜTZ_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KÖNIG_KÖNIG_GARDINEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KONNERTZ_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KÖPKE_TEPPICHLAND_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KOSICK_MALERBETRIEB_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KRAMER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KRAUS_MICHAEL_ELZTAL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KREATIVREICH_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KREUTZ_FARBEN_HAMMEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KRÜPPEL_RAUMTEX_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KRYSIAK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KUGLER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/KUPPINGER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LANG_UWE_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LANTSCHNER_TAPEZI_IT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LAROSCHE_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LARS_LEPPIN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LAZARUS_RIPPL_CLAUDIA_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LE_COQ_HAHN_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LENZMEIER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LETTL_RAUMDEKOR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LEVERENZ_RAUMDESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LEYS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LF_GARDINENCENTER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LICHTBLAU_ANDREA_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LICHTBLICK_SONNENSCHUTZ/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LIEBLER_TEXTIL_GMBH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LIESKE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LIMBERGER_MALERBETRIEB_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LINDNER_DEKOATELIER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LINOTEX_DESIGN_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LINS_GEROLD_RAUM_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LITEX/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LOCH_VOLKER_RAUMAUSST_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LÖVENICH_JÄGER_RAUMAUS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LÜBBENJOSEF/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LÜCHTENBORG_WOHNSTIL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LUTZ_GISELA_KREA_GARDI_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/LUTZ_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MAGDALENC_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MAGER_WOHNBERATUNG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MAHNKE_RENO_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MAIR_M_RAUMAUS_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MALGIN_RUSLAN_RAUMDESIGN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MALL_WOHNKULTUR_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MALU_BRODERSEN_RAUMGE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MALZER_POLSTEREI_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MALZER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MALZKORN_INTERIORS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MARON_CH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MARTINEK_RAIN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MATHEIS_NIKO_RAUMGE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MATHES_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MATTHES/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MAUSKE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MB_FENSTERTECHNIK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MEIER_GEORG_MÖBEL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MEIERHOFER_RAUMAUS_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MEISEL_ROLLLADEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MENKEN_DIETER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MENSEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MERGET_NICOLE_RAUMAUS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MESCHEDE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/METSCHULAT_RAUMGESTALT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MEYER_HEINZ_JOSEF_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MEYER_HOLGER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MEYER_PETER_BLINDS_AU_RST/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MEYER_POLSTEREI_RAUMAU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MG_SYSTEMS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MIC/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/M-LINE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MÖDINGER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MOLL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MÖLLER_ANDREAS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MÖLLER_HOLZBAU/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MÖLTER_GEORG_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MOTSCH_KARLHEINZ_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MUCKE_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MÜLLER_HEIMDECOR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MÜLLER_R.O._RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MÜLLER_RAUMAUS_EBERN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MÜLLNER_FRANZ_RAUM_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MÜNSTER_NICOLE_TAPETEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/MW_TISCHLEREI/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NAMENDORF_A_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NANNI_RAUME/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NEFZGER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NEIDHARDT_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NEUENFELD/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NEUHAUSEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NEURAUM_EINRICHTUNG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NIEMANN_INTERIOR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NITZ+NITZ/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NOEBEL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NOE-GREMMINGER_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/NORDIC_BLINDS_AU_RST/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/OERTHER_MICHA_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/OLAFS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/OßWALD_SABINE_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/OTTEN_HAREN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ÖTTL_REGINA_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PAEDE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PAESLER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PARKETT_WELT_5/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PAULY_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PAWLAK_PLANUNG_DESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PETERS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PFALLER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PFEIFFER_R_RAUMDESIGN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PHILLIPPS_SARL_LU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PILS_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PLISSEE_DE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PLISSEEFEE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PLISSEEHELD/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PRANGENBERG_MALER_RAUM/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PRECHTL_WÖSSNER_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PREIßEL_GERRIT_RAUMAUS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PRELL_PAUL_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PRESTELE_FENSTERBAU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PROHNER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PRONTO/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PRORAUM_REICHL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PUNSCHER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/PUNTURA_RAUMG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/QUARZ_BODEN_GMBH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RAAB_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RAMM_RAUMGESTALT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RASE_KALLENBACH_HELMUT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RATIONELLSERVICE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RAUMAUSSTATTUNG_SPARLA/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RAUMDECOR_SCHNELL_GMBH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RAUMKLEIDER_FRÜHSTÜCK_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RAUMTEXTILIENSHOP GEIER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RAUMTEXTILIENSHOP K R/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RAUMTEXTILIENSHOP KAISER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REEH_VOLKER_RAUMGESTALT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REHM_C_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REHN_DIETER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REICH_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REICHART_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REICHERT_BERND_POLSTER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REIL_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REMASUN_TRADING/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RENK_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REUSCH_M_TÜB_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/REUTHER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RIBBE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RICHTER_THOMAS_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RIEDINGER_DEKORATION_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RIEPER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RINCK_STEPHAN_RAUMAUS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RINNERT_STEPH_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RITTER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RM_BODENBELÄGE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROHDE_OLAF_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROHN_H_SPAUTZ_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RÖHRIG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROLLADEN1_GMBH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROLLADENKEIMBURG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROLLFIX/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROLLOEXPRESS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROMMEL DESIGN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROSCHER_UWE_OBJ_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROSER_TOBIAS_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROVERTI/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ROYALGLAS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RUF_JALOUSIEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RUH_HARALD_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RUMPLER_GARDINEN_MALER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/RUOSS_ROBERT_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/S&V/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SAM_DESIGN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SAMLAND_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SANTANGELO_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SATTELBERG_SENGE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SATTELBERGER_POLSTEREI_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SAUER_IDEEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SAZOU_FIDLER_JUTTA_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SBZB_PETERS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHADEGG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHÄFER_DIRK_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHÄR_WOHNKULTUR_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHARBATKE_SILKE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHAUB_EDELMANN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHAUPP_FELIX_AUTOSATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHEER_RAUMGESTALTUNG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHENK_ANTON_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHENK_EXQUISIT_RAUMAU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHENK_RAUM_AUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHERER_GÜNCLA_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHERF_HOPF_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHEWE_TORSTEN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHIFTER_WOHNGESTALT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHILCHER_RAUMAUS_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHILLER_ASCHERL_ALEX_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHINDLER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHLECHTRIEM/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHLUTT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMEIDE_MARGIT_INTERIORS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMID_HEINR_PROJEKT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMID_HEINR_ZENTR_MA_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMID_LANDHAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMID_SUS_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMIDT_GARDINEN_JOACH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMIDT_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMIED_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMITT_LUISA_TRAUMHAF_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMITT_RAUM_FARBE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMITTINGER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMITZ_ANKE_RAUMDES_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMITZLINN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHMÖGER_SCHREINEREI _SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHNEIDER_BLICK_UG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHNEIDER_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHNEIDER_RAUMZEIT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHOBER_ROSA_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHÖLLHORN_CHRISTINA_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHOLZ_RAUMAUSSTATTER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHÖPF_INDESIGN_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHRAMM_ALEX_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHRETTENBRUNNER_RAUM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHREYER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHRIINER_KILCHENMA_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHRÖDER VANESSA/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHRÖDER_SCHALLSCHUTZ_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHRÖTER_RAUMAUSST_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHÜLER-SILKO/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHULZ-GOJOWY/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHUMACHER_MARTIN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHUMANN_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHUMANN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHUPFINGER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHÜR_GARDINEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHURAD_KARL-HEINZ_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHURIG/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHÜTTERLE_BODEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHWAB_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHWAIGHOFER_KITZBÜ_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHWEIGER_CHRIS_RAUMAU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHWEIZER_JÜRGEN POLS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCHWENK_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SCI_MATCH_NIMMLER_FR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SEIDEL_JÖRG_RAUMPROFIL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SELL_ANDREA_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SICHTSCHUTZ_BS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SILLER_MARK_RAUMAUS_IT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SOLARMATIC/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SONJAS_NAEHWELT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SONNENSCHUTZ_BERNAU/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SONNENSCHUTZ_DEKO_ELSNER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SORGENFREI_HERBERT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SPALLEK_EINMÖBLER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SPECKHARDT_HEINZ_RAUMG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STAEHLIN_EINRICHTUNG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STEIDEL_DIETER_RAUMDEK_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STELLMACHER_GA_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STILVAL/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STIPP-LIB/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STM/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STOCK/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STÖCKL_MANFRED_SCHREIN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STÖCKLE_ERNST_EINR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STOECKLE_GEORG_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STOFF_ART_POMPE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STOFF_WOHNKONTOR_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STOFFZENTR_AARAU_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STOHLER_ROLAND_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STOLL_RAUMAUSSTATTUNG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STÖPPLER_RAUMGESTALTER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STÖRMER_U_AMANN_RAUMGE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STRUBEGGER_POLSTER_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STUDIO1_SCHLAFWERKST_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STÜHLER_GARDINENSTUDIO/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/STYLTEX_CZ/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SUHR_CORNEL_DIE_PERLE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SUNBIENTE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SUNDRAPE_GMBH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SUN-LUX_SOLSKYDD_SE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SUNNYSTORE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SUNTEC-COESFELD/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/SWEEKHORST_W_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TABBERT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TAENZER_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TAKERER_JOHN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TATEX/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEGGE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TENTE_BERLIN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TEPPICHLANDHAGEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TERES_ELKE_SCHNEIDER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TERSTEEGEN_EILRICH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TESCHNER_SUS_NÄHDIELE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/THALHUBER_INNENDEKO_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/THAREN_VOLKER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/THOMSEN_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TIEFEL_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TIESING_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TÖPFER_INES_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TREX_TRANSPORT_EXPRESS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TROMMERSHÄUSER_U_FUS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/TRUNK_HEDWIG_KANAPEE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ULBER_GMBH_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/URSULA_BRANDSTÄTER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VAJE_WOHNEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VAN_DE_MÖTTER_ARMIN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VENDECO_AT/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VENDECO_DE/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VIKTOR_EINRICHTUNGEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VITZETHUM_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VOGELSBERGER_BODEN_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VON_FEILITZSCH_MARION_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VONNAHME_KANAPEE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VÖROKA_GMBH/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/VOßLER_THEO_POLSTEREI_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WAGNER_MÖBELMINDELHEIM_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WAGNER_TAPETEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WAHL_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WAHLER_RAUMWAHL_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WÄLBERS_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WALK_RAUMAUSSTATT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WAND_RAUM_HEESEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WANGER_PASTERNACK_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WASTIAN_RAUM_WALSER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WBRE_WATERBOUND_BERLIN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WEBER_INNENAUSSTAT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WEBER_LOTHAR_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WEBER_RALF_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WEBER-WERTH_STEFAN_RAU_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WEIL_TRÄUME_STEINER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WEIßENFELS_WALTER_GMBH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WELCOME_INTERIORS/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WERL_ALEXANDER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WERLEN_BABY_ROSE_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WESSER/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WESSLING/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WESTERMANN_WOHNCHIC_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WIDMER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WIEDENHOEFT_WOHNSTUDIO_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WIESER_MICHAEL_AT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WILLY_INNENEINR_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WINGEFELD_DAG_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WINKLER_THOMAS_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WINTER_MALER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WITTENBERG_BOHLMANN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WITTMANN_POLSTERLADEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WITTMANN_RAUMGESTALT_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WITZSCHEL_TEPPICH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WKS_WOHNRAUM_ES/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WOHNART/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WOHNTEXTIL_HAF_CENTER_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WOHNTEXTILIEN/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WOITASKE_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WOLFF_GERH_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WÖRZ_WOHNIDEEN_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WSA_SMART_HOME_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/WUTTKE_WOHNBERATUNG_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ZIHLMANN_INNENAUS_CH_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ZIMMER_RAUMIDEE_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ZÖLLER_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt
+LUXANGMBH/ZÖLLIN_RAUMAUS_SV/KOLOR_SYSTE=paramdict-KOLOR_SYSTE-LUXAN2024.txt

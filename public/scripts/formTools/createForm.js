@@ -195,7 +195,8 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
         input.type = "file";
         input.name = param.NAME;  // ✅ Ustawienie atrybutu name
-        console.log(input, 'input załącznik')
+        input.id = param.NAME;    // ✅ Ustawienie atrybutu id
+        console.log(`✅ Tworzę file input: name="${param.NAME}", id="${param.NAME}"`, input)
         input.addEventListener('change', function () {
             changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, 10)
         });

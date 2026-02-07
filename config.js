@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   rootDir: process.env.ROOT_DIR || '/mnt/eform',
-  dataDir: process.env.DATA_DIR || '/mnt/eform/datadev',
+  dataDir: process.env.DATA_DIR || '/mnt/eform/datatest',
   changesDir: process.env.CHANGES_DIR || '/mnt/eform/data/data/changes',
   localesDir: process.env.LOCALES_DIR || '/mnt/eform/languages' || path.join(__dirname, 'locales'),
   photoPath: path.join(process.env.ROOT_DIR, 'data') || '/mnt/eform/data/',

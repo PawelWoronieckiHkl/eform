@@ -71,10 +71,8 @@ router.post("/auth/login", async (req, res, next) => {
         const { pin, password } = req.body;
         const isValid = await authService.checkPassword(pin, password);
         const isEmployeeLogin = await authService.checkEmployeePassword(pin, password);
-        console.log(isEmployeeLogin, 'is employee login result')
         if (isValid) {
             const isFirst = await authService.checkFirstLogon(pin)
-            console.log(isFirst, 'first logon check result')
             let owner = await db.getOwner(pin);
 
             if (!owner) {
@@ -82,16 +80,10 @@ router.post("/auth/login", async (req, res, next) => {
             }
 
             const userId = await db.getUserId(pin)
-            req.session.user = { userId, pin, password, showPrices: false, organization: (owner.orgIdent).toUpperCase() };
-
+            req.session.user = { userId, pin, password, showPrices: false, organization: (owner.orgIdent).toUpperCase(), orgId: owner.orgId, ident: owner.userIdent };
             req.session.user.isOwner = await isOwner(owner);
-            console.log(req.session.user.isOwner, 'is owner after login check')
             req.session.user.isAdmin = pin == "admin";
 
-            req.session.user.organization = owner.orgId;
-            console.log(req.session.user, 'session user after login')
-
-            console.log(req.session.user.isOwner, 'is owner???')
 
             // Zapisz historię logowania
             await logService.logUserLogin(pin, await db.getUserIdent(pin));

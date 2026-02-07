@@ -11,7 +11,9 @@ const itemBuilder = require('../services/itemBuilder')
 const versionManager = require("../services/versionManager")
 const { photoPath, dataDir } = require('../config');
 const { group } = require('console');
-
+const { fileExists } = require('../utils/fileManager');
+const { ordersManager } = require('../utils/saveOrdersOutput.js');
+const { file } = require('pdfkit');
 // Konfiguracja multer do przechowywania plików tymczasowo
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -56,28 +58,36 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
 
     // Odczytaj pliki z req.files
     const files = req.files || [];
+    console.log(formData, 'form data received in /save endpoint');
 
+    if (files.length > 0) {
+    const saver = new ordersManager();
+    const orderNo = db.getOrderNo(formData.order);
+    saver.setOutputPath(req, formData.order, orderNo);
+    await saver.saveAttachments(files);
     console.log('📁 Otrzymane pliki:', files.map(f => ({
       fieldname: f.fieldname,
       originalname: f.originalname,
-      size: f.size
+      size: f.size,
+      mimetype: f.mimetype
     })));
+    console.log('========================');
 
     // Przetwórz pliki (np. zapisz na dysk, wysyłaj do serwera itp.)
     const processedFiles = files.map(file => ({
-      paramName: file.fieldname.replace('file_', ''),
+      paramName: file.fieldname,
       filename: file.originalname,
       buffer: file.buffer,
       mimetype: file.mimetype,
       size: file.size
     }));
-
+  }
     const result = await db.insertNewForm(formData);
 
     res.json({
       status: "success",
       message: "Dane zapisane poprawnie",
-      filesProcessed: processedFiles.length
+      filesProcessed: files.length
     });
   } catch (error) {
     console.error('Błąd przy zapisywaniu:', error);

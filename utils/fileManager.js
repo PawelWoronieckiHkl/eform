@@ -29,9 +29,20 @@ async function readFileBinary(filePath) {
     }
 }
 
+async function saveFile(filePath, data) {
+    try {
+        await fs.promises.writeFile(filePath, data);
+        console.log(`File saved successfully at ${filePath}`);
+    } catch (e) {
+        console.error(`Error saving file at ${filePath}:`, e);
+        throw e;
+    }
+}
+
 module.exports = {
     fileExists,
     readFileContent,
-    readFileBinary
+    readFileBinary,
+    saveFile
 };
 

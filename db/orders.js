@@ -149,7 +149,14 @@ async function getSendAddressId(orderId) {
         return false;
     };
 }
-
+async function getOrderNo(orderId) {
+    const query = 'SELECT order_idx from \`order\` where id like ?';
+    const orderNo = await selectQuery(query, orderId);
+    if (!orderNo[0]?.order_idx) {
+        return false;
+    };
+    return orderNo[0]?.order_idx;
+}
 async function getOrderAddressId(orderId) {
     const sendAddQuery = 'SELECT order_address_id from \`order\` where id like ?';
     const sendAddId = await selectQuery(sendAddQuery, orderId);

@@ -292,7 +292,9 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
         const totalPrice = await db.getTotal(orderDetails.id)
-
+        const {ordersManager} = require('../utils/saveOrdersOutput.js');
+            const orderManager = new ordersManager();
+            orderManager.setOutputPath(req);
         // console.log(total, ' total order')
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render('order_prices.njk', {

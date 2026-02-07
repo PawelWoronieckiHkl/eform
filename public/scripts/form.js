@@ -79,7 +79,7 @@ export async function generateForm(
   if (!data) return;
 
   allOptionsByParameter = await loader.selectCollections(allOptionsByParameter)
-
+  
 
   loader.createParameterFilters(allOptionsByParameter);
   const filters = loader.getAllFilters();
@@ -182,6 +182,9 @@ export async function generateForm(
     input.name = param.NAME;
     input.id = param.NAME;
 
+    if (param.TYPE === 'file') {
+      console.log(`✅ form.js: Ustawiłem name dla file inputu: name="${param.NAME}"`);
+    }
 
     inputs[param.NAME] = input;
     if (!editFlag) {
