@@ -79,7 +79,7 @@ export async function generateForm(
   if (!data) return;
 
   allOptionsByParameter = await loader.selectCollections(allOptionsByParameter)
-  
+
 
   loader.createParameterFilters(allOptionsByParameter);
   const filters = loader.getAllFilters();
@@ -296,6 +296,7 @@ export async function generateForm(
 
       inputs[key].addEventListener("input", function () {
         if (this.tagName === "INPUT") {
+          console.log(this.tagName, 'input event, value:', this.value, 'name:', this.name);
           values[this.name] = roundInputValue(this.value);
 
           // Anuluj poprzedni timer
@@ -317,16 +318,23 @@ export async function generateForm(
     } else {
       inputs[key].addEventListener('change', function () {
 
-        values[this.name] = this.value;
+        // Dla file input, wartość jest ustawiana w changeAttachmentAppearance
+        let valueToUse = this.value;
+        if (this.type === 'file') {
+          // Dla file input użyj wartości z window.formValues (już ustawionej przez changeAttachmentAppearance)
+          valueToUse = window.formValues ? window.formValues[this.name] : '';
+        } else {
+          values[this.name] = this.value;
+        }
 
         window.lastChangedField = {
           name: this.name,
-          value: this.value,
+          value: valueToUse,
           tagName: this.tagName,
           timestamp: Date.now()
         };
         updateProcedure({
-          ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters, attrValues: semafor.attrValues,
+          ...COMMON_PARAMS, options, name: this.name, value: valueToUse, tagName: this.tagName, filters, attrValues: semafor.attrValues,
           flags: { buildValues: true, updateInputs: true, updateStates: true }
         });
       });
@@ -362,7 +370,49 @@ export async function generateForm(
   window.formDisplayValues = displayValues;
   window.allOptionsByParameter = allOptionsByParameter;
 
+  // Listener dla przycisków usuwania załączników
+  setupFileRemoveListeners();
+
   return [inputs, values, displayValues, shortJson];
+}
+
+// Funkcja czyszcząca wartości dla file input (używana przy usuwaniu załącznika)
+export function clearFileInputValues(paramName) {
+  if (!window.formValues || !window.formDisplayValues || !window.formInputs) {
+    console.warn('FormValues not initialized');
+    return;
+  }
+
+  const values = window.formValues;
+  const displayValues = window.formDisplayValues;
+  const inputs = window.formInputs;
+
+  // Wyczyść values
+  values[paramName] = '';
+
+  // Wyczyść displayValues
+  if (displayValues.has(paramName)) {
+    const existing = displayValues.get(paramName);
+    displayValues.set(paramName, { 
+      param_description: existing.param_description,
+      option_value: '',
+      option_description: '',
+      locked: false
+    });
+  }
+
+  console.log(`✅ Wyczyszczono values i displayValues dla: ${paramName}`);
+}
+
+// Event delegation dla przycisków usuwania załączników
+function setupFileRemoveListeners() {
+  document.addEventListener('click', function(e) {
+    const removeBtn = e.target.closest('.file-remove-btn');
+    if (removeBtn && removeBtn.dataset.paramName) {
+      const paramName = removeBtn.dataset.paramName;
+      clearFileInputValues(paramName);
+    }
+  });
 }
 
 export async function updateProcedure({

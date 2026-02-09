@@ -526,6 +526,7 @@ module.exports = {
     updateOrderPriceOnSend,
     getTotal,
     saveDiscount,
-    getDiscount
+    getDiscount,
+    getOrderNo
 }
 

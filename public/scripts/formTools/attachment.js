@@ -1,6 +1,5 @@
 import { showToast } from "../components/toast.js";
 
-
 export function checkAttachmentFileSize(file, maxSizeMB) {
 
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
@@ -14,10 +13,13 @@ export function checkAttachmentFileSize(file, maxSizeMB) {
 export function attachmentBehaviorOnClick(input, attachmentImage, fileIcon, removeBtn, param, e) {
     e.preventDefault();
     input.value = '';
+    input.dataset.filename = '';
     attachmentImage.src = '/img/attachment.png';
     fileIcon.style.color = '';
     fileIcon.dataset.tooltip = `${param.DESCRIPTION}`;
     removeBtn.style.display = 'none';
+    
+    // clearFileInputValues będzie wywołane przez listener w form.js
 }
 
 export function changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, maxSizeMB = 10) {
@@ -26,6 +28,7 @@ export function changeAttachmentAppearance(input, attachmentImage, fileIcon, rem
         const file = files[0];
         if (!checkAttachmentFileSize(file, maxSizeMB)) {
             input.value = '';
+            input.dataset.filename = '';
             attachmentImage.src = '/img/attachment.png';
             fileIcon.dataset.tooltip = `${param.DESCRIPTION}`;
             removeBtn.style.display = 'none';
@@ -33,12 +36,26 @@ export function changeAttachmentAppearance(input, attachmentImage, fileIcon, rem
             return;
         }
 
+        // Przechowuj tylko nazwę pliku (bez pełnej ścieżki c:\fakepath\)
+        input.dataset.filename = file.name;
         attachmentImage.src = '/img/attachment-green.png';
         fileIcon.dataset.tooltip = `${file.name}`;
         removeBtn.style.display = 'flex';
+        
+        // Zaktualizuj values i displayValues z samą nazwą pliku
+        if (window.values && input.name) {
+            window.values[input.name] = file.name;
+        }
+        if (window.displayValues && input.name) {
+            const currentValue = window.displayValues.get(input.name) || {};
+            currentValue.option_value = file.name;
+            currentValue.option_description = '';
+            window.displayValues.set(input.name, currentValue);
+        }
     } else {
 
         attachmentImage.src = '/img/attachment.png';
+        input.dataset.filename = '';
         fileIcon.dataset.tooltip = `${param.DESCRIPTION}`;
         removeBtn.style.display = 'none';
     }

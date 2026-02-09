@@ -60,30 +60,18 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
     const files = req.files || [];
     console.log(formData, 'form data received in /save endpoint');
 
-    if (files.length > 0) {
-    const saver = new ordersManager();
-    const orderNo = db.getOrderNo(formData.order);
-    saver.setOutputPath(req, formData.order, orderNo);
-    await saver.saveAttachments(files);
-    console.log('📁 Otrzymane pliki:', files.map(f => ({
-      fieldname: f.fieldname,
-      originalname: f.originalname,
-      size: f.size,
-      mimetype: f.mimetype
-    })));
-    console.log('========================');
 
-    // Przetwórz pliki (np. zapisz na dysk, wysyłaj do serwera itp.)
-    const processedFiles = files.map(file => ({
-      paramName: file.fieldname,
-      filename: file.originalname,
-      buffer: file.buffer,
-      mimetype: file.mimetype,
-      size: file.size
-    }));
-  }
     const result = await db.insertNewForm(formData);
 
+    if (files.length > 0) {
+    const orderpos = await db.getOrderpos(result[0].insertId);
+    console.log('ORDERPOS W SAVE:', orderpos);
+    const saver = new ordersManager();
+    const orderNo = await db.getOrderNo(formData.order);
+    saver.setOutputPath(req, formData.order, orderNo, orderpos);
+    await saver.saveAttachments(files);
+
+  }
     res.json({
       status: "success",
       message: "Dane zapisane poprawnie",
@@ -139,6 +127,8 @@ router.delete('/:positionId/delete', requireLogin, async (req, res) => {
     })
   }
 })
+
+
 
 router.get('/photo', requireLogin, async (req, res) => {
   try {

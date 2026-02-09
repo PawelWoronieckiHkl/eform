@@ -3,10 +3,10 @@ const { outputData, shortJsonDir } = require('../config')
 const fs = require('fs');
 const { slopePhotoPath } = require('../config');
 const { KeyObject } = require('crypto');
-
+const {ordersManager} = require('../utils/saveOrdersOutput');   
 class OrderSender {
 
-    constructor(order, orderItems) {
+    constructor(req,order, orderItems) {
         this.slopePaths = [];
         this.shortItems = [];
         this.data = {
@@ -69,8 +69,10 @@ class OrderSender {
             })
             idx++;
         }
-        this.output_path = outputData
-        this.fileName = `${this.data.organizationIdent}_${this.data.orderid}_${this.data.userIdent}_${this.data.orderno}.json`;
+        const ordersManagerInstance = new ordersManager();
+        ordersManagerInstance.setOutputPath(req, this.data.orderid, this.data.orderno);
+
+        ({fileName: this.fileName, fullPath: this.fullPath} = ordersManagerInstance.setJsonFileName());
     }
 
     async init() {
@@ -91,7 +93,7 @@ class OrderSender {
             console.error(`Failed to save short JSON file: ${err.message}`);
         }
         if (!process.env?.PRODUCTION) {
-            const filePath = path.join(this.output_path, this.fileName);
+            const filePath = this.fullPath;
 
             try {
                 await fs.promises.writeFile(filePath, JSON.stringify(this.data, null, 2), 'utf-8');
@@ -112,7 +114,7 @@ class OrderSender {
                 secure: false,
                 remotePath: `/${this.fileName}`
             };
-            const filePath = path.join(this.output_path, this.fileName);
+            const filePath = this.fullPath;
 
             try {
                 await fs.promises.writeFile(filePath, JSON.stringify(this.data, null, 2), 'utf-8');

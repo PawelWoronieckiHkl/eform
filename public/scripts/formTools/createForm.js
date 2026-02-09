@@ -184,19 +184,21 @@ export function createInputField(param, options, groupNumber, filters, allOption
         const removeBtn = createElement('button', {
             type: 'button',
             class: ['file-remove-btn'],
+            id: `${param.NAME}-remove-btn`,
             text: '✕',
             title: 'Usuń załącznik'
         }, attachmentItemWrapper);
-
+        removeBtn.dataset.paramName = param.NAME;
         removeBtn.style.display = 'none';
         removeBtn.addEventListener('click', (e) => {
             attachmentBehaviorOnClick(input, attachmentImage, fileIcon, removeBtn, param, e);
         });
 
         input.type = "file";
-        input.name = param.NAME;  // ✅ Ustawienie atrybutu name
-        input.id = param.NAME;    // ✅ Ustawienie atrybutu id
-        console.log(`✅ Tworzę file input: name="${param.NAME}", id="${param.NAME}"`, input)
+        input.name = param.NAME;
+        input.id = param.NAME;
+        console.log(`✅ Tworzę file input: name="${param.NAME}", id="${param.NAME}"`, input);
+        
         input.addEventListener('change', function () {
             changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, 10)
         });

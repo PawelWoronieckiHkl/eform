@@ -1,10 +1,14 @@
 const e = require('express');
-const { selectQuery, insertQuery, updateQuery, deleteQuery, connetToDb } = require('./core')
+const { selectQuery, insertQuery, updateQuery, deleteQuery, connetToDb } = require('./core');
+const { get } = require('lodash');
 const connection = connetToDb()
 
 async function insertNewForm(formData) {
-    const insertFormQuery = 'INSERT INTO order_item(order_id, name, commision, json_parameters, json_parameters_desc, amount, list_price, discount_percentage, discount, unit_price, total_price,comment,ver,asortment_group_number,lang,department,group_name,parameters_short) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)'
-    console.log('siema')
+    const orderpos = await getPosCounter(formData.order) + 1;
+    formData.orderpos = orderpos;
+    console.log(orderpos, formData.orderpos, "ORDER POS IN INSERT NEW FORM @@@@@@@@@@@@")
+    const insertFormQuery = 'INSERT INTO order_item(order_id, name, commision, json_parameters, json_parameters_desc, amount, list_price, discount_percentage, discount, unit_price, total_price,comment,ver,asortment_group_number,lang,department,group_name,parameters_short,orderpos) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+
     const fields = [
         formData.order,
         formData.name,
@@ -23,13 +27,32 @@ async function insertNewForm(formData) {
         formData.lang,
         formData.department,
         formData.group,
-        JSON.stringify(formData.parameters_short)
+        JSON.stringify(formData.parameters_short),
+        formData.orderpos
     ];
 
     const response = await insertQuery(insertFormQuery, fields);
 
     return response;
 
+}
+
+async function getPosCounter(orderId) {
+    const query = 'SELECT COUNT(*) as count FROM order_item WHERE order_id = ?'
+    const response = await selectQuery(query, orderId);
+    return response[0].count;
+}
+
+async function updateOrderpos(orderId, orderPos) {
+    const query = 'UPDATE order_item SET orderpos = ? WHERE order_id = ?';
+    const response = await updateQuery(query, [orderPos, orderId]);
+    return response;
+}
+
+async function getOrderpos(posId) {
+    const query = 'SELECT orderpos FROM order_item WHERE id = ?'
+    const response = await selectQuery(query, posId);
+    return response[0].orderpos;
 }
 
 async function updateOrderPrice(orderId, newPrice) {
@@ -47,7 +70,7 @@ async function updateOrderPrice(orderId, newPrice) {
 
     for (let price of Object.entries(currentPrices)) {
         price = price[1];
-        console.log(price, price.unit_price,price.total_price, "PRICE ITEM @@@@@@@@@@@@")
+        console.log(price, price.unit_price, price.total_price, "PRICE ITEM @@@@@@@@@@@@")
         total += parseFloat(price.unit_price);
         total_hidden += parseFloat(price?.total_price ?? 0);
     }
@@ -72,7 +95,7 @@ async function getLastChoice(userId) {
     return result[0];
 }
 
-async function updatePosition(positionData,total) {
+async function updatePosition(positionData, total) {
     const query = `
     UPDATE order_item
     SET 
@@ -378,5 +401,8 @@ module.exports = {
     removeFavorite,
     movePositionUp,
     movePositionDown,
-    updateOrderPrice
+    updateOrderPrice,
+    updateOrderpos,
+    getPosCounter,
+    getOrderpos
 }

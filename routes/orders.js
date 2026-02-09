@@ -541,7 +541,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
         const { orderDetails, orderItems } = await db.getOrderDataToSend(req.params.orderId);
 
         if (orderItems || orderItems.length > 0) {
-            const sender = new OrderSender.OrderSender(orderDetails, orderItems);
+            const sender = new OrderSender.OrderSender(req, orderDetails, orderItems);
             const sendData = await sender.init()
 
             const currentUser = ownerService.getCurrentUser(req);
@@ -551,8 +551,6 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             const logoPath = path.join(__dirname, '../img/', photoFile)
             const heads = Object.keys(orderItems[0].json_parameters);
             let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
-            // console.log('START @@@@@@@@@@@@', cleanOrderItems, 'CLEAN ORDER ITEMS IN SEND ORDER');
-            // { orderDetails: orderDetails[0], orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems }
             const attachments = await getExtraAttachments(sender.slopePaths);
             const lang = req.getLocale();
             const mail = await db.getUserMail(currentUser?.pin)
