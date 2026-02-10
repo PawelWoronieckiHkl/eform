@@ -10,16 +10,17 @@ export function checkAttachmentFileSize(file, maxSizeMB) {
 
 }
 
-export function attachmentBehaviorOnClick(input, attachmentImage, fileIcon, removeBtn, param, e) {
-    e.preventDefault();
+// Funkcja do resetowania tylko UI załącznika (bez dotykania values i displayValues)
+export function resetAttachmentUI(input, attachmentImage, fileIcon, removeBtn, param) {
     input.value = '';
-    input.dataset.filename = '';
     attachmentImage.src = '/img/attachment.png';
-    fileIcon.style.color = '';
     fileIcon.dataset.tooltip = `${param.DESCRIPTION}`;
     removeBtn.style.display = 'none';
-    
-    // clearFileInputValues będzie wywołane przez listener w form.js
+}
+
+export function attachmentBehaviorOnClick(input, attachmentImage, fileIcon, removeBtn, param, e) {
+    e.preventDefault();
+    resetAttachmentUI(input, attachmentImage, fileIcon, removeBtn, param);
 }
 
 export function changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, maxSizeMB = 10) {
@@ -32,7 +33,7 @@ export function changeAttachmentAppearance(input, attachmentImage, fileIcon, rem
             attachmentImage.src = '/img/attachment.png';
             fileIcon.dataset.tooltip = `${param.DESCRIPTION}`;
             removeBtn.style.display = 'none';
-            showToast('error',`Maksymalny rozmiar pliku to ${maxSizeMB} MB.`, 3, 'top-center');
+            showToast('error', `Maksymalny rozmiar pliku to ${maxSizeMB} MB.`, 3, 'top-center');
             return;
         }
 
@@ -41,7 +42,7 @@ export function changeAttachmentAppearance(input, attachmentImage, fileIcon, rem
         attachmentImage.src = '/img/attachment-green.png';
         fileIcon.dataset.tooltip = `${file.name}`;
         removeBtn.style.display = 'flex';
-        
+
         // Zaktualizuj values i displayValues z samą nazwą pliku
         if (window.values && input.name) {
             window.values[input.name] = file.name;

@@ -33,9 +33,10 @@ async function saveFile(filePath, data) {
     try {
         await fs.promises.writeFile(filePath, data);
         console.log(`File saved successfully at ${filePath}`);
+        return true;
     } catch (e) {
         console.error(`Error saving file at ${filePath}:`, e);
-        throw e;
+        return false;
     }
 }
 

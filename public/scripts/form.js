@@ -20,6 +20,7 @@ import {
   getProcedures
 } from "./formTools/formTools.js";
 import { validateAllFieldsOnSubmit, clearDisabledValues } from "./formTools/validateUtils.js";
+import { resetSelectValues } from "./formTools/updateFieldsAndValues.js";
 import { SourceWindow } from './formTools/slope.js';
 import { showToast } from "./components/toast.js";
 import { createElement, isEnabled } from "./components/htmlManipulator.js";
@@ -318,23 +319,16 @@ export async function generateForm(
     } else {
       inputs[key].addEventListener('change', function () {
 
-        // Dla file input, wartość jest ustawiana w changeAttachmentAppearance
-        let valueToUse = this.value;
-        if (this.type === 'file') {
-          // Dla file input użyj wartości z window.formValues (już ustawionej przez changeAttachmentAppearance)
-          valueToUse = window.formValues ? window.formValues[this.name] : '';
-        } else {
-          values[this.name] = this.value;
-        }
+        values[this.name] = this.value;
 
         window.lastChangedField = {
           name: this.name,
-          value: valueToUse,
+          value: this.value,
           tagName: this.tagName,
           timestamp: Date.now()
         };
         updateProcedure({
-          ...COMMON_PARAMS, options, name: this.name, value: valueToUse, tagName: this.tagName, filters, attrValues: semafor.attrValues,
+          ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters, attrValues: semafor.attrValues,
           flags: { buildValues: true, updateInputs: true, updateStates: true }
         });
       });
@@ -370,47 +364,26 @@ export async function generateForm(
   window.formDisplayValues = displayValues;
   window.allOptionsByParameter = allOptionsByParameter;
 
-  // Listener dla przycisków usuwania załączników
-  setupFileRemoveListeners();
+  // Setup listener dla przycisków usuwania załączników
+  setupFileRemovalListener(params, inputs, values, displayValues);
 
   return [inputs, values, displayValues, shortJson];
 }
 
-// Funkcja czyszcząca wartości dla file input (używana przy usuwaniu załącznika)
-export function clearFileInputValues(paramName) {
-  if (!window.formValues || !window.formDisplayValues || !window.formInputs) {
-    console.warn('FormValues not initialized');
-    return;
-  }
-
-  const values = window.formValues;
-  const displayValues = window.formDisplayValues;
-  const inputs = window.formInputs;
-
-  // Wyczyść values
-  values[paramName] = '';
-
-  // Wyczyść displayValues
-  if (displayValues.has(paramName)) {
-    const existing = displayValues.get(paramName);
-    displayValues.set(paramName, { 
-      param_description: existing.param_description,
-      option_value: '',
-      option_description: '',
-      locked: false
-    });
-  }
-
-  console.log(`✅ Wyczyszczono values i displayValues dla: ${paramName}`);
+// Funkcja obsługująca reset załącznika - wywoła resetSelectValues
+function handleFileRemovalReset(paramName, params, inputs, values, displayValues) {
+  console.log(`Resetuję załącznik: ${paramName}`);
+  // Użyj resetSelectValues aby wyczyścić values i displayValues
+  resetSelectValues([[paramName], displayValues], inputs, values, false);
 }
 
-// Event delegation dla przycisków usuwania załączników
-function setupFileRemoveListeners() {
-  document.addEventListener('click', function(e) {
+// Setup event delegation dla przycisków usuwania załączników
+function setupFileRemovalListener(params, inputs, values, displayValues) {
+  document.addEventListener('click', function (e) {
     const removeBtn = e.target.closest('.file-remove-btn');
     if (removeBtn && removeBtn.dataset.paramName) {
       const paramName = removeBtn.dataset.paramName;
-      clearFileInputValues(paramName);
+      handleFileRemovalReset(paramName, params, inputs, values, displayValues);
     }
   });
 }

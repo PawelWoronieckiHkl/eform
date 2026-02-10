@@ -63,15 +63,18 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
 
     const result = await db.insertNewForm(formData);
 
-    if (files.length > 0) {
-    const orderpos = await db.getOrderpos(result[0].insertId);
-    console.log('ORDERPOS W SAVE:', orderpos);
-    const saver = new ordersManager();
-    const orderNo = await db.getOrderNo(formData.order);
-    saver.setOutputPath(req, formData.order, orderNo, orderpos);
-    await saver.saveAttachments(files);
+    // Przenumeruj pozycje w zamówieniu
+    await db.reindexOrderPositions(formData.order);
 
-  }
+    if (files.length > 0) {
+      const orderpos = await db.getOrderpos(result[0].insertId);
+      console.log('ORDERPOS W SAVE:', orderpos);
+      const saver = new ordersManager();
+      const orderNo = await db.getOrderNo(formData.order);
+      saver.setOutputPath(req, formData.order, orderNo, orderpos);
+      await saver.saveAttachments(files,result[0].insertId);
+
+    }
     res.json({
       status: "success",
       message: "Dane zapisane poprawnie",
@@ -99,34 +102,46 @@ router.patch('/edit/save', requireLogin, async (req, res) => {
   }
 });
 
-
-// router.patch('/save',requireLogin, async(req,res) => {
-//     try {
-//       const formData = req.body;
-
-//       const result = await db.updateForm(formData);
-//       res.json({ status: "success", message: "Dane zapisane poprawnie" });
-//     } catch (err) {
-//       return res.status(400).json({ error: "Niepoprawne dane" });
-//     }
-//   });
-
+ 
 router.delete('/:positionId/delete', requireLogin, async (req, res) => {
-  // console.log(req.params.orderId);
-  let response = await db.deletePosition(req.params.positionId);
-  if (response) {
-    return res.status(200).json({
-      success: true,
-      message: `position.delete_msg`
+  try {
+    // Pobierz pozycję przed usunięciem (potrzebujemy order_id)
+    const position = await db.getPosition(req.params.positionId);
+
+    if (!position) {
+      return res.status(404).json({
+        success: false,
+        message: 'Nie znaleziono pozycji'
+      });
+    }
+
+    const orderId = position.order_id;
+
+    // Usuń pozycję
+    const response = await db.deletePosition(req.params.positionId);
+
+    if (response) {
+      // Przenumeruj pozostałe pozycje w zamówieniu
+      await db.reindexOrderPositions(orderId);
+
+      return res.status(200).json({
+        success: true,
+        message: 'position.delete_msg'
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Błąd podczas usuwania pozycji'
+      });
+    }
+  } catch (error) {
+    console.error('Error deleting position:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Błąd serwera podczas usuwania pozycji'
     });
   }
-  else {
-    return res.status(400).json({
-      success: false,
-      message: `Nie znaleziono Pozycji`
-    })
-  }
-})
+});
 
 
 
@@ -178,6 +193,8 @@ router.get('/photo', requireLogin, async (req, res) => {
 router.get('/:positionId/edit/', requireLogin, async (req, res) => {
   // console.log(req.params.orderId);
   let result = await db.getPosition(req.params.positionId);
+
+  console.log(result, 'result z getPosition w /:positionId/edit');
   let orderId = result.order_id;
   if (result) {
     return res.render('edit_position.njk', { position: result, orderId: orderId })
@@ -218,6 +235,9 @@ router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
   )
 
   if (result) {
+    // Przenumeruj pozycje w zamówieniu
+    await db.reindexOrderPositions(orderId);
+
     const newPositionId = result[0].insertId;
     return res.status(200).json({ redirect: `/position/${newPositionId}/edit` })
   }
