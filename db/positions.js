@@ -36,6 +36,13 @@ async function insertNewForm(formData) {
     return response;
 
 }
+
+async function getAttachments(positionId) {
+    const query = 'SELECT attachments FROM order_item WHERE id = ?';
+    const response = await selectQuery(query, positionId);
+    return response[0] ? response[0].attachments : null;
+}
+
 async function updateAttachments(positionId, attachments) {
     const query = 'UPDATE order_item SET attachments = ? WHERE id = ?';
     const response = await updateQuery(query, [JSON.stringify(attachments), positionId]);
@@ -63,17 +70,17 @@ async function reindexOrderPositions(orderId) {
     // Pobierz wszystkie pozycje dla tego zamówienia, sortując po aktualnym orderpos i id
     const query = 'SELECT id FROM order_item WHERE order_id = ? ORDER BY orderpos ASC, id ASC';
     const positions = await selectQuery(query, orderId);
-    
+
     if (!positions || positions.length === 0) {
         return 0;
     }
-    
+
     // Zaktualizuj orderpos dla każdej pozycji - nadaj kolejne numery 1, 2, 3...
     for (let i = 0; i < positions.length; i++) {
         const query = 'UPDATE order_item SET orderpos = ? WHERE id = ?';
         await updateQuery(query, [i + 1, positions[i].id]);
     }
-    
+
     console.log(`✅ Przenumerowano ${positions.length} pozycji dla zamówienia ${orderId}`);
     return positions.length;
 }
@@ -386,6 +393,16 @@ async function movePositionUp(positionId) {
     }
 }
 
+async function setPositionIdx(positionId, newIdx) {
+    try {
+        await updateQuery('UPDATE order_item SET orderpos = ? WHERE id = ?', [newIdx, positionId]);
+        return { success: true, message: 'Position index updated' };
+    } catch (error) {
+        console.error('Error updating position index:', error);
+        return { success: false, message: 'Database error' };
+    }
+}
+
 async function movePositionDown(positionId) {
     try {
         // Pobierz aktualną pozycję
@@ -441,5 +458,7 @@ module.exports = {
     getPosCounter,
     getOrderpos,
     reindexOrderPositions,
-    updateAttachments
+    updateAttachments,
+    setPositionIdx,
+    getAttachments
 }

@@ -27,10 +27,10 @@ class ordersManager {
         this.user = ownerService.getCurrentUser(req);
         this.userIdent = this.user ? this.user.ident : 'unknown_user';
         this.orgIdent = this.user ? this.user.organization : 'unknown_org';
-        this.orderId = orderId;
-        this.orderNo = orderNo;
+        this.orderId = orderId || 'unknown_order';
+        this.orderNo = orderNo || 'unknown_orderNo';
         this.dirName = `${this.orgIdent}_${this.orderId}_${this.userIdent}_${this.orderNo}`;
-        this.orderpos = orderpos;
+        this.orderpos = orderpos || 'unknown_pos';
 
         this.output_path = path.join(outputData, this.dirName);
     }
@@ -48,27 +48,45 @@ class ordersManager {
         await this.mkDir();
         let attachments = [];
         for (const file of files) {
+            console.log(file);
             const extension = path.extname(file.originalname);
-            const filename = `${this.dirName}_${this.orderpos}_${file.fieldname}${extension}`;
-            const fullpath = path.join (this.output_path, filename);
+            const baseName = file.originalname;
+            // const filename = `${this.dirName}_${this.orderpos}_${file.fieldname}${extension}`;
+            const fileName = `${baseName}`;
+            // const fullpath = path.join(this.output_path, filename);
+            const fullpath = path.join(this.output_path, fileName);
             const saveResult = await saveFile(fullpath, file.buffer);
             if (!saveResult) {
-                console.error(`Failed to save attachment: ${filename}`);
+                console.error(`Failed to save attachment: ${fileName}`);
             }
             else {
-                console.log(`Attachment saved: ${filename}`);
-                attachments.push(filename);
+                console.log(`Attachment saved: ${saveResult}`);
+                attachments.push(saveResult);
             }
         }
         await db.updateAttachments(this.posId, attachments);
     }
 
-    async readAttachments(attachmentsList) {
+    async readAttachments(posId) {
+        const attachmentsList = await db.getAttachments(posId);
+        if (!attachmentsList || attachmentsList.length === 0) {
+            console.warn(`No attachments found for posId: ${posId}`);
+            return {};
+        }
+
         const attachments = {};
-        for (const file of fs.readdirSync(this.output_path)) {
-            const filePath = path.join(this.output_path, file);
-            if (fs.statSync(filePath).isFile()) {
-                attachments[file] = await readFileBinary(filePath);
+        for (const fileName of attachmentsList) {
+            const filePath = path.join(this.output_path, fileName);
+            if (await fileExists(filePath)) {
+                try {
+                    const fileData = await readFileBinary(filePath);
+                    attachments[fileName] = fileData;
+                    console.log(`Reading attachment: ${fileName}`);
+                } catch (error) {
+                    console.error(`Error reading attachment ${fileName}:`, error);
+                }
+            } else {
+                console.warn(`Attachment file not found: ${fileName}`);
             }
         }
         return attachments;

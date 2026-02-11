@@ -2,9 +2,9 @@ import { showToast } from "./components/toast.js";
 import { createInfoDialog, createElement } from "./components/htmlManipulator.js";
 import { generateExcel as generateExcelOld, generatePdf } from "./components/generators.js"
 import { generateExcel } from "./components/generators_exceljs.js"
-
 import { showDiscountModal, updateDiscountDisplay } from "./orderTools/setDiscount.js";
- 
+
+
 const closeBtn = document.getElementById('cancel-btn');
 const confirmBtn = document.getElementById('confirm-btn');
 const deletePositionBtns = document.querySelectorAll('.delete-position-btn');
@@ -368,4 +368,31 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     console.error('Element z id "discount-btn" nie został znaleziony.');
   }
+
+  const positions = document.querySelectorAll('.order-idx');
+  positions.forEach(pos => {
+    const positionId = pos.dataset.id;
+    const idx = parseInt(pos.dataset.idx);
+    setOrderPos(positionId, idx);
+  });
 });
+
+async function setOrderPos(positionId, idx) {
+  try {
+    const response = await fetch(`/position/${positionId}/set-idx`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idx: idx })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+    } else {
+      showToast('error', result.message);
+    }
+  } catch (error) {
+    showToast('error', 'Błąd podczas ustawiania kolejności pozycji');
+    console.error('Error setting position order:', error);
+  }
+} 

@@ -22,6 +22,7 @@ import {
 import { validateAllFieldsOnSubmit, clearDisabledValues } from "./formTools/validateUtils.js";
 import { resetSelectValues } from "./formTools/updateFieldsAndValues.js";
 import { SourceWindow } from './formTools/slope.js';
+import { getAttachmentsData } from './formTools/attachment.js';
 import { showToast } from "./components/toast.js";
 import { createElement, isEnabled } from "./components/htmlManipulator.js";
 import { hideLocked, hideParams } from './formTools/createForm.js'
@@ -183,8 +184,45 @@ export async function generateForm(
     input.name = param.NAME;
     input.id = param.NAME;
 
-    if (param.TYPE === 'file') {
-      console.log(`✅ form.js: Ustawiłem name dla file inputu: name="${param.NAME}"`);
+    if (param.TYPE === 'file' && editFlag) {
+      console.log(param.NAME, values[param.NAME])
+      if (values[param.NAME]) {
+        console.log('Mamy wartość dla pola plikowego, próbuję ', input, 'ustawić attachment');
+        
+        const orderIdElement = document.getElementById('orderId');
+        const posIdElement = document.getElementById('positionId');
+        
+        if (orderIdElement && posIdElement) {
+          const orderId = orderIdElement.textContent;
+          const posId = posIdElement.textContent;
+          console.log('orderId:', orderId, 'posId:', posId);
+          
+          const attachments = await getAttachmentsData(posId, orderId);
+          console.log('Pobrane załączniki:', attachments);
+          
+          // Sprawdź czy w załącznikach jest plik dla tego parametru
+          const fileName = values[param.NAME];
+          if (attachments.includes(fileName)) {
+            // Znajdź powiązane elementy UI
+            const fileContainer = input.closest('.file-input-container');
+            if (fileContainer) {
+              const attachmentImage = fileContainer.querySelector('.attachment-image');
+              const fileIcon = fileContainer.querySelector('.file-icon');
+              const removeBtn = fileContainer.querySelector('.file-remove-btn');
+              
+              if (attachmentImage && fileIcon && removeBtn) {
+                // Ustaw wizualnie jak po wgraniu pliku
+                attachmentImage.src = '/img/attachment-green.png';
+                fileIcon.dataset.tooltip = fileName;
+                removeBtn.style.display = 'flex';
+                input.dataset.filename = fileName;
+                
+                console.log(`Załącznik ${fileName} ustawiony wizualnie dla ${param.NAME}`);
+              }
+            }
+          }
+        }
+      }
     }
 
     inputs[param.NAME] = input;

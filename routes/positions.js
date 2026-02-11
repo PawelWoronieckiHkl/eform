@@ -72,7 +72,7 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
       const saver = new ordersManager();
       const orderNo = await db.getOrderNo(formData.order);
       saver.setOutputPath(req, formData.order, orderNo, orderpos);
-      await saver.saveAttachments(files,result[0].insertId);
+      await saver.saveAttachments(files, result[0].insertId);
 
     }
     res.json({
@@ -102,7 +102,7 @@ router.patch('/edit/save', requireLogin, async (req, res) => {
   }
 });
 
- 
+
 router.delete('/:positionId/delete', requireLogin, async (req, res) => {
   try {
     // Pobierz pozycję przed usunięciem (potrzebujemy order_id)
@@ -193,8 +193,6 @@ router.get('/photo', requireLogin, async (req, res) => {
 router.get('/:positionId/edit/', requireLogin, async (req, res) => {
   // console.log(req.params.orderId);
   let result = await db.getPosition(req.params.positionId);
-
-  console.log(result, 'result z getPosition w /:positionId/edit');
   let orderId = result.order_id;
   if (result) {
     return res.render('edit_position.njk', { position: result, orderId: orderId })
@@ -203,6 +201,23 @@ router.get('/:positionId/edit/', requireLogin, async (req, res) => {
     return res.status(400).json({
       success: false,
     })
+  }
+})
+
+router.get('/:orderId/:positionId/attachments', requireLogin, async (req, res) => {
+  try {
+    const posId = req.params.positionId;
+    const orderId = req.params.orderId;
+    const orderNo = await db.getOrderNo(orderId);
+    const orderpos = await db.getOrderpos(posId);
+    const attachmentsManager = new ordersManager();
+    attachmentsManager.setOutputPath(req, orderId, orderNo, orderpos);
+    const attachments = await db.getAttachments(posId);
+    return res.json({ attachments });
+  }
+  catch (error) {
+    console.error('Error fetching attachments:', error);
+    return res.status(500).json({ error: 'Failed to fetch attachments' });
   }
 })
 
@@ -432,6 +447,24 @@ router.post('/:id/move-down', requireLogin, async (req, res) => {
     }
   } catch (error) {
     console.error('Error moving position down:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Endpoint do ustawiania indeksu pozycji
+router.post('/:id/set-idx', requireLogin, async (req, res) => {
+  try {
+    const positionId = req.params.id;
+    const { idx } = req.body;
+    const result = await db.setPositionIdx(positionId, idx);
+
+    if (result.success) {
+      res.json({ success: true, message: result.message });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    console.error('Error setting position index:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });

@@ -185,7 +185,7 @@ orderDetails.id }}/delete' type='button'> {{ __('order.delete_order') }} </butto
                                                                                                                             </button>
                                                                                                                         {% endblock %}
                                                                                                                     </td>
-                                                                                                                    <th scope="row">{{ globalIndex }}</th>
+                                                                                                                    <th scope="row" class='order-idx' data-id="{{ rowObj.item.id }}" data-idx = '{{ globalIndex }}'>{{ globalIndex }}</th>
                                                                                                                     {% for header in table.headers1 %}
                                                                                                                         {% if (not(header in rowObj.item.lockedParams)) %}
                                                                                                                             <td class="td-val">{{ rowObj.row.row1[header] or '-' }}</td>

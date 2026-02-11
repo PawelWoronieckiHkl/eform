@@ -61,3 +61,18 @@ export function changeAttachmentAppearance(input, attachmentImage, fileIcon, rem
         removeBtn.style.display = 'none';
     }
 }
+
+export async function getAttachmentsData(posId, orderId) {
+    try {
+        const response = await fetch(`/position/${orderId}/${posId}/attachments/`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch attachments');
+        }
+        const data = await response.json();
+        return data.attachments || [];
+    } catch (error) {
+        console.error('Error fetching attachments:', error);
+        showToast('error', 'Nie udało się pobrać załączników', 3, 'top-center');
+        return [];
+    }
+}
