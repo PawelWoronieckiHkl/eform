@@ -8,6 +8,7 @@ import {
 import {
     resetSelectValues, checkFlags
 } from "/scripts/formTools/formTools.js";
+import { sendFormDataWithAttachments } from "/scripts/formTools/formDataHelper.js";
 import { FormsManager } from './formTools/getAvailableForms.js'
 import { showToast } from "/scripts/components/toast.js";
 import { createElement, editElementById } from "./components/htmlManipulator.js";
@@ -161,7 +162,7 @@ function setUpSaveButton(id, values, valuesToDisplay, comment, orderId, inputs) 
                     setTimeout(() => {
                         sendData(id, values, valuesToDisplay, comment, orderId)
                             .then(() => {
-                                
+
                                 resolve();
                                 sentState = true;
                             });
@@ -198,26 +199,19 @@ async function sendData(id, values, valuesToDisplay, comment, orderId) {
     //    console.log(total, 'TOTAL')
     postBody.total = total;
 
-    const json = JSON.stringify(postBody);
-
     try {
-        const response = await fetch("/position/edit/save", {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: json,
-        });
-        const result = await response.json();
+        const result = await sendFormDataWithAttachments("/position/edit/save", postBody, "PATCH");
         showToast('success', `${t('form.saved_form_success')}`);
         return new Promise(resolve => {
             console.log(window.jsonShort, 'JSON SHORT')
             setTimeout(() => {
-                
+
                 window.location.href = `/orders/order/${orderId}`;
                 resolve(result);
             }, 3000);
         });
     } catch (error) {
-        console.error("Bład przy wysyłaniu", error);
+        console.error("Błąd przy wysyłaniu", error);
         showToast('error', t("form.error_saving_form"));
         throw error;
     }

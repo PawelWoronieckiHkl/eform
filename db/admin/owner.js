@@ -56,7 +56,6 @@ async function getUserByIdent(ident) {
 
     try {
         const user = await selectQuery(query, [ident]);
-        console.log(user, 'user by ident query result');
         return user[0] || null;
     } catch (error) {
         console.error("Error fetching user by ident:", error);

@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const { log } = require('../utils/logging');
 
 async function fileExists(filePath) {
     try {
@@ -14,7 +15,7 @@ async function readFileContent(filePath) {
         const data = await fs.promises.readFile(filePath, 'utf-8');
         return data;
     } catch (e) {
-        console.error(`Error reading file at ${filePath}:`, e);
+        log(`Error reading file at ${filePath}: ${e.message}`);
         throw e;
     }
 }
@@ -24,7 +25,7 @@ async function readFileBinary(filePath) {
         const data = await fs.promises.readFile(filePath);
         return data;
     } catch (e) {
-        console.error(`Error reading binary file at ${filePath}:`, e);
+        log(`Error reading binary file at ${filePath}: ${e.message}`);
         throw e;
     }
 }
@@ -49,10 +50,10 @@ async function saveFile(filePath, data) {
         }
 
         await fs.promises.writeFile(finalPath, data);
-        console.log(`File saved successfully at ${finalPath}`);
+        log(`File saved successfully at ${finalPath}`);
         return path.basename(finalPath);
     } catch (e) {
-        console.error(`Error saving file at ${filePath}:`, e);
+        log(`Error saving file at ${filePath}: ${e.message}`);
         return false;
     }
 }

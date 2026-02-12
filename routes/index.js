@@ -87,7 +87,6 @@ router.get("/", requireLogin, async (req, res) => {
   const currentUser = ownerService.getCurrentUser(req);
   user = await db.getUserData(currentUser.pin);
   const mustAcceptRODO = req.session.mustAcceptRODO || false;
-  console.log(mustAcceptRODO, 'must accept RODO')
   const orders = await db.getUserOrders(user.id, 4, 0);
   const ordersSent = await db.getUserOrders(user.id, 4, 0, true);
 
@@ -96,7 +95,7 @@ router.get("/", requireLogin, async (req, res) => {
   if (req.session.user.isAdmin) {
     organizations = await db.getAllOrganizations();
     organizations = customOrgSorting(organizations);
-    console.log('Organizations for admin:', organizations);
+
   }
 
 
@@ -124,7 +123,7 @@ router.get("/contact", requireLogin, async (req, res) => {
     let owner = await db.getOwner(currentUser.pin);
     const orgIdent = owner?.orgIdent.toUpperCase() ?? "HKL"
     const html = await readWord('rodo', `${orgIdent}_contact_${process.env.userLang || 'pl'}`);
-    console.log(`${orgIdent}_regulations_${process.env.userLang || 'pl'}`)
+
     res.render("contact.njk", { contentHtml: html });
   } catch (err) {
     const html = await readWord('rodo', `LUXANGMBH_contact_${process.env.userLang || 'pl'}`);
@@ -155,8 +154,6 @@ router.get("/privacy", requireLogin, async (req, res) => {
     const currentUser = ownerService.getCurrentUser(req);
     let owner = await db.getOwner(currentUser.pin);
     const orgIdent = owner?.orgIdent.toUpperCase() ?? "HKL"
-    console.log(`${owner?.orgIdent.toUpperCase() ?? "COZY"}_privacy_${process.env.userLang || 'pl'}`)
-
     const html = await readWord('rodo', `${orgIdent.toUpperCase() ?? "HKL"}_privacy_${process.env.userLang || 'pl'}`);
     res.render("privacy.njk", { contentHtml: html });
   } catch (err) {
@@ -253,8 +250,6 @@ router.post('/set-last-user', requireLogin, async (req, res) => {
         else resolve();
       });
     });
-
-    console.log('Organization set to:', organizationId, 'for user:', req.session.user.ident);
 
     return res.json({
       success: true,

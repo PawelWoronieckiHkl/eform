@@ -58,7 +58,7 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
 
     // Odczytaj pliki z req.files
     const files = req.files || [];
-    console.log(formData, 'form data received in /save endpoint');
+
 
 
     const result = await db.insertNewForm(formData);
@@ -68,7 +68,6 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
 
     if (files.length > 0) {
       const orderpos = await db.getOrderpos(result[0].insertId);
-      console.log('ORDERPOS W SAVE:', orderpos);
       const saver = new ordersManager();
       const orderNo = await db.getOrderNo(formData.order);
       saver.setOutputPath(req, formData.order, orderNo, orderpos);
@@ -89,11 +88,26 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
   }
 });
 
-router.patch('/edit/save', requireLogin, async (req, res) => {
+router.patch('/edit/save', requireLogin, upload.any(), async (req, res) => {
   try {
-    const formData = req.body;
-    const total = req.body.total;
+    // Parsuj JSON z pola 'data'
+    const formData = JSON.parse(req.body.data);
+    const total = formData.total;
+
+    // Odczytaj pliki z req.files
+    const files = req.files || [];
+
     const result = await db.updatePosition(formData, total);
+
+    // Jeśli są pliki, zapisz je
+    if (files.length > 0) {
+      const orderpos = await db.getOrderpos(formData.id);
+      const saver = new ordersManager();
+      const position = await db.getPosition(formData.id);
+      const orderNo = await db.getOrderNo(position.order_id);
+      saver.setOutputPath(req, position.order_id, orderNo, orderpos);
+      await saver.updateAttachments(files, formData.id);
+    }
 
     res.json({ status: "success", message: "Dane zapisane poprawnie" });
   } catch (err) {
@@ -155,7 +169,6 @@ router.get('/photo', requireLogin, async (req, res) => {
     }
 
     const basePath = path.join(photoPath, groupNumber.toString(), folderName);
-    console.log('Sprawdzana ścieżka:', basePath);
     let exists = false;
     let actualFileName = null;
 
@@ -191,7 +204,6 @@ router.get('/photo', requireLogin, async (req, res) => {
 
 
 router.get('/:positionId/edit/', requireLogin, async (req, res) => {
-  // console.log(req.params.orderId);
   let result = await db.getPosition(req.params.positionId);
   let orderId = result.order_id;
   if (result) {
@@ -222,7 +234,6 @@ router.get('/:orderId/:positionId/attachments', requireLogin, async (req, res) =
 })
 
 router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
-  // console.log(req.params.orderId);
   const position = await db.getPosition(req.params.positionId);
   const orderId = position.order_id;
   const result = await db.insertNewForm(
@@ -308,9 +319,8 @@ router.get('/:positionId', requireLogin, async (req, res) => {
   const parametersDesc = JSON.parse(result.json_parameters_desc);
   const values = result.json_parameters
   const parameters_short = result.parameters_short || {};
-  console.log('PARAMETERS SHORT:', parameters_short);
+
   if (result) {
-    console.log('SPRAWDZAMY POZYCJE', req.session.user?.showPrices)
     if (!req.session.user?.showPrices) {
       return res.render('position_sent.njk', { position: result, parameters: parametersDesc, values: values, parameters_short: parameters_short, isAdmin: req.session.user?.isAdmin })
     }

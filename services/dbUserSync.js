@@ -29,18 +29,16 @@ async function updateClients() {
 
   // Aktualizacja danych istniejących klientów
   if (diff.toUpdate && diff.toUpdate.length > 0) {
-    console.log(`\nRozpoczynam aktualizację danych ${diff.toUpdate.length} klientów...`);
+
     await updateExistingClients(diff.toUpdate);
   } else {
-    console.log('Brak klientów do aktualizacji');
   }
 
   // Usuwanie klientów, których nie ma w pliku
   if (diff.toRemove.length > 0) {
-    console.log(`\nRozpoczynam usuwanie ${diff.toRemove.length} nieaktualnych klientów...`);
+
     await deleteNonExistingClients(diff.toRemove);
   } else {
-    console.log('Brak klientów do usunięcia');
   }
 
   // Aktualizacja haseł sekwencyjnie, aby uniknąć "Too many connections"
@@ -177,7 +175,6 @@ async function insertClients(clientsObj) {
         result = await db.insertUserIntousrtble(client.ident, client.pin, client.password);
       }
       const newUserId = await db.addUser(client);
-      console.log(`Dodano klienta ${client.ident} (ID: ${newUserId})`);
     } catch (err) {
       console.error(`Błąd przy dodawaniu ${client.ident}:`, err.message);
     }
@@ -185,7 +182,6 @@ async function insertClients(clientsObj) {
 }
 
 async function updateExistingClients(clientsToUpdate) {
-  console.log(clientsToUpdate);
   const fieldMapping = {
     name: 'client_name',
     address: 'street',
@@ -231,8 +227,6 @@ async function updateExistingClients(clientsToUpdate) {
       console.error(`Błąd przy aktualizacji klienta ${clientUpdate.ident} (PIN: ${clientUpdate.pin}):`, err.message);
     }
   }
-
-  console.log(`Zakończono aktualizację klientów. Zaktualizowano: ${updated}, Pominięto: ${skipped}, Błędy: ${failed}`);
 }
 
 async function deleteNonExistingClients(clientsToDelete) {
@@ -248,7 +242,6 @@ async function deleteNonExistingClients(clientsToDelete) {
     // Sprawdź czy pin jest wykluczony
     if (excludedPins.has(pin)) {
       skipped++;
-      console.log(`Pominięto klienta z wykluczonym pinem: ${client.ident} (PIN: ${client.pin})`);
       continue;
     }
 
@@ -259,10 +252,8 @@ async function deleteNonExistingClients(clientsToDelete) {
 
         await db.deleteUserByPin(client.pin);
         deleted++;
-        console.log(`[${deleted}] Usunięto klienta ${client.ident} (PIN: ${client.pin})`);
       } else {
         skipped++;
-        console.log(`Pominięto klienta bez pinu: ${client.ident}`);
       }
     } catch (err) {
       failed++;
@@ -270,11 +261,11 @@ async function deleteNonExistingClients(clientsToDelete) {
     }
   }
 
-  console.log(`Zakończono usuwanie klientów. Usunięto: ${deleted}, Pominięto: ${skipped}, Błędy: ${failed}`);
+
 }
 
 async function fixEncodingInDatabase() {
-  console.log('Rozpoczynam naprawę kodowania w bazie danych...');
+
 
   const users = await db.getUsers();
   let fixed = 0;
@@ -360,7 +351,6 @@ async function fixEncodingInDatabase() {
         }
       }
     }
-    console.log(needsUpdate ? '  Wymagana aktualizacja.' : '  Brak zmian wymaganych.', user.id);
     if (needsUpdate && user.id) {
       try {
         // Buduj SQL UPDATE dynamicznie
@@ -369,15 +359,11 @@ async function fixEncodingInDatabase() {
         values.push(user.id);
         if (setClause == 'name') { setClause = 'client_name' };
         const sql = `UPDATE eform.\`user\` SET ${setClause} WHERE id = ?`;
-        console.log(`  Wykonuję SQL:`, sql);
-        console.log(`  Wartości:`, values);
+
 
         const result = await updateQuery(sql, values);
-        console.log(`  Wynik UPDATE:`, result);
 
         fixed++;
-        console.log(`[${fixed}] Naprawiono kodowanie dla użytkownika ID: ${user.id} (${user.ident})`);
-        console.log(`  Zaktualizowane pola:`, updates);
       } catch (err) {
         console.error(`Błąd przy aktualizacji użytkownika ID ${user.id}:`, err.message);
         console.error(`  Stack:`, err.stack);
@@ -386,6 +372,5 @@ async function fixEncodingInDatabase() {
       skipped++;
     }
   }
-  console.log(`Zakończono naprawę kodowania. Naprawiono: ${fixed}, Pominięto: ${skipped}`);
 }
 module.exports = { updateClients, fixEncodingInDatabase, updateExistingClients };

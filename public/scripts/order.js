@@ -108,7 +108,6 @@ async function duplicate(btn) {
     const result = await response.json();
 
     if (response.ok) {
-      // showToast('success', `${t('orders.item_copied')}`);
       setTimeout(() => {
         window.location.href = result.redirect;
       }, 300);
@@ -166,7 +165,7 @@ function getPrices() {
       prices.visiblePrices.push(priceText);
     }
   });
-  console.log(prices, 'prices in getPrices function')
+
   return prices;
 }
 
@@ -242,7 +241,6 @@ async function lock() {
     });
     const result = await response.json();
     if (result.status == 'success') {
-      console.log('lock lock lock', result)
       window.location.reload(response.refresh)
     }
   }

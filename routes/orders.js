@@ -409,13 +409,10 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         const fs = require('fs');
         let logoDataUri = null;
         try {
-            console.log('Próba odczytu logo z:', logoPath);
             if (fs.existsSync(logoPath)) {
                 const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
                 logoDataUri = `data:image/png;base64,${logoBase64}`;
-                console.log('Logo pomyślnie załadowane');
             } else {
-                console.log('Plik logo nie istnieje:', logoPath);
             }
         } catch (error) {
             console.error('Błąd przy odczycie logo:', error);
@@ -436,13 +433,6 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         });
         env.addGlobal('__', __);
 
-        console.log('Dane przekazywane do template:', {
-            orderDetails: orderDetails.id,
-            itemsCount: orderItems.length,
-            photoFile,
-            logoPath: logoDataUri ? 'LOGO_LOADED' : 'NO_LOGO'
-        });
-        console.log(req.session.user.showPrices, 'show prices in session before render', req.session.user.showPricesOnce);
 
         // Określ czy pokazać ceny (sprawdź przed resetowaniem showPricesOnce)
         const shouldShowPrices = req.session.user?.showPrices || req.session.user?.showPricesOnce || req.params.showPrices === 'true';
@@ -602,11 +592,9 @@ router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res
 
     if (orderDetails?.order_address_id) {
         orderAddress = await db.duplicateOrderAddress(orderDetails.order_address_id);
-        console.log(orderAddress, 'ORDER ADDRESS TO COPY');
     }
     if (orderDetails?.send_address_id) {
         sendAddress = await db.duplicateSendAddress(orderDetails.send_address_id);
-        console.log(sendAddress, 'SEND ADDRESS TO COPY');
     }
 
     const newOrderId = await db.insertNewOrder(orderDetails.commision, orderAddress, orderDetails.user_id, orderDetails.comment, sendAddress);
@@ -673,7 +661,6 @@ router.post('/save-order', requireLogin, async (req, res) => {
         const currentUser = ownerService.getCurrentUser(req);
         let id = 0;
         if (req.session.user.isEmployee) {
-            console.log(req.session?.employee.id ?? null, 'employeeId w insertNewOrder')
 
             id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, req.session?.employee.id ?? null);
         }

@@ -34,7 +34,7 @@ export function changeAttachmentAppearance(input, attachmentImage, fileIcon, rem
             fileIcon.dataset.tooltip = `${param.DESCRIPTION}`;
             removeBtn.style.display = 'none';
             showToast('error', `Maksymalny rozmiar pliku to ${maxSizeMB} MB.`, 3, 'top-center');
-            return;
+            return false;
         }
 
         // Przechowuj tylko nazwę pliku (bez pełnej ścieżki c:\fakepath\)
@@ -42,17 +42,7 @@ export function changeAttachmentAppearance(input, attachmentImage, fileIcon, rem
         attachmentImage.src = '/img/attachment-green.png';
         fileIcon.dataset.tooltip = `${file.name}`;
         removeBtn.style.display = 'flex';
-
-        // Zaktualizuj values i displayValues z samą nazwą pliku
-        if (window.values && input.name) {
-            window.values[input.name] = file.name;
-        }
-        if (window.displayValues && input.name) {
-            const currentValue = window.displayValues.get(input.name) || {};
-            currentValue.option_value = file.name;
-            currentValue.option_description = '';
-            window.displayValues.set(input.name, currentValue);
-        }
+        return true;
     } else {
 
         attachmentImage.src = '/img/attachment.png';
@@ -60,6 +50,7 @@ export function changeAttachmentAppearance(input, attachmentImage, fileIcon, rem
         fileIcon.dataset.tooltip = `${param.DESCRIPTION}`;
         removeBtn.style.display = 'none';
     }
+    return false;
 }
 
 export async function getAttachmentsData(posId, orderId) {
@@ -75,4 +66,36 @@ export async function getAttachmentsData(posId, orderId) {
         showToast('error', 'Nie udało się pobrać załączników', 3, 'top-center');
         return [];
     }
+}
+
+export async function applyAttachmentFromServer(input, fileName, orderId, posId) {
+    if (!input || !fileName || !orderId || !posId) {
+        return false;
+    }
+
+    const attachments = await getAttachmentsData(posId, orderId);
+    console.log('Załączniki z serwera:', attachments);
+    if (!attachments.includes(fileName)) {
+        return false;
+    }
+
+    const fileWrapper = input.closest('.attachment-item-wrapper');
+    if (!fileWrapper) {
+        return false;
+    }
+
+    const fileIcon = fileWrapper.querySelector('.file-upload-icon');
+    const attachmentImage = fileWrapper.querySelector('img.icon');
+    const removeBtn = fileWrapper.querySelector('.file-remove-btn');
+    if (!attachmentImage || !fileIcon || !removeBtn) {
+        return false;
+    }
+
+    attachmentImage.src = '/img/attachment-green.png';
+    fileIcon.dataset.tooltip = fileName;
+    fileIcon.title = fileName;
+    removeBtn.style.display = 'flex';
+    input.dataset.filename = fileName;
+    input._fileInputValue = fileName;
+    return true;
 }

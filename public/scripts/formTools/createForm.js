@@ -2,7 +2,8 @@ import { logFunctionName, searchForParameter } from './formTools.js';
 import { createDialog } from './dialogUtils_copy.js'
 import { isEnabled, createElement } from '../components/htmlManipulator.js';
 import { SourceWindow } from './slope.js';
-import { attachmentBehaviorOnClick, changeAttachmentAppearance } from './attachment.js';
+import { attachmentBehaviorOnClick, changeAttachmentAppearance, resetAttachmentUI } from './attachment.js';
+import { showToast } from '../components/toast.js';
 
 export function processCommissionInput(labelValue = false) {
     logFunctionName('processCommissionInput')
@@ -191,6 +192,10 @@ export function createInputField(param, options, groupNumber, filters, allOption
         removeBtn.dataset.paramName = param.NAME;
         removeBtn.style.display = 'none';
         removeBtn.addEventListener('click', (e) => {
+            const fileName = input.dataset.filename;
+            if (fileName && Array.isArray(window.attachments)) {
+                window.attachments = window.attachments.filter(name => name !== fileName);
+            }
             attachmentBehaviorOnClick(input, attachmentImage, fileIcon, removeBtn, param, e);
         });
 
@@ -198,7 +203,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
         input.name = param.NAME;
         input.id = param.NAME;
         console.log(`✅ Tworzę file input: name="${param.NAME}", id="${param.NAME}"`, input);
-        
+
         // Nadpisz getter dla input.value żeby zwracał tylko filename (bez C:\fakepath\)
         // To pozwala form.js czytać prawidłową wartość bez zmian
         Object.defineProperty(input, 'value', {
@@ -217,9 +222,37 @@ export function createInputField(param, options, groupNumber, filters, allOption
             },
             configurable: true
         });
-        
+
         input.addEventListener('change', function () {
-            changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, 10)
+            const file = input?.files?.[0];
+            if (file) {
+                const existing = Array.isArray(window.attachments) ? window.attachments : [];
+                if (existing.includes(file.name)) {
+                    resetAttachmentUI(input, attachmentImage, fileIcon, removeBtn, param);
+                    showToast('error', 'Taki załącznik już istnieje.', 3, 'top-center');
+                    return;
+                }
+            }
+
+            const applied = changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, 10);
+            if (applied && file) {
+                // Dodaj do listy załączników
+                if (!Array.isArray(window.attachments)) {
+                    window.attachments = [];
+                }
+                window.attachments.push(file.name);
+
+                // Zaktualizuj values i displayValues TYLKO po pomyślnej walidacji
+                if (window.values && input.name) {
+                    window.values[input.name] = file.name;
+                }
+                if (window.displayValues && input.name) {
+                    const currentValue = window.displayValues.get(input.name) || {};
+                    currentValue.option_value = file.name;
+                    currentValue.option_description = '';
+                    window.displayValues.set(input.name, currentValue);
+                }
+            }
         });
 
         attachmentItemWrapper.appendChild(input);

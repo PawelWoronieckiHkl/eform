@@ -3,10 +3,11 @@ const { outputData, shortJsonDir } = require('../config')
 const fs = require('fs');
 const { slopePhotoPath } = require('../config');
 const { KeyObject } = require('crypto');
-const {ordersManager} = require('../utils/saveOrdersOutput');   
+const { ordersManager } = require('../utils/saveOrdersOutput');
+const { log } = require('../utils/logging');
 class OrderSender {
 
-    constructor(req,order, orderItems) {
+    constructor(req, order, orderItems) {
         this.slopePaths = [];
         this.shortItems = [];
         this.data = {
@@ -72,7 +73,7 @@ class OrderSender {
         const ordersManagerInstance = new ordersManager();
         ordersManagerInstance.setOutputPath(req, this.data.orderid, this.data.orderno);
 
-        ({fileName: this.fileName, fullPath: this.fullPath} = ordersManagerInstance.setJsonFileName());
+        ({ fileName: this.fileName, fullPath: this.fullPath } = ordersManagerInstance.setJsonFileName());
     }
 
     async init() {
@@ -87,20 +88,21 @@ class OrderSender {
     async saveToFile() {
         try {
             const shortJsonPath = path.join(shortJsonDir, `${process.env.NODE_ENV}_${this.fileName}`);
+            await fs.promises.mkdir(path.dirname(shortJsonPath), { recursive: true });
             await fs.promises.writeFile(shortJsonPath, JSON.stringify(this.shortItems, null, 2), 'utf-8');
         }
         catch (err) {
-            console.error(`Failed to save short JSON file: ${err.message}`);
+            log(`Failed to save short JSON file: ${err.message}`);
         }
         if (!process.env?.PRODUCTION) {
             const filePath = this.fullPath;
 
             try {
+                await fs.promises.mkdir(path.dirname(filePath), { recursive: true });
                 await fs.promises.writeFile(filePath, JSON.stringify(this.data, null, 2), 'utf-8');
-
-
+                log(`File saved successfully: ${filePath}`);
             } catch (error) {
-                console.error(`Failed to save file: ${error.message}`);
+                log(`Failed to save file: ${error.message}`);
             }
         }
         else {
@@ -117,6 +119,7 @@ class OrderSender {
             const filePath = this.fullPath;
 
             try {
+                await fs.promises.mkdir(path.dirname(filePath), { recursive: true });
                 await fs.promises.writeFile(filePath, JSON.stringify(this.data, null, 2), 'utf-8');
                 await client.access({
                     host: ftpConfig.host,
@@ -124,9 +127,13 @@ class OrderSender {
                     password: ftpConfig.password,
                     secure: ftpConfig.secure
                 });
-                await client.uploadFrom(filePath, ftpConfig.remotePath);
-            } catch (err) {
-                console.error(`FTP upload failed: ${err.message}`);
+                log(`Connected to FTP server: ${ftpConfig.host}`);
+                const result = await client.uploadFrom(filePath, ftpConfig.remotePath);
+                log(`FTP upload result: ${result}`);
+            
+            } 
+            catch (err) {
+                log(`FTP upload failed: ${err.message}`);
             }
             client.close();
         }

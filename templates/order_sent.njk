@@ -65,13 +65,39 @@
                                             </div>
                                         </td>
                                     </tr>
+                                {% else %}
+                                    <tr class="status-row" id='status-row-{{ rowObj.item.id }}'>
+                                        <td class="status-cell" colspan="100%">
+                                            <div class="status-cards">
+                                                <div class="status-card status-card-main" data-status="default">
+                                                    <div class="status-card-header">
+                                                        <span class="status-indicator"></span>
+                                                        <span class="status-card-label">{{ __('order.status_label') }}</span>
+                                                    </div>
+                                                    <div class="status-card-value">{{ __('order.status_order_sent') }}</div>
+                                                </div>
+                                                <div class="status-card">
+                                                    <div class="status-card-header">
+                                                        <span class="status-card-label">{{ __('order.shipping_date_label') }}</span>
+                                                    </div>
+                                                    <div class="status-card-value">-</div>
+                                                </div>
+                                                <div class="status-card">
+                                                    <div class="status-card-header">
+                                                        <span class="status-card-label">{{ __('order.shipping_method_label') }}</span>
+                                                    </div>
+                                                    <div class="status-card-value status-card-code">-</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 {% endif %}
                             {% endblock %}
                             {% block new_pos_btn %}
                                 {# 
-                                                                                                                                                                                                                                                                                                                                                             <button class="action-btn status-btn me-1 p-1 has-tooltip-2"  data-tooltip="{{ __('order.status_btn_tooltip') }}" data-id='{{ statuses[globalIndex].order_pos }}' onclick="event.stopPropagation()">
-                                                                                                                                                                                                                                                                                                                                                                 <img src="/img/delivery-status.png" class='icon' alt="{{ __('order.edit') }}">
-                                                                                                                                                                                                                                                                                                                                                             </button>                                 #}
+                                                                                                                                                                                                                                                                                                                                                                                             <button class="action-btn status-btn me-1 p-1 has-tooltip-2"  data-tooltip="{{ __('order.status_btn_tooltip') }}" data-id='{{ statuses[globalIndex].order_pos }}' onclick="event.stopPropagation()">
+                                                                                                                                                                                                                                                                                                                                                                                                 <img src="/img/delivery-status.png" class='icon' alt="{{ __('order.edit') }}">
+                                                                                                                                                                                                                                                                                                                                                                                             </button>                                 #}
                             {% endblock %}
                             {% block send_order_btn %}{% endblock %}
                             {% block order_space %}

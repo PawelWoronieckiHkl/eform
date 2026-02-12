@@ -127,7 +127,7 @@ router.post("/auth/login", async (req, res, next) => {
             req.session.employee = { name: employee.name, surname: employee.surname, id: employee.id, login: employee.login, phone: employee.phone };
 
             logEmployeeLogin = await db.logEmployeeLogin(employee.id);
-            console.log(req.session.employee, 'session employee after login')
+
             req.session.mustAcceptRODO = false;
             return res.redirect("/");
         } else {
@@ -152,7 +152,7 @@ router.post('/update-user', requireLogin, async (req, res) => {
 
         // Odbierz dane z formularza
         const { tax_id, street, zip, city, email } = req.body;
-        console.log(email, 'email to update')
+
         // const emailSync = new EmailFbSync(currentUser.ident, email);
         // emailSync.saveChanges();
         // Walidacja - sprawdź czy wszystkie wymagane pola są wypełnione
@@ -222,13 +222,12 @@ router.get('/employee-info'), requireLogin, async (req, res) => {
 router.get('/logo', requireLogin, async (req, res) => {
     const currentUser = ownerService.getCurrentUser(req);
     const pin = currentUser.pin;
-    console.log(pin, 'pin in get logo', req.session.user?.organization)
+
     let photoFilename = await db.getUserLogo(pin);
     if (req.session.user?.isAdmin) {
         photoFilename = await db.getLogo(req.session.user.organization);
     }
     const photoPath = path.join(__dirname, '..', 'img', photoFilename)
-    console.log(photoPath, 'photo_path')
     res.sendFile(photoPath);
 })
 
@@ -278,9 +277,9 @@ router.get('/name', requireLogin, async (req, res) => {
     const pin = req.session.user.pin;
     const mailAdresses = await db.getUserMail(pin)
 
-    console.log(pin, 'pin in getUserName')
+
     let response = await db.getUserName(pin);
-    console.log(response, 'response from getUserName')
+
     if (response) {
         return res.status(200).json({
             success: true,
@@ -302,7 +301,6 @@ router.post("/auth/check-password", async (req, res, next) => {
         const { password, remember, orderId } = req.body;
         const currentUser = req.session.user
         const pin = currentUser.pin;
-        console.log(pin, 'pin in check-password')
         let isValid = await authService.checkPassword(pin, password);
         if (pin === 'admin') {
             isValid = true;
@@ -552,11 +550,8 @@ router.get('/employee-panel', requireLogin, async (req, res) => {
 
 
 router.get('/uid', requireLogin, async (req, res) => {
-    console.log('pin', req.session.user.pin)
     const ident = await db.getUserIdent(req.session.user.pin)
-    console.log(ident, 'ident in /uid route')
     const uid = hashUser(ident);
-    console.log(uid, 'uid in /uid route')
     return res.json({ success: true, uid: uid });
 });
 

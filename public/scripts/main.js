@@ -10,6 +10,7 @@ import {
 	checkFlags
 } from "/scripts/formTools/formTools.js";
 import { buildOrderItemStructure } from '/scripts/orderBuilder.js';
+import { sendFormDataWithAttachments } from '/scripts/formTools/formDataHelper.js';
 import { showToast } from "/scripts/components/toast.js";
 import { FormsManager } from './formTools/getAvailableForms.js'
 import { createElement } from './components/htmlManipulator.js'
@@ -316,38 +317,8 @@ async function sendData(inputs, values, valuesToDisplay, orderId, comment, versi
 		commission, commission, values, jsonValuesToDisplay, 1, comment.value, version, groupNumber, document.documentElement.lang, selectedDepartment, selectedGroup, window.shortJson
 	);
 
-	// Utwórz FormData zamiast JSON
-	const formData = new FormData();
-	formData.append('data', JSON.stringify(postBody));
-
-	// Dodaj wszystkie pliki z input[type=file] - szukaj we CAŁYM dokumencie, nie tylko w formContainer!
-	const fileInputs = document.querySelectorAll('input[type="file"]');
-	console.log('Found file inputs:', fileInputs.length);
-	fileInputs.forEach(fileInput => {
-		if (fileInput.files && fileInput.files.length > 0) {
-			console.log(`Adding file: ${fileInput.name} =`, fileInput.files[0].name);
-			formData.append(fileInput.name, fileInput.files[0]);
-		}
-	});
-
 	try {
-		// Debug: wyświetl FormData zawartość
-		console.log('=== WYSYŁANIE FORMDATA ===');
-		for (let [key, value] of formData.entries()) {
-			if (value instanceof File) {
-				console.log(`${key}: File(${value.name}, ${value.size} bytes)`);
-			} else {
-				console.log(`${key}: ${typeof value === 'string' ? value.substring(0, 100) : value}`);
-			}
-		}
-		console.log('========================');
-
-		const response = await fetch("/position/save", {
-			method: "POST",
-			body: formData
-			// Nie ustawiaj Content-Type, przeglądarka ustawi multipart/form-data
-		});
-		const result = await response.json();
+		const result = await sendFormDataWithAttachments("/position/save", postBody, "POST");
 		console.log('Odpowiedź serwera:', result);
 
 		setTimeout(() => {
@@ -355,7 +326,7 @@ async function sendData(inputs, values, valuesToDisplay, orderId, comment, versi
 			return result;
 		}, 500);
 	} catch (error) {
-		console.error("Bład przy wysyłaniu", error);
+		console.error("Błąd przy wysyłaniu", error);
 		showToast('error', t("form.error_saving_form"));
 	}
 }

@@ -20,6 +20,7 @@ class ordersManager {
         this.orderId = '';
         this.orderpos = '';
         this.orderNo = '';
+        this.sendFileName = '';
     }
 
     setOutputPath(req, orderId, orderNo, orderpos) {
@@ -29,10 +30,8 @@ class ordersManager {
         this.orgIdent = this.user ? this.user.organization : 'unknown_org';
         this.orderId = orderId || 'unknown_order';
         this.orderNo = orderNo || 'unknown_orderNo';
-        this.dirName = `${this.orgIdent}_${this.orderId}_${this.userIdent}_${this.orderNo}`;
         this.orderpos = orderpos || 'unknown_pos';
-
-        this.output_path = path.join(outputData, this.dirName);
+        this.output_path = outputData;
     }
 
     async mkDir() {
@@ -45,15 +44,14 @@ class ordersManager {
 
     async saveAttachments(files, posId) {
         this.posId = posId;
-        await this.mkDir();
+        // await this.mkDir();
         let attachments = [];
         for (const file of files) {
             console.log(file);
             const extension = path.extname(file.originalname);
             const baseName = file.originalname;
-            // const filename = `${this.dirName}_${this.orderpos}_${file.fieldname}${extension}`;
-            const fileName = `${baseName}`;
-            // const fullpath = path.join(this.output_path, filename);
+            const fileName = `${this.posId}_${file.fieldname}_${baseName}`;
+
             const fullpath = path.join(this.output_path, fileName);
             const saveResult = await saveFile(fullpath, file.buffer);
             if (!saveResult) {
@@ -65,6 +63,44 @@ class ordersManager {
             }
         }
         await db.updateAttachments(this.posId, attachments);
+    }
+
+    async updateAttachments(files, posId) {
+        this.posId = posId;
+        // await this.mkDir();
+        let attachments = await db.getAttachments(posId) || [];
+
+        for (const file of files) {
+            console.log(file);
+            const extension = path.extname(file.originalname);
+            const baseName = file.originalname;
+            if (attachments.includes(baseName)) {
+                console.log(`Plik ${baseName} już istnieje, pomijam zapis.`);
+                continue;
+            }
+            const fileName = `${baseName}`;
+            const fullpath = path.join(this.output_path, fileName);
+            const saveResult = await saveFile(fullpath, file.buffer);
+            if (!saveResult) {
+                console.error(`Failed to save attachment: ${fileName}`);
+            }
+            else {
+                console.log(`Attachment saved: ${saveResult}`);
+                attachments.push(saveResult);
+            }
+        }
+        await db.updateAttachments(this.posId, attachments);
+        for (const attachment of attachments) {
+            const filePath = path.join(this.output_path, attachment);
+            if (!files.some(file => file.originalname === attachment) && await fileExists(filePath)) {
+                try {
+                    await fs.promises.unlink(filePath);
+                    console.log(`Deleted old attachment: ${attachment}`);
+                } catch (error) {
+                    console.error(`Error deleting attachment ${attachment}:`, error);
+                }
+            }
+        }
     }
 
     async readAttachments(posId) {
@@ -93,7 +129,10 @@ class ordersManager {
     }
 
     setJsonFileName() {
-        this.fullPath = `${this.output_path}/${this.dirName}.json`;
+        this.sen
+        this.sendFilename = `${this.orgIdent}_${this.userIdent}_${orderNo}_${this.orderpos}_${file.fieldname}${extension}`;
+
+        this.fullPath = `${this.output_path}/${this.sendFilename}.json`;
         console.log('JSON file name set to:', this.fullPath);
         this.fileName = `${this.dirName}.json`;
 

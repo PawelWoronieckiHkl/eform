@@ -22,7 +22,7 @@ import {
 import { validateAllFieldsOnSubmit, clearDisabledValues } from "./formTools/validateUtils.js";
 import { resetSelectValues } from "./formTools/updateFieldsAndValues.js";
 import { SourceWindow } from './formTools/slope.js';
-import { getAttachmentsData } from './formTools/attachment.js';
+import { applyAttachmentFromServer } from './formTools/attachment.js';
 import { showToast } from "./components/toast.js";
 import { createElement, isEnabled } from "./components/htmlManipulator.js";
 import { hideLocked, hideParams } from './formTools/createForm.js'
@@ -55,6 +55,7 @@ export async function generateForm(
   window.validParams = {};
   window.calculatedParams = new Set();
   window.lastChangedField = null; // Przechowuje ostatnio zmienione pole
+  window.attachments = [];
   window.constValues = {};
   window.lockedParams = [];
   window.spin = spin;
@@ -185,42 +186,20 @@ export async function generateForm(
     input.id = param.NAME;
 
     if (param.TYPE === 'file' && editFlag) {
+
       console.log(param.NAME, values[param.NAME])
       if (values[param.NAME]) {
-        console.log('Mamy wartość dla pola plikowego, próbuję ', input, 'ustawić attachment');
-        
+        window.attachments.push(values[param.NAME]);
+
         const orderIdElement = document.getElementById('orderId');
         const posIdElement = document.getElementById('positionId');
-        
+
         if (orderIdElement && posIdElement) {
           const orderId = orderIdElement.textContent;
           const posId = posIdElement.textContent;
-          console.log('orderId:', orderId, 'posId:', posId);
-          
-          const attachments = await getAttachmentsData(posId, orderId);
-          console.log('Pobrane załączniki:', attachments);
-          
-          // Sprawdź czy w załącznikach jest plik dla tego parametru
           const fileName = values[param.NAME];
-          if (attachments.includes(fileName)) {
-            // Znajdź powiązane elementy UI
-            const fileContainer = input.closest('.file-input-container');
-            if (fileContainer) {
-              const attachmentImage = fileContainer.querySelector('.attachment-image');
-              const fileIcon = fileContainer.querySelector('.file-icon');
-              const removeBtn = fileContainer.querySelector('.file-remove-btn');
-              
-              if (attachmentImage && fileIcon && removeBtn) {
-                // Ustaw wizualnie jak po wgraniu pliku
-                attachmentImage.src = '/img/attachment-green.png';
-                fileIcon.dataset.tooltip = fileName;
-                removeBtn.style.display = 'flex';
-                input.dataset.filename = fileName;
-                
-                console.log(`Załącznik ${fileName} ustawiony wizualnie dla ${param.NAME}`);
-              }
-            }
-          }
+          console.log('Sprawdzam załącznik z serwera:', fileName);
+          await applyAttachmentFromServer(input, fileName, orderId, posId);
         }
       }
     }
@@ -333,8 +312,17 @@ export async function generateForm(
     if (inputs[key].tagName === "INPUT") {
       let inputDebounceTimer = null;
 
+
+
       inputs[key].addEventListener("input", function () {
         if (this.tagName === "INPUT") {
+          if (inputs[key].type === 'file') {
+            if (window.attachments.includes(inputs[key].value)) {
+              console.log('Ten plik został już dodany:', inputs[key].value);
+              inputs[key].value = '';
+              return;
+            };
+          }
           console.log(this.tagName, 'input event, value:', this.value, 'name:', this.name);
           values[this.name] = roundInputValue(this.value);
 
@@ -352,6 +340,8 @@ export async function generateForm(
           }, 500);
         }
       });
+
+
 
 
     } else {

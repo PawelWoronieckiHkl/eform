@@ -12,19 +12,11 @@ function customOrgSorting(organizations) {
     for (let org of priority) {
         organizations.forEach(element => {
             if (element.ident === org) {
-                console.log('org', org)
                 sortedOrgs.push(element);
-                
             }
         });
     }
     return sortedOrgs;
 }
-
-
-
-
-
-
 
 module.exports = { customOrgSorting };

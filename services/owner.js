@@ -19,7 +19,6 @@ async function setContextUserByIdent(req, userIdent) {
 
         // Pobranie danych użytkownika z bazy danych
         const userData = await getUserByIdent(userIdent);
-        console.log('user data from DB:', userData);
 
         if (!userData) {
             console.warn(`[OwnerService] Nie znaleziono użytkownika o ident: ${userIdent}`);
@@ -41,8 +40,6 @@ async function setContextUserByIdent(req, userIdent) {
 
         // Ustawienie kontekstu w sesji
         req.session.context_user = contextUser;
-
-        console.log(`[OwnerService] Ustawiono kontekst użytkownika:`, req.session.context_user);
 
         return contextUser;
 
@@ -79,14 +76,8 @@ function clearContextUser(req) {
         if (!req || !req.session) {
             return false;
         }
-
         const previousContext = req.session.context_user;
         delete req.session.context_user;
-
-        console.log(`[OwnerService] Wyczyszczono kontekst użytkownika:`, {
-            previousIdent: previousContext?.ident || 'brak',
-            clearedAt: new Date().toISOString()
-        });
 
         return true;
     } catch (error) {
