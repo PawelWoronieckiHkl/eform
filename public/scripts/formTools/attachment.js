@@ -68,13 +68,22 @@ export async function getAttachmentsData(posId, orderId) {
     }
 }
 
-export async function applyAttachmentFromServer(input, fileName, orderId, posId) {
+export async function applyAttachmentFromServer(input, fileName, orderId, posId, params) {
     if (!input || !fileName || !orderId || !posId) {
+        console.log('ni ma')
         return false;
     }
 
     const attachments = await getAttachmentsData(posId, orderId);
     console.log('Załączniki z serwera:', attachments);
+    for (const attachment of attachments) {
+        const parts = attachment.split('_');
+        const drugi = parts[1];
+        const trzeci = parts[2];
+        console.log('Param name from attachment:', `${drugi}_${trzeci}`);
+    }
+
+
     if (!attachments.includes(fileName)) {
         return false;
     }

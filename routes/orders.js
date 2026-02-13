@@ -12,7 +12,7 @@ const { generatePdf } = require('../services/mailBot/pdfGenerator');
 const { buildOrderItemStructure } = require('../services/itemBuilder.js');
 const { getPriceAfterDiscount } = require('../services/getDiscount.js');
 const { SyncProdStatus, setParcelHref } = require('../services/prodStatus.js');
-const {getExtraAttachments} = require('../services/mailBot/extraAttachments');
+const { getExtraAttachments } = require('../services/mailBot/extraAttachments');
 router.use(async (req, res, next) => {
     // Ustaw owner dla wszystkich widoków
     res.locals.owner = req.session?.user?.isOwner || false;
@@ -244,7 +244,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
     // console.log(orderDetails, 'CURRENT USER IN ORDER HISTORY VIEW');
     let statuses = await db.getUserStatuses(currentUser.ident, orderDetails.order_idx);
     statuses = setParcelHref(statuses);
-    
+
     if (orderItems) {
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
@@ -346,7 +346,8 @@ router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, async (
         const order = await db.getOrderDataToSend(req.params.orderId);
         const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
-        const sender = new OrderSender.OrderSender(order.orderDetails, order.orderItems);
+        const sender = new OrderSender.OrderSender(req, order.orderDetails, order.orderItems);
+        await sender.init();
         const sendData = sender.getData();
         const totalPrice = await db.getTotal(order.orderDetails.id);
         res.json({ success: true, data: { sendData, totalPrice, cleanOrderItems, total } });
@@ -397,7 +398,8 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
 
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
-        const sender = new OrderSender.OrderSender(order.orderDetails, order.orderItems);
+        const sender = new OrderSender.OrderSender(req, order.orderDetails, order.orderItems);
+        await sender.init();
         const sendData = sender.getData();
         // console.log('SEND DATA IN ORDER PDF', sendData);
         const totalPrice = await db.getTotal(order.orderDetails.id)

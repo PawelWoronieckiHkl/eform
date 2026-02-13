@@ -23,33 +23,34 @@
                             {% block btns_head %}{% endblock %}
                             {% block pos_btns %}{% endblock %}
                             {% block extra_rows %}
-                                {% if statuses[globalIndex] %}
-                                    <tr class="status-row" id='status-row-{{ statuses[globalIndex].order_pos }}'>
+                            {% set statusIdx = globalIndex - 1 %}
+                                {% if statuses[statusIdx] %}
+                                    <tr class="status-row" id='status-row-{{ statuses[statusIdx].order_pos }}'>
                                         <td class="status-cell" colspan="100%">
                                             <div class="status-cards">
-                                                <div class="status-card status-card-main" data-status="{{ statuses[globalIndex].status }}">
+                                                <div class="status-card status-card-main" data-status="{{ statuses[statusIdx].status }}">
                                                     <div class="status-card-header">
                                                         <span class="status-indicator"></span>
                                                         <span class="status-card-label">{{ __('order.status_label') }}</span>
                                                     </div>
-                                                    <div class="status-card-value">{{ __(statuses[globalIndex].status) }}</div>
+                                                    <div class="status-card-value">{{ __(statuses[statusIdx].status) }}</div>
                                                 </div>
                                                 <div class="status-card">
                                                     <div class="status-card-header">
                                                         <span class="status-card-label">{{ __('order.shipping_date_label') }}</span>
                                                     </div>
-                                                    <div class="status-card-value">{{ (statuses[globalIndex].shipping_date) }}</div>
+                                                    <div class="status-card-value">{{ (statuses[statusIdx].shipping_date) }}</div>
                                                 </div>
-                                                {% if statuses[globalIndex].parcel_href %}
+                                                {% if statuses[statusIdx].parcel_href %}
                                                     <div class="status-card" id='parcel-link-card'>
                                                         <div class="status-card-header">
                                                             <span class="status-card-label">{{ __('order.shipping_method_label') }}</span>
                                                         </div>
-                                                        <a href="{{ statuses[globalIndex].parcel_href }}" id='parcel-link' target="_blank" rel="noopener noreferrer">
+                                                        <a href="{{ statuses[statusIdx].parcel_href }}" id='parcel-link' target="_blank" rel="noopener noreferrer">
                                                             <div class="status-card-value status-card-code">
                                                                 <img src="/img/express-delivery.png" alt="delivery icon" class="icon ms-1">
                                                                     <span>
-                                                                        {{ statuses[globalIndex].parcel_code }}</span>
+                                                                        {{ statuses[statusIdx].parcel_code }}</span>
                                                                 </div>
                                                             </div>
                                                         </a>
@@ -58,7 +59,7 @@
                                                             <div class="status-card-header">
                                                                 <span class="status-card-label">{{ __('order.shipping_method_label') }}</span>
                                                             </div>
-                                                            <div class="status-card-value status-card-code">{{ statuses[globalIndex].parcel_code }}</div>
+                                                            <div class="status-card-value status-card-code">{{ statuses[statusIdx].parcel_code }}</div>
                                                         </div>
                                                     {% endif %}
                                                 </div>

@@ -8,8 +8,11 @@ const { log } = require('../utils/logging');
 class OrderSender {
 
     constructor(req, order, orderItems) {
+        this.orderItems = orderItems;
         this.slopePaths = [];
         this.shortItems = [];
+        this.attachmentsList = [];
+        this.orderPositions = [];
         this.data = {
             orderno: order?.order_idx ?? 0,
             orderid: order?.id ?? 0,
@@ -68,15 +71,28 @@ class OrderSender {
                 commission: item?.commision ?? "",
                 parameters_short: item.parameters_short
             })
+            this.orderPositions.push({
+                posId: item?.id ?? null,
+                orderPos: item?.orderpos ?? idx
+            });
             idx++;
         }
-        const ordersManagerInstance = new ordersManager();
-        ordersManagerInstance.setOutputPath(req, this.data.orderid, this.data.orderno);
-
-        ({ fileName: this.fileName, fullPath: this.fullPath } = ordersManagerInstance.setJsonFileName());
+        this.ordersManagerInstance = new ordersManager();
+        this.ordersManagerInstance.setOutputPath(req, this.data.orderid, this.data.orderno);
     }
 
     async init() {
+
+        for (const position of this.orderPositions) {
+            let positionAttachments = await this.ordersManagerInstance.changeAttachmentFileNames(position.orderPos, position.posId);
+            for (let positionAttachment of positionAttachments) {
+                this.attachmentsList.push(positionAttachment);
+            }
+        }
+        const result = await this.ordersManagerInstance.setJsonFileName();
+        this.fileName = result.fileName;
+        this.fullPath = result.fullPath;
+
         await this.saveToFile()
         return this.data
     }
@@ -114,7 +130,7 @@ class OrderSender {
                 user: process.env.FTP_USER,
                 password: process.env.FTP_PASSWORD,
                 secure: false,
-                remotePath: `/${this.fileName}`
+                remotePath: `/${this.fileName}.json`
             };
             const filePath = this.fullPath;
 
@@ -130,8 +146,19 @@ class OrderSender {
                 log(`Connected to FTP server: ${ftpConfig.host}`);
                 const result = await client.uploadFrom(filePath, ftpConfig.remotePath);
                 log(`FTP upload result: ${result}`);
-            
-            } 
+
+                const remoteDir = path.posix.dirname(ftpConfig.remotePath);
+                for (const attachment of this.attachmentsList) {
+                    if (typeof attachment !== 'string') {
+                        continue;
+                    }
+                    const attachmentPath = path.join(outputData, attachment);
+                    const attachmentRemotePath = path.posix.join(remoteDir, attachment);
+                    const attachmentResult = await client.uploadFrom(attachmentPath, attachmentRemotePath);
+                    log(`FTP upload attachment result: ${attachmentResult}`);
+                }
+
+            }
             catch (err) {
                 log(`FTP upload failed: ${err.message}`);
             }

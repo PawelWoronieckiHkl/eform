@@ -199,7 +199,7 @@ export async function generateForm(
           const posId = posIdElement.textContent;
           const fileName = values[param.NAME];
           console.log('Sprawdzam załącznik z serwera:', fileName);
-          await applyAttachmentFromServer(input, fileName, orderId, posId);
+          await applyAttachmentFromServer(input, fileName, orderId, posId, params);
         }
       }
     }

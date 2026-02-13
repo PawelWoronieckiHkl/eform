@@ -29,6 +29,14 @@ async function readFileBinary(filePath) {
         throw e;
     }
 }
+async function removeFile(filePath) {
+    try {
+        await fs.promises.unlink(filePath);
+        log(`File removed successfully: ${filePath}`);
+    } catch (e) {
+        log(`Error removing file at ${filePath}: ${e.message}`);
+    }
+}
 
 async function saveFile(filePath, data) {
     try {
@@ -62,6 +70,7 @@ module.exports = {
     fileExists,
     readFileContent,
     readFileBinary,
-    saveFile
+    saveFile,
+    removeFile
 };
 
