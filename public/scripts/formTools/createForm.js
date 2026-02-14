@@ -225,14 +225,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
         input.addEventListener('change', function () {
             const file = input?.files?.[0];
-            if (file) {
-                const existing = Array.isArray(window.attachments) ? window.attachments : [];
-                if (existing.includes(file.name)) {
-                    resetAttachmentUI(input, attachmentImage, fileIcon, removeBtn, param);
-                    showToast('error', 'Taki załącznik już istnieje.', 3, 'top-center');
-                    return;
-                }
-            }
+
 
             const applied = changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, 10);
             if (applied && file) {

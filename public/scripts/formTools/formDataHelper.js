@@ -30,7 +30,7 @@ export function buildFormDataWithAttachments(postBody) {
 
 /**
  * Wysyła dane z załącznikami na serwer
- * @param {string} url - URL endpointa
+ * @param {string} url - URL endpointaij
  * @param {Object} postBody - Dane do wysłania
  * @param {string} method - Metoda HTTP (POST, PATCH, etc.)
  * @returns {Promise<Object>} - Odpowiedź z serwera

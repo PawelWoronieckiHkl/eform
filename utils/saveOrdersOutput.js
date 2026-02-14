@@ -12,6 +12,21 @@ const db = require("../db/db_helper.js");
 const { read } = require('pdfkit');
 const { at, forEach } = require('lodash');
 
+function normalizeUploadedFileName(originalName) {
+    if (typeof originalName !== 'string' || !originalName) {
+        return '';
+    }
+
+    const hasMojibake = /[ÃÂÅÄÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞß]/.test(originalName) || originalName.includes('�');
+    const decodedCandidate = Buffer.from(originalName, 'latin1').toString('utf8');
+
+    if (hasMojibake && !decodedCandidate.includes('�')) {
+        return decodedCandidate.normalize('NFC');
+    }
+
+    return originalName.normalize('NFC');
+}
+
 class ordersManager {
     constructor() {
         this.data = '';
@@ -51,8 +66,9 @@ class ordersManager {
         let attachments = [];
         for (const file of files) {
             console.log(file);
-            const extension = path.extname(file.originalname);
-            const baseName = file.originalname;
+            const safeOriginalName = normalizeUploadedFileName(file.originalname);
+            const extension = path.extname(safeOriginalName);
+            const baseName = safeOriginalName;
             const fileName = `${this.posId}_${file.fieldname}_${baseName}`;
             this.sendFilename = `${this.orgIdent}_${this.userIdent}_${this.orderNo}_${this.orderpos}_${file.fieldname}${extension}`;
             const fullpath = path.join(this.output_path, fileName);
@@ -62,7 +78,7 @@ class ordersManager {
             }
             else {
                 console.log(`Attachment saved: ${saveResult}`);
-                attachments.push(saveResult);
+                attachments.push({ savedName: saveResult, baseName: safeOriginalName });
             }
         }
         await db.updateAttachments(this.posId, attachments);
@@ -73,18 +89,25 @@ class ordersManager {
         this.posId = posId;
         // await this.mkDir();
         let attachments = await db.getAttachments(posId) || [];
-        const desiredAttachments = [];
+        const filesToDelete = [];
+        let hasChanges = false;
 
         for (const file of files) {
             console.log(file);
-            const extension = path.extname(file.originalname);
-            const baseName = file.originalname;
+            const safeOriginalName = normalizeUploadedFileName(file.originalname);
+            const extension = path.extname(safeOriginalName);
+            const baseName = safeOriginalName;
             const fileName = `${this.posId}_${file.fieldname}_${baseName}`;
-            desiredAttachments.push(fileName);
-            if (attachments.includes(fileName)) {
+
+            const existingIndex = attachments.findIndex((att) =>
+                typeof att?.savedName === 'string' && att.savedName.startsWith(`${this.posId}_${file.fieldname}_`)
+            );
+
+            if (existingIndex !== -1 && attachments[existingIndex]?.savedName === fileName) {
                 console.log(`Plik ${fileName} już istnieje, pomijam zapis.`);
                 continue;
             }
+
             const fullpath = path.join(this.output_path, fileName);
             const saveResult = await saveFile(fullpath, file.buffer);
             if (!saveResult) {
@@ -92,19 +115,34 @@ class ordersManager {
             }
             else {
                 console.log(`Attachment saved: ${saveResult}`);
-                attachments.push(saveResult);
+                hasChanges = true;
+
+                if (existingIndex !== -1) {
+                    const oldSavedName = attachments[existingIndex]?.savedName;
+                    if (oldSavedName && oldSavedName !== saveResult) {
+                        filesToDelete.push(oldSavedName);
+                    }
+                    attachments[existingIndex] = { savedName: saveResult, baseName: safeOriginalName };
+                } else {
+                    attachments.push({ savedName: saveResult, baseName: safeOriginalName });
+                }
             }
         }
-        
+
+        if (!hasChanges) {
+            return;
+        }
+
         await db.updateAttachments(this.posId, attachments);
-        for (const attachment of attachments) {
-            const filePath = path.join(this.output_path, attachment);
-            if (!desiredAttachments.includes(attachment) && await fileExists(filePath)) {
+
+        for (const oldSavedName of filesToDelete) {
+            const filePath = path.join(this.output_path, oldSavedName);
+            if (await fileExists(filePath)) {
                 try {
                     await fs.promises.unlink(filePath);
-                    console.log(`Deleted old attachment: ${attachment}`);
+                    console.log(`Deleted old attachment: ${oldSavedName}`);
                 } catch (error) {
-                    console.error(`Error deleting attachment ${attachment}:`, error);
+                    console.error(`Error deleting attachment ${oldSavedName}:`, error);
                 }
             }
         }
@@ -119,18 +157,18 @@ class ordersManager {
             }
 
             const attachments = {};
-            for (const fileName of attachmentsList) {
-                const filePath = path.join(this.output_path, fileName);
+            for (const attachment of attachmentsList) {
+                const filePath = path.join(this.output_path, attachment.savedName);
                 if (await fileExists(filePath)) {
                     try {
                         const fileData = await readFileBinary(filePath);
-                        attachments[fileName] = fileData;
-                        console.log(`Reading attachment: ${fileName}`);
+                        attachments[attachment.baseName] = fileData;
+                        console.log(`Reading attachment: ${attachment.baseName}`);
                     } catch (error) {
-                        console.error(`Error reading attachment ${fileName}:`, error);
+                        console.error(`Error reading attachment ${attachment.baseName}:`, error);
                     }
                 } else {
-                    console.warn(`Attachment file not found: ${fileName}`);
+                    console.warn(`Attachment file not found: ${attachment.baseName} at path ${filePath}`);
                 }
             }
             return attachments;
@@ -164,25 +202,66 @@ class ordersManager {
             console.warn('Missing posId/orderPos for attachment rename. Skipping.');
             return [];
         }
-        const attachments = await this.readAttachments(targetPosId);
-        const newAttachments = [];
-        for (const [fileName, fileData] of Object.entries(attachments)) {
-            let fieldName = `${fileName.split('_')[1]}_${fileName.split('_')[2]}` || 'unknown_field';
-
-            let newFileName = `${this.orgIdent}_${this.userIdent}_${this.orderNo}_${targetOrderPos}_${fieldName}${path.extname(fileName)}`;
-            console.log(`Renaming attachment ${fileName} to ${newFileName}`);
-            newAttachments.push(newFileName);
-            const fullPath = path.join(this.output_path, newFileName);
-
-            const saveResult = await saveFile(fullPath, fileData);
-            if (!saveResult) {
-                console.error(`Failed to save renamed attachment: ${newFileName}`);
-            } else {
-                await removeFile(path.join(this.output_path, fileName));
-                console.log(`Renamed attachment saved: ${saveResult}`);
-            }
+        const attachmentsList = await db.getAttachments(targetPosId) || [];
+        if (attachmentsList.length === 0) {
+            return [];
         }
-        return newAttachments;
+
+        const renamedAttachments = [];
+        const ftpAttachmentNames = [];
+        let hasChanges = false;
+
+        for (const attachment of attachmentsList) {
+            const currentSavedName = attachment?.savedName;
+            const currentBaseName = attachment?.baseName;
+
+            if (!currentSavedName) {
+                continue;
+            }
+
+            const sourcePath = path.join(this.output_path, currentSavedName);
+            if (!(await fileExists(sourcePath))) {
+                console.warn(`Attachment file not found for rename: ${sourcePath}`);
+                renamedAttachments.push(attachment);
+                continue;
+            }
+
+            const fieldMatch = currentSavedName.match(/(ZALACZNIK_\d+)/i) || (currentBaseName || '').match(/(ZALACZNIK_\d+)/i);
+            const fieldName = fieldMatch ? fieldMatch[1].toUpperCase() : 'unknown_field';
+            const extension = path.extname(currentSavedName) || path.extname(currentBaseName || '');
+            const targetSavedName = `${this.orgIdent}_${this.userIdent}_${this.orderNo}_${targetOrderPos}_${fieldName}${extension}`;
+
+            ftpAttachmentNames.push(targetSavedName);
+
+            if (targetSavedName === currentSavedName) {
+                renamedAttachments.push(attachment);
+                continue;
+            }
+
+            const fileData = await readFileBinary(sourcePath);
+            const targetPath = path.join(this.output_path, targetSavedName);
+            const saveResult = await saveFile(targetPath, fileData);
+
+            if (!saveResult) {
+                console.error(`Failed to save renamed attachment: ${targetSavedName}`);
+                renamedAttachments.push(attachment);
+                continue;
+            }
+
+            await removeFile(sourcePath);
+            hasChanges = true;
+            renamedAttachments.push({
+                savedName: targetSavedName,
+                baseName: currentBaseName
+            });
+            console.log(`Renamed attachment saved: ${targetSavedName}`);
+        }
+
+        if (hasChanges) {
+            await db.updateAttachments(targetPosId, renamedAttachments);
+        }
+
+        return ftpAttachmentNames;
     }
 }
 

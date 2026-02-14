@@ -316,13 +316,13 @@ export async function generateForm(
 
       inputs[key].addEventListener("input", function () {
         if (this.tagName === "INPUT") {
-          if (inputs[key].type === 'file') {
-            if (window.attachments.includes(inputs[key].value)) {
-              console.log('Ten plik został już dodany:', inputs[key].value);
-              inputs[key].value = '';
-              return;
-            };
-          }
+          // if (inputs[key].type === 'file') {
+            // if (window.attachments.includes(inputs[key].value)) {
+              // console.log('Ten plik został już dodany:', inputs[key].value);
+              // inputs[key].value = '';
+              // return;
+            // };
+          // }
           console.log(this.tagName, 'input event, value:', this.value, 'name:', this.name);
           values[this.name] = roundInputValue(this.value);
 

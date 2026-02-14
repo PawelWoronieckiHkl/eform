@@ -1,3 +1,70 @@
 [2026-02-13T09:48:40.282Z] File saved successfully at /mnt/eform/datatest/out/5510_ZALACZNIK_1_TYP1.png
 [2026-02-13T09:48:40.299Z] File saved successfully at /mnt/eform/datatest/out/5510_ZALACZNIK_2_zamowienie_2042.pdf
 [2026-02-13T09:48:40.314Z] File saved successfully at /mnt/eform/datatest/out/5510_ZALACZNIK_3_ProduktionsrÃ¼ckstÃ¤nde_FENIX_30-01-2026_114517.xlsx
+[2026-02-13T13:25:35.861Z] File saved successfully at /mnt/eform/datatest/out/5512_ZALACZNIK_1_ftp.log.20260213.txt
+[2026-02-13T13:25:35.870Z] File saved successfully at /mnt/eform/datatest/out/5512_ZALACZNIK_2_ftp.log.20260212.txt.gz
+[2026-02-13T13:25:35.882Z] File saved successfully at /mnt/eform/datatest/out/5512_ZALACZNIK_3_ftp.log.20260210.txt.gz
+[2026-02-13T14:13:38.638Z] File saved successfully at /mnt/eform/datatest/out/5513_ZALACZNIK_1_ftp.log.20260212.txt.gz
+[2026-02-13T14:13:38.682Z] File saved successfully at /mnt/eform/datatest/out/5513_ZALACZNIK_2_ftp.log.20260210
+[2026-02-13T14:13:38.695Z] File saved successfully at /mnt/eform/datatest/out/5513_ZALACZNIK_3_TYP1.png
+[2026-02-13T14:17:59.025Z] File saved successfully at /mnt/eform/datatest/out/5514_ZALACZNIK_1_TYP1.png
+[2026-02-13T14:17:59.035Z] File saved successfully at /mnt/eform/datatest/out/5514_ZALACZNIK_2_ftp.log.20260212.txt.gz
+[2026-02-13T14:17:59.080Z] File saved successfully at /mnt/eform/datatest/out/5514_ZALACZNIK_3_ftp.log.20260210
+[2026-02-13T14:22:01.255Z] File saved successfully at /mnt/eform/datatest/out/5514_ZALACZNIK_1_ftp.log.20260210.txt.gz
+[2026-02-13T14:22:25.016Z] File saved successfully at /mnt/eform/datatest/out/5514_ZALACZNIK_1_TYP1.png
+[2026-02-13T14:22:47.617Z] File saved successfully at /mnt/eform/datatest/out/5514_ZALACZNIK_3_attachment.png
+[2026-02-13T14:37:43.063Z] File saved successfully at /mnt/eform/datatest/out/5514_ZALACZNIK_1_ftp.log.20260210
+[2026-02-13T14:37:43.074Z] File saved successfully at /mnt/eform/datatest/out/5514_ZALACZNIK_2_PIT-11_2025_Woroniecki_PaweÅ_635.pdf
+[2026-02-13T14:37:43.085Z] File saved successfully at /mnt/eform/datatest/out/5514_ZALACZNIK_3_zamowienie_1388.pdf
+[2026-02-13T14:41:32.126Z] File saved successfully at /mnt/eform/datatest/out/5515_ZALACZNIK_1_ftp.log.20260212.txt.gz
+[2026-02-13T14:41:32.137Z] File saved successfully at /mnt/eform/datatest/out/5515_ZALACZNIK_2_attachment.png
+[2026-02-13T14:41:32.177Z] File saved successfully at /mnt/eform/datatest/out/5515_ZALACZNIK_3_ftp.log.20260210
+[2026-02-13T14:42:41.889Z] File saved successfully at /mnt/eform/datatest/out/5515_ZALACZNIK_1_ftp.log.20260213.txt
+[2026-02-13T14:42:41.900Z] File saved successfully at /mnt/eform/datatest/out/5515_ZALACZNIK_2_zamowienie_2042.pdf
+[2026-02-13T14:42:41.913Z] File saved successfully at /mnt/eform/datatest/out/5515_ZALACZNIK_3_express-delivery.png
+[2026-02-13T14:45:55.380Z] File saved successfully at /mnt/eform/datatest/out/5516_ZALACZNIK_1_attachment.png
+[2026-02-13T14:45:55.392Z] File saved successfully at /mnt/eform/datatest/out/5516_ZALACZNIK_2_express-delivery.png
+[2026-02-13T14:45:55.405Z] File saved successfully at /mnt/eform/datatest/out/5516_ZALACZNIK_3_ftp.log.20260213.txt
+[2026-02-13T14:46:12.799Z] File saved successfully at /mnt/eform/datatest/out/5516_ZALACZNIK_1_ftp.log.20260210
+[2026-02-13T14:46:57.982Z] File saved successfully at /mnt/eform/datatest/out/5516_ZALACZNIK_1_zamowienie_1388.pdf
+[2026-02-13T14:46:57.993Z] File saved successfully at /mnt/eform/datatest/out/5516_ZALACZNIK_2_attachment-green.png
+[2026-02-13T14:49:59.915Z] File saved successfully at /mnt/eform/datatest/out/5517_ZALACZNIK_1_attachment.png
+[2026-02-13T14:49:59.925Z] File saved successfully at /mnt/eform/datatest/out/5517_ZALACZNIK_2_attachment-green.png
+[2026-02-13T14:49:59.964Z] File saved successfully at /mnt/eform/datatest/out/5517_ZALACZNIK_3_ftp.log.20260210
+[2026-02-13T14:57:43.187Z] File saved successfully at /mnt/eform/datatest/out/5518_ZALACZNIK_1_attachment-green.png
+[2026-02-13T14:57:43.200Z] File saved successfully at /mnt/eform/datatest/out/5518_ZALACZNIK_2_ftp.log.20260213.txt
+[2026-02-13T14:57:43.241Z] File saved successfully at /mnt/eform/datatest/out/5518_ZALACZNIK_3_ftp.log.20260210
+[2026-02-13T14:58:02.629Z] File saved successfully at /mnt/eform/datatest/out/5518_ZALACZNIK_1_attachment.png
+[2026-02-13T14:58:02.646Z] File saved successfully at /mnt/eform/datatest/out/5518_ZALACZNIK_2_zamowienie_1388.pdf
+[2026-02-13T14:58:02.657Z] File saved successfully at /mnt/eform/datatest/out/5518_ZALACZNIK_3_PIT-11_2025_Woroniecki_PaweÅ_635.pdf
+[2026-02-13T15:09:15.443Z] File saved successfully at /mnt/eform/datatest/out/5518_ZALACZNIK_3_PIT-11_2025_Woroniecki_Paweł_635.pdf
+[2026-02-13T15:19:24.859Z] File saved successfully: /mnt/eform/datatest/out/HKL_TESTOWY_696.json
+[2026-02-13T15:20:10.259Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_697_1_1388.pdf_undefined.pdf
+[2026-02-13T15:20:10.261Z] Error removing file at /mnt/eform/datatest/out/zamowienie_1388.pdf: ENOENT: no such file or directory, unlink '/mnt/eform/datatest/out/zamowienie_1388.pdf'
+[2026-02-13T15:20:10.269Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_697_1_undefined_undefined.png
+[2026-02-13T15:20:10.271Z] Error removing file at /mnt/eform/datatest/out/attachment-green.png: ENOENT: no such file or directory, unlink '/mnt/eform/datatest/out/attachment-green.png'
+[2026-02-13T15:20:10.282Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_697_1_undefined_undefined.txt
+[2026-02-13T15:20:10.285Z] Error removing file at /mnt/eform/datatest/out/ftp.log.20260213.txt: ENOENT: no such file or directory, unlink '/mnt/eform/datatest/out/ftp.log.20260213.txt'
+[2026-02-13T15:20:10.352Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_697_2_undefined_undefined.png
+[2026-02-13T15:20:10.355Z] Error removing file at /mnt/eform/datatest/out/attachment.png: ENOENT: no such file or directory, unlink '/mnt/eform/datatest/out/attachment.png'
+[2026-02-13T15:20:10.366Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_697_2_undefined_undefined (2).png
+[2026-02-13T15:20:10.372Z] Error removing file at /mnt/eform/datatest/out/attachment-green.png: ENOENT: no such file or directory, unlink '/mnt/eform/datatest/out/attachment-green.png'
+[2026-02-13T15:20:10.414Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_697_2_undefined_undefined.20260210
+[2026-02-13T15:20:10.419Z] Error removing file at /mnt/eform/datatest/out/ftp.log.20260210: ENOENT: no such file or directory, unlink '/mnt/eform/datatest/out/ftp.log.20260210'
+[2026-02-13T15:20:10.464Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_697_3_undefined_undefined.png
+[2026-02-13T15:20:10.469Z] Error removing file at /mnt/eform/datatest/out/attachment.png: ENOENT: no such file or directory, unlink '/mnt/eform/datatest/out/attachment.png'
+[2026-02-13T15:20:10.482Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_697_3_1388.pdf_undefined.pdf
+[2026-02-13T15:20:10.484Z] Error removing file at /mnt/eform/datatest/out/zamowienie_1388.pdf: ENOENT: no such file or directory, unlink '/mnt/eform/datatest/out/zamowienie_1388.pdf'
+[2026-02-13T15:20:10.494Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_697_3_2025_Woroniecki.pdf
+[2026-02-13T15:20:10.497Z] Error removing file at /mnt/eform/datatest/out/PIT-11_2025_Woroniecki_Paweł_635.pdf: ENOENT: no such file or directory, unlink '/mnt/eform/datatest/out/PIT-11_2025_Woroniecki_Paweł_635.pdf'
+[2026-02-13T15:20:10.521Z] File saved successfully: /mnt/eform/datatest/out/HKL_TESTOWY_697.json
+[2026-02-13T15:28:40.670Z] File saved successfully at /mnt/eform/datatest/out/5520_ZALACZNIK_1_ftp.log.20260210
+[2026-02-13T15:28:40.685Z] File saved successfully at /mnt/eform/datatest/out/5520_ZALACZNIK_2_attachment.png
+[2026-02-13T15:28:40.700Z] File saved successfully at /mnt/eform/datatest/out/5520_ZALACZNIK_3_zamowienie_1388.pdf
+[2026-02-13T15:29:00.960Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_694_1_ZALACZNIK_1.20260210
+[2026-02-13T15:29:00.964Z] File removed successfully: /mnt/eform/datatest/out/5520_ZALACZNIK_1_ftp.log.20260210
+[2026-02-13T15:29:00.981Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_694_1_ZALACZNIK_2.png
+[2026-02-13T15:29:00.984Z] File removed successfully: /mnt/eform/datatest/out/5520_ZALACZNIK_2_attachment.png
+[2026-02-13T15:29:01.001Z] File saved successfully at /mnt/eform/datatest/out/HKL_TESTOWY_694_1_ZALACZNIK_3.pdf
+[2026-02-13T15:29:01.004Z] File removed successfully: /mnt/eform/datatest/out/5520_ZALACZNIK_3_zamowienie_1388.pdf
+[2026-02-13T15:29:01.030Z] File saved successfully: /mnt/eform/datatest/out/HKL_TESTOWY_694.json
