@@ -39,8 +39,80 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
     options = options.possibleElements;
 
+    const createLabelWithInfo = () => {
+        const rootFilePath = '/photos/files/';
+        const labelWrapper = createElement('div', { class: ['field-label-row'] }, parrent);
+        createElement('label', { text: `${param.DESCRIPTION} ` }, labelWrapper);
+
+        const hasInfo = param?.INFO && param.INFO !== '<NULL>' && `${param.INFO}`.trim() !== '';
+        if (hasInfo) {
+            const rawInfo = `${param.INFO}`;
+            const bracketMatch = rawInfo.match(/<([^>]+\.[^>]+)>/);
+            const extractedFilePath = bracketMatch ? bracketMatch[1].trim() : null;
+            const cleanInfoText = rawInfo.replace(/<[^>]+>/g, '').trim();
+
+            const iconLabel = cleanInfoText || t('Dodatkowe informacje');
+            const infoIcon = createElement('span', {
+                class: ['param-info-icon'],
+                text: 'i',
+                tabindex: '0',
+                'aria-label': iconLabel
+            }, labelWrapper);
+
+            const tooltip = createElement('div', {
+                class: ['param-info-tooltip'],
+                role: 'tooltip'
+            }, infoIcon);
+
+            if (cleanInfoText) {
+                const normalizedInfoText = cleanInfoText.replace(/\\n/g, '\n').replace(/\n/g, '<br>');
+                createElement('div', {
+                    class: ['param-info-tooltip-text'],
+                    html: normalizedInfoText
+                }, tooltip);
+            }
+
+            if (extractedFilePath) {
+                const normalizedFilePath = extractedFilePath.replace(/^\/+/, '');
+                const encodedFilePath = normalizedFilePath.split('/').map(segment => encodeURIComponent(segment)).join('/');
+                const fileUrl = `${rootFilePath}${encodedFilePath}`;
+                const fileName = normalizedFilePath.split('/').pop() || 'plik';
+
+                createElement('button', {
+                    class: ['param-info-download-btn'],
+                    type: 'button',
+                    html: `<span class="download-icon" aria-hidden="true">⬇</span><span>${fileName}</span>`,
+                    'aria-label': `${t('Pobierz')} ${fileName}`,
+                    onclick: async function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        try {
+                            const response = await fetch(fileUrl);
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}`);
+                            }
+
+                            const blob = await response.blob();
+                            const blobUrl = URL.createObjectURL(blob);
+                            const anchor = createElement('a', {
+                                href: blobUrl,
+                                download: fileName
+                            });
+                            document.body.appendChild(anchor);
+                            anchor.click();
+                            document.body.removeChild(anchor);
+                            URL.revokeObjectURL(blobUrl);
+                        } catch (error) {
+                            showToast('error', `Nie udało się pobrać pliku: ${fileName}`);
+                        }
+                    }
+                }, tooltip);
+            }
+        }
+    }
+
     if (param.SOURCE == param.NAME) {
-        createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+        createLabelWithInfo();
 
         let btn = createElement("button", {
             class: ["button"],
@@ -56,7 +128,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
     }
 
     if (param.GRAPHICS == 'true' && Array.isArray(options) && (param.TYPE != 'link')) {
-        createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+        createLabelWithInfo();
         let btn = createElement("button", {
             class: ["button"],
             id: param.NAME,
@@ -77,7 +149,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
         return btn;
     }
     if (allOptions?.length ?? 0 > 1) {
-        createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+        createLabelWithInfo();
 
         let select = createElement("select", { class: ["select"] }, parrent);
 
@@ -147,7 +219,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
                 parentDiv.classList.add('link-area');
             }
         }, 0);
-        createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+        createLabelWithInfo();
         parrent.appendChild(createElement('br'));
         return linkBtn;
     }
@@ -252,7 +324,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
         return input
     }
 
-    createElement('label', { text: `${param.DESCRIPTION} ` }, parrent);
+    createLabelWithInfo();
     parrent.appendChild(input);
     parrent.appendChild(createElement('br'));
     return input;

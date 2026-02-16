@@ -200,7 +200,7 @@ orderDetails.id }}/delete' type='button'> {{ __('order.delete_order') }} </butto
                                                                                                                     <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                                                                                                                 </tr>
                                                                                                                 <tr id='price-row'>
-                                                                                                                    <td colspan="1" class="price"></td>
+
                                                                                                                     {% for header in table.headers2 %}
                                                                                                                         {% if (not(header in rowObj.item.lockedParams)) %}
                                                                                                                             {% set value = rowObj.row.row2[header] %}

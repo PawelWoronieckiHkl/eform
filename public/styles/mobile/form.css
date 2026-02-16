@@ -305,9 +305,52 @@
         padding: 0 5px !important;
 
     }
-    #orderComment{
+
+    .field-label-row {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .field-label-row label {
+        margin-bottom: 0 !important;
+    }
+
+    .param-info-icon {
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+        font-size: 12px !important;
+    }
+
+    .param-info-tooltip {
+        min-width: 150px !important;
+        max-width: 250px !important;
+        font-size: 11px !important;
+        padding: 7px 9px !important;
+    }
+
+    .param-info-icon::before {
+        border-left-width: 5px !important;
+        border-right-width: 5px !important;
+        border-top-width: 5px !important;
+    }
+
+    .param-info-download-btn {
+        height: 22px !important;
+        padding: 0 8px !important;
+        font-size: 11px !important;
+        width: auto !important;
+        min-width: unset !important;
+        max-width: max-content !important;
+        align-self: flex-start !important;
+    }
+
+    #orderComment {
         margin-left: 5% !important;
     }
+
     [class*="-select-area"] button,
     [class*="-select-area"] .btn {
         width: 89% !important;
@@ -355,12 +398,13 @@
         margin-left: 15px !important;
     }
 
-    .last-config-info{
+    .last-config-info {
         left: 50% !important;
-        bottom:2vh !important;
+        bottom: 2vh !important;
         top: unset !important;
-        
+
     }
+
     /* Mobile filter controls */
     .filter-controls.mb-2 {
         background: white !important;

@@ -1,3 +1,4 @@
+{% extends "order_prices.njk" %}
 {% block head %}
     <link rel="stylesheet" href="/styles/order_details.css">
         <link rel="stylesheet" href="/styles/order_sent.css">
@@ -7,7 +8,7 @@
                 <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.min.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
             {% endblock head %}
-            {% extends "order_prices.njk" %}
+
             {% block order_del_btn %}{% endblock %}
             {% block table_style %}
                 <table class="table align-left  order-table">
@@ -23,3 +24,5 @@
                         {% block order_space %}
                             <div class="floating-history-order">
                             {% endblock %}
+
+                        {% block edit_order_btn %}{% endblock %}
