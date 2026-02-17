@@ -1,1 +1,33 @@
 === 2026-02-17 10:28:02 - Start ===
+[main 279ffd1] Automatic commit 2026-02-17 10:28
+ 160 files changed, 1754 insertions(+), 2229270 deletions(-)
+ delete mode 100644 .version.txt
+ delete mode 100644 ARCHITECTURE_FIX_SUMMARY.md
+ rewrite cron.log (100%)
+ create mode 100644 db/address.js
+ rename cron_output.log => efor_2.0_changes.txt (100%)
+ delete mode 100644 logs.txt
+ create mode 100644 logs/log-2026-02-17.txt
+ delete mode 100644 migrations/add_order_position_column.sql
+ delete mode 100644 public/admin/base.js
+ create mode 100644 public/img/add_address.png
+ create mode 100644 public/img/delete_address.png
+ create mode 100644 public/img/edit_address.png
+ create mode 100644 public/img/location.png
+ create mode 100644 public/img/mail.png
+ create mode 100644 public/scripts/createNewAddress.js
+ delete mode 100644 public/scripts/delivery.js
+ delete mode 100644 public/styles/mobile/responsive.css
+ create mode 100644 public/styles/new-address-modal.css
+ delete mode 100644 routes/1.js
+ delete mode 100644 services/versionManager copy.js
+ delete mode 100755 sync_photos.sh
+ delete mode 100644 templates/about.njk
+ delete mode 100644 templates/address/create_new_address.njk
+ delete mode 100644 templates/mailTemplate.njk
+ rewrite templates/new-order.njk (87%)
+ delete mode 100644 test_encoding_fix.js
+To https://github.com/PawelWrHkl/eform.git
+   1a19b46..279ffd1  main -> main
+=== 2026-02-17 10:28:04 - Koniec (Exit: 0) ===
+=== 2026-02-17 10:35:01 - Start ===
