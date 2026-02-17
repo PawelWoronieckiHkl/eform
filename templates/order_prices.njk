@@ -29,7 +29,7 @@
             {% endif %}
           </h2>
         </div>
-        <!-- Komentarz pod tytułem -->
+
         {% if orderDetails.comment and orderDetails.comment.trim() and orderDetails.comment.trim() != '' and orderDetails.comment.trim() != '-' %}
           <div class="comment-space d-flex align-items-center justify-content-center w-100">
             <h3 id='comment' class='h3 fw-bold btn' data-id="{{ orderDetails.id }}">
@@ -76,7 +76,7 @@
                   {% block pos_btns %}
                     <td
                       class="d-flex align-items-center">
-                      <!-- Strzałki góra/dół jako pierwsze -->
+
                       <div class="position-controls d-flex flex-column align-items-center me-2">
                         <button class="btn move-up-btn has-tooltip" data-tooltip="{{ __('order.move_up') }}" data-id="{{ rowObj.item.id }}" onclick="event.stopPropagation()">
                           <svg viewbox="0 0 16 16">
@@ -95,7 +95,6 @@
                           </svg>
                         </button>
                       </div>
-                      <!-- Pozostałe przyciski w poziomie -->
                       <button class="action-btn action-btn-duplicate me-1 p-1 duplicate-btn has-tooltip" data-tooltip="{{ __('order.duplicate_pos') }}" data-id='{{ rowObj.item.id }}' onclick="event.stopPropagation()">
                         <img src="/img/duplicate.png" class='icon' alt="{{ __('order.edit') }}"></button>
                         <a class="action-btn action-btn-edit me-1 p-1 edit-position-btn has-tooltip" data-tooltip="{{ __('order.edit_pos') }}" href="/position/{{ rowObj.item.id }}/edit?id={{ rowObj.item.id }}" onclick="event.stopPropagation()">
@@ -204,7 +203,7 @@
                               {% endfor %}
                             </tbody>
                           </table>
-                          <!-- Mobile cards version -->
+
                           <div class="mobile-items-list d-block d-md-none">
                             {% set mobileIndex = globalIndex - table.rows.length %}
                             {% for rowObj in table.rows %}

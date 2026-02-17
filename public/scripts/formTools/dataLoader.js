@@ -177,7 +177,7 @@ export class DataLoader {
               if (!this.parameterFilters[paramName][attrKey]) {
                 this.parameterFilters[paramName][attrKey] = [];
               }
-              // Dodaj tylko unikalne wartości
+              
               if (!this.parameterFilters[paramName][attrKey].includes(attrValue)) {
                 this.parameterFilters[paramName][attrKey].push(attrValue);
               }
@@ -243,7 +243,7 @@ export class DataLoader {
     if (!await formsManager.getClientScripts()) { return params }
 
     const [path, scripts] = await formsManager.getClientScripts()
-    // console.log("Ścieżka do skryptów:", path);
+    
     for (const param of params) {
       let scriptPath = scripts.find(script => script.param == param.NAME)
 
@@ -266,13 +266,13 @@ export class DataLoader {
     for (const [param, aliasList] of Object.entries(aliases)) {
       if (result[param]?.length) {
         const exploded = [];
-        // console.log(aliasList, aliasList.length);
+        
         result[param].forEach(valueEntry => {
           
           const matchedAliases = aliasList.filter(alias => alias.VALUE === valueEntry.VALUE);
 
           if (matchedAliases.length === 0) {
-            // brak aliasów, nie dodajemy
+            
             return;
           } else if (matchedAliases.length === 1) {
 
@@ -283,7 +283,7 @@ export class DataLoader {
 
             exploded.push(newEntry);
           } else {
-            // wielu aliasów - dla każdego aliasu nowy wpis z modyfikacją name
+            
             matchedAliases.forEach((aliasData, idx) => {
               const newEntry = { ...valueEntry };
               newEntry.ALIAS = aliasData.ALIAS;
@@ -308,7 +308,7 @@ export class DataLoader {
         }
       }
     }
-    // console.log(result, 'Po rozszerzeniu kolekcji');
+    
     return result;
   }
 
@@ -324,7 +324,7 @@ export class DataLoader {
 
 
   getAllFilters() {
-    // console.log(this.parameterFilters, 'Zwracane filtry Po rozszerzeniu kolekcji');
+    
     return this.parameterFilters;
   }
 }

@@ -42,13 +42,13 @@ async function checkEmployeePassword(login, password) {
 		return { valid: false, employee: null };
 	}
 
-	// Sprawdź hasło bez hashowania (porównanie bezpośrednie)
+
 	if (password === employee.password) {
 		console.log("Hasło pracownika poprawne (bez hashowania)");
 		return { valid: true, employee };
 	}
 
-	// Sprawdź także z bcrypt na wypadek zahashowanych haseł
+
 	if (bcrypt.compareSync(password, employee.password)) {
 		console.log("Hasło pracownika poprawne (bcrypt)");
 		return { valid: true, employee };

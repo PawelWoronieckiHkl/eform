@@ -29,14 +29,6 @@
         <a href="/change-language?lang=fr" {% if locale == 'fr' %} class="active" data-tooltip="{{ __('base.french_tooltip') }}" {% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28"> </a>
       </div>
     </header>
-    <!-- <header class="languages"> <div class="language-switcher"> <a href="?lang=pl" {% if locale == 'pl'
-    %}class="active"{% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28"></a> <a href="?lang=en"
-    {% if locale == 'en' %}class="active"{% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30"
-    height="28"></a> <a href="?lang=de" {% if locale == 'de' %}class="active"{% endif %}><img src="/img/germany.png"
-    alt="Germany flag" width="30" height="28"></a> <a href="?lang=nl" {% if locale == 'nl' %}class="active"{% endif %}><img
-    src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28"></a> <a href="?lang=fr" {% if locale == 'fr'
-    %}class="active"{% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28"></a> </div> </header>
-    -->
     <form action="/user/auth/login" method="POST">
       <div class="login-box mobile-rm-card">
         <h3>{{ __('login.header') }}</h3>

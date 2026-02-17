@@ -1,8 +1,5 @@
 import { showToast } from "../components/toast.js";
 
-/**
- * Konfiguracja dla generatora Excel
- */
 const EXCEL_CONFIG = {
   HEADER_BG_COLOR: 'E0E0E0',
   HEADER_TEXT_COLOR: '000000',
@@ -13,12 +10,10 @@ const EXCEL_CONFIG = {
   MAX_SHEET_NAME_LENGTH: 30,
   SKIP_FIRST_ROW: true,
   SKIP_FIRST_COLUMN: true,
-  LOGO_SPACE_ROWS: 6  // Liczba wierszy zarezerwowanych na logo
+  LOGO_SPACE_ROWS: 6  
 };
 
-/**
- * Klasa odpowiedzialna za generowanie plików Excel z tabel HTML
- */
+
 class ExcelGenerator {
   constructor(config = EXCEL_CONFIG) {
     this.config = { ...EXCEL_CONFIG, ...config };
@@ -28,9 +23,7 @@ class ExcelGenerator {
     this.separatorRows = [];
   }
 
-  /**
-   * Główna metoda generująca plik Excel
-   */
+
   async generate(containerId = '#print-template-container') {
     try {
       const metadata = this._getDocumentMetadata();
@@ -56,9 +49,7 @@ class ExcelGenerator {
     }
   }
 
-  /**
-   * Pobiera metadane dokumentu (ID, nazwa komisji)
-   */
+
   _getDocumentMetadata() {
     const comment = document.getElementById('comment');
     const commision = document.getElementById('commission-name') ||
@@ -74,9 +65,7 @@ class ExcelGenerator {
     };
   }
 
-  /**
-   * Pobiera wszystkie tabele z kontenera
-   */
+
   _getTablesFromContainer(containerId) {
     const tables = document.querySelectorAll(`${containerId} table`);
 
@@ -87,9 +76,7 @@ class ExcelGenerator {
     return tables;
   }
 
-  /**
-   * Ekstraktuje logo z kontenera i konwertuje do base64
-   */
+
   async _extractLogo(containerId) {
     try {
       const container = document.querySelector(containerId);
@@ -103,13 +90,13 @@ class ExcelGenerator {
         }
       }
       
-      // Jeśli nie znaleziono logo w kontenerze, użyj domyślnego
+      
       if (!logoUrl) {
         console.log('Logo not found in container, using default /img/logo.png');
         logoUrl = '/img/logo.png';
       }
 
-      // Jeśli logo już jest w base64, zwróć je
+      
       if (logoUrl.startsWith('data:')) {
         console.log('Logo is already base64');
         return {
@@ -118,7 +105,7 @@ class ExcelGenerator {
         };
       }
 
-      // W przeciwnym razie pobierz i skonwertuj
+      
       console.log('Converting image to base64:', logoUrl);
       return await this._imageToBase64(logoUrl);
     } catch (error) {
@@ -127,16 +114,14 @@ class ExcelGenerator {
     }
   }
 
-  /**
-   * Konwertuje obraz do base64
-   */
+
   async _imageToBase64(url) {
     return new Promise((resolve, reject) => {
       const img = new Image();
       
-      // Nie ustawiaj crossOrigin dla lokalnych ścieżek
+      
       if (!url.startsWith('http')) {
-        // Dla lokalnych ścieżek nie potrzebujemy CORS
+        
         console.log('Local image path detected');
       } else {
         img.crossOrigin = 'Anonymous';
@@ -177,9 +162,7 @@ class ExcelGenerator {
     });
   }
 
-  /**
-   * Dodaje logo do arkusza Excel
-   */
+
   async _addLogoToWorksheet(worksheet, logoData) {
     if (!logoData || !logoData.base64) {
       console.log('No logo data to add to worksheet');
@@ -191,11 +174,11 @@ class ExcelGenerator {
       const numCols = range.e.c + 1;
       const startCol = this.config.SKIP_FIRST_COLUMN ? 1 : 0;
 
-      // Wiersz 2 (indeks 1) - na środku tabeli
+      
       const logoRow = 1;
       const middleCol = Math.floor(numCols / 2);
 
-      // Merguj komórki na logo (od środka-2 do środka+2)
+      
       const mergeStart = Math.max(startCol, middleCol - 2);
       const mergeEnd = Math.min(numCols - 1, middleCol + 2);
 
@@ -208,7 +191,7 @@ class ExcelGenerator {
         e: { r: logoRow + 3, c: mergeEnd }
       });
 
-      // Ustaw wysokość wierszy dla logo
+      
       if (!worksheet['!rows']) {
         worksheet['!rows'] = [];
       }
@@ -218,10 +201,10 @@ class ExcelGenerator {
       worksheet['!rows'][logoRow] = { hpt: 60 };
       worksheet['!rows'][logoRow + 1] = { hpt: 60 };
 
-      // Spróbuj dodać obraz używając różnych metod
+      
       const cellAddress = XLSX.utils.encode_cell({ r: logoRow, c: middleCol });
 
-      // Metoda 1: Użyj !images jeśli jest dostępne
+      
       if (!worksheet['!images']) {
         worksheet['!images'] = [];
       }
@@ -237,7 +220,7 @@ class ExcelGenerator {
         '!datatype': 'base64'
       });
 
-      // Metoda 2: Dodaj jako komentarz z obrazem (fallback)
+      
       if (!worksheet[cellAddress]) {
         worksheet[cellAddress] = { t: 's', v: '' };
       }
@@ -249,7 +232,7 @@ class ExcelGenerator {
         }
       };
 
-      // Metoda 3: Dodaj hyperlink do obrazu jako fallback
+      
       worksheet[cellAddress].l = {
         Target: `data:image/png;base64,${logoData.base64}`,
         Tooltip: 'Logo'
@@ -261,9 +244,7 @@ class ExcelGenerator {
     }
   }
 
-  /**
-   * Ekstraktuje dane ze wszystkich tabel
-   */
+
   _extractDataFromTables(tables) {
     tables.forEach(table => {
       this._processTable(table);
@@ -273,9 +254,6 @@ class ExcelGenerator {
     this._removeTrailingSeparator();
   }
 
-  /**
-   * Przetwarza pojedynczą tabelę
-   */
   _processTable(table) {
     const headers = this._extractHeaders(table);
     this.combinedData.push(headers);
@@ -285,17 +263,11 @@ class ExcelGenerator {
     rows.forEach(row => this.combinedData.push(row));
   }
 
-  /**
-   * Ekstraktuje nagłówki z tabeli
-   */
   _extractHeaders(table) {
     return Array.from(table.querySelectorAll('thead th'))
       .map(th => th.innerText.trim());
   }
 
-  /**
-   * Ekstraktuje wiersze danych z tabeli
-   */
   _extractRows(table) {
     const tbodyRows = table.querySelectorAll('tbody tr');
 
@@ -305,16 +277,12 @@ class ExcelGenerator {
       );
     }
 
-    // Fallback dla tabel bez tbody
     const allRows = table.querySelectorAll('tr');
     return Array.from(allRows).slice(1).map(tr =>
       Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim())
     );
   }
 
-  /**
-   * Dodaje separator między tabelami
-   */
   _addSeparator() {
     const lastRow = this.combinedData[this.combinedData.length - 1];
     const separator = Array(lastRow.length).fill('');
@@ -322,9 +290,6 @@ class ExcelGenerator {
     this.separatorRows.push(this.combinedData.length - 1);
   }
 
-  /**
-   * Usuwa ostatni separator jeśli jest pusty
-   */
   _removeTrailingSeparator() {
     const lastRow = this.combinedData[this.combinedData.length - 1];
     if (lastRow && lastRow.every(cell => cell === '')) {
@@ -333,9 +298,7 @@ class ExcelGenerator {
     }
   }
 
-  /**
-   * Dodaje pusty wiersz i kolumnę na początku oraz przestrzeń na logo
-   */
+
   _addEmptyRowAndColumn() {
     if (!this.config.SKIP_FIRST_COLUMN && !this.config.SKIP_FIRST_ROW) {
       return;
@@ -346,7 +309,7 @@ class ExcelGenerator {
     }
 
     if (this.config.SKIP_FIRST_ROW) {
-      // Dodaj wiersze na logo (zamiast tylko jednego pustego wiersza)
+      
       const numCols = this.combinedData[0]?.length || 1;
       for (let i = 0; i < this.config.LOGO_SPACE_ROWS; i++) {
         const emptyRow = Array(numCols).fill('');
@@ -355,9 +318,7 @@ class ExcelGenerator {
     }
   }
 
-  /**
-   * Dostosowuje indeksy po dodaniu offsetu
-   */
+
   _adjustIndicesForOffset() {
     const offset = this.config.SKIP_FIRST_ROW ? this.config.LOGO_SPACE_ROWS : 0;
 
@@ -367,16 +328,12 @@ class ExcelGenerator {
     }
   }
 
-  /**
-   * Tworzy worksheet z danych
-   */
+
   _createWorksheet() {
     return XLSX.utils.aoa_to_sheet(this.combinedData);
   }
 
-  /**
-   * Aplikuje style dla nagłówków
-   */
+
   _applyHeaderStyles(worksheet) {
     const startCol = this.config.SKIP_FIRST_COLUMN ? 1 : 0;
 
@@ -402,9 +359,7 @@ class ExcelGenerator {
     });
   }
 
-  /**
-   * Aplikuje obramowania dla komórek
-   */
+
   _applyBorderStyles(worksheet) {
     const range = XLSX.utils.decode_range(worksheet['!ref']);
     const startCol = this.config.SKIP_FIRST_COLUMN ? 1 : 0;
@@ -423,9 +378,7 @@ class ExcelGenerator {
     }
   }
 
-  /**
-   * Tworzy obiekt stylu obramowania
-   */
+
   _createBorderStyle() {
     const borderConfig = {
       style: this.config.BORDER_STYLE,
@@ -440,17 +393,12 @@ class ExcelGenerator {
     };
   }
 
-  /**
-   * Ustawia szerokości kolumn
-   */
   _applyColumnWidths(worksheet) {
     const columnWidths = this._calculateColumnWidths();
     worksheet['!cols'] = columnWidths;
   }
 
-  /**
-   * Kalkuluje optymalne szerokości kolumn
-   */
+
   _calculateColumnWidths() {
     const widths = [];
     const numCols = this.combinedData[0]?.length || 0;
@@ -471,9 +419,7 @@ class ExcelGenerator {
     return widths;
   }
 
-  /**
-   * Zapisuje workbook do pliku
-   */
+
   _saveWorkbook(worksheet, metadata) {
     this.workbook = XLSX.utils.book_new();
 
@@ -484,16 +430,10 @@ class ExcelGenerator {
     XLSX.writeFile(this.workbook, fileName);
   }
 
-  /**
-   * Sanityzuje nazwę arkusza (maksymalna długość)
-   */
   _sanitizeSheetName(name) {
     return name.slice(0, this.config.MAX_SHEET_NAME_LENGTH);
   }
 
-  /**
-   * Generuje nazwę pliku
-   */
   _generateFileName(metadata) {
     const sanitizedName = this._sanitizeSheetName(metadata.name);
     return `${metadata.id}"${sanitizedName}".xlsx`;
@@ -525,9 +465,6 @@ class ExcelGenerator {
   }
 }
 
-/**
- * Funkcja fasadowa dla zachowania kompatybilności wstecznej
- */
 export async function generateExcel() {
   const generator = new ExcelGenerator();
   await generator.generate();
@@ -543,12 +480,12 @@ export async function generatePdf(isShort = false) {
 
 
   try {
-    // Sprawdź czy kłódka jest otwarta (sprawdź po ID kłódki)
+    
     let hasPricesAccess = false;
     let printBtns = document.querySelectorAll('[id="print-button"]')
     let shortPrintBtns = document.querySelectorAll('[id="short-print-button"]')
 
-    // Sprawdź wszystkie przyciski odpowiedniego typu
+    
     const buttonsToCheck = isShort ? shortPrintBtns : printBtns;
     for (const btn of buttonsToCheck) {
       if (btn.dataset.lock === 'true') {
@@ -563,7 +500,7 @@ export async function generatePdf(isShort = false) {
     const response = await fetch(downloadUrl);
     console.log(response)
     if (!response.ok) {
-      // Sprawdź czy odpowiedź jest w formacie JSON (błąd)
+      
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         const errorData = await response.json();
@@ -575,11 +512,8 @@ export async function generatePdf(isShort = false) {
       throw new Error(`HTTP ${response.status}`);
     }
 
-    // Jeśli odpowiedź jest OK, pobierz PDF
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
-
-    // Utwórz ukryty link i kliknij go, żeby rozpocząć pobieranie
     const link = document.createElement('a');
     link.href = url;
     link.download = `zamowienie_${orderId}.pdf`;
@@ -587,8 +521,6 @@ export async function generatePdf(isShort = false) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
-    // Zwolnij URL
     window.URL.revokeObjectURL(url);
 
   } catch (error) {

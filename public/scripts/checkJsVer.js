@@ -2,25 +2,25 @@
 function checkJsVer() {
     let esVersion = 3;
 
-    // ES5
+    
     if ('getOwnPropertyNames' in Object) esVersion = 5;
 
-    // ES6 (2015)
+    
     if (typeof Map !== 'undefined') esVersion = 2015;
 
-    // ES2016
+    
     if ('includes' in Array.prototype) esVersion = 2016;
 
-    // ES2017
+    
     if (typeof Proxy !== 'undefined') esVersion = 2017;
 
-    // ES2020 - optional chaining (bezpieczny test)
+    
     if (supportsOptionalChaining()) esVersion = 2020;
 
-    // ES2021 - logical assignment (||=)
+    
     if (supportsLogicalAssignment()) esVersion = 2021;
 
-    // ES2022 - at() method (Array.prototype.at)
+    
     if (typeof [].at !== 'undefined') esVersion = 2022;
 
     console.log('ES version:', esVersion);
@@ -47,7 +47,7 @@ function supportsLogicalAssignment() {
     }
 }
 
-// Uruchomienie
+
 const version = checkJsVer();
 let jsWarnContainer = document.getElementById('js-warning-container')
 let loginBox = document.querySelector('.login-box');

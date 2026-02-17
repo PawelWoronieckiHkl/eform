@@ -26,17 +26,17 @@ function startIntroTour(pathname = window.location.pathname) {
 
     intro.start();
 
-    // localStorage do przechowywania kroków między stronami
+    
     const storageKey = `introStep_${pathname.replace(/\//g, '_')}`;
     let stepCounter = parseInt(localStorage.getItem(storageKey)) || 0;
     let listenersAdded = false;
 
-    // Funkcja zapisująca krok do localStorage
+    
     function saveStep() {
         localStorage.setItem(storageKey, stepCounter.toString());
     }
 
-    // Funkcja do dodawania event listenerów na przyciski
+    
     function addButtonListeners() {
         if (listenersAdded) return;
 
@@ -50,7 +50,7 @@ function startIntroTour(pathname = window.location.pathname) {
                     saveStep();
                     console.log("NEXT - Krok:", stepCounter);
 
-                    // Logika przejścia między stronami
+                    
                     if (pathname === '/' && stepCounter === 4) {
                         window.location.href = "/orders";
                     }
@@ -71,7 +71,7 @@ function startIntroTour(pathname = window.location.pathname) {
         }, 100);
     }
 
-    // Funkcja do logowania aktualnego kroku
+    
     function logCurrentStep(targetElement) {
         const { container, elements, extra } = getDivToChangeIndex(window.location.pathname);
 
@@ -137,7 +137,7 @@ function turnOffIntroTour() {
 
 }
 
-// Wait for DOM to be fully loaded
+
 document.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
         startIntroTour();

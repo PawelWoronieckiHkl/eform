@@ -26,7 +26,7 @@ const ordersToggle = document.getElementById('orders-toggle');
 console.log(ordersToggle.checked, 'sprawdzam skrypt');
 const ordersSection = document.getElementById('last-orders-section');
 
-// Handle checkbox change
+
 ordersToggle.addEventListener('change', function () {
   if (this.checked) {
     ordersSection.classList.remove('d-none');

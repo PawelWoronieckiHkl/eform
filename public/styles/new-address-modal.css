@@ -1,0 +1,51 @@
+#add-address-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    width: min(92vw, 560px);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+#add-address-modal[open] {
+    animation: addAddressModalIn 180ms ease-out;
+}
+#add-address-modal::backdrop {
+    background: rgba(0, 0, 0, 0.856);
+}
+#add-address-modal[open]::backdrop {
+    animation: addAddressBackdropIn 180ms ease-out;
+}
+#add-address-modal form {
+    min-width: 280px;
+}
+@media (max-width: 576px) {
+    #add-address-modal {
+        width: 94vw;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    #add-address-modal[open],
+    #add-address-modal[open]::backdrop {
+        animation: none;
+    }
+}
+@keyframes addAddressModalIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+@keyframes addAddressBackdropIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

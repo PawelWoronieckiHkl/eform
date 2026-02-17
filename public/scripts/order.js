@@ -23,7 +23,7 @@ const discountBtn = document.getElementById('discount-btn');
 const moveUpBtns = document.querySelectorAll('.move-up-btn')
 const moveDownBtns = document.querySelectorAll('.move-down-btn')
 getPrices()
-// DELETE dialog
+
 export async function deleteItem(path) {
   const res = await fetch(path, {
     method: 'DELETE',
@@ -63,7 +63,7 @@ const duplicateBtns = document.querySelectorAll('.duplicate-btn')
 duplicateBtns.forEach((btn) => {
 
   btn.addEventListener('click', async () => {
-    // createDuplicateDiag(btn)
+    
     await duplicate(btn)
 
   })
@@ -313,7 +313,7 @@ unlockBtns.forEach(unlockBtn => {
   });
 });
 
-// Funkcje do przesuwania pozycji
+
 async function movePosition(positionId, direction) {
   try {
     const response = await fetch(`/position/${positionId}/move-${direction}`, {
@@ -325,7 +325,7 @@ async function movePosition(positionId, direction) {
 
     if (result.success) {
       showToast('success', result.message);
-      // Odśwież stronę po krótkim czasie, aby pokazać nową kolejność
+      
       setTimeout(() => {
         window.location.reload();
       }, 500);
@@ -338,7 +338,7 @@ async function movePosition(positionId, direction) {
   }
 }
 
-// Obsługa przycisków przesuwania w górę
+
 moveUpBtns.forEach(btn => {
   btn.addEventListener('click', async (event) => {
     event.stopPropagation();
@@ -347,7 +347,7 @@ moveUpBtns.forEach(btn => {
   });
 });
 
-// Obsługa przycisków przesuwania w dół
+
 moveDownBtns.forEach(btn => {
   btn.addEventListener('click', async (event) => {
     event.stopPropagation();

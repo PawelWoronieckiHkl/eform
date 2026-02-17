@@ -83,7 +83,7 @@ export class FormsManager {
                 console.warn('Brak pasujących aliasów dla:', this.clientData);
                 return {};
             }
-
+            this.foundAliases = foundAliases;
             const allObjects = {};
 
             for (const foundAlias of foundAliases) {
@@ -112,7 +112,9 @@ export class FormsManager {
             return {}
         }
     }
-
+    getAliases(paramName){
+        return this.foundAliases.find(alias => alias.param === paramName) || [];
+    }
     async getClientScripts() {
         // Sprawdź czy this.groupsDetails istnieje i nie jest puste
         if (!this.groupsDetails || !Array.isArray(this.groupsDetails)) {

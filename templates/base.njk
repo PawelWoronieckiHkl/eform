@@ -59,11 +59,11 @@
         }
     </style>
     <script>
-        // Instant nav state application - prevents flash
+
         (function () {
             const isCollapsed = localStorage.getItem('nav-collapsed') === 'true';
             const backText = document.querySelector('.back-text');
-            // Hide or show back text based on nav state
+
             if (isCollapsed) {
                 document
                     .documentElement
@@ -113,7 +113,6 @@
     </nav>
 
     <nav class="desktop-nav">
-        <!-- Toggle button for collapsing nav -->
         <button class="nav-toggle-btn" id="navToggleBtn" type="button">
             <svg class="nav-toggle-icon" width="20" height="20" viewbox="0 0 24 24" fill="none">
                 <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -287,9 +286,6 @@
                 </div>
 {% endif %}
         {# END ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-
-
-
         {% block content %}{% endblock %}
         <div id='dialog-container'>
             <dialog id='dialog-space'></dialog>

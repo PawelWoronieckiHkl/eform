@@ -15,23 +15,23 @@ import {
 export function getProcedures(inputs, allOptionsByParameter, values, options, actualParameter, value, tagName, displayValues, params) {
     logFunctionName('getProceduresEEEEEEE');
 
-    // Inicjalizacja głównego obiektu walidatorów
+    
     if (!window.inputsValidators) {
         window.inputsValidators = {};
     }
-    // PROBLEM JEST Z RESETOWANIEM DOM KILKA RAZY NIEPOTRZEBNIE
+    
 
     if (tagName != "INPUT") {
-        // Sprawdź czy actualParameter istnieje w allOptionsByParameter
+        
         if (!allOptionsByParameter || !allOptionsByParameter[actualParameter]) {
             console.warn(`Parametr ${actualParameter} nie istnieje w allOptionsByParameter`);
             return;
         }
 
-        // console.log(actualParameter, 'siema')
+        
         let selectedValue = allOptionsByParameter[actualParameter].find(v => v.VALUE == value);
 
-        // Sprawdź czy znaleziono selectedValue
+        
         if (!selectedValue) {
             console.warn(`Nie znaleziono wartości ${value} dla parametru ${actualParameter}`);
             return;
@@ -40,7 +40,7 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
         window.actualParam = actualParameter;
         window.actualValue = value;
 
-        // Inicjalizacja struktury dla aktualnego parametru
+        
         if (!window.inputsValidators[window.actualParam]) {
             window.inputsValidators[window.actualParam] = {};
         }
@@ -51,7 +51,7 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
 
 
         try {
-            //    console.log('essa', selectedValue.PROC, '2');
+            
             const checkProcedure = window.FormulaHandler.evaluateFormula(
                 selectedValue.PROC,
                 values,
@@ -72,7 +72,7 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
     }
 
     if (window.checkedParams) {
-        //    console.log('jestem w środku');
+        
 
         Object.entries(window.checkedParams).forEach(([paramName, paramValue]) => {
 
@@ -84,25 +84,25 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
                         window.inputsValidators[paramName] = {};
                     }
 
-                    // 
+                    
                     if (paramValue.VALUE) {
                         if (!window.inputsValidators[paramName][paramValue.VALUE]) {
                             window.inputsValidators[paramName][paramValue.VALUE] = {};
                         }
 
-                        //tu jest probem 
+                        
                         window.ignoreDom = true
 
-                        // Zapisz obecne wartości
+                        
                         const prevParam = window.actualParam;
                         const prevValue = window.actualValue;
 
-                        // Ustaw kontekst dla tego parametru
+                        
                         window.actualParam = paramName;
                         window.actualValue = paramValue.VALUE;
 
                         try {
-                            //    console.log('essa', paramName, paramValue.PROC, '1');
+                            
                             const checkProcedure = window.FormulaHandler.evaluateFormula(
                                 paramValue.PROC,
                                 values,
@@ -115,7 +115,7 @@ export function getProcedures(inputs, allOptionsByParameter, values, options, ac
                         } catch (error) {
                             console.error(`Błąd procedury dla ${paramName}/${paramValue.VALUE}:`, error);
                         } finally {
-                            // Przywróć poprzednie wartości
+                            
                             window.actualParam = prevParam;
                             window.actualValue = prevValue;
                             window.ignoreDom = false;
@@ -154,11 +154,11 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                     const domValue = functions.DOM;
                     values[param] = domValue;
                     setDescription(values, domValue, allOptionsByParameter, param)
-                    // console.log(domValue, input?.id, 'domValue w setDefaultValues');
+                    
                     try {
                         const curPar = buildValuesToDisplay(allOptionsByParameter, domValue, input?.id, displayValues, input.tagName);
-                        // console.log(curPar, 'domValue w setDefaultValues 1')
-                        // Ustawianie wartości DOM w UI
+                        
+                        
                         if (input.tagName === 'INPUT') {
                             input.value = domValue;
                         }
@@ -171,7 +171,7 @@ export function setDefaultValues(inputs, values, allOptionsByParameter, displayV
                             }
                             else {
                                 if (domValue === '<NONE>') {
-                                    // console.log(curPar, 'domValue w setDefaultValues 2')
+                                    
                                     buttonLabel = currentParam?.DESCRIPTION ?? ""
                                 }
                                 else {
@@ -281,7 +281,7 @@ export function setInputValid(input, isValid, min, max) {
 
     const parent = input.parentNode;
 
-    // Dodaj klasę do rodzica, żeby ustawić pozycjonowanie
+    
     if (!parent.classList.contains('input-with-icon')) {
         parent.classList.add('input-with-icon');
     }
@@ -297,7 +297,7 @@ export function setInputValid(input, isValid, min, max) {
     const label = document.createElement('label');
 
     if (!isValid) {
-        //    console.log('ustawiam na invalid');
+        
         label.id = labelId;
         label.setAttribute('for', input.id);
         res = false;
@@ -413,7 +413,7 @@ export function validateAllFieldsOnSubmit(inputs, values) {
 
             }
         }
-        // console.log(inputFlags, param, inputFlags[param], 'inputFlags[param] przed ustawieniem')
+        
         inputFlags[param] = isValid;
 
     }
@@ -424,16 +424,16 @@ export function validateAllFieldsOnSubmit(inputs, values) {
 
 }
 
-// POPRCUJ TUTAJ
+
 export function clearDisabledValues(values, displayValues) {
     const enabledParamsKeys = new Set(Object.keys(enabledParams));
-    //    console.log('CLEAR DISABLED VALUES')
+    
     for (const key of Object.keys(values)) {
 
         const baseParam = key.replace(/___DESCRIPTION$/, '');
 
         if (key.includes('___VISIBLE') || baseParam.includes('___TITLE') || baseParam.includes('___DICT')) {
-            // console.log(key, 'baseParam w clearDisabledValues')
+            
             continue;
         }
 
@@ -444,7 +444,7 @@ export function clearDisabledValues(values, displayValues) {
             const alias_key = `${baseParam}_ALIAS`;
             values[visibleKey] = false;
 
-            // Usuń lub ustaw na pusty string zarówno dla klucza jak i desc
+            
             if (values[desc] !== undefined) {
                 values[desc] = '';
             }
@@ -462,7 +462,7 @@ export function clearDisabledValues(values, displayValues) {
             const isDescription = key.endsWith('___DESCRIPTION');
             const displayKey = isDescription ? baseParam : key;
             const displayParam = displayValues.get(displayKey);
-            // console.log(displayKey, displayParam, 'displayParam przed oczyszczeniem', (displayParam && displayParam.locked !== true) );
+            
 
             if (displayParam && displayParam.locked !== true) {
                 isDescription || displayParam.option_value != 'undefined' || !displayParam.option_value
@@ -476,18 +476,18 @@ export function clearDisabledValues(values, displayValues) {
 
             for (const skipParam of window.skipCountParams) {
                 if (displayKey === skipParam) {
-                    // Zamiast usuwać, ustaw row = '0' dla kalkulowanych parametrów
+                    
                     const displayParam = displayValues.get(displayKey);
                     if (displayParam) {
                         displayParam.row = '0';
                         displayValues.set(displayKey, displayParam);
                     }
-                    // console.log(`Ustawiono row='0' dla ${displayKey}`);
+                    
                 }
             }
 
         } else if (enabledParamsKeys.has(baseParam)) {
-            // Ustawiamy ___VISIBLE na true dla enabled parametrów
+            
             const visibleKey = `${baseParam}___VISIBLE`;
             values[visibleKey] = true;
         }

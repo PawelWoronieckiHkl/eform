@@ -1,9 +1,7 @@
-/* IntroJS z-index fixes - ensure it's above all other elements */
 .introjs-overlay {
     z-index: 198 !important;
     background: rgba(0, 0, 0, 0.7) !important;
 }
-
 .introjs-helperLayer {
     z-index: 198 !important;
     position: fixed !important;
@@ -14,12 +12,10 @@
     z-index: 204 !important;
     display: none !important;
 }
-
 .introjs-tooltipReferenceLayer {
     z-index: 200 !important;
     position: absolute !important;
 }
-
 .introjs-tooltip {
     z-index: 2001 !important;
     background: white !important;
@@ -31,8 +27,6 @@
     line-height: 1.5 !important;
     padding:15px !important
 }
-
-/* Center the first tooltip (welcome message) */
 .introjs-tooltip.introjs-floating {
     position: fixed !important;
     top: 50% !important;
@@ -40,8 +34,6 @@
     transform: translate(-50%, -50%) !important;
     margin: 0 !important;
 }
-
-/* Style for tooltips without specific element (first step) */
 .introjs-tooltipReferenceLayer:first-child .introjs-tooltip {
     position: absolute !important;
     top: 50% !important;
@@ -51,22 +43,16 @@
     width: 0px !important;
     text-align: center !important;
 }
-
 .introjs-arrow {
     z-index: 203 !important;
     border-color: #3f4750 !important;
 }
-
-/* Force visibility for highlighted elements */
 .introjs-showElement,
 .introjs-relativePosition {
     z-index: 200 !important;
     position: relative !important;
-
     border-radius: 8px !important;
 }
-
-/* Specific navbar button highlighting */
 #new-order-nav-btn.introjs-showElement,
 #orders-nav-btn.introjs-showElement,
 #new-order-nav-btn.introjs-relativePosition,
@@ -77,18 +63,14 @@
 #orders-history-nav-btn.introjs-relativePosition {
     z-index: 99999999 !important;
     position: relative !important;
-
     border: 3px solid #3f4750  !important;
     border-radius: 8px !important;
     transform: scale(1.05) !important;
     box-shadow: 0 0 20px #3f4750  !important;
 }
-
-/* Alternative highlighting for any intro step */
 .introjs-fixedTooltip {
     z-index: 200 !important;
 }
-
 .introjs-under-tooltip{
     z-index: 1000 !important;
     position: fixed !important;
@@ -96,7 +78,6 @@
     left: 60% !important;
     transform: translateX(-50%) !important;
 }
-/* Ensure buttons work */
 .introjs-button {
     padding: 8px 16px !important;
     margin: 5px !important;
@@ -106,11 +87,9 @@
     border: none !important;
     cursor: pointer !important;
 }
-
 .introjs-button:hover {
     background: #3f4750  !important;
 }
-
 .introjs-skipbutton {
     background: #f5f5f5 !important;
     padding: 10px !important;
@@ -118,51 +97,36 @@
     border: 1px solid #ccc !important;
     border-radius: 12px !important;
 }
-
 .introjs-skipbutton:hover {
     background: #545b62 !important;
 }
-
-/* Fix for collapsed navbar elements */
 html.nav-collapsed .introjs-showElement {
     z-index: 222 !important;
     position: relative !important;
-
 }
-
-/* Ensure navbar buttons are visible during intro */
 #new-order-nav-btn.introjs-showElement,
 #orders-nav-btn.introjs-showElement
  {
     z-index: 198 !important;
     border: 2px solid #3f4750 !important;
-    
 }
-
-/* Fix for mobile navbar issues */
 @media (max-width: 768px) {
     .introjs-overlay {
         z-index: 199 !important;
     }
-
     .introjs-tooltip {
         z-index: 201 !important;
         max-width: 90vw !important;
     }
-
     .introjs-showElement {
         z-index: 197 !important;
     }
 }
-
-/* Ensure intro works with collapsed nav */
 html.nav-collapsed .desktop-nav .introjs-showElement {
     z-index: 197 !important;
     position: relative !important;
     transform: none !important;
 }
-
-/* Fix tooltip positioning */
 .introjs-tooltip {
     position:absolute !important;
     min-width: 400px !important;
@@ -170,16 +134,12 @@ html.nav-collapsed .desktop-nav .introjs-showElement {
     font-size: 14px !important;
     line-height: 1.5 !important;
 }
-
 .introjs-tooltip .introjs-tooltiptext {
-
     padding: 15px !important;
 }
-
 .introjs-bottom-left-aligned {
     margin-top: +60px !important;
 }
-
 .introjs-button {
     padding: 8px 16px !important;
     margin: 5px !important;

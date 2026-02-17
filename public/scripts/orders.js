@@ -1,7 +1,7 @@
 import { showToast } from "./components/toast.js";
 import { createInfoDialog } from "./components/htmlManipulator.js";
 import { validate } from './base.js'
-// import { deleteDiag } from './order.js'
+
 const otherAddrFlag = { value: false };
 const addrFlag = { value: false };
 async function prepareRestData() {
@@ -237,9 +237,9 @@ else if (newOrderButton) {
 	newOrderButton.addEventListener('click', runCreateOrder);
 
 	document.addEventListener('keydown', (event) => {
-		// Sprawdzamy, czy Enter został wciśnięty
+		
 		if (event.key === 'Enter') {
-			event.preventDefault(); // opcjonalnie, by nie submitować formularza domyślnie
+			event.preventDefault(); 
 			runCreateOrder();
 		}
 	});

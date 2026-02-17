@@ -4,7 +4,6 @@ const db = require("../db/db_helper.js");
 async function getPriceAfterDiscount(orderId) {
     const discount = await db.getDiscount(orderId);
     const {visible,hidden} = await db.getTotal(orderId);
-    console.log(discount, visible, '@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     const discountPercentage = discount.client_discount_percentage;
     const discountValue = discount.client_discount_value;
     if (discountPercentage && discountPercentage > 0) {

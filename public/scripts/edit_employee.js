@@ -13,18 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordConfirmIcon = document.getElementById('password-confirm-icon');
     const matchMessage = document.getElementById('password-match-message');
 
-    // Przełącz na tryb edycji
+    
     editModeBtn.addEventListener('click', () => {
         viewMode.style.display = 'none';
         editForm.style.display = 'block';
     });
 
-    // Anuluj edycję i wróć do widoku
+    
     cancelEditBtn.addEventListener('click', () => {
         editForm.style.display = 'none';
         viewMode.style.display = 'block';
 
-        // Resetuj pola hasła
+        
         changePasswordToggle.checked = false;
         passwordFields.style.display = 'none';
         passwordInput.value = '';
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         matchMessage.textContent = '';
     });
 
-    // Toggle widoczności pól hasła
+    
     changePasswordToggle.addEventListener('change', (e) => {
         if (e.target.checked) {
             passwordFields.style.display = 'block';
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Toggle widoczności hasła
+    
     togglePasswordBtn.addEventListener('click', () => {
         const type = passwordInput.type === 'password' ? 'text' : 'password';
         passwordInput.type = type;
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordConfirmIcon.classList.toggle('fa-eye-slash');
     });
 
-    // Walidacja zgodności haseł
+    
     function checkPasswordMatch() {
         if (!changePasswordToggle.checked) return true;
 
@@ -92,11 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
     passwordInput.addEventListener('input', checkPasswordMatch);
     passwordConfirmInput.addEventListener('input', checkPasswordMatch);
 
-    // Obsługa formularza
+    
     editForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Sprawdź zgodność haseł jeśli zmiana hasła jest włączona
+        
         if (changePasswordToggle.checked && !checkPasswordMatch()) {
             alert('Hasła nie są zgodne!');
             return;
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             phone: document.getElementById('phone').value.trim(),
         };
 
-        // Dodaj hasło tylko jeśli użytkownik chce je zmienić
+        
         if (changePasswordToggle.checked) {
             formData.password = passwordInput.value;
         }

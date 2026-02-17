@@ -11,6 +11,7 @@ async function checkIfStatusExists(record) {
     return result;
 }
 
+
 async function insertStatus(record) {
     const query = `INSERT INTO position_statuses
     (organization_ident, user_ident, order_idx, order_pos, status, shipping_date, parcel_code)
@@ -26,6 +27,7 @@ async function insertStatus(record) {
     ]);
     return result;
 }	
+
 
 async function getUserStatuses(userIdent, orderIdx) {
     console.log(userIdent, orderIdx, 'getUserStatuses params');
@@ -52,6 +54,8 @@ async function updateStatus(record) {
     ]);
     return result;
 }
+
+
 module.exports = { 
     checkIfStatusExists,
     insertStatus,

@@ -21,20 +21,20 @@ function sortShortJsonByParamsNames(shortJson, paramsNames) {
     let sortedShortJson = {};
     let keysOrder = [];
 
-    // Najpierw dodaj klucze z paramsNames w ich kolejności
+    
     for (let name of paramsNames) {
         if (shortJson.hasOwnProperty(name)) {
             sortedShortJson[name] = shortJson[name];
             keysOrder.push(name);
         }
-        // Dodaj też _ALIAS jeśli istnieje
+        
         if (shortJson.hasOwnProperty(`${name}_ALIAS`)) {
             sortedShortJson[`${name}_ALIAS`] = shortJson[`${name}_ALIAS`];
             keysOrder.push(`${name}_ALIAS`);
         }
     }
 
-    // Potem dodaj wszystkie pozostałe klucze, które nie były w paramsNames
+    
     for (let key in shortJson) {
         if (!keysOrder.includes(key)) {
             sortedShortJson[key] = shortJson[key];

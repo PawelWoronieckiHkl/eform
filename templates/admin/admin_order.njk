@@ -23,10 +23,10 @@
           <div class="content  col-9 center-content">
             <div
               id='order-nav' class='bg-white'>
-              <!-- Główny rząd z przyciskami i tytułem -->
+
               <div
                 class="order-nav-main">
-                <!-- Mobile: Top row with buttons -->
+
                 <div class="mobile-top-row d-block d-md-none">
                   <div id="order-buttons">
                     <a
@@ -51,11 +51,8 @@
                               <img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
                             </div>
                           </div>
-                          <!-- Desktop: Original buttons -->
                           <div
                             id="order-buttons" class="d-none d-md-flex">
-                            <!-- {% block order_del_btn %} <button class="btn btn-outline-danger " id="delete-order-btn" data-href='/orders/order/{{
-                            orderDetails.id }}/delete' type='button'> {{ __('order.delete_order') }} </button> {% endblock %} -->
                             {% block new_pos_btn %}
                               <a
                                 href="/orders/order/{{ orderDetails.id }}/new-position/"
@@ -177,9 +174,7 @@
                                                       <td colspan="1" class="price"></td>
                                                       {% for header in table.headers2 %}
                                                         {% if (not(header in rowObj.item.lockedParams)) %}
-                                                          {% set value = rowObj
-                                .row
-                                .row2[header] %}
+                                                          {% set value = rowObj.row.row2[header] %}
                                                           {% if value and value != '-' and value != '' and (value | float or value == '0') %}
                                                             <td class="price" colspan="2">
                                                               <span class="price-label">{{ header }}:</span>
@@ -193,7 +188,6 @@
                                                   {% endfor %}
                                                 </tbody>
                                               </table>
-                                              <!-- Mobile cards version -->
                                               <div class="mobile-items-list d-block d-md-none">
                                                 {% for rowObj in table.rows %}
                                                   <div class="mobile-item-card" data-position-url="/position/{{ rowObj.item.id }}">

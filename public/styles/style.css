@@ -52,11 +52,9 @@ body {
 #bottom-nav-menu {
 	display: none;
 }
-
 .mobile-nav {
 	display: none !important;
 }
-
 .container {
 	max-width: 1200px;
 	margin: 0 auto;
@@ -139,7 +137,6 @@ button:hover {
 	color: red;
 	font-size: 13px;
 }
-
 @media (max-width: 1300px) {
 	.form-content {
 		margin-left: 260px;
@@ -162,7 +159,6 @@ button:hover {
 	.desktop-nav {
 		display: none;
 	}
-
 	.mobile-nav {
 		display: block !important;
 		position: fixed;
@@ -181,7 +177,6 @@ button:hover {
 	display: grid;
 	margin-top: 10px;
 }
-
 .form-button {
 	margin-left: auto;
 	margin-right: 0;

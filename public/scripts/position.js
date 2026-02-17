@@ -10,7 +10,7 @@ async function checkPhoto(photoName, groupNumber, folderName) {
   return await response.json();
 }
 
-// Funkcja do aktualizacji zdjęć na stronie
+
 async function updatePhotoFields() {
 
   const images = document.querySelectorAll('img.param-img[data-photo-name]');
@@ -23,10 +23,10 @@ async function updatePhotoFields() {
     try {
       const result = await checkPhoto(photoName, groupNumber, folderName);
       if (result.exists) {
-        // Jeśli zdjęcie istnieje, ustaw właściwy src (np. endpoint do pobrania zdjęcia)
+        
         img.src = `/photos/${groupNumber}/${folderName}/${result.photoName}`;
       } else {
-        // Jeśli nie istnieje, zostaw placeholder lub ustaw alternatywny obrazek
+        
         img.src = '/img/placeholder.png';
       }
     } catch (err) {
@@ -47,5 +47,5 @@ document.getElementById('show-json')?.addEventListener('click', function() {
   }
 });
 
-// Wywołaj po załadowaniu strony
+
 document.addEventListener('DOMContentLoaded', updatePhotoFields);

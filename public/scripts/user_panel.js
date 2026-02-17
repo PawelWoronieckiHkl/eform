@@ -7,7 +7,7 @@ const dialogMessage = document.getElementById('dialog-message');
 
 let employeeToDelete = null;
 
-// Obsługa przycisków usuwania
+
 document.querySelectorAll('.delete-employee-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -22,13 +22,13 @@ document.querySelectorAll('.delete-employee-btn').forEach(btn => {
     });
 });
 
-// Anulowanie
+
 cancelBtn.addEventListener('click', () => {
     deleteDialog.close();
     employeeToDelete = null;
 });
 
-// Potwierdzenie usunięcia
+
 confirmBtn.addEventListener('click', async () => {
     if (!employeeToDelete) return;
 
@@ -45,16 +45,16 @@ confirmBtn.addEventListener('click', async () => {
         if (result.success) {
             showToast('success', result.message || 'Pracownik został usunięty');
 
-            // Usuń wiersz z tabeli
+            
             const row = document.querySelector(`tr[data-employee-id="${employeeToDelete}"]`);
             if (row) {
                 row.remove();
             }
 
-            // Sprawdź czy są jeszcze pracownicy
+            
             const remainingRows = document.querySelectorAll('.employee-table tbody tr');
             if (remainingRows.length === 0) {
-                location.reload(); // Przeładuj stronę aby pokazać komunikat "brak pracowników"
+                location.reload(); 
             }
         } else {
             showToast('error', result.message || 'Błąd podczas usuwania pracownika');
@@ -68,7 +68,7 @@ confirmBtn.addEventListener('click', async () => {
     }
 });
 
-// Zamknięcie dialogu przy kliknięciu poza nim
+
 deleteDialog.addEventListener('click', (e) => {
     if (e.target === deleteDialog) {
         deleteDialog.close();

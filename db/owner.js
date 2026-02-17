@@ -6,19 +6,15 @@ async function getUsersByOwner(req) {
     if (!req.session.user?.isOwner) {
         throw new Error("User is not an owner or session is invalid.");
     }
-
     const organizationId = req.session.user.organization;
-
     const query = `
         SELECT u.client_name, u.ident, u.pin, u.id 
         FROM user u
         INNER JOIN organization o ON u.organization_id = o.id
         WHERE o.id = ?;
     `;
-
     try {
         const users = await selectQuery(query, [organizationId]);
-
         return users;
     } catch (error) {
         console.error("Error fetching users by owner:", error);
@@ -27,24 +23,21 @@ async function getUsersByOwner(req) {
 }
 
 
-
 async function getUserIdByIdent(ident) {
-
     const query = `
         SELECT u.id 
         FROM user u
         WHERE u.ident = ?;
     `;
-
     try {
         const user = await selectQuery(query, [ident]);
-
         return user[0]?.id;
     } catch (error) {
         console.error("Error fetching users by owner:", error);
         throw error;
     }
 }
+
 
 async function getUserByIdent(ident) {
     const query = `
@@ -53,7 +46,6 @@ async function getUserByIdent(ident) {
         INNER JOIN organization o ON u.organization_id = o.id
         WHERE u.ident = ?;
     `;
-
     try {
         const user = await selectQuery(query, [ident]);
         console.log(user, 'user by ident query result');

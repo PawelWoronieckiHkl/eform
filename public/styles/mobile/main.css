@@ -1,6 +1,4 @@
 @media (max-width: 767.98px) {
-
-    /* Mobile white theme - clean and simple */
     :root {
         --bg: white;
         --surface: white;
@@ -12,7 +10,6 @@
         --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         --gap: 15px;
     }
-
     html,
     body {
         height: 100% !important;
@@ -26,16 +23,12 @@
         margin: 0 !important;
         padding: 0 !important;
     }
-
-    /* App root container helps center on larger phones while staying full width on small ones */
     .app-container {
         padding: calc(env(safe-area-inset-top) + 12px) 14px calc(env(safe-area-inset-bottom) + 18px);
         max-width: 720px;
         margin: 0 auto;
         box-sizing: border-box;
     }
-
-    /* Card surface used widely */
     .card {
         background: var(--surface);
         border-radius: var(--radius);
@@ -44,12 +37,9 @@
         margin-bottom: var(--gap);
         color: var(--text);
     }
-
     .muted {
         color: var(--muted-text);
     }
-
-    /* Buttons */
     .btn {
         display: inline-flex;
         align-items: center;
@@ -62,20 +52,15 @@
         border: none;
         font-weight: 600;
         min-height: 44px;
-        /* accessible touch target */
     }
-
     .btn:active {
         transform: translateY(1px);
     }
-
     .btn-primary {
         background: linear-gradient(180deg, #ededed, #e0e0e0);
         color: var(--text);
         box-shadow: 0 6px 12px rgba(20, 20, 20, 0.06);
     }
-
-    /* Form controls */
     input[type="text"],
     input[type="password"],
     input[type="email"],
@@ -90,25 +75,19 @@
         font-size: 1rem;
         color: var(--text);
     }
-
-    /* Utility spacing */
     .row {
         display: flex;
         gap: 12px;
         align-items: center;
     }
-
     .col {
         display: flex;
         flex-direction: column;
         gap: 8px;
     }
-
     .spacer {
         height: var(--gap);
     }
-
-    /* Small helper */
     .caption {
         font-size: 0.85rem;
         color: var(--muted-text);

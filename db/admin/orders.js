@@ -64,17 +64,17 @@ async function updateOrderDetails(orderId, comment, commission, contactInfo, sen
 
     const res = await updateQuery(query, [commission, comment, orderId]);
 
-    // ---- ORDER ADDRESS ----
+    
     if (contactInfo) {
-        // Sprawdź, czy zamówienie ma już przypisany adres
+        
         const orderAddressId = await getOrderAddressId(orderId);
         if (!orderAddressId) {
-            // Dodaj nowy adres i przypisz do zamówienia
+            
             const newOrderAddrId = await insertOrderAddress(contactInfo);
             query = `UPDATE \`order\` SET order_address_id = ? WHERE id = ?`;
             await updateQuery(query, [newOrderAddrId, orderId]);
         } else {
-            // Aktualizuj istniejący adres
+            
             query = `
                 UPDATE \`order\`
                 JOIN order_address ON \`order\`.order_address_id = order_address.id
@@ -102,7 +102,7 @@ async function updateOrderDetails(orderId, comment, commission, contactInfo, sen
         }
     }
 
-    // ---- SEND ADDRESS ----
+    
     if (sendAddress) {
         const sendAddressId = await getSendAddressId(orderId);
         if (!sendAddressId) {
@@ -183,7 +183,7 @@ where o.id like ?`
     }
 
     let orderDetails = await selectQuery(orderDetailsQuery, orderId);
-    // console.log(JSON.stringify(orderDetails))
+    
     orderDetails = dateUtils.humanizeData(orderDetails)[0];
     console.log(orderDetails, 'ORDER DETAILS')
     return { orderDetails, orderItems }

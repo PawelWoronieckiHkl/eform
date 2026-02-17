@@ -3,17 +3,14 @@
 		margin-left: 260px;
 		max-width: calc(100% - 290px);
 	}
-
 	.container {
 		padding: 10px;
 	}
-
 	#dynamic-form {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 	}
 }
-
 @media (max-width: 920px) {
 	#dynamic-form {
 		grid-template-columns: 1fr;
@@ -22,22 +19,18 @@
 		width:80%;
 	}
 }
-
 @media (max-width: 850px) {
 	.desktop-nav {
 		display: none !important;
 	}
-
 	[class$="-select-area"] {
 		display: grid;
 		flex-direction: column;
 	  }
-	  
 	  [class$="-select-area"] > button {
 		display: block;
 		width: 90% !important;
 	  }
-
 	.mobile-nav {
 		display: block !important;
 		position: fixed;
@@ -46,7 +39,6 @@
 		width: 100%;
 		z-index: 110;
 	}
-
 	.form-content {
 		margin-top: 70px;
 		margin-left: 10px;
@@ -63,7 +55,6 @@
 	.table{
 		width:80% !important;
 		table-layout:fit-content !important;
-
 	}
 	.commission-space{
 		display: grid !important;
@@ -74,6 +65,5 @@
 	.col-1{
 		margin-top: 125px !important;
 		width: 100%;
-
 	}
 }

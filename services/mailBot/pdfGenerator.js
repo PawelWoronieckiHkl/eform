@@ -1,6 +1,6 @@
 const ExcelJS = require('exceljs');
 const nunjucks = require('nunjucks');
-const { chromium } = require('playwright'); // Zmienione z puppeteer na playwright
+const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const confLang = require('./conf');
@@ -28,7 +28,6 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
   const i18n = confLang(lang);
   const __ = (key) => i18n.__(key, { locale: lang });
 
-  // 2. Poprawna konfiguracja Nunjucks
   const templatesDir = path.dirname(path.join(__dirname, 'order-pdf.njk'));
   const env = nunjucks.configure(templatesDir, {
     autoescape: true,
@@ -36,7 +35,6 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
     lstripBlocks: true
   });
 
-  // 3. Rejestracja funkcji tłumaczącej jako globalnej
   env.addGlobal('__', __);
   const data = await sendData
   console.log('sendDAta', data)
@@ -64,7 +62,6 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  // 6. Wstrzyknięcie zasobów z obsługą błędów
   try {
     await page.setContent(`
   <!DOCTYPE html>
@@ -88,7 +85,6 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
     throw error;
   }
 
-  // 7. Generowanie PDF
   const pdfBuffer = await page.pdf({
     format: 'A4',
     landscape: true,

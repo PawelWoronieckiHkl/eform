@@ -62,7 +62,6 @@ class ordersManager {
 
     async saveAttachments(files, posId) {
         this.posId = posId;
-        // await this.mkDir();
         let attachments = [];
         for (const file of files) {
             console.log(file);
@@ -87,7 +86,6 @@ class ordersManager {
 
     async updateAttachments(files, posId) {
         this.posId = posId;
-        // await this.mkDir();
         let attachments = await db.getAttachments(posId) || [];
         const filesToDelete = [];
         let hasChanges = false;

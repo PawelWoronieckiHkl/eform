@@ -4,44 +4,32 @@
 	color: red;
 	font-size: 13px;
 }
-
 #buttons-space {
 	display: grid;
 	margin-top: 10px;
-
 }
-
 .form-button {
-
 	margin-top: 10px;
 	border: #4d4646 solid 1px;
 	border-radius: 10px;
 	font-weight: 550;
 	width: 300px;
 }
-
-
-
 #save-btn {
 	margin-bottom: 15%;
 	margin-left: 300%;
 	padding-left: 20% !important;
 	padding-right: 20% !important;
 }
-
 .commision-space {
 	margin-right: 2% !important;
 }
-
 .hourglass {
 	position: fixed;
 	display: none;
 	top: 50%;
-	/* wyśrodkuj pionowo */
 	left: 50%;
-	/* wyśrodkuj poziomo */
 	transform: translate(-50%, -50%);
-	/* przesunięcie aby idealnie wycentrować */
 	z-index: 150;
 	width: 90px;
 	height: 90px;
@@ -51,25 +39,22 @@
 	border-bottom-color: transparent;
 	animation: spin 1.5s linear infinite;
 }
-
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(128, 128, 128, 0.5); /* szare, półprzezroczyste */
-  backdrop-filter: blur(4px); /* zamazanie */
-  -webkit-backdrop-filter: blur(4px); /* dla Safari */
+  background: rgba(128, 128, 128, 0.5); 
+  backdrop-filter: blur(4px); 
+  -webkit-backdrop-filter: blur(4px); 
   display: none;
-  z-index: 148; /* poniżej hourglass */
+  z-index: 148; 
 }
-
 @keyframes spin {
 	0% {
 		transform: rotate(0deg);
 	}
-
 	100% {
 		transform: rotate(360deg);
 	}

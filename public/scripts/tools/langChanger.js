@@ -4,14 +4,14 @@ const checkNavbar = document.querySelector(".mobile-nav");
 const mobileNavCollapse = document.querySelector("#mobileNav");
 
 function changeLangStyle() {
-    // Sprawdź czy jesteśmy w widoku mobilnym
+    
     const isMobile = window.innerWidth <= 768;
 
     if (isMobile && mobileNavCollapse) {
-        // Przenieś języki do navbar mobilnego
+        
         moveLangToMobileNav();
     } else {
-        // Przywróć języki do oryginalnej pozycji (header)
+        
         restoreLangToHeader();
     }
 }
@@ -20,9 +20,9 @@ function moveLangToMobileNav() {
     const languageSwitcher = document.querySelector(".language-switcher");
 
     if (languageSwitcher && mobileNavCollapse) {
-        // Sprawdź czy języki nie są już w navbar
+        
         if (!mobileNavCollapse.querySelector(".mobile-language-switcher")) {
-            // Stwórz kontener dla języków w navbar
+            
             const mobileLanguageContainer = document.createElement("div");
             mobileLanguageContainer.className = "mobile-language-switcher";
             mobileLanguageContainer.style.cssText = `
@@ -34,7 +34,7 @@ function moveLangToMobileNav() {
                 margin-top: 15px;
             `;
 
-            // Sklonuj switcher języków
+            
             const clonedSwitcher = languageSwitcher.cloneNode(true);
             clonedSwitcher.style.cssText = `
                 display: flex;
@@ -44,7 +44,7 @@ function moveLangToMobileNav() {
                 margin-left: 0 auto;
             `;
 
-            // Dostosuj style flag w mobile navbar
+            
             const flags = clonedSwitcher.querySelectorAll("img");
             flags.forEach(flag => {
                 flag.style.cssText = `
@@ -58,27 +58,27 @@ function moveLangToMobileNav() {
             mobileLanguageContainer.appendChild(clonedSwitcher);
             mobileNavCollapse.appendChild(mobileLanguageContainer);
 
-            // Ukryj oryginalny header z językami
+            
             langContainer.style.display = "none";
         }
     }
 }
 
 function restoreLangToHeader() {
-    // Usuń języki z navbar mobilnego
+    
     const mobileLanguageSwitcher = document.querySelector(".mobile-language-switcher");
     if (mobileLanguageSwitcher) {
         mobileLanguageSwitcher.remove();
     }
 
-    // Pokaż oryginalny header z językami
+    
     if (langContainer) {
         langContainer.style.display = "block";
     }
 }
 
-// Wywołaj funkcję przy załadowaniu strony
+
 document.addEventListener("DOMContentLoaded", changeLangStyle);
 
-// Wywołuj funkcję przy zmianie rozmiaru okna
+
 window.addEventListener("resize", changeLangStyle);

@@ -8,7 +8,6 @@
     }
     .margin {
       height: 10px !important;
-      /* Odstęp między wierszami tabeli */
     }
     .print-logo {
       width: 200px;
@@ -64,12 +63,12 @@
     .print-table td {
       font-size: 14px;
     }
-    /* Zapobieganie dzieleniu wierszy na stronie */
+
     .print-table tr {
       page-break-inside: avoid;
       break-inside: avoid;
     }
-    /* Grupowanie wierszy pozycji razem (główny wiersz + ceny) */
+
     .print-table tbody tr:not(.print-price-row) {
       page-break-after: avoid;
     }
@@ -128,7 +127,7 @@
       font-weight: bold !important;
       margin-bottom: 10px !important;
     }
-    /* Usuń marginesy Bootstrap */
+  
     .mb-4,
     .p-4,
     .position-relative {
@@ -144,7 +143,7 @@
     .align-items-center {
       align-items: center;
     }
-    /* Reguły page-break dla PDF */
+  
     @media print {
       .print-table-container {
         page-break-inside: avoid !important;
@@ -161,7 +160,6 @@
 <div class="order-print">
   <div
     class="position-relative mb-4">
-    <!-- Debug: logoPath = {{ logoPath }} -->
     {% if logoPath %}
       <img alt="logo" class="print-logo" src="{{ logoPath }}">
       {% else %}

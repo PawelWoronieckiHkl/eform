@@ -17,7 +17,6 @@ toastr.options = {
     "hideMethod": "fadeOut"
 };
 
-
 function normalizeToastPosition(position) {
     if (!position) {
         return 'toast-top-right';
@@ -44,7 +43,7 @@ export function showToast(type, message, timeOut = 1.5, position = 'top-right') 
         toastr.success(message);
     }
     else if (type === 'error') {
-        toastr.options.timeOut = timeOut * 1000; // Convert seconds to milliseconds
+        toastr.options.timeOut = timeOut * 1000; 
         toastr.error(message);
     }
     else if (type === 'info') {

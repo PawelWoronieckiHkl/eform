@@ -22,7 +22,7 @@ export function getDivToChangeIndex(pathname) {
         }
     };
 
-    // Sprawdź czy to pasuje do wzorca /orders/order/NUMER
+    
     const orderDetailPattern = /^\/orders\/order\/\d+$/;
     if (orderDetailPattern.test(pathname)) {
         return {
@@ -46,7 +46,7 @@ export function getRedirectionAfterIntro(pathname) {
 }
 export function getStepsForPage(pathname) {
     const stepsConfig = {
-        '/': [ // Strona główna
+        '/': [ 
             {
                 intro: "Witamy w aplikacji eForm! Przejdziemy szybką wycieczkę, żeby pomóc Ci zacząć.",
                 position: 'floating',
@@ -116,7 +116,7 @@ export function getStepsForPage(pathname) {
                 tooltipClass: 'introjs-under-tooltip'
             }
         ],
-        '/orders': [ // Strona zamówień
+        '/orders': [ 
             {
                 intro: "To jest Twoja strona zamówień. Tutaj możesz zarządzać wszystkimi swoimi zamówieniami.",
                 position: 'floating',
@@ -153,7 +153,7 @@ export function getStepsForPage(pathname) {
             }
         ],
 
-        '/orders/history': [ // Strona historii zamówień
+        '/orders/history': [ 
             {
                 intro: "Wyświetl tutaj pełną historię swoich zamówień.",
                 position: 'floating',
@@ -175,7 +175,7 @@ export function getStepsForPage(pathname) {
                 position: 'bottom-right-aligned'
             },
         ],
-        '/user/employee-panel': [ // Strona panelu pracownika
+        '/user/employee-panel': [ 
             {
                 intro: "Witamy w panelu pracownika! Tutaj możesz zarządzać swoimi zadaniami i zamówieniami.",
                 position: 'floating',
@@ -271,7 +271,7 @@ export function getStepsForPage(pathname) {
         }
     }
 
-    // Sprawdź czy to strona szczegółów pozycji (position/NUMER)
+    
     const positionDetailPattern = /^\/position\/\d+$/;
     if (positionDetailPattern.test(pathname)) {
         return [
@@ -303,7 +303,7 @@ export function getStepsForPage(pathname) {
         ];
     }
 
-    // Sprawdź czy to strona tworzenia nowej pozycji (orders/order/NUMER/new-position/)
+    
     const newPositionPattern = /^\/orders\/order\/\d+\/new-position\/?$/;
     if (newPositionPattern.test(pathname)) {
         return [
@@ -335,7 +335,7 @@ export function getStepsForPage(pathname) {
         ];
     }
 
-    // Sprawdź czy to strona edycji pozycji (position/NUMER/edit)
+    
     const editPositionPattern = /^\/position\/\d+\/edit$/;
     if (editPositionPattern.test(pathname)) {
         return [
@@ -367,7 +367,7 @@ export function getStepsForPage(pathname) {
         ];
     }
 
-    // Zwróć kroki dla danej strony lub puste jeśli nie znaleziono
+    
     return stepsConfig[pathname] || [];
 }
 

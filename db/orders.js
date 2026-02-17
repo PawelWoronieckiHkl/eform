@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs');
 const { result } = require('lodash');
 
 
-
 async function getOrderWithItems(orderId) {
 
     const orderItemsQuery = 'SELECT * FROM order_item WHERE order_id LIKE ?';
@@ -53,7 +52,7 @@ async function getOrderDetails(orderId) {
     WHERE \`order\`.id = ?`;
 
     let orderDetails = await selectQuery(orderDetailsQuery, orderId);
-    // console.log(orderDetails, 'query')
+    
     orderDetails = dateUtils.humanizeData(orderDetails);
     return orderDetails[0];
 }
@@ -65,17 +64,17 @@ async function updateOrderDetails(orderId, comment, commission, contactInfo, sen
 
     const res = await updateQuery(query, [commission, comment, orderId]);
 
-    // ---- ORDER ADDRESS ----
+    
     if (contactInfo) {
-        // Sprawdź, czy zamówienie ma już przypisany adres
+        
         const orderAddressId = await getOrderAddressId(orderId);
         if (!orderAddressId) {
-            // Dodaj nowy adres i przypisz do zamówienia
+            
             const newOrderAddrId = await insertOrderAddress(contactInfo);
             query = `UPDATE \`order\` SET order_address_id = ? WHERE id = ?`;
             await updateQuery(query, [newOrderAddrId, orderId]);
         } else {
-            // Aktualizuj istniejący adres
+            
             query = `
                 UPDATE \`order\`
                 JOIN order_address ON \`order\`.order_address_id = order_address.id
@@ -103,7 +102,7 @@ async function updateOrderDetails(orderId, comment, commission, contactInfo, sen
         }
     }
 
-    // ---- SEND ADDRESS ----
+    
     if (sendAddress) {
         const sendAddressId = await getSendAddressId(orderId);
         if (!sendAddressId) {
@@ -191,7 +190,7 @@ where o.id like ?`
     }
 
     let orderDetails = await selectQuery(orderDetailsQuery, orderId);
-    // console.log(JSON.stringify(orderDetails))
+    
     orderDetails = dateUtils.humanizeData(orderDetails)[0];
 
     return { orderDetails, orderItems }
@@ -210,7 +209,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
 
 
     if (organization) {
-        // For organization owners - get all orders from organization
+        
         if (!sent) {
             query = `
              SELECT o.id,o.user_id,o.order_address_id, o.commision,o.total_price,o.created_date,o.sent_date,o.organization_id,o.comment,o.status,o.send_address_id,o.order_idx, u.ident as user_ident FROM \`order\` o
@@ -277,7 +276,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
 
         const result = dateUtils.humanizeData(rows);
         if (result.length == 0) { return false }
-        // console.log(result, 'result w getUserOrders')
+        
         return result;
     }
     catch (err) {
@@ -298,7 +297,7 @@ async function countUserOrders(userId, sent = false, organization = false, emplo
     try {
         let count
         if (organization) {
-            // Count orders for organization (for owners)
+            
             if (!sent) {
                 count = await selectQuery(
                     "SELECT COUNT(*) as count FROM `order` WHERE organization_id = ? and status like 'active'", organization
@@ -384,7 +383,7 @@ async function insertSendAddress(address) {
 }
 
 async function insertNewOrder(commision, addressId, userId, comment, sendAddressId = null, totalPrice = 0, employeeId = null) {
-    // console.log(employeeId, 'employeeId w insertNewOrder')
+    
     const query = `INSERT INTO \`order\` 
     (user_id,
     order_address_id,
@@ -475,7 +474,7 @@ async function saveDiscount(orderId, discountPercentage, discountValue) {
     const query = `UPDATE \`order\` SET client_discount_percentage = ?, client_discount_value = ? WHERE id = ?`;
     try {
         const response = await updateQuery(query, [discountPercentage, discountValue, orderId]);
-        // console.log(response[0], 'response w saveDiscount @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+        
         return {
             discountPercentage: response[0]?.client_discount_percentage,
             discountValue: response[0]?.client_discount_value

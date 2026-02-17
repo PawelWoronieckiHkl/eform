@@ -12,14 +12,14 @@ body {
     padding: 0;
 }
 
-/* Logo */
+
 .logo {
     width: 70px !important;
     margin: 5px auto 5px !important;
     display: block !important;
 }
 
-/* Kontener główny - 95% szerokości */
+
 .position-relative {
     width: 99% !important;
     max-width: 99% !important;
@@ -27,7 +27,6 @@ body {
     padding: 0 !important;
 }
 
-/* Header wycentrowany */
 #header-space {
     width: 99% !important;
     margin: 0 auto 20px auto !important;
@@ -55,7 +54,7 @@ body {
     margin-bottom: 20px !important;
 }
 
-/* Tabele z pozycjami - 95% SZEROKOŚCI STRONY */
+
 #table {
     width: 98% !important;
     max-width: 98% !important;
@@ -95,7 +94,7 @@ body {
     word-wrap: break-word !important;
 }
 
-/* Wiersze cenowe */
+
 .price {
     background-color: #f5f5f5 !important;
     font-size:8px !important;
@@ -107,7 +106,6 @@ body {
     margin-right: 3px !important;
 }
 
-/* Dane klienta */
 .order-details {
     font-size: 12px !important;
     line-height: 1.4 !important;
@@ -137,7 +135,7 @@ body {
     margin-bottom: 10px !important;
 }
 
-/* Total container */
+
 #total-container {
     width: 100% !important;
     margin: 20px 0 !important;
@@ -162,7 +160,6 @@ a {
     text-decoration: none;
 }
 
-/* Media print */
 @media print {
 
     #order-nav,

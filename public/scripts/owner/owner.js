@@ -5,13 +5,13 @@ document.addEventListener('DOMContentLoaded', function () {
     let allUsers = [];
 
     if (userInput && userDropdown) {
-        // Collect all users data from dropdown items
+        
         const dropdownItems = userDropdown.querySelectorAll('.dropdown-item');
         dropdownItems.forEach(item => {
             const name = item.textContent.trim();
             const ident = item.getAttribute('data-value');
 
-            // Pomiń użytkowników z pustymi nazwami, spacjami lub myślnikami
+            
             if (name && name !== '' && name !== '-' && name.trim() !== '') {
                 allUsers.push({
                     ident: ident,
@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Sortowanie alfabetyczne użytkowników
+        
         allUsers.sort((a, b) => a.name.localeCompare(b.name, 'pl', { sensitivity: 'base' }));
 
-        // Przebuduj dropdown z posortowanymi użytkownikami
+        
         userDropdown.innerHTML = '';
         allUsers.forEach(user => {
             const dropdownItem = document.createElement('div');
@@ -33,10 +33,10 @@ document.addEventListener('DOMContentLoaded', function () {
             userDropdown.appendChild(dropdownItem);
         });
 
-        // Zaktualizuj referencję do posortowanych elementów
+        
         const sortedDropdownItems = userDropdown.querySelectorAll('.dropdown-item');
 
-        // Show dropdown on input focus/click
+        
         userInput.addEventListener('focus', function () {
             showAllItems();
             userDropdown.classList.add('show');
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
             userDropdown.classList.add('show');
         });
 
-        // Filter items on input
+        
         userInput.addEventListener('input', function () {
             const searchTerm = this.value.toLowerCase();
             filterItems(searchTerm);
@@ -66,26 +66,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 const targetPath = `/orders/userOrders?userIdent=${encodeURIComponent(selectedIdent)}`;
                 localStorage.setItem('lastUserPath', targetPath);
 
-                // Poczekaj na zapisanie orgIdent przed przekierowaniem
+                
                 getOrgIdent().then(() => {
                     window.location.href = targetPath;
                 });
             }
         });
 
-        // Hide dropdown when clicking outside
+        
         document.addEventListener('click', function (e) {
             if (!userInput.contains(e.target) && !userDropdown.contains(e.target)) {
                 userDropdown.classList.remove('show');
             }
         });
 
-        // Handle keyboard navigation
+        
         userInput.addEventListener('keydown', function (e) {
             const visibleItems = userDropdown.querySelectorAll('.dropdown-item:not(.hidden)');
             let currentIndex = -1;
 
-            // Find currently highlighted item
+            
             visibleItems.forEach((item, index) => {
                 if (item.classList.contains('highlighted')) {
                     currentIndex = index;
@@ -138,12 +138,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Set selected user from URL parameters
+    
     const urlParams = new URLSearchParams(window.location.search);
     const selectedUserIdentFromUrl = urlParams.get('userIdent');
 
     if (selectedUserIdentFromUrl && userInput) {
-        // Find the user name for the selected ident
+        
         const selectedUser = allUsers.find(user => user.ident === selectedUserIdentFromUrl);
         if (selectedUser) {
             userInput.value = selectedUser.name;

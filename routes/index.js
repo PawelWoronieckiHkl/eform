@@ -15,30 +15,27 @@ const { readWord } = require('../utils/readWord.js');
 const e = require('express');
 
 
-// Middleware do automatycznego dodawania users dla owner'ów
 router.use(async (req, res, next) => {
-    // Ustaw owner dla wszystkich widoków
-    res.locals.owner = req.session?.user?.isOwner || false;
-    res.locals.admin = req.session?.user?.isAdmin || false;
-    res.locals.isEmployee = req.session?.user?.isEmployee || false;
+  res.locals.owner = req.session?.user?.isOwner || false;
+  res.locals.admin = req.session?.user?.isAdmin || false;
+  res.locals.isEmployee = req.session?.user?.isEmployee || false;
 
-    if (req.session?.user?.isOwner) {
-        try {
-            res.locals.users = await db.getUsersByOwner(req);
-        } catch (error) {
-            console.error('Error loading users for owner:', error);
-            res.locals.users = [];
-        }
+  if (req.session?.user?.isOwner) {
+    try {
+      res.locals.users = await db.getUsersByOwner(req);
+    } catch (error) {
+      console.error('Error loading users for owner:', error);
+      res.locals.users = [];
     }
-    next();
+  }
+  next();
 });
 
 
 router.get('/translations', (req, res) => {
   const lang = req.getLocale();
-  process.env.userLang = lang; // Ustawienie zmiennej środowiskowej dla języka użytkownika
+  process.env.userLang = lang;
   const filePath = path.join(localesDir, `${lang}.json`);
-
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
       return res.status(500).json({ error: 'Translation file not found' });
@@ -52,6 +49,7 @@ router.get('/translations', (req, res) => {
     }
   });
 });
+
 
 router.get('/env', requireLogin, (req, res) => {
   const versionsHuman = {
@@ -67,6 +65,8 @@ router.get('/env', requireLogin, (req, res) => {
 
   return res.json({ status: "success", body: { version: versionString } });
 });
+
+
 router.get('/languages', (req, res) => {
   const lang = req.getLocale();
 
@@ -82,23 +82,19 @@ router.get('/change-language', (req, res) => {
   res.redirect(redirectPath);
 });
 
-router.get("/", requireLogin, async (req, res) => {
 
+router.get("/", requireLogin, async (req, res) => {
   const currentUser = ownerService.getCurrentUser(req);
   user = await db.getUserData(currentUser.pin);
   const mustAcceptRODO = req.session.mustAcceptRODO || false;
   const orders = await db.getUserOrders(user.id, 4, 0);
   const ordersSent = await db.getUserOrders(user.id, 4, 0, true);
-
-  // Pobierz organizacje tylko dla adminów
   let organizations = [];
   if (req.session.user.isAdmin) {
     organizations = await db.getAllOrganizations();
     organizations = customOrgSorting(organizations);
-
   }
-
-
+  
   return res.render("home.njk", {
     user: user,
     orders: orders,
@@ -110,6 +106,8 @@ router.get("/", requireLogin, async (req, res) => {
     organizations: organizations
   });
 });
+
+
 router.get("/delivery-time", requireLogin, async (req, res) => {
   const currentUser = ownerService.getCurrentUser(req);
   const deliveryTimes = await db.getDeliveryTimes(currentUser.pin)
@@ -132,6 +130,7 @@ router.get("/contact", requireLogin, async (req, res) => {
 
 });
 
+
 router.get("/terms", requireLogin, async (req, res) => {
   try {
     const currentUser = ownerService.getCurrentUser(req);
@@ -148,7 +147,6 @@ router.get("/terms", requireLogin, async (req, res) => {
 });
 
 
-
 router.get("/privacy", requireLogin, async (req, res) => {
   try {
     const currentUser = ownerService.getCurrentUser(req);
@@ -162,6 +160,7 @@ router.get("/privacy", requireLogin, async (req, res) => {
     res.render("privacy.njk", { contentHtml: html });
   }
 });
+
 
 router.get('/config-num', requireLogin, async (req, res) => {
   const num = await verManager.getConfigNum()
@@ -178,6 +177,7 @@ router.get('/config-num', requireLogin, async (req, res) => {
     })
   }
 });
+
 
 router.get('/context-user', requireLogin, async (req, res) => {
   try {
@@ -204,7 +204,7 @@ router.get('/context-user', requireLogin, async (req, res) => {
   }
 });
 
-// Set organization for admin users
+
 router.get('/set-organization/:id', requireLogin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -231,7 +231,6 @@ router.post('/set-last-user', requireLogin, async (req, res) => {
       });
     }
 
-    // Konwertuj orgIdent na liczbę
     const organizationId = parseInt(orgIdent, 10);
 
     if (isNaN(organizationId)) {
@@ -243,7 +242,6 @@ router.post('/set-last-user', requireLogin, async (req, res) => {
 
     req.session.user.organization = organizationId;
 
-    // Zapisz sesję przed zwróceniem odpowiedzi
     await new Promise((resolve, reject) => {
       req.session.save((err) => {
         if (err) reject(err);
@@ -279,6 +277,7 @@ router.get('/get-org-ident', requireLogin, async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
+
 
 router.get('/employee-status', requireLogin, async (req, res) => {
   try {

@@ -16,7 +16,6 @@
         border: none !important;
         border-radius: 0 !important;
     }
-
     #slope-modal .modal-dialog {
         width: 100% !important;
         height: 100% !important;
@@ -29,7 +28,6 @@
         align-items: stretch !important;
         justify-content: stretch !important;
     }
-
     #slope-modal .modal-content {
         background: white !important;
         border-radius: 0 !important;
@@ -46,7 +44,6 @@
         border: none !important;
         margin: 0 !important;
     }
-
     #slope-modal .modal-header {
         text-align: center !important;
         margin: 0 !important;
@@ -55,7 +52,6 @@
         border-bottom: 1px solid #e0e0e0 !important;
         flex-shrink: 0 !important;
     }
-
     #slope-modal .modal-header h3,
     #slope-modal .modal-header .modal-title {
         font-size: 1.3rem !important;
@@ -63,7 +59,6 @@
         margin: 0 !important;
         padding: 0 !important;
     }
-
     #slope-modal .modal-body {
         flex: 1 !important;
         padding: 0 !important;
@@ -72,7 +67,6 @@
         display: flex !important;
         flex-direction: column !important;
     }
-
     .slope-image {
         max-height: 40vh !important;
         max-width: calc(100% - 40px) !important;
@@ -87,36 +81,30 @@
         background: #f8f9fa !important;
         box-shadow: none !important;
     }
-
     .slope-form {
         padding: 20px !important;
         flex: 1 !important;
         display: flex !important;
         flex-direction: column !important;
     }
-
     .slope-form>div {
         display: flex !important;
         flex-direction: column !important;
         gap: 15px !important;
         margin-bottom: 20px !important;
     }
-
     .slope-form .row1 {
         margin-bottom: 20px !important;
     }
-
     .slope-form .row2 {
         margin-bottom: 30px !important;
     }
-
     .slope-form label {
         width: 100% !important;
         margin-bottom: 15px !important;
         font-weight: 600 !important;
         color: #333 !important;
     }
-
     .slope-form input[type=number] {
         width: 100% !important;
         margin-top: 8px !important;
@@ -128,7 +116,6 @@
         background: white !important;
         box-shadow: none !important;
     }
-
     .slope-form-buttons {
         display: flex !important;
         gap: 10px !important;
@@ -139,7 +126,6 @@
         position: sticky !important;
         bottom: 0 !important;
     }
-
     .slope-form-buttons button {
         flex: 1 !important;
         padding: 15px !important;
@@ -149,27 +135,22 @@
         border: none !important;
         box-shadow: none !important;
     }
-
     .slope-form-buttons button.cancel-btn {
         background-color: #f8f9fa !important;
         border: 2px solid #e0e0e0 !important;
         color: #333 !important;
     }
-
     .slope-form-buttons button.submit-btn {
         background-color: #007bff !important;
         color: white !important;
     }
-
     .slope-form-buttons button.cancel-btn:hover {
         background-color: #e9ecef !important;
         border-color: #6c757d !important;
     }
-
     .slope-form-buttons button.submit-btn:hover {
         background-color: #0056b3 !important;
     }
-
     .slope-note {
         background: #f8f9fa !important;
         padding: 15px !important;
@@ -181,8 +162,6 @@
         color: #333 !important;
         line-height: 1.4 !important;
     }
-
-    /* Bootstrap modal form content styling */
     #slope-modal .form-content,
     #slope-modal .form-section {
         flex: 1 !important;
@@ -190,17 +169,13 @@
         overflow-y: auto !important;
         overflow-x: hidden !important;
     }
-
     #slope-modal .row {
         margin: 0 !important;
         width: 100% !important;
     }
-
-    /* Respect JavaScript display control for hidden rows */
     #slope-modal .row:not([style*="display: none"]) {
         display: block !important;
     }
-
     #slope-modal .col-md-6,
     #slope-modal .col-6,
     #slope-modal .col-12 {
@@ -210,27 +185,21 @@
         margin-bottom: 15px !important;
         float: none !important;
     }
-
-    /* Respect JavaScript display control for hidden fields */
     #slope-modal .col-md-6:not([style*="display: none"]),
     #slope-modal .col-6:not([style*="display: none"]),
     #slope-modal .col-12:not([style*="display: none"]) {
         display: block !important;
     }
-
-    /* Ensure grid layout works on mobile for visible columns */
     #slope-modal .col-md-6[style*="display: grid"],
     #slope-modal .col-6[style*="display: grid"],
     #slope-modal .col-12[style*="display: grid"] {
         display: block !important;
     }
-
     #slope-modal .form-group {
         margin-bottom: 15px !important;
         width: 100% !important;
         overflow: hidden !important;
     }
-
     #slope-modal label {
         font-weight: bold !important;
         color: #555 !important;
@@ -239,7 +208,6 @@
         font-size: 14px !important;
         width: 100% !important;
     }
-
     #slope-modal input[type="text"],
     #slope-modal input[type="number"],
     #slope-modal select,
@@ -254,14 +222,12 @@
         margin: 0 !important;
         display: block !important;
     }
-
     #slope-modal select {
         height: 42px !important;
         background: white !important;
         appearance: menulist !important;
         -webkit-appearance: menulist !important;
     }
-
     #slope-modal .modal-footer {
         position: sticky !important;
         bottom: 0 !important;
@@ -284,7 +250,6 @@
         -webkit-backdrop-filter: blur(10px) !important;
         backdrop-filter: blur(10px) !important;
     }
-
     #slope-modal .btn {
         padding: 12px 20px !important;
         font-size: 16px !important;
@@ -294,22 +259,17 @@
         min-width: 100px !important;
         cursor: pointer !important;
     }
-
     #slope-modal .btn-primary {
         background: #007bff !important;
         color: white !important;
     }
-
     #slope-modal .btn-secondary {
         background: #6c757d !important;
         color: white !important;
     }
-
     #slope-modal .btn:hover {
         opacity: 0.9 !important;
     }
-
-    /* Close button if present */
     #slope-modal .close,
     #slope-modal .btn-close {
         position: absolute !important;
@@ -322,51 +282,37 @@
         color: #999 !important;
         z-index: 10 !important;
     }
-
-    /* Hide scrollbar but keep functionality */
     #slope-modal .modal-body::-webkit-scrollbar {
         width: 0px !important;
         background: transparent !important;
     }
-
-    /* Ensure text is readable on all backgrounds */
     #slope-modal * {
         box-sizing: border-box !important;
     }
-
-    /* Responsive adjustments for very small screens */
     @media (max-width: 360px) {
         #slope-modal .modal-footer {
             flex-direction: column !important;
             gap: 10px !important;
         }
-
         #slope-modal .btn {
             width: 100% !important;
             margin: 5px 0 !important;
         }
     }
-
-    /* Special handling for iPhone 14 Pro Max and similar devices */
     @media screen and (min-width: 428px) and (max-width: 430px) and (min-height: 926px) and (max-height: 932px) {
         #slope-modal .modal-footer {
             padding-bottom: calc(100px + env(safe-area-inset-bottom, 20px)) !important;
             min-height: calc(170px + env(safe-area-inset-bottom, 20px)) !important;
         }
     }
-
-    /* General iPhone X and newer with notch/home indicator */
     @supports (padding-bottom: env(safe-area-inset-bottom)) {
         #slope-modal .modal-footer {
             min-height: calc(165px + env(safe-area-inset-bottom)) !important;
         }
-
         #slope-modal .modal-content {
             padding-bottom: env(safe-area-inset-bottom, 0px) !important;
         }
     }
-
-    /* Safari-specific fixes */
     @media screen and (-webkit-min-device-pixel-ratio: 2) {
         #slope-modal .modal-footer {
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1) !important;

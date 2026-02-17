@@ -140,7 +140,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
                 : `${t('form.check_word')}`
         }, parrent);
 
-        // Użyj addEventListener zamiast onclick, aby umożliwić zarządzanie handlerami
+        
         btn.addEventListener('click', function () {
             createDialog(param, options, groupNumber, filters[param.NAME], attrs);
         });
@@ -155,13 +155,13 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
         select.appendChild(new Option(t('form.check_option'), ""));
 
-        // Deduplikacja opcji na podstawie ROW_NUM + VALUE
+        
         const seenOptions = new Set();
         for (let idx = 0; idx < allOptions.length; idx++) {
             let row = allOptions[idx];
             const optionKey = `${row.ROW_NUM}-${row.VALUE}`;
 
-            // Pomiń duplikaty
+            
             if (seenOptions.has(optionKey)) {
                 continue;
             }
@@ -253,7 +253,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
             input.click();
         });
 
-        // Przycisk do usuwania załącznika
+        
         const removeBtn = createElement('button', {
             type: 'button',
             class: ['file-remove-btn'],
@@ -276,21 +276,21 @@ export function createInputField(param, options, groupNumber, filters, allOption
         input.id = param.NAME;
         console.log(`✅ Tworzę file input: name="${param.NAME}", id="${param.NAME}"`, input);
 
-        // Nadpisz getter dla input.value żeby zwracał tylko filename (bez C:\fakepath\)
-        // To pozwala form.js czytać prawidłową wartość bez zmian
+        
+        
         Object.defineProperty(input, 'value', {
             get() {
                 if (this.files && this.files.length > 0) {
-                    return this.files[0].name; // Zwróć tylko filename
+                    return this.files[0].name; 
                 }
                 return this._fileInputValue || '';
             },
             set(val) {
-                // Dla file input, przeglądarka pozwala tylko na empty string
+                
                 if (val === '') {
                     this._fileInputValue = '';
                 }
-                // Inne wartości się ignorują (nie można setować file input.value)
+                
             },
             configurable: true
         });
@@ -301,13 +301,13 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
             const applied = changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, 10);
             if (applied && file) {
-                // Dodaj do listy załączników
+                
                 if (!Array.isArray(window.attachments)) {
                     window.attachments = [];
                 }
                 window.attachments.push(file.name);
 
-                // Zaktualizuj values i displayValues TYLKO po pomyślnej walidacji
+                
                 if (window.values && input.name) {
                     window.values[input.name] = file.name;
                 }
@@ -333,14 +333,14 @@ export function createInputField(param, options, groupNumber, filters, allOption
 }
 
 export function fillFields(displayValues, inputs, values) {
-    //    console.log('fillFields')
+    
     for (let input of Object.values(inputs)) {
         const tag = input.tagName
         const labelData = displayValues.get(input.name)
-        // console.log(input.name, labelData)
+        
         if (values[input.name] == "<NONE>") {
             let description = input?.name + '___DESCRIPTION' || '';
-            //    console.log(`Użycie wartości dla description: ${description}, wartość: ${values[description]}`);
+            
             if (labelData) {
                 labelData.option_description = values[description];
                 input.textContent = `${labelData.option_description}`;
@@ -408,14 +408,14 @@ export function checkIfParamHidden(formula, values, param) {
         if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE && !shouldEnable) {
             window.skipCountParams.push(param.NAME)
         }
-        //    console.log(shouldEnable, 'SHOULD ENABLE')
+        
         if (shouldEnable == 'password') { shouldEnable = false }
 
 
     }
     catch (error) {
 
-        //    console.log('mamy error')
+        
 
         showToast('error', `Error:  ${error.message}`)
     }
@@ -428,7 +428,7 @@ export function hideLocked(inputs, displayValues) {
     for (const [key, value] of displayValues) {
         if (window.lockedParams.includes(key)) {
 
-            // console.log(value,'locked')
+            
             value['locked'] = true
         }
         else {
@@ -443,11 +443,11 @@ export function hideParams(params, inputs) {
     for (let param of params) {
 
         let input = inputs[param.NAME]
-        // console.log(param, 'parametry do ukrycia', input)
+        
         if (param.FORMROW == '0') {
             input.parentElement.style.display = 'none'
         }
-        // console.log(input,'ukrywam lub nie')
+        
 
     }
 }

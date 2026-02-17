@@ -25,9 +25,9 @@ class SyncProdStatus {
             this.data = fileContent;
         } catch (error) {
             if (error.code === 'ENOENT') {
-                this.data = null; // File does not exist
+                this.data = null;
             } else {
-                throw error; // Other errors
+                throw error;
             }
         }
     }
@@ -69,7 +69,6 @@ class SyncProdStatus {
                 rowObj[headers[j]] = values[j] ?? '';
             }
 
-            // Filter by ORGANIZATIONIDENT and USERIDENT
             if (rowObj.ORGANIZATIONIDENT === this.orgIdent && rowObj.USERIDENT === this.userIdent) {
                 rows.push(rowObj);
             }

@@ -14,7 +14,7 @@ export class Translator {
     async init(groupNumber, lang) {
         this.stringsFilePath = `/data/${groupNumber}/data/${lang}/${this.stringsFile}`
         this.stringsContent = await this.loadData()
-        // console.log('tlumacz ogarniety', this.stringsContent)
+        
     }
 
     async loadData() {
@@ -63,13 +63,13 @@ export class Translator {
 
         const replaced = string.replace(re, (full, token) => {
             const key = String(token).trim().toLowerCase();
-            // console.log(token, key, 'tlumacz1', this.stringsContent)
+            
             if (!key) return full;
 
             let value;
 
             if (Object.keys(this.stringsContent).length== 0) {
-                // console.log(key, 'brak tlumaczen')
+                
                 return t(`translate.${key}`)
                 
             }
@@ -91,7 +91,7 @@ export class Translator {
 
             if (value === undefined) {
                 missing.add(key);
-                return full; // leave original token when missing
+                return full; 
             }
 
             return value;

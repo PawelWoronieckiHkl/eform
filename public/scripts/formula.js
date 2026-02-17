@@ -56,26 +56,26 @@ function inList3(params) {
 }
 
 
-// function contains(params) {
-//     if (!params || params.length < 2) return false;
-//     let what = (params[0] || "").toString();
-//     let list = (params[1] || "").toString();
-//     if (list.includes(',')) {
-//         console.log(list)
-//         let arr = list.split(",");
-//         for (let i = 0; i < arr.length; i++) {
-//             let fragment = arr[i].trim();
-//             if (fragment && what.indexOf(fragment) !== -1) {
-//                 return true;
-//             }
-//         }
-//         return false;
-//     }
-//     else{
-//         console.log('lista',list)
-//         return list.includes(what);
-//     }
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -280,7 +280,7 @@ parser.setFunction("USTAW", function (params) {
             result = false;
     }
 
-    // Usuń puste obiekty tylko jeśli nie ma żadnych walidatorów
+    
     if (validatorModel[field] && Object.keys(validatorModel[field]).length === 0) {
         delete validatorModel[field];
     }
@@ -328,7 +328,7 @@ function evaluateFormula(expression, context, type, param = null) {
             if (obj[key] && typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
                 if (key === 'WYMIAROWANIE_SLOPOW') {
                     for (let subKey in obj[key]) {
-                        if (subKey !== 'TYP') { // Pomiń TYP
+                        if (subKey !== 'TYP') { 
                             result[subKey] = obj[key][subKey];
                         }
                     }

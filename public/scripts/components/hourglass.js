@@ -5,7 +5,7 @@ export function stopSpin() {
     document.querySelector('.overlay').style.display = 'none';
 }
 
-// wznow animację
+
 export function startSpin() {
     const hourglass = document.querySelector('.hourglass');
     hourglass.style.animationPlayState = 'running';

@@ -2,20 +2,20 @@ export function chcekIfDateDeliveryCorrect(dateString) {
     const string = dateString.split(':')[0].trim();
     const date = dateString.split(':')[1].trim();
     console.log('Parsed date:', date);
-    const datePattern = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/; 
     
     if (!datePattern.test(date)) {
-        return dateString; // Jeśli format nieprawidłowy, zwróć oryginał
+        return dateString; 
     }
     
     const parsedDate = new Date(date);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Resetuj godziny dla porównania
+    today.setHours(0, 0, 0, 0); 
     
-    // Jeśli data jest dzisiejsza lub z przeszłości
+    
     if (parsedDate <= today) {
         const futureDate = new Date();
-        futureDate.setMonth(futureDate.getMonth() + 3); // Dodaj 3 miesiące
+        futureDate.setMonth(futureDate.getMonth() + 3); 
         
         const year = futureDate.getFullYear();
         const month = String(futureDate.getMonth() + 1).padStart(2, '0');
@@ -25,5 +25,5 @@ export function chcekIfDateDeliveryCorrect(dateString) {
         return `${string}: ${newDate}`;
     }
     
-    return dateString; // Jeśli data w przyszłości, zwróć oryginał
+    return dateString; 
 }

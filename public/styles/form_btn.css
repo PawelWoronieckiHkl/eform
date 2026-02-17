@@ -1,4 +1,3 @@
-/* Modern form button styling */
 .button {
   all: unset;
   cursor: pointer;
@@ -20,38 +19,30 @@
   justify-content: center;
   overflow: hidden;
 }
-
 .button::before {
   content: "";
   position: absolute;
   top: 0;
   left: -100%;
-
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(161, 148, 148, 0.2), transparent);
   transition: left 0.5s ease;
 }
-
 .button:hover::before {
   left: 100%;
 }
-
 .button:hover {
   transform: translateY(-3px) scale(1.02);
   box-shadow: 0 6px 20px rgba(73, 80, 87, 0.4);
   background: linear-gradient(135deg, #61686e 0%, #4f5458 100%);
 }
-
 .button:active {
   transform: translateY(-1px) scale(0.98);
   box-shadow: 0 3px 10px rgba(73, 80, 87, 0.35);
 }
-
 .button::after {
   display: none;
 }
-
-
 .button.invalid-input{
    background: linear-gradient(135deg, #f05a5a 0%, #727a81 100%);
 }

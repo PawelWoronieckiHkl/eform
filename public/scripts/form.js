@@ -54,12 +54,12 @@ export async function generateForm(
   window.afterSend = false;
   window.validParams = {};
   window.calculatedParams = new Set();
-  window.lastChangedField = null; // Przechowuje ostatnio zmienione pole
+  window.lastChangedField = null; 
   window.attachments = [];
   window.constValues = {};
   window.lockedParams = [];
   window.spin = spin;
-  // System kolejki zadań i blokowania UI
+  
   window.calculationQueue = [];
   window.uid = '';
   window.isCalculating = false;
@@ -158,12 +158,12 @@ export async function generateForm(
       try {
         await param.modal.init(param.SOURCE, param);
 
-        // W trybie edycji, jeśli mamy już wartości, ustaw je w source window
+        
         if (editFlag && values[param.NAME]) {
-          // Przepisz istniejące wartości do sourceValues w modal
+          
           Object.assign(param.modal.sourceValues, values[param.NAME]);
 
-          // Ustaw TYP jeśli istnieje
+          
           if (values[param.NAME].TYP) {
             param.modal.setTyp(values[param.NAME].TYP);
           }
@@ -230,7 +230,7 @@ export async function generateForm(
         values[param.NAME + '_ALIAS'] = "";
         values[param.NAME + '_ALIAS___DESCRIPTION'] = "";
       } else {
-        // Dla parametrów SOURCE ustaw główne meta-pola
+        
         values[param.NAME + '___DESCRIPTION'] = "";
         values[param.NAME + '_ALIAS'] = "";
         values[param.NAME + '_ALIAS___DESCRIPTION'] = "";
@@ -241,7 +241,7 @@ export async function generateForm(
     }
 
     if (isSource(param)) {
-      // Wartości już ustawione wyżej w trybie edycji - teraz z meta-polami z rzeczywistym stanem visibility
+      
       values[param.NAME] = param.modal.processSourceValues();
     }
     else if (param.SCRIPTS != "<NULL>" || param.FORMULA != "<NULL>") {
@@ -257,7 +257,7 @@ export async function generateForm(
 
     }
     if (editFlag) {
-      // Jeśli to nie jest SOURCE param, ustaw zwykłe wartości
+      
       if (param.SOURCE != param.NAME) {
 
       }
@@ -290,7 +290,7 @@ export async function generateForm(
       }
 
     }
-    // Dla parametrów nie-SOURCE sprawdź opcje słownikowe
+    
     if (!isSource(param)) {
       values = checkIfOptionsExist(allOptionsByParameter, param.NAME, values);
     }
@@ -300,13 +300,13 @@ export async function generateForm(
 
   const COMMON_PARAMS = { params, inputs, values, displayValues, allOptionsByParameter, groupNumber, calculatedParams };
   window.uid = await getUid();
-
+  console.log('Pobrane UID:', window.uid);
   if (editFlag) { fillFields(displayValues, inputs, values) }
 
 
   for (let key in inputs) {
 
-    // Debounce timer dla każdego inputa
+    
 
 
     if (inputs[key].tagName === "INPUT") {
@@ -316,22 +316,22 @@ export async function generateForm(
 
       inputs[key].addEventListener("input", function () {
         if (this.tagName === "INPUT") {
-          // if (inputs[key].type === 'file') {
-            // if (window.attachments.includes(inputs[key].value)) {
-              // console.log('Ten plik został już dodany:', inputs[key].value);
-              // inputs[key].value = '';
-              // return;
-            // };
-          // }
+          
+            
+              
+              
+              
+            
+          
           console.log(this.tagName, 'input event, value:', this.value, 'name:', this.name);
           values[this.name] = roundInputValue(this.value);
 
-          // Anuluj poprzedni timer
+          
           if (inputDebounceTimer) {
             clearTimeout(inputDebounceTimer);
           }
 
-          // Ustaw nowy timer - akcja wykona się po 1 sekundzie bez pisania
+          
           inputDebounceTimer = setTimeout(() => {
             updateProcedure({
               ...COMMON_PARAMS, options, name: this.name, value: this.value, tagName: this.tagName, filters,
@@ -392,20 +392,20 @@ export async function generateForm(
   window.formDisplayValues = displayValues;
   window.allOptionsByParameter = allOptionsByParameter;
 
-  // Setup listener dla przycisków usuwania załączników
+  
   setupFileRemovalListener(params, inputs, values, displayValues);
 
   return [inputs, values, displayValues, shortJson];
 }
 
-// Funkcja obsługująca reset załącznika - wywoła resetSelectValues
+
 function handleFileRemovalReset(paramName, params, inputs, values, displayValues) {
   console.log(`Resetuję załącznik: ${paramName}`);
-  // Użyj resetSelectValues aby wyczyścić values i displayValues
+  
   resetSelectValues([[paramName], displayValues], inputs, values, false);
 }
 
-// Setup event delegation dla przycisków usuwania załączników
+
 function setupFileRemovalListener(params, inputs, values, displayValues) {
   document.addEventListener('click', function (e) {
     const removeBtn = e.target.closest('.file-remove-btn');
@@ -429,16 +429,16 @@ export async function updateProcedure({
     percent = false
   } = flags;
 
-  // Dodaj zadanie do kolejki i poczekaj na swoją kolej
+  
   const taskId = Date.now() + Math.random();
   window.calculationQueue.push(taskId);
 
-  // Czekaj aż będziesz pierwszy w kolejce
+  
   while (window.calculationQueue[0] !== taskId) {
     await new Promise(resolve => setTimeout(resolve, 10));
   }
 
-  // Teraz jesteś pierwszy - zablokuj UI
+  
   window.isCalculating = true;
   window.isPriceCalculating = false;
   disableFormButtons(true);
@@ -480,7 +480,7 @@ export async function updateProcedure({
   if (spin) {
     stopSpin()
   }
-  // Usuń się z kolejki
+  
   window.calculationQueue.shift();
 
   if (window.calculationQueue.length === 0) {
@@ -496,7 +496,7 @@ export async function updateProcedure({
 
 }
 
-// Funkcja blokowania/odblokowywania przycisków formularza
+
 function disableFormButtons(disable) {
   const buttons = [
     document.getElementById('show-button'),
@@ -532,17 +532,17 @@ export function buildCommentSpace(destinationNode, comment = '') {
 
   const MAX_LENGTH = 250;
 
-  // Kontener na komentarz
+  
   const commentDiv = createElement('div', { class: ['comment-space', 'col-12', 'd-none'] }, destinationNode);
 
-  // Etykieta
+  
   createElement('label', {
     for: 'orderComment',
     text: t('form.comment_label'),
     class: ['form-label', 'mb-1']
   }, commentDiv);
 
-  // Pole tekstowe
+  
   const textarea = createElement('textarea', {
     html: comment,
     id: 'orderComment',
@@ -551,13 +551,13 @@ export function buildCommentSpace(destinationNode, comment = '') {
     maxlength: MAX_LENGTH
   }, commentDiv);
 
-  // Licznik znaków
+  
   const counter = createElement('small', {
     class: ['text-muted', 'd-block', 'mt-1'],
     html: `${comment.length}/${MAX_LENGTH}`
   }, commentDiv);
 
-  // Obsługa zdarzenia input
+  
   textarea.addEventListener('input', function () {
     counter.innerHTML = `${this.value.length}/${MAX_LENGTH}`;
   });
@@ -613,7 +613,7 @@ export async function recalculateLastChangedField() {
     return;
   }
 
-  // Pobierz dodatkowe wymagane dane
+  
   const calculatedParams = {};
   const options = {};
   const filters = {};

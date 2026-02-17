@@ -23,12 +23,10 @@
         inset: 0 !important;
         box-sizing: border-box !important;
     }
-
     dialog:not(#delete-dialog)::backdrop {
         display: none !important;
         background: transparent !important;
     }
-
     dialog:not(#delete-dialog)[open] {
         display: flex !important;
         background: white !important;
@@ -40,9 +38,6 @@
         bottom: 0 !important;
         box-sizing: border-box !important;
     }
-
-
-
     #dialog-container {
         padding: 0 !important;
         background: white !important;
@@ -52,17 +47,14 @@
         display: flex !important;
         flex-direction: column !important;
     }
-
     .options-scrollable {
         overflow-y: auto !important;
         padding: 15px !important;
         display: flex !important;
-
         gap: 15px !important;
         flex: 1 !important;
         width: 100% !important;
     }
-
     .color-dialog-btn {
         display: block !important;
         width: 100% !important;
@@ -79,13 +71,11 @@
         box-shadow: none !important;
         margin-bottom: 10px !important;
     }
-
     .color-dialog-btn:hover {
         background-color: #f8f9fa !important;
         border-color: #007bff !important;
         color: #007bff !important;
     }
-
     .diag-image {
         width: 100% !important;
         height: 200px !important;
@@ -97,19 +87,15 @@
         transition: transform 0.3s ease !important;
         box-shadow: none !important;
     }
-
     .image-box {
         flex-direction: column !important;
         position: relative !important;
         width: 100% !important;
         margin-bottom: 10px !important;
     }
-
-    /* Respect JavaScript display control for filtering/searching */
     .image-box:not([style*="display: none"]) {
         display: flex !important;
     }
-
     .image-name {
         width: 100% !important;
         text-decoration: none !important;
@@ -121,7 +107,6 @@
         padding: 0 10px !important;
         word-wrap: break-word !important;
     }
-
     .bottom {
         display: flex !important;
         flex-direction: column !important;
@@ -133,37 +118,26 @@
         bottom: 0 !important;
         margin-top: auto !important;
     }
-
     .button-wrapper {
         display: flex !important;
         gap: 10px !important;
         width: 100% !important;
     }
-
-
-
     .btn-success {
         background: #28a745 !important;
         color: white !important;
     }
-
     .btn-secondary {
         background: #6c757d !important;
         color: white !important;
     }
-
     .btn:hover {
         opacity: 0.9 !important;
         transform: scale(1.02) !important;
     }
-
     .btn:active {
         transform: scale(0.98) !important;
     }
-
-
-
-
     #preview-image {
         width: 100% !important;
         height: auto !important;
@@ -171,7 +145,6 @@
         object-fit: contain !important;
         border-radius: 0 !important;
     }
-
     .close-dialog-btn {
         position: absolute !important;
         top: 15px !important;
@@ -191,18 +164,14 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
         touch-action: manipulation !important;
     }
-
     .close-dialog-btn:hover {
         background: #ff6666 !important;
         transform: scale(1.1) !important;
     }
-
     .close-dialog-btn:active {
         background: #cc0000 !important;
         transform: scale(0.95) !important;
     }
-
-    /* Universal close button styles for any dialog */
     dialog button[type="button"]:contains("✖"),
     dialog button[type="button"]:contains("×"),
     dialog .btn-close,
@@ -225,20 +194,14 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
         touch-action: manipulation !important;
     }
-
     #additional-info {
         padding: 20px !important;
         width: 100% !important;
         background: white !important;
     }
-
     .button-wrapper {
         margin: 0 !important;
     }
-
-
-
-    /* Filter controls - collapsible */
     .filter-controls {
         background: white !important;
         border: 2px solid #e0e0e0 !important;
@@ -249,15 +212,12 @@
         transition: all 0.3s ease !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
     }
-
     .filter-controls.collapsed {
         max-height: 60px !important;
     }
-
     .filter-controls.expanded {
         max-height: 400px !important;
     }
-
     .filter-controls-header {
         background: #f8f9fa !important;
         padding: 15px 20px !important;
@@ -268,36 +228,29 @@
         align-items: center !important;
         user-select: none !important;
     }
-
     .filter-controls-header:hover {
         background: #e9ecef !important;
     }
-
     .filter-controls-title {
         font-weight: 600 !important;
         color: #333 !important;
         font-size: 1.1rem !important;
     }
-
     .filter-controls-toggle {
         font-size: 1.2rem !important;
         color: #666 !important;
         transition: transform 0.3s ease !important;
     }
-
     .filter-controls.expanded .filter-controls-toggle {
         transform: rotate(180deg) !important;
     }
-
     .filter-controls-content {
         padding: 15px !important;
         display: none !important;
     }
-
     .filter-controls.expanded .filter-controls-content {
         display: block !important;
     }
-
     #sortOptions {
         margin-right: 15px !important;
     }

@@ -3,7 +3,6 @@
 	margin: 0;
 	padding: 0;
 }
-
 body {
 	font-family: "Roboto", sans-serif !important;
 	background-color: #f1f1f1 !important;
@@ -13,7 +12,6 @@ body {
 	padding-bottom: 0px;
 	padding-right: 5px;
 }
-
 h1 {
 	font-weight: 500 !important;
 	margin-bottom: 20px !important;
@@ -21,14 +19,12 @@ h1 {
 	color: #444 !important;
 	text-align: center !important;
 }
-
 label {
 	display: block;
 	font-weight: 500;
 	margin-bottom: 4px;
 	color: #555;
 }
-
 button {
 	display: inline-block;
 	background-color: #666;
@@ -43,11 +39,9 @@ button {
 	margin-right: 10px;
 	max-height: fit-content;
 }
-
 button:hover {
 	background-color: #444;
 }
-
 select,
 input[type="password"],
 input[type="text"],
@@ -61,7 +55,6 @@ input[type="number"] {
 	color: #333;
 	transition: border-color 0.3s;
 }
-
 select:focus,
 input[type="password"]:focus,
 input[type="text"]:focus,
@@ -69,13 +62,10 @@ input[type="number"]:focus {
 	border-color: #999;
 	outline: none;
 }
-
 body {
 	overflow-x: auto !important;
 }
-
 #config-div {
-
 	position: fixed;
 	bottom: 2%;
 	width: 280px;

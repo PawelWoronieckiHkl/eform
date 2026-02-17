@@ -1,6 +1,4 @@
 @media (max-width: 935px) {
-
-    /* Mobile new-order page - 100% height, white background */
     body {
         background-color: white !important;
         min-height: 100vh !important;
@@ -11,14 +9,12 @@
         min-height: calc(100vh - 140px) !important;
     }
 
-    /* Content container */
     .content {
         background-color: white !important;
         padding: 15px !important;
         margin: 0 !important;
     }
 
-    /* Form card */
     .card.shadow-lg {
         border: none !important;
         box-shadow: none !important;
@@ -31,7 +27,6 @@
         padding: 0 !important;
     }
 
-    /* New-order mobile form styling */
     .new-order-form {
         display: flex !important;
         flex-direction: column !important;
@@ -39,7 +34,6 @@
         background: white !important;
     }
 
-    /* Form groups */
     .mb-3 {
         margin-bottom: 15px !important;
     }
@@ -49,7 +43,6 @@
         padding: 12px !important;
         border: 1px solid #ddd !important;
         font-size: 16px !important;
-        /* Prevent zoom on iOS */
         width: 100% !important;
     }
 
@@ -61,14 +54,12 @@
         width: 100% !important;
     }
 
-    /* Labels */
     .form-label {
         font-weight: 600 !important;
         color: #333 !important;
         margin-bottom: 8px !important;
     }
 
-    /* Submit buttons */
     .submit-row {
         display: flex !important;
         flex-direction: column !important;
@@ -84,14 +75,12 @@
         font-weight: 600 !important;
     }
 
-    /* Responsive adjustments */
     .my-5 {
-
         margin-bottom: 0 !important;
     }
 
     .mobile-rm-row-paddding {
-        margin-top:10% !important;
+        margin-top: 10% !important;
         padding: 0 !important;
     }
 
@@ -103,12 +92,10 @@
         width: 100% !important;
     }
 
-    /* Hide unnecessary elements on mobile */
     .mobile-d-none {
         display: none !important;
     }
 
-    /* Form check inputs */
     .form-check-input {
         width: 1.2rem !important;
         height: 1.2rem !important;
@@ -121,17 +108,14 @@
         line-height: 1.5 !important;
     }
 
-    /* Remove mobile-specific padding classes */
     .mobile-rm-p {
         padding: 0 !important;
     }
 
-    /* Grid adjustments */
     .mobile-rm-d-flex {
         display: block !important;
     }
 
-    /* Text inputs full width */
     input[type="text"],
     input[type="password"],
     input[type="email"],
@@ -150,12 +134,10 @@
         resize: vertical !important;
     }
 
-    /* Remove bottom margins on mobile */
     .mobiler-rm-b {
         margin-bottom: 0 !important;
     }
 
-    /* Country select adjustments */
     .country-select {
         width: 100% !important;
     }

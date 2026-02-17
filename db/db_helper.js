@@ -4,12 +4,15 @@ const positionQueries = require('./positions');
 const otherQueries = require('./others');
 const ownerQueries = require('./owner');
 const statusesQueries = require('./statuses');
-// Eksportuj WSZYSTKO razem
+const addressQueries = require('./address');
+
+
 module.exports = {
   ...positionQueries,
   ...otherQueries,
   ...userQueries,
   ...orderQueries,
   ...ownerQueries,
-  ...statusesQueries
+  ...statusesQueries,
+  ...addressQueries
 };

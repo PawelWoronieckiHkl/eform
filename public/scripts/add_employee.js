@@ -6,7 +6,7 @@ const togglePasswordBtn = document.getElementById('toggle-password');
 const passwordInput = document.getElementById('password');
 const passwordIcon = document.getElementById('password-icon');
 
-// Toggle widoczności hasła
+
 togglePasswordBtn.addEventListener('click', () => {
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
     passwordInput.setAttribute('type', type);
@@ -20,14 +20,14 @@ togglePasswordBtn.addEventListener('click', () => {
     }
 });
 
-// Obsługa formularza
+
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    // Walidacja
+    
     if (!data.name || !data.surname || !data.login || !data.password) {
         showToast('error', 'Wszystkie wymagane pola muszą być wypełnione');
         return;
@@ -38,7 +38,7 @@ form.addEventListener('submit', async (e) => {
         return;
     }
 
-    // Wyłącz przycisk podczas wysyłania
+    
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Zapisywanie...';
 
@@ -56,7 +56,7 @@ form.addEventListener('submit', async (e) => {
         if (result.success) {
             showToast('success', result.message || 'Pracownik został dodany');
 
-            // Przekierowanie po krótkim czasie
+            
             setTimeout(() => {
                 window.location.href = result.redirect || '/user/employee-panel';
             }, 500);
@@ -73,7 +73,7 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
-// Walidacja w czasie rzeczywistym
+
 const nameInput = document.getElementById('name');
 const surnameInput = document.getElementById('surname');
 const loginInput = document.getElementById('login');

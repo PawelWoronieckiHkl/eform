@@ -1,52 +1,41 @@
-/* Employee Panel Styles */
 .employee-panel-header {
     border-bottom: 2px solid #e0e0e0;
     padding-bottom: 1rem;
 }
-
 .employee-panel-header h2 {
     color: #333;
     font-weight: 600;
 }
-
 .employee-panel-header h2 i {
     color: #6c757d;
 }
-
 .employees-container {
     background: white;
     border-radius: 8px;
     padding: 1.5rem;
 }
-
 .employee-table {
     margin-bottom: 0;
 }
-
 .employee-table thead {
     background-color: #f8f9fa;
 }
-
 .employee-table thead th {
     font-weight: 600;
     color: #495057;
     border-bottom: 2px solid #dee2e6;
     padding: 0.75rem;
 }
-
 .employee-table tbody tr {
     transition: background-color 0.2s ease;
 }
-
 .employee-table tbody tr:hover {
     background-color: #f8f9fa;
 }
-
 .employee-table tbody td {
     padding: 0.75rem;
     vertical-align: middle;
 }
-
 .action-buttons {
     display: flex;
     flex-direction: column;
@@ -60,7 +49,6 @@
     padding-left: 1% !important;
 }
 .action-buttons .btn {
-
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
     white-space: nowrap;
@@ -70,39 +58,31 @@
 }
 .w-30 {
     width: 70% !important;
-
 }
 .view-orders-btn {
     transition: all 0.2s ease;
 }
-
 .view-orders-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
-
 .delete-employee-btn {
     transition: all 0.2s ease;
 }
-
 .delete-employee-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }
-
 .btn-dark {
     background-color: #343a40;
     border-color: #343a40;
     color: white;
 }
-
 .btn-dark:hover {
     background-color: #23272b;
     border-color: #1d2124;
     color: white;
 }
-
-/* Delete Dialog */
 .delete-dialog {
     border: none;
     border-radius: 12px;
@@ -115,65 +95,51 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
 .delete-dialog::backdrop {
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(3px);
 }
-
 .dialog-content {
     padding: 2rem;
 }
-
 .dialog-content h3 {
     margin-bottom: 1rem;
     color: #dc3545;
     font-size: 1.5rem;
 }
-
 .dialog-content p {
     margin-bottom: 1.5rem;
     color: #666;
     font-size: 1.1rem;
 }
-
 .dialog-buttons {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
 }
-
-/* Responsive */
 @media (max-width: 767.98px) {
     .employee-table {
         font-size: 0.875rem;
     }
-
     .employee-table th,
     .employee-table td {
         padding: 0.5rem 0.25rem;
     }
-
     .action-buttons {
         gap: 0.25rem;
     }
-
     .action-buttons .btn {
         padding: 0.4rem 0.75rem;
         font-size: 0.75rem;
         max-width: 150px;
     }
-
     .dialog-content {
         padding: 1.5rem;
     }
 }
-
-/* Empty state */
 .alert-info {
     padding: 2rem;
 }
-
 .alert-info i {
     font-size: 2rem;
     margin-bottom: 1rem;

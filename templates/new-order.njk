@@ -12,291 +12,302 @@
         <link rel="stylesheet" href="/styles/mobile/new-order.css">
             <link rel="stylesheet" href="/vendor/country-select-js/build/css/countrySelect.css"/>
             <link rel="stylesheet" href="/styles/new-order.css">
-                <style>
-                    .country-select .flag {
-                        background-image: url("/vendor/country-select-js/build/img/flags.png");
-                    }
-                </style>
-                <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
-            {% endblock %}
-            {% block content %}
-                <div class="content col-9 center-content mobile-bg-white">
-                    <div class="my-5">
-                        <h2 class="p-3 mobile-rm-p">
-                            {% block order_title %}
-                                {{ __('new-order.h1') }}
-                            {% endblock order_title %}
-                        </h2>
-                        <div class="row justify-content-center">
-                            <div id="new-order-card" class="card m-3 mb-5 col-md-6 shadow-lg mobile-rm-card mobile-rm-m">
-                                <div class="card-body">
-                                    <div class="row mb-3 align-items-center mt-3">
-                                        <div class="col-md-3 text-start fw-semibold">
-                                            <label for="commission-input">{{ __('new-order.order_name') }}</label>
+                <link rel="stylesheet" href="/styles/new-address-modal.css">
+                    <style>
+                        .country-select .flag {
+                            background-image: url("/vendor/country-select-js/build/img/flags.png");
+                        }
+                    </style>
+                    <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
+                {% endblock %}
+                {% block content %}
+                    <div class="content col-9 center-content mobile-bg-white">
+                        <div class="my-5">
+                            <h2 class="p-3 mobile-rm-p">
+                                {% block order_title %}
+                                    {{ __('new-order.h1') }}
+                                {% endblock order_title %}
+                            </h2>
+                            <div class="row justify-content-center">
+                                <div id="new-order-card" class="card m-3 mb-5 col-md-6 shadow-lg mobile-rm-card mobile-rm-m">
+                                    <div class="card-body">
+                                        <div class="row mb-3 align-items-center mt-3">
+                                            <div class="col-md-3 text-start fw-semibold">
+                                                <label for="commission-input">{{ __('new-order.order_name') }}</label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                {% block commision_input %}
+                                                    <input type="text" maxlength="60" class="form-control validate" id="commission-input" placeholder="{{ __('new-order.order_name_placeholder') }}" value=""/>
+                                                {% endblock commision_input %}
+                                            </div>
                                         </div>
-                                        <div class="col-md-9">
-                                            {% block commision_input %}
-                                                <input type="text" maxlength="60" class="form-control validate" id="commission-input" placeholder="{{ __('new-order.order_name_placeholder') }}" value=""/>
-                                            {% endblock commision_input %}
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3 align-items-start mt-3 ">
-                                        <div class="col-md-3 text-start fw-semibold pt-2 mobile-d-none">
-                                            <label for="address-select" class="mb-0">{{ __('new_order.address') }}</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div id="address-dropdown-container">
-                                                {% block client_select %}
-                                                    <select id="address-select" name="selected_address" class="form-select mb-2">
-                                                        <option value="" selected disabled>Wybierz adres</option>
-                                                        {% for address in addr.addresses %}
-                                                            {% if address.email and address.phone %}
+                                        <div class="row mb-3 align-items-start mt-3 ">
+                                            <div class="col-md-3 text-start fw-semibold pt-2 mobile-d-none">
+                                                <label for="address-select" class="mb-0">{{ __('new_order.address') }}</label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div id="address-dropdown-container" class="d-flex align-items-center gap-2">
+                                                    {% block client_select %}
+                                                        <select id="address-select" name="selected_address" class="form-select mb-0 flex-grow-1">
+                                                            <option value="" selected disabled>Wybierz adres dostawy</option>
+                                                            {% for address in addr %}
                                                                 <option value="{{ address.id }}">
-                                                                    <p class='fw-bold'>{{ address.commision }} &nbsp;&nbsp; {{ address.mail }}
-                                                                        {{ address.phone }} ({{ address.street }}
+                                                                    <p class='fw-bold'>{{ address.name }} &nbsp;&nbsp; {{ address.mail }} ({{ address.street }}
                                                                         {{ address.city }}
                                                                         {{ address.zip }}
-                                                                        {{ address.country }})</option>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </select>
-                                                    {% endblock %}
-                                                </div>
-                                                <div id="mail-dropdown-container">
-                                                    <select id="mail-select" name="selected_mail" class="form-select mb-2">
-                                                        <option value="" selected disabled>Wybierz adres Email</option>
-                                                        {% for address in addr.addresses %}
-                                                            {% if address.email and address.phone %}
-                                                                <option value="{{ address.id }}">
-                                                                    <p class='fw-bold'>{{ address.commision }} &nbsp;&nbsp; {{ address.mail }}
-                                                                        {{ address.phone }} ({{ address.street }}
-                                                                        {{ address.city }}
-                                                                        {{ address.zip }}
-                                                                        {{ address.country }})</option>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </select>
+                                                                        {{ address.country }})
+                                                                    </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        {% endblock %}
+                                                        <div class='manipulate-address d-flex'>
+                                                            <button id='edit-delivery-address-btn' class='btn p-0 ms-4 has-tooltip' data-tooltip="Edytuj adres dostawy">
+                                                                <img src="/img/edit_address.png" alt="edit address" class='icon'/>
+                                                            </button>
+                                                            <button id='delete-delivery-address-btn' class='btn p-0 ms-2 has-tooltip' data-tooltip="Usuń adres dostawy">
+                                                                <img src="/img/delete_address.png" alt="delete address" class='icon'/>
+                                                            </button>
+                                                        </div>
+                                                        <div class='add-new-address'>
+                                                            <button id='add-delivery-address-btn' class='btn p-0 ms-4 has-tooltip' data-tooltip="Dodaj nowy adres dostawy">
+                                                                <img src="/img/add_address.png" alt="add new address" class='icon'/>
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    {# <div class="d-flex align-items-center gap-2" id='address-checkbox-container'> #}
-                                                {# <input type="checkbox" class="form-check-input m-0" id="show-addresses-checkbox"/> #}
-                                                    {# <label class="form-check-label m-0" for="show-addresses-checkbox"> #}
-                                                    {# {% block checkbox_label %} #}
-                                                    {# {{ __('new-order.chcekbox_address_label') }} #}
-                                                    {# {% endblock %} #}
-                                                    {# </label> #}
-                                                    {# </div> #}
-                                                    {# </div> #}
-                                                    {# </div> #}
-                                                    {# <div class="row mb-3 align-items-center new-addr d-none"> #}
-                                                    {# <div class="col-md-3 text-start fw-semibold"> #}
-                                                    {# <label for="name">{{ __('new-order.client_name') }}</label> #}
-                                                    {# </div> #}
-                                                    {# <div class="col-md-9"> #}
-                                                    {# {% block name_input %} #}
-                                                    {# <input type="text" class="form-control" id="name" placeholder="{{ __('new-order.client_name_placeholder') }}" value=""/> #}
-                                                    {# {% endblock name_input %} #}
-                                                    {# </div> #}
-                                                    {# </div> #}
-                                                    {# <div class="row mb-3 align-items-center new-addr d-none"> #}
-                                                    {# <div class="col-md-3 text-start fw-semibold"> #}
-                                                    {# <label for="email">{{ __('new-order.email') }}</label> #}
-                                                    {# </div> #}
-                                                    {# <div class="col-md-9"> #}
-                                                    {# {% block email_input %} #}
-                                                    {# <input type="text" class="form-control" id="email" placeholder="{{ __('new-order.email_placeholder') }}" value=""/> #}
-                                                    {# {% endblock email_input %} #}
-                                                    {# </div> #}
-                                                    {# </div> #}
-                                                    {# <div class="row mb-3 align-items-center new-addr d-none"> #}
-                                                    {# <div class="col-md-3 text-start fw-semibold"> #}
-                                                    {# <label for="phone">{{ __('new-order.phone') }}</label> #}
-                                                    {# </div> #}
-                                                    {# <div class="col-md-9"> #}
-                                                    {# {% block phone_input %} #}
-                                                    {# <input type="number" class="form-control" id="phone" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/> #}
-                                                    {# {% endblock phone_input %} #}
-                                                    {# </div> #}
-                                                    {# </div> #}
-                                                    {# <div class="row mb-3 align-items-center new-addr d-none"> #}
-                                                    {# <div class="col-md-3 text-start fw-semibold"> #}
-                                                    {# <label for="street">{{ __('new-order.street') }}</label> #}
-                                                    {# </div> #}
-                                                    {# <div class="col-md-9"> #}
-                                                    {# {% block street_input %} #}
-                                                    {# <input type="text" class="form-control" id="street" placeholder="{{ __('new-order.street_placeholder') }}" value=""/> #}
-                                                    {# {% endblock street_input %} #}
-                                                    {# </div> #}
-                                                    {# </div> #}
-                                                    {# <div class="row mb-3 align-items-center new-addr d-none"> #}
-                                                    {# <div class="col-md-3 text-start fw-semibold"> #}
-                                                    {# <label for="city">{{ __('new-order.city') }}</label> #}
-                                                    {# </div> #}
-                                                    {# <div class="col-md-9"> #}
-                                                    {# {% block city_input %} #}
-                                                    {# <input type="text" class="form-control" id="city" placeholder="{{ __('new-order.city_placeholder') }}" value=""/> #}
-                                                    {# {% endblock city_input %} #}
-                                                    {# </div> #}
-                                                    {# </div> #}
-                                                    {# <div class="row mb-3 align-items-center new-addr d-none"> #}
-                                                    {# <div class="col-md-3 text-start fw-semibold"> #}
-                                                    {# <label for="zip">{{ __('new-order.zip') }}</label> #}
-                                                    {# </div> #}
-                                                    {# <div class="col-md-9"> #}
-                                                    {# {% block zip_input %} #}
-                                                    {# <input type="text" class="form-control" id="zip" placeholder="{{ __('new-order.zip_placeholder') }}" value=""/> #}
-                                                    {# {% endblock zip_input %} #}
-                                                    {# </div> #}
-                                                    {# </div> #}
-                                                    {# <div class="row mb-3 align-items-center new-addr d-none"> #}
-                                                    {# <div class="col-md-3 text-start">{{ __('new-order.country') }}</div> #}
-                                                    {# <div class="col-md-9"> #}
-                                                    {# {% block country_input %} #}
-                                                    {# <input class="form-control" type="text" id="country"/> #}
-                                                    {# <input type="hidden" id="country_code"/> #}
-                                                    {# {% endblock country_input %} #}
+                                                    <div id="mail-dropdown-container" class="d-flex align-items-center gap-2 mt-2">
+                                                        <select id="mail-select" name="selected_mail" class="form-select mb-0 flex-grow-1">
+                                                            <option value="" selected disabled>Wybierz adres Email</option>
+                                                            {% for email in emails %}
+                                                                <option value="{{ email.id }}">
+                                                                    <p class='fw-bold'>{{ email.email }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <div class='add-new-address'>
+                                                                <button id='add-mail-btn' class='btn p-0 ms-4 has-tooltip' data-tooltip="Dodaj nowy adres Email">
+                                                                    <img src="/img/mail.png" alt="add new address" class='icon'/>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        {# <div class="d-flex align-items-center gap-2" id='address-checkbox-container'> #}
+                                                    {# <input type="checkbox" class="form-check-input m-0" id="show-addresses-checkbox"/> #}
+                                                        {# <label class="form-check-label m-0" for="show-addresses-checkbox"> #}
+                                                        {# {% block checkbox_label %} #}
+                                                        {# {{ __('new-order.chcekbox_address_label') }} #}
+                                                        {# {% endblock %} #}
+                                                        {# </label> #}
+                                                        {# </div> #}
+                                                        {# </div> #}
+                                                        {# </div> #}
+                                                        {# <div class="row mb-3 align-items-center new-addr d-none"> #}
+                                                        {# <div class="col-md-3 text-start fw-semibold"> #}
+                                                        {# <label for="name">{{ __('new-order.client_name') }}</label> #}
+                                                        {# </div> #}
+                                                        {# <div class="col-md-9"> #}
+                                                        {# {% block name_input %} #}
+                                                        {# <input type="text" class="form-control" id="name" placeholder="{{ __('new-order.client_name_placeholder') }}" value=""/> #}
+                                                        {# {% endblock name_input %} #}
+                                                        {# </div> #}
+                                                        {# </div> #}
+                                                        {# <div class="row mb-3 align-items-center new-addr d-none"> #}
+                                                        {# <div class="col-md-3 text-start fw-semibold"> #}
+                                                        {# <label for="email">{{ __('new-order.email') }}</label> #}
+                                                        {# </div> #}
+                                                        {# <div class="col-md-9"> #}
+                                                        {# {% block email_input %} #}
+                                                        {# <input type="text" class="form-control" id="email" placeholder="{{ __('new-order.email_placeholder') }}" value=""/> #}
+                                                        {# {% endblock email_input %} #}
+                                                        {# </div> #}
+                                                        {# </div> #}
+                                                        {# <div class="row mb-3 align-items-center new-addr d-none"> #}
+                                                        {# <div class="col-md-3 text-start fw-semibold"> #}
+                                                        {# <label for="phone">{{ __('new-order.phone') }}</label> #}
+                                                        {# </div> #}
+                                                        {# <div class="col-md-9"> #}
+                                                        {# {% block phone_input %} #}
+                                                        {# <input type="number" class="form-control" id="phone" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/> #}
+                                                        {# {% endblock phone_input %} #}
+                                                        {# </div> #}
+                                                        {# </div> #}
+                                                        {# <div class="row mb-3 align-items-center new-addr d-none"> #}
+                                                        {# <div class="col-md-3 text-start fw-semibold"> #}
+                                                        {# <label for="street">{{ __('new-order.street') }}</label> #}
+                                                        {# </div> #}
+                                                        {# <div class="col-md-9"> #}
+                                                        {# {% block street_input %} #}
+                                                        {# <input type="text" class="form-control" id="street" placeholder="{{ __('new-order.street_placeholder') }}" value=""/> #}
+                                                        {# {% endblock street_input %} #}
+                                                        {# </div> #}
+                                                        {# </div> #}
+                                                        {# <div class="row mb-3 align-items-center new-addr d-none"> #}
+                                                        {# <div class="col-md-3 text-start fw-semibold"> #}
+                                                        {# <label for="city">{{ __('new-order.city') }}</label> #}
+                                                        {# </div> #}
+                                                        {# <div class="col-md-9"> #}
+                                                        {# {% block city_input %} #}
+                                                        {# <input type="text" class="form-control" id="city" placeholder="{{ __('new-order.city_placeholder') }}" value=""/> #}
+                                                        {# {% endblock city_input %} #}
+                                                        {# </div> #}
+                                                        {# </div> #}
+                                                        {# <div class="row mb-3 align-items-center new-addr d-none"> #}
+                                                        {# <div class="col-md-3 text-start fw-semibold"> #}
+                                                        {# <label for="zip">{{ __('new-order.zip') }}</label> #}
+                                                        {# </div> #}
+                                                        {# <div class="col-md-9"> #}
+                                                        {# {% block zip_input %} #}
+                                                        {# <input type="text" class="form-control" id="zip" placeholder="{{ __('new-order.zip_placeholder') }}" value=""/> #}
+                                                        {# {% endblock zip_input %} #}
+                                                        {# </div> #}
+                                                        {# </div> #}
+                                                        {# <div class="row mb-3 align-items-center new-addr d-none"> #}
+                                                        {# <div class="col-md-3 text-start">{{ __('new-order.country') }}</div> #}
+                                                        {# <div class="col-md-9"> #}
+                                                        {# {% block country_input %} #}
+                                                        {# <input class="form-control" type="text" id="country"/> #}
+                                                        {# <input type="hidden" id="country_code"/> #}
+                                                        {# {% endblock country_input %} #}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <!-- noeeeew -->
-                                            <div class="row mb-3 align-items-start mt-3 d-flex">
-                                                <div class="col-md-3 text-start fw-semibold pt-2 mobile-d-none">
-                                                    <label for="address-select" class="mb-0"></label>
+                                                <div class="row mb-3 align-items-start mt-3 d-flex">
+                                                    <div class="col-md-3 text-start fw-semibold pt-2 mobile-d-none">
+                                                        <label for="address-select" class="mb-0"></label>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2 col-9" id='send-address-checkbox-container' ">
+                                                        <input type="checkbox" class="form-check-input m-0" id="show-send-address-checkbox"/>
+                                                        {% block checkbox_address2 %}
+                                                            {{ __('new-order.send_chcekbox_address_label') }}
+                                                        {% endblock %}
+                                                    </label>
                                                 </div>
-                                                <div class="d-flex align-items-center gap-2 col-9" id='send-address-checkbox-container' ">
-                                                    <input type="checkbox" class="form-check-input m-0" id="show-send-address-checkbox"/>
-                                                    {% block checkbox_address2 %}
-                                                        {{ __('new-order.send_chcekbox_address_label') }}
-                                                    {% endblock %}
-                                                </label>
-                                            </div>
-                                            <div class="row mb-3 align-items-center new-send-addr d-none pt-3">
-                                                <div class="col-md-3 text-start fw-semibold">
-                                                    <label for="sendName">{{ __('new-order.client_name') }}</label>
+                                                <div class="row mb-3 align-items-center new-send-addr d-none pt-3">
+                                                    <div class="col-md-3 text-start fw-semibold">
+                                                        <label for="sendName">{{ __('new-order.client_name') }}</label>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        {% block send_name_input %}
+                                                            <input type="text" class="form-control" id="sendName" placeholder="{{ __('new-order.client_name_placeholder') }}" value=""/>
+                                                        {% endblock send_name_input %}
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-9">
-                                                    {% block send_name_input %}
-                                                        <input type="text" class="form-control" id="sendName" placeholder="{{ __('new-order.client_name_placeholder') }}" value=""/>
-                                                    {% endblock send_name_input %}
+                                                <div class="row mb-3 align-items-center new-send-addr d-none">
+                                                    <div class="col-md-3 text-start fw-semibold">
+                                                        <label for="sendEmail">{{ __('new-order.email') }}</label>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        {% block send_email_input %}
+                                                            <input type="text" class="form-control" id="sendEmail" placeholder="{{ __('new-order.email_placeholder') }}" value=""/>
+                                                        {% endblock send_email_input %}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="row mb-3 align-items-center new-send-addr d-none">
-                                                <div class="col-md-3 text-start fw-semibold">
-                                                    <label for="sendEmail">{{ __('new-order.email') }}</label>
+                                                <div class="row mb-3 align-items-center new-send-addr d-none">
+                                                    <div class="col-md-3 text-start fw-semibold">
+                                                        <label for="sendPhone">{{ __('new-order.phone') }}</label>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        {% block send_phone_input %}
+                                                            <input type="number" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/>
+                                                        {% endblock send_phone_input %}
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-9">
-                                                    {% block send_email_input %}
-                                                        <input type="text" class="form-control" id="sendEmail" placeholder="{{ __('new-order.email_placeholder') }}" value=""/>
-                                                    {% endblock send_email_input %}
+                                                <div class="row mb-3 align-items-center new-send-addr d-none">
+                                                    <div class="col-md-3 text-start fw-semibold">
+                                                        <label for="sendStreet">{{ __('new-order.street') }}</label>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        {% block send_street_input %}
+                                                            <input type="text" class="form-control" id="sendStreet" placeholder="{{ __('new-order.street_placeholder') }}" value=""/>
+                                                        {% endblock send_street_input %}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="row mb-3 align-items-center new-send-addr d-none">
-                                                <div class="col-md-3 text-start fw-semibold">
-                                                    <label for="sendPhone">{{ __('new-order.phone') }}</label>
+                                                <div class="row mb-3 align-items-center new-send-addr d-none">
+                                                    <div class="col-md-3 text-start fw-semibold">
+                                                        <label for="sendCity">{{ __('new-order.city') }}</label>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        {% block send_city_input %}
+                                                            <input type="text" class="form-control" id="sendCity" placeholder="{{ __('new-order.city_placeholder') }}" value=""/>
+                                                        {% endblock send_city_input %}
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-9">
-                                                    {% block send_phone_input %}
-                                                        <input type="number" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/>
-                                                    {% endblock send_phone_input %}
+                                                <div class="row mb-3 align-items-center new-send-addr d-none">
+                                                    <div class="col-md-3 text-start fw-semibold">
+                                                        <label for="sendZip">{{ __('new-order.zip') }}</label>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        {% block send_zip_input %}
+                                                            <input type="text" class="form-control" id="sendZip" placeholder="{{ __('new-order.zip_placeholder') }}" value=""/>
+                                                        {% endblock send_zip_input %}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="row mb-3 align-items-center new-send-addr d-none">
-                                                <div class="col-md-3 text-start fw-semibold">
-                                                    <label for="sendStreet">{{ __('new-order.street') }}</label>
+                                                <div class="row mb-3 align-items-center new-send-addr d-none">
+                                                    <div class="col-md-3 text-start fw-semibold">
+                                                        <label for="sendCountry">{{ __('new-order.country') }}</label>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        {% block send_country_input %}
+                                                            <input class="form-control" type="text" id="sendCountry"/>
+                                                            <input type="hidden" id="sendCountry_code"/>
+                                                        {% endblock send_country_input %}
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-9">
-                                                    {% block send_street_input %}
-                                                        <input type="text" class="form-control" id="sendStreet" placeholder="{{ __('new-order.street_placeholder') }}" value=""/>
-                                                    {% endblock send_street_input %}
+                                                <!--noeeew end -->
+                                                <div class="row mb-3 align-items-center mobile-rm-row-paddding">
+                                                    <div class="col-md-3 text-start fw-semibold">
+                                                        <label for="comment">{{ __('new-order.comments') }}</label>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        {% block comment_input %}
+                                                            <textarea type="text" class="form-control" id="comment" placeholder="{{ __('new-order.comments_placeholder') }}" cols="20" rows="2" maxlength="250"></textarea>
+                                                            <small id="charCount">0/250</small>
+                                                        {% endblock comment_input %}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="row mb-3 align-items-center new-send-addr d-none">
-                                                <div class="col-md-3 text-start fw-semibold">
-                                                    <label for="sendCity">{{ __('new-order.city') }}</label>
+                                                <div class="d-flex justify-content-center gap-3 text-center ms-5 mobile-rm-d-flex">
+                                                    {% block sendBbtn %}
+                                                        <button class="btn btn-outline-success p-2 col-3" type="button" id="save-order-btn" data-href="/orders/save-order">
+                                                            {{ __('new-order.save_button') }}
+                                                        </button>
+                                                    {% endblock sendBbtn %}
+                                                    <a href="/" class='btn btn-outline-danger p-2 col-3'>
+                                                        {{ __('form.cancel_button') }}</a>
                                                 </div>
-                                                <div class="col-md-9">
-                                                    {% block send_city_input %}
-                                                        <input type="text" class="form-control" id="sendCity" placeholder="{{ __('new-order.city_placeholder') }}" value=""/>
-                                                    {% endblock send_city_input %}
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3 align-items-center new-send-addr d-none">
-                                                <div class="col-md-3 text-start fw-semibold">
-                                                    <label for="sendZip">{{ __('new-order.zip') }}</label>
-                                                </div>
-                                                <div class="col-md-9">
-                                                    {% block send_zip_input %}
-                                                        <input type="text" class="form-control" id="sendZip" placeholder="{{ __('new-order.zip_placeholder') }}" value=""/>
-                                                    {% endblock send_zip_input %}
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3 align-items-center new-send-addr d-none">
-                                                <div class="col-md-3 text-start fw-semibold">
-                                                    <label for="sendCountry">{{ __('new-order.country') }}</label>
-                                                </div>
-                                                <div class="col-md-9">
-                                                    {% block send_country_input %}
-                                                        <input class="form-control" type="text" id="sendCountry"/>
-                                                        <input type="hidden" id="sendCountry_code"/>
-                                                    {% endblock send_country_input %}
-                                                </div>
-                                            </div>
-                                            <!--noeeew end -->
-                                            <div class="row mb-3 align-items-center mobile-rm-row-paddding">
-                                                <div class="col-md-3 text-start fw-semibold">
-                                                    <label for="comment">{{ __('new-order.comments') }}</label>
-                                                </div>
-                                                <div class="col-md-9">
-                                                    {% block comment_input %}
-                                                        <textarea type="text" class="form-control" id="comment" placeholder="{{ __('new-order.comments_placeholder') }}" cols="20" rows="2" maxlength="250"></textarea>
-                                                        <small id="charCount">0/250</small>
-                                                    {% endblock comment_input %}
-                                                </div>
-                                            </div>
-                                            <div class="d-flex justify-content-center gap-3 text-center ms-5 mobile-rm-d-flex">
-                                                {% block sendBbtn %}
-                                                    <button class="btn btn-outline-success p-2 col-3" type="button" id="save-order-btn" data-href="/orders/save-order">
-                                                        {{ __('new-order.save_button') }}
-                                                    </button>
-                                                {% endblock sendBbtn %}
-                                                <a href="/" class='btn btn-outline-danger p-2 col-3'>
-                                                    {{ __('form.cancel_button') }}</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endblock content %}
-                    {% block scripts %}
-                        <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
-                        <script>
-                            let neworderbtn = document.getElementById('new-order-nav-btn');
-                            if (neworderbtn) {
-                                neworderbtn.classList.add('active');
-                            }
-                            $(function () {
-                                $("#country").countrySelect({
-                                    preferredCountries: [
-                                        "pl",
-                                        "de",
-                                        "gb",
-                                        'nl',
-                                        'fr'
-                                    ],
-                                    defaultCountry: "pl"
+                        {% endblock content %}
+                        {% block scripts %}
+                            <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
+                            <script>
+                                let neworderbtn = document.getElementById('new-order-nav-btn');
+                                if (neworderbtn) {
+                                    neworderbtn.classList.add('active');
+                                }
+                                $(function () {
+                                    $("#country").countrySelect({
+                                        preferredCountries: [
+                                            "pl",
+                                            "de",
+                                            "gb",
+                                            'nl',
+                                            'fr'
+                                        ],
+                                        defaultCountry: "pl"
+                                    });
                                 });
-                            });
-                            $(function () {
-                                $("#sendCountry").countrySelect({
-                                    preferredCountries: [
-                                        "pl",
-                                        "de",
-                                        "gb",
-                                        'nl',
-                                        'fr'
-                                    ],
-                                    defaultCountry: "pl"
+                                $(function () {
+                                    $("#sendCountry").countrySelect({
+                                        preferredCountries: [
+                                            "pl",
+                                            "de",
+                                            "gb",
+                                            'nl',
+                                            'fr'
+                                        ],
+                                        defaultCountry: "pl"
+                                    });
                                 });
-                            });
-                        </script>
-                        <script type="module" src="/scripts/orders.js"></script>
-                    {% endblock scripts %}
+                            </script>
+                            <script type="module" src="/scripts/orders.js"></script>
+                            <script type="module" src="/scripts/createNewAddress.js"></script>
+                        {% endblock scripts %}

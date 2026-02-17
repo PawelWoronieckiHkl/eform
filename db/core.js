@@ -89,40 +89,6 @@ async function deleteQuery(query, data) {
 }
 
 
-// module.exports = {
-// getDbPassword,
-// connetToDb,
-// getUserData,
-// insertOrderAddress,
-// insertNewOrder,
-// getUserOrders,
-// getOrderDetails,
-// updateOrderDetails,
-// insertNewForm,
-// deleteOrder,
-// deletePosition,
-// getOrderWithItems,
-// getPosition,
-// updateOrderComment,
-// getFormVersion,
-// getAppVersion,
-// getPolicyState,
-// updateAppVersion,
-// getLanguage,
-// getUserLogo,
-// getOwner,
-// updatePosition,
-// getUserAddresses,
-// countUserOrders,
-// changeOrderStatus,
-// getOrderDataToSend,
-// updateUserPasswordByPin,
-// getLastChoice,
-// addUser,
-// getFirstLogonInfo,
-// getUsers
-// };
-// 
 
 module.exports = {
     selectQuery, updateQuery, deleteQuery, insertQuery, connetToDb

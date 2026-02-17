@@ -1,8 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-
-// Ensure logs directory exists
 const logsDir = path.join(__dirname, '..', 'logs');
 if (!fs.existsSync(logsDir)) {
     fs.mkdirSync(logsDir, { recursive: true });
@@ -16,8 +14,8 @@ function saveLogToFile(message) {
 
     const timestamp = new Date();
     const logMessage = `[${timestamp.toISOString()}] ${message}\n`;
-    const logday = timestamp.toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-    const logFilePath = path.join(logsDir, `log-${logday}.txt`); // Log file path with date
+    const logday = timestamp.toISOString().split('T')[0]; 
+    const logFilePath = path.join(logsDir, `log-${logday}.txt`); 
 
     fs.appendFile(logFilePath, logMessage, (err) => {
         if (err) {

@@ -1,9 +1,5 @@
-
 import { showToast } from "../components/toast.js";
 
-/**
- * Konfiguracja dla generatora Excel
- */
 const EXCEL_CONFIG = {
     HEADER_BG_COLOR: 'E0E0E0',
     HEADER_TEXT_COLOR: '000000',
@@ -17,9 +13,7 @@ const EXCEL_CONFIG = {
     LOGO_SPACE_ROWS: 3
 };
 
-/**
- * Klasa odpowiedzialna za generowanie plików Excel z tabel HTML używając ExcelJS
- */
+
 class ExcelJSGenerator {
     constructor(config = EXCEL_CONFIG) {
         this.config = { ...EXCEL_CONFIG, ...config };
@@ -27,7 +21,7 @@ class ExcelJSGenerator {
         this.combinedData = [];
         this.headerRows = [];
         this.separatorRows = [];
-        this.row3Rows = [];  // Trzeci wiersz z locked params
+        this.row3Rows = [];  
         this.isLocked = false;
         this.isShort = false;
 
@@ -41,7 +35,7 @@ class ExcelJSGenerator {
         });
         console.log('Final isLocked value:', this.isLocked);
 
-        // Sprawdź czy flaga short jest aktywna
+        
         let shortBtns = document.querySelectorAll('[id="short-print-button"]');
         console.log(shortBtns, 'sprawdzamy short print buttons');
         shortBtns.forEach(btn => {
@@ -55,9 +49,7 @@ class ExcelJSGenerator {
         this.orderData = null;
     }
 
-    /**
-     * Główna metoda generująca plik Excel
-     */
+
     async generate(containerId = '#print-template-container') {
         try {
             const metadata = this._getDocumentMetadata();
@@ -67,7 +59,7 @@ class ExcelJSGenerator {
             this.orderData = orderData;
             const logoData = await this._extractLogo(containerId);
 
-            // Użyj cleanOrderItems z orderData zamiast parsowania HTML
+            
             this._extractDataFromCleanOrderItems(orderData.cleanOrderItems);
             this._addEmptyRowAndColumn();
             this._adjustIndicesForOffset();
@@ -92,9 +84,7 @@ class ExcelJSGenerator {
         }
     }
 
-    /**
-     * Pobiera szczegóły zamówienia z backendu
-     */
+
     async fetchOrderData(orderId) {
         try {
             console.log(orderId, 'Pobieranie danych zamówienia dla ID:');
@@ -114,9 +104,7 @@ class ExcelJSGenerator {
         }
     }
 
-    /**
-     * Pobiera metadane dokumentu (ID, nazwa komisji)
-     */
+
     _getDocumentMetadata() {
         const comment = document.getElementById('comment');
         const commision = document.getElementById('commission-name') ||
@@ -135,9 +123,7 @@ class ExcelJSGenerator {
         };
     }
 
-    /**
-     * Pobiera wszystkie tabele z kontenera
-     */
+
     _getTablesFromContainer(containerId) {
         const tables = document.querySelectorAll(`${containerId} table`);
 
@@ -148,21 +134,19 @@ class ExcelJSGenerator {
         return tables;
     }
 
-    /**
-     * Ekstraktuje logo z kontenera i konwertuje do base64
-     */
+
     async _extractLogo(containerId) {
         try {
             let logoUrl = null;
 
-            // Najpierw spróbuj znaleźć logo widoczne na stronie (w navbarze/headerze)
+            
             const visibleLogo = document.querySelector('.logo, nav img, header img');
             if (visibleLogo && visibleLogo.src) {
                 logoUrl = visibleLogo.src;
                 console.log('Found visible logo on page:', logoUrl);
             }
 
-            // Jeśli nie ma, szukaj w kontenerze do druku
+            
             if (!logoUrl) {
                 const container = document.querySelector(containerId);
                 if (container) {
@@ -195,9 +179,7 @@ class ExcelJSGenerator {
         }
     }
 
-    /**
-     * Konwertuje obraz do base64
-     */
+
     async _imageToBase64(url) {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -243,9 +225,7 @@ class ExcelJSGenerator {
         });
     }
 
-    /**
-     * Ekstraktuje dane z cleanOrderItems (z backendu)
-     */
+
     _extractDataFromCleanOrderItems(cleanOrderItems) {
         if (!cleanOrderItems || cleanOrderItems.length === 0) {
             console.warn('No cleanOrderItems provided');
@@ -260,11 +240,9 @@ class ExcelJSGenerator {
         this._removeTrailingSeparator();
     }
 
-    /**
-     * Przetwarza pojedynczą tabelę z cleanOrderItems
-     */
+
     _processCleanTable(table) {
-        // Dodaj nagłówki (z headers1, ale pomijając te w table.locked)
+        
         const nonLockedHeaders = table.headers1.filter(h => !table.locked || !table.locked.includes(h));
         const headers = ['#', ...nonLockedHeaders, 'Oddział', 'Grupa', 'Komisja', 'Komentarz'];
         this.combinedData.push(headers);
@@ -272,12 +250,12 @@ class ExcelJSGenerator {
 
         let itemIndex = 1;
 
-        // Przetwórz każdy wiersz
+        
         table.rows.forEach(rowObj => {
-            // Row 1 - główne dane (non-locked parameters from headers1)
+            
             const row1Data = [itemIndex];
             table.headers1.forEach(header => {
-                // Pomiń jeśli w table.locked (globalnie locked dla tabeli)
+                
                 if (table.locked && table.locked.includes(header)) {
                     return;
                 }
@@ -291,11 +269,11 @@ class ExcelJSGenerator {
             );
             this.combinedData.push(row1Data);
 
-            // Row 2 - ceny (non-locked parameters from headers2)
+            
             const row2Data = Array(row1Data.length).fill('');
             let colIdx = 1;
             table.headers2.forEach(header => {
-                // Pomiń jeśli w table.locked (globalnie locked dla tabeli)
+                
                 if (table.locked && table.locked.includes(header)) {
                     return;
                 }
@@ -307,12 +285,12 @@ class ExcelJSGenerator {
             });
             this.combinedData.push(row2Data);
 
-            // Row 3 - locked parameters (tylko gdy this.isShort === true)
+            
             if (this.isShort && table.locked && table.locked.length > 0) {
                 const row3Data = Array(row1Data.length).fill('');
                 let colIdx = 1;
 
-                // Zbierz locked params z headers1
+                
                 table.headers1.forEach(header => {
                     if (table.locked.includes(header)) {
                         const value = rowObj.row.row1[header];
@@ -323,7 +301,7 @@ class ExcelJSGenerator {
                     }
                 });
 
-                // Zbierz locked params z headers2
+                
                 table.headers2.forEach(header => {
                     if (table.locked.includes(header)) {
                         const value = rowObj.row.row2[header];
@@ -342,9 +320,7 @@ class ExcelJSGenerator {
         });
     }
 
-    /**
-     * Ekstraktuje dane ze wszystkich tabel
-     */
+
     _extractDataFromTables(tables) {
         tables.forEach(table => {
             this._processTable(table);
@@ -354,9 +330,7 @@ class ExcelJSGenerator {
         this._removeTrailingSeparator();
     }
 
-    /**
-     * Przetwarza pojedynczą tabelę
-     */
+
     _processTable(table) {
         const headers = this._extractHeaders(table);
         this.combinedData.push(headers);
@@ -366,17 +340,13 @@ class ExcelJSGenerator {
         rows.forEach(row => this.combinedData.push(row));
     }
 
-    /**
-     * Ekstraktuje nagłówki z tabeli
-     */
+
     _extractHeaders(table) {
         return Array.from(table.querySelectorAll('thead th'))
             .map(th => th.innerText.trim());
     }
 
-    /**
-     * Ekstraktuje wiersze danych z tabeli
-     */
+
     _extractRows(table) {
         const tbodyRows = table.querySelectorAll('tbody tr');
 
@@ -392,9 +362,7 @@ class ExcelJSGenerator {
         );
     }
 
-    /**
-     * Dodaje separator między tabelami (dwa wiersze)
-     */
+
     _addSeparator() {
         const lastRow = this.combinedData[this.combinedData.length - 1];
         const separator1 = Array(lastRow.length).fill('');
@@ -405,9 +373,7 @@ class ExcelJSGenerator {
         this.separatorRows.push(this.combinedData.length - 1);
     }
 
-    /**
-     * Usuwa ostatni separator jeśli jest pusty
-     */
+
     _removeTrailingSeparator() {
         const lastRow = this.combinedData[this.combinedData.length - 1];
         if (lastRow && lastRow.every(cell => cell === '')) {
@@ -416,9 +382,7 @@ class ExcelJSGenerator {
         }
     }
 
-    /**
-     * Dodaje pusty wiersz i kolumnę na początku oraz przestrzeń na logo
-     */
+
     _addEmptyRowAndColumn() {
         if (!this.config.SKIP_FIRST_COLUMN && !this.config.SKIP_FIRST_ROW) {
             return;
@@ -437,9 +401,7 @@ class ExcelJSGenerator {
         }
     }
 
-    /**
-     * Dostosowuje indeksy po dodaniu offsetu
-     */
+
     _adjustIndicesForOffset() {
         const offset = this.config.SKIP_FIRST_ROW ? this.config.LOGO_SPACE_ROWS : 0;
 
@@ -450,14 +412,12 @@ class ExcelJSGenerator {
         }
     }
 
-    /**
-     * Tworzy worksheet z danych używając ExcelJS
-     */
+
     async _createWorksheet() {
         this.workbook = new ExcelJS.Workbook();
         const worksheet = this.workbook.addWorksheet('Sheet1');
 
-        // Dodaj dane do arkusza
+        
         this.combinedData.forEach((row, rowIndex) => {
             const excelRow = worksheet.getRow(rowIndex + 1);
             row.forEach((cellValue, colIndex) => {
@@ -469,9 +429,6 @@ class ExcelJSGenerator {
         return worksheet;
     }
 
-    /**
-     * Aplikuje style dla nagłówków
-     */
     _applyHeaderStyles(worksheet) {
         const startCol = this.config.SKIP_FIRST_COLUMN ? 2 : 1;
 
@@ -495,28 +452,26 @@ class ExcelJSGenerator {
         });
     }
 
-    /**
-     * Aplikuje jasnoniebieski kolor dla row2 (co drugi wiersz każdej pozycji)
-     */
+
     _applyRow2Styles(worksheet) {
         const startCol = this.config.SKIP_FIRST_COLUMN ? 2 : 1;
 
         this.headerRows.forEach(headerIdx => {
-            // Startujemy od wiersza po headerze + 1 (pomijamy pierwszy wiersz danych)
-            let rowIdx = headerIdx + 2; // Pomijamy header i row1
+            
+            let rowIdx = headerIdx + 2; 
 
-            // Przechodzimy przez wiersze aż do następnego headera lub końca danych
+            
             while (rowIdx < this.combinedData.length) {
-                // Sprawdź czy to nie jest kolejny header lub separator
+                
                 if (this.headerRows.includes(rowIdx) || this.separatorRows.includes(rowIdx)) {
                     break;
                 }
 
-                // Row2 - pomaluj na jasny niebieski
+                
                 const excelRow = worksheet.getRow(rowIdx + 1);
                 const row = this.combinedData[rowIdx];
 
-                // Znajdź ostatnią wypełnioną kolumnę
+                
                 let lastFilledCol = startCol;
                 for (let col = startCol; col <= row.length; col++) {
                     if (row[col - 1] && row[col - 1].toString().trim() !== '') {
@@ -524,34 +479,32 @@ class ExcelJSGenerator {
                     }
                 }
 
-                // Pokoloruj tylko wypełnione kolumny
+                
                 for (let col = startCol; col <= lastFilledCol; col++) {
                     const cell = excelRow.getCell(col);
                     cell.fill = {
                         type: 'pattern',
                         pattern: 'solid',
-                        fgColor: { argb: 'FFD9E1F2' } // Jasny niebieski
+                        fgColor: { argb: 'FFD9E1F2' } 
                     };
                 }
                 excelRow.commit();
 
-                // Przeskocz do następnej pozycji
-                // Jeśli następny wiersz to row3 (locked params), przeskocz o 3, inaczej o 2
+                
+                
                 if (rowIdx + 1 < this.combinedData.length && this.row3Rows.includes(rowIdx + 1)) {
-                    rowIdx += 3; // row1 + row2 + row3
+                    rowIdx += 3; 
                 } else {
-                    rowIdx += 2; // row1 + row2
+                    rowIdx += 2; 
                 }
             }
         });
     }
 
-    /**
-     * Aplikuje style dla row3 (locked params) - złoty/żółty kolor
-     */
+
     _applyRow3Styles(worksheet) {
         if (!this.isShort || this.row3Rows.length === 0) {
-            return; // Nie stosuj jeśli nie ma row3 lub isShort jest false
+            return; 
         }
 
         const startCol = this.config.SKIP_FIRST_COLUMN ? 2 : 1;
@@ -560,7 +513,7 @@ class ExcelJSGenerator {
             const excelRow = worksheet.getRow(rowIdx + 1);
             const row = this.combinedData[rowIdx];
 
-            // Znajdź ostatnią wypełnioną kolumnę
+            
             let lastFilledCol = startCol;
             for (let col = startCol; col <= row.length; col++) {
                 if (row[col - 1] && row[col - 1].toString().trim() !== '') {
@@ -568,22 +521,20 @@ class ExcelJSGenerator {
                 }
             }
 
-            // Pokoloruj tylko wypełnione kolumny na złoty/żółty
+            
             for (let col = startCol; col <= lastFilledCol; col++) {
                 const cell = excelRow.getCell(col);
                 cell.fill = {
                     type: 'pattern',
                     pattern: 'solid',
-                    fgColor: { argb: 'FFFFF2CC' } // Jasny złoty/żółty
+                    fgColor: { argb: 'FFFFF2CC' } 
                 };
             }
             excelRow.commit();
         });
     }
 
-    /**
-     * Aplikuje obramowania dla komórek
-     */
+
     _applyBorderStyles(worksheet) {
         const startCol = this.config.SKIP_FIRST_COLUMN ? 2 : 1;
         const borderStyle = {
@@ -609,18 +560,16 @@ class ExcelJSGenerator {
         });
     }
 
-    /**
-     * Ustawia szerokości kolumn
-     */
+
     _applyColumnWidths(worksheet) {
         const numCols = this.combinedData[0]?.length || 0;
 
         for (let col = 1; col <= numCols; col++) {
             let maxLength = this.config.MIN_COLUMN_WIDTH;
 
-            // Kolumna B (indeks 2) powinna być szersza dla logo
+            
             if (col === 2) {
-                maxLength = 25; // Szerokość dla kolumny z logo
+                maxLength = 25; 
             } else {
                 for (let row = 0; row < this.combinedData.length; row++) {
                     const cellValue = this.combinedData[row][col - 1] || '';
@@ -634,9 +583,6 @@ class ExcelJSGenerator {
         }
     }
 
-    /**
-     * Dodaje logo do arkusza Excel używając ExcelJS
-     */
     async _addLogoToWorksheet(worksheet, logoData) {
         if (!logoData || !logoData.base64) {
             console.log('No logo data to add to worksheet');
@@ -646,40 +592,40 @@ class ExcelJSGenerator {
         try {
             console.log('Adding logo to worksheet with ExcelJS, base64 length:', logoData.base64.length);
 
-            // Konwertuj base64 do ArrayBuffer
+            
             const binaryString = atob(logoData.base64);
             const bytes = new Uint8Array(binaryString.length);
             for (let i = 0; i < binaryString.length; i++) {
                 bytes[i] = binaryString.charCodeAt(i);
             }
 
-            // Dodaj obraz do workbooka
+            
             const imageId = this.workbook.addImage({
                 buffer: bytes.buffer,
                 extension: 'png',
             });
 
-            // Pozycja logo - kolumna 2 (B)
+            
             const logoCol = 2;
             const logoRow = 2;
 
-            // Nie merguj komórek - logo tylko w kolumnie B
-            // worksheet.mergeCells(logoRow, logoCol, logoRow, logoCol);
+            
+            
 
-            // Ustaw wysokość wierszy - małe
+            
             for (let i = 1; i <= this.config.LOGO_SPACE_ROWS; i++) {
                 worksheet.getRow(i).height = 12;
             }
             worksheet.getRow(logoRow).height = 50;
 
-            // Dodaj obraz do arkusza - dokładnie jedna komórka B2
+            
             worksheet.addImage(imageId, {
                 tl: { col: 1, row: 1 },
                 br: { col: 2, row: 2 },
                 editAs: 'oneCell'
             });
 
-            // Wycentruj logo w komórce
+            
             const logoCell = worksheet.getCell(logoRow, logoCol);
             logoCell.alignment = {
                 vertical: 'middle',
@@ -695,7 +641,7 @@ class ExcelJSGenerator {
 
     _addOrderTitle(worksheet, metadata) {
         try {
-            // Pokoloruj cały wiersz 2 na niebiesko
+            
             const row2 = worksheet.getRow(2);
             const numCols = this.combinedData[0]?.length || 10;
             for (let col = 1; col <= numCols; col++) {
@@ -703,23 +649,23 @@ class ExcelJSGenerator {
                 cell.fill = {
                     type: 'pattern',
                     pattern: 'solid',
-                    fgColor: { argb: 'FFFFFFFF' } // Biały kolor
+                    fgColor: { argb: 'FFFFFFFF' } 
                 };
             }
             row2.commit();
 
-            // Merguj komórki D2 i E2
+            
             worksheet.mergeCells('D2:E2');
 
-            // Wstaw tytuł
+            
             const titleCell = worksheet.getCell('D2');
             titleCell.value = metadata.title;
 
-            // Formatowanie
+            
             titleCell.font = {
                 bold: true,
                 size: 14,
-                color: { argb: '000000' } // Czarny tekst na białym tle
+                color: { argb: '000000' } 
             };
             titleCell.alignment = {
                 vertical: 'middle',
@@ -732,9 +678,6 @@ class ExcelJSGenerator {
         }
     }
 
-    /**
-     * Dodaje dane klienta i wysyłki na końcu arkusza
-     */
     _addClientData(worksheet, orderData) {
         if (!orderData || !orderData.sendData) {
             console.log('No order data to add');
@@ -743,12 +686,12 @@ class ExcelJSGenerator {
 
         try {
             const sendData = orderData.sendData;
-            // Użyj długości combinedData zamiast worksheet.rowCount
-            const lastRow = this.combinedData.length + 3; // Dodaj 3 puste wiersze   
+            
+            const lastRow = this.combinedData.length + 3; 
             console.log('Adding client data at row:', lastRow);
             console.log(orderData, 'sprawdzamy kurwa');
 
-            // Nagłówek sekcji klienta
+            
             const clientHeaderRow = lastRow;
             const clientHeaderRowObj = worksheet.getRow(clientHeaderRow);
             clientHeaderRowObj.getCell(2).value = (t('order.client_data')).toUpperCase();
@@ -761,7 +704,7 @@ class ExcelJSGenerator {
             };
             clientHeaderRowObj.commit();
 
-            // Dane klienta
+            
             let currentRow = clientHeaderRow + 1;
             const clientData = [
                 [t('new-order.client_name'), sendData.client],
@@ -780,10 +723,10 @@ class ExcelJSGenerator {
                 currentRow++;
             });
 
-            // Pusta linia
+            
             currentRow++;
 
-            // Nagłówek sekcji wysyłki
+            
             const shipHeaderRow = currentRow;
             const shipHeaderRowObj = worksheet.getRow(shipHeaderRow);
             shipHeaderRowObj.getCell(2).value = (t('order.send_data')).toUpperCase();
@@ -816,10 +759,10 @@ class ExcelJSGenerator {
                 currentRow++;
             });
 
-            // Pusta linia
+            
             currentRow++;
 
-            // Nagłówek sekcji total
+            
             const totalHeaderRow = currentRow;
             const totalHeaderRowObj = worksheet.getRow(totalHeaderRow);
             totalHeaderRowObj.getCell(2).value = t('excel.order_sum')
@@ -831,7 +774,7 @@ class ExcelJSGenerator {
             };
             totalHeaderRowObj.commit();
 
-            // Dane total
+            
             currentRow = totalHeaderRow + 1;
 
 
@@ -864,44 +807,31 @@ class ExcelJSGenerator {
         }
     }
 
-    /**
-    /**
-     * Zapisuje workbook do pliku
-     */
     async _saveWorkbook(worksheet, metadata) {
         const sheetName = this._sanitizeSheetName(metadata.name);
         worksheet.name = sheetName;
 
         const fileName = this._generateFileName(metadata);
 
-        // Generuj plik Excel
+        
         const buffer = await this.workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         });
 
-        // Zapisz używając FileSaver
+        
         saveAs(blob, fileName);
     }
 
-    /**
-     * Sanityzuje nazwę arkusza (maksymalna długość)
-     */
     _sanitizeSheetName(name) {
         return name.slice(0, this.config.MAX_SHEET_NAME_LENGTH);
     }
 
-    /**
-     * Generuje nazwę pliku
-     */
     _generateFileName(metadata) {
         const sanitizedName = this._sanitizeSheetName(metadata.name);
         return `${metadata.id}_${sanitizedName}.xlsx`;
     }
 
-    /**
-     * Resetuje stan generatora
-     */
     reset() {
         this.workbook = null;
         this.combinedData = [];
@@ -911,13 +841,11 @@ class ExcelJSGenerator {
     }
 }
 
-/**
- * Funkcja fasadowa dla zachowania kompatybilności wstecznej
- */
+
 export async function generateExcelWithLogo() {
     const generator = new ExcelJSGenerator();
     await generator.generate();
 }
 
-// Eksportuj także oryginalną funkcję dla kompatybilności
+
 export { generateExcelWithLogo as generateExcel };

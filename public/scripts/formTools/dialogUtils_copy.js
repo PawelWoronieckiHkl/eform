@@ -18,7 +18,7 @@ import { chcekIfDateDeliveryCorrect } from './checkIfDateDeliveryCorrect.js';
 
 export class DialogManager {
   constructor() {
-    this.isMultiChoice = false; // Nowa flaga
+    this.isMultiChoice = false; 
     this.isLink;
     this.isInfo;
     this.selectedValues = [];
@@ -61,13 +61,13 @@ export class DialogManager {
     this.org = await window.formsManager.getOrgIdent();
 
     this.isMultiChoice = param?.MULTI == 'true' ?? false;
-    // do zmiany oficjalnie
+    
     this.isLink = param?.LINK == 'true' ?? false;
-    // do zmiany oficjalnie
+    
 
     this.isInfo = param?.INFO != '<NULL>' ?? false;
     this.extraInfoText = param?.INFO;
-    // console.log(param, this.isLink, this.isInfo, 'dialog')
+    
     this.selectedValues = [];
     this.confirmButton.style.display = this.isMultiChoice ? 'inline-block' : 'none';
     if (this.dialogTitle) {
@@ -75,26 +75,26 @@ export class DialogManager {
       this.dialogTitle.textContent = param.DESCRIPTION;
     }
 
-    // Pobranie mapy obrazów
+    
     const imageMap = await this.fetchImageMap(param, options, groupNumber);
 
     this.env = await getEnvVersion();
 
-    // NAJPIERW dodaj statusy do filtrów
+    
     if (this.attrValues && this.attrValues != undefined && Object.keys(this.attrValues).length > 0) {
       this.getUniqueCategories()
     }
 
-    // POTEM przygotuj interfejs (tutaj się tworzą kontrolki filtrów)
+    
     this.setupUI();
 
-    // Renderowanie opcji
+    
     await this.renderOptions(imageMap);
 
-    // Pokazanie dialogu
+    
     this.dialog.showModal();
 
-    // Reset scroll do góry za każdym razem
+    
     if (this.listContainer) {
       this.listContainer.scrollTop = 0;
     }
@@ -106,7 +106,7 @@ export class DialogManager {
     }
   }
 
-  // Pobranie mapy obrazów z serwera
+  
   async fetchImageMap(param, options, groupNumber) {
     const response = await fetch('/position/check-images', {
       method: 'POST',
@@ -121,17 +121,17 @@ export class DialogManager {
     return await response.json();
   }
 
-  // Przygotowanie interfejsu użytkownika
+  
   setupUI() {
-    // Czyszczenie listy opcji
+    
     if (this.listContainer) {
       this.listContainer.innerHTML = '';
     }
 
-    // Usunięcie wcześniejszych elementów UI, jeśli istnieją
+    
     this.removeExistingUIElements();
 
-    // Dodanie pola wyszukiwania i filtrów przed listą opcji
+    
     this.addSearchAndFilters();
 
     this.setupExtraInfo();
@@ -140,30 +140,30 @@ export class DialogManager {
 
 
   setupExtraInfo(text, link) {
-    // render a modern extra-info panel inside this.extraInfo container
+    
     const container = this.extraInfo;
     if (!container) return;
 
-    // clear previous content
+    
     container.innerHTML = '';
 
-    // decide content and extract link from <> brackets
+    
     let infoHtml = text || this.extraInfoText || '';
     let href = link || this.param?.LINK_URL || this.param?.LINK || null;
 
-    // Extract link/file from <> brackets in infoHtml
+    
     const bracketMatch = infoHtml.match(/<([^>]+)>/);
     if (bracketMatch) {
       const extractedPath = bracketMatch[1].trim();
 
-      // Remove the <> part from infoHtml
+      
       infoHtml = infoHtml.replace(/<[^>]+>/, '').trim();
 
-      // Determine if it's a URL or file path
+      
       if (extractedPath.startsWith('http:') || extractedPath.startsWith('https:')) {
-        href = extractedPath; // It's a URL
+        href = extractedPath; 
       } else {
-        href = extractedPath; // It's a file path
+        href = extractedPath; 
       }
     }
 
@@ -175,52 +175,52 @@ export class DialogManager {
         style: { gap: '0.75rem' }
       }, container);
 
-      // Top row with icon and content
+      
       const topRow = createElement('div', {
         class: ['d-flex', 'align-items-start'],
         style: { gap: '0.5rem' }
       }, panel);
 
-      // icon
+      
       const iconWrap = createElement('div', {
         class: ['extra-info-icon', 'flex-shrink-0']
       }, topRow);
-      // simple info icon (SVG) for crispness
+      
       iconWrap.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http:
           <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.12"></circle>
           <path d="M11 17h2v-6h-2v6zm0-8h2V7h-2v2z" fill="currentColor"></path>
         </svg>`;
 
-      // content
+      
       const content = createElement('div', {
         class: ['extra-info-content', 'flex-grow-1']
       }, topRow);
-      // normalize escaped newlines ("\\n") to real newlines, then replace newlines with <br>
+      
       let normalized = String(infoHtml || '');
       normalized = normalized.replace(/\\n/g, '\n');
-      // convert actual newlines to <br> so browser displays line breaks
+      
       const htmlWithBreaks = normalized.replace(/\n/g, '<br>');
       content.innerHTML = htmlWithBreaks;
 
-      // Bottom row with button (always under text)
+      
       if (this.isLink || href) {
         const buttonRow = createElement('div', {
-          class: ['d-flex', 'justify-content-start', 'ms-1']// Align with text content
+          class: ['d-flex', 'justify-content-start', 'ms-1']
         }, panel);
 
         const linkHref = href || '#';
 
-        // Determine if it's a URL or file path and set appropriate href
+        
         let finalHref;
         let buttonText;
 
         if (linkHref.startsWith('http:') || linkHref.startsWith('https:')) {
-          // It's a URL - use as is
+          
           finalHref = linkHref;
           buttonText = linkHref;
         } else {
-          // It's a file path - add server path
+          
           const rootFilePath = '/photos/files/';
           finalHref = rootFilePath + linkHref;
           buttonText = linkHref;
@@ -235,7 +235,7 @@ export class DialogManager {
         }, buttonRow);
       }
     } else if (this.isLink && (this.param || link)) {
-      // If only a link is present, render a small link box
+      
       const panel = createElement('div', {
         class: ['extra-info-panel', 'mb-3'],
         role: 'region',
@@ -244,16 +244,16 @@ export class DialogManager {
       const content = createElement('div', { class: ['extra-info-content'] }, panel);
       const linkHref = href || '#';
 
-      // Determine if it's a URL or file path and set appropriate href
+      
       let finalHref;
       let buttonText;
 
       if (linkHref.startsWith('http:') || linkHref.startsWith('https:')) {
-        // It's a URL - use as is
+        
         finalHref = linkHref;
         buttonText = linkHref;
       } else {
-        // It's a file path - add server path
+        
         const rootFilePath = '/photos/files/';
         finalHref = rootFilePath + linkHref;
         buttonText = linkHref;
@@ -269,29 +269,29 @@ export class DialogManager {
     }
   }
 
-  // Usunięcie wcześniejszych elementów UI
+  
   removeExistingUIElements() {
-    // Usunięcie wcześniejszego pola wyszukiwania
+    
     const existingSearch = this.dialogContainer.querySelector('.search-container');
     if (existingSearch) existingSearch.remove();
 
-    // Usunięcie wcześniejszych kontrolek filtrowania
+    
     const existingFilters = this.dialogContainer.querySelector('.filter-controls');
     if (existingFilters) existingFilters.remove();
   }
 
-  // Dodanie pola wyszukiwania i filtrów
+  
   addSearchAndFilters() {
-    // Tworzenie kontenera dla wyszukiwania i filtrów
+    
     const controlsContainer = document.createElement('div');
     controlsContainer.classList.add('dialog-controls');
 
-    // Dodanie pola wyszukiwania
+    
     const searchContainer = this.createSearchField();
     controlsContainer.appendChild(searchContainer);
 
 
-    // Dodanie kontrolek filtrowania
+    
     const filterControls = this.createFilterControls();
     if (filterControls) {
       controlsContainer.appendChild(filterControls);
@@ -299,12 +299,12 @@ export class DialogManager {
 
     const sortingContainer = this.createSortingControls(this.handleSortChange.bind(this), this.currentSort || 'default');
     controlsContainer.appendChild(sortingContainer);
-    // Wstawienie kontrolek przed listą opcji
+    
     if (this.dialogContainer && this.listContainer) {
       this.dialogContainer.insertBefore(controlsContainer, this.listContainer);
     }
 
-    // Ustawienie wartości AFTER dodania do DOM z opóźnieniem
+    
     setTimeout(() => {
 
       let dialogSortMethod = localStorage.getItem(`${this.param.NAME}-dialogSortMethod`) || 'default';
@@ -314,10 +314,10 @@ export class DialogManager {
         selectElement.value = dialogSortMethod;
 
 
-        // Sprawdź czy wartość została ustawiona
+        
         if (selectElement.value !== dialogSortMethod) {
           console.warn('Failed to set select value, falling back to first option');
-          selectElement.selectedIndex = 0; // default jest pierwszym elementem (index 0)
+          selectElement.selectedIndex = 0; 
         }
       }
 
@@ -366,7 +366,7 @@ export class DialogManager {
         value: opt.value,
         text: opt.label
       }, select);
-      option.textContent = opt.label; // Explicit text content
+      option.textContent = opt.label; 
     }
 
     return sortingContainer;
@@ -374,7 +374,7 @@ export class DialogManager {
 
 
   handleSortChange(sortMethod) {
-    // Zabezpieczenie przed undefined/null
+    
     const method = sortMethod || 'default';
 
 
@@ -453,14 +453,14 @@ export class DialogManager {
 
     for (const [filterName, filterValues] of Object.entries(this.filters)) {
       if (!filterName || filterName.trim() === '' || filterName.trim() === '-') continue;
-      // console.log(filterName, 'filtry')
+      
       const filterGroup = createElement('div', { class: ['filter-group', 'me-3'] }, content);
 
 
-      // createElement('label', {
-      // class: ['filter-label'],
-      // text: this.formatFilterName(filterName) + ': '
-      // }, filterGroup);
+      
+      
+      
+      
 
       const dropdown = createElement('div', { class: ['dropdown', 'd-inline-block'] }, filterGroup);
 
@@ -479,7 +479,7 @@ export class DialogManager {
         style: { maxHeight: '320px', overflowY: 'auto' }
       }, dropdown);
 
-      // "Wszystkie"
+      
       const allLi = createElement('li', {}, dropdownMenu);
       const allCheckbox = createElement('input', {
         type: 'checkbox',
@@ -493,7 +493,7 @@ export class DialogManager {
         for: `${filterName}-all`
       }, allLi);
 
-      // Pozostałe opcje (posortowane)
+      
 
 
       let sortedValues = Array.isArray(filterValues)
@@ -505,7 +505,7 @@ export class DialogManager {
             const extractValue = (str) => {
 
               const match = String(str).match(/#(.+)$/);
-              // console.log(match[1].trim().slice(0,1), 'extracted')
+              
               return match ? match[1].trim().slice(0, 1) : '';
 
             };
@@ -516,7 +516,7 @@ export class DialogManager {
             const aIsNumber = /^\d+$/.test(aValue);
             const bIsNumber = /^\d+$/.test(bValue);
 
-            // Jeśli oba są literami, sortuj alfabetycznie
+            
             if (!aIsNumber && !bIsNumber) {
               return aValue.localeCompare(bValue, undefined, {
                 sensitivity: 'base',
@@ -524,7 +524,7 @@ export class DialogManager {
               });
             }
 
-            // Jeśli jeden jest liczbą, a drugi literą, litery mają priorytet
+            
             if (!aIsNumber && bIsNumber) {
               return -1;
             }
@@ -533,11 +533,11 @@ export class DialogManager {
               return 1;
             }
 
-            // Jeśli oba są liczbami, sortuj numerycznie
+            
             return parseInt(aValue, 10) - parseInt(bValue, 10);
           }
 
-          // Domyślne sortowanie dla innych filtrów
+          
           const aNum = parseFloat(String(a).replace(',', '.'));
           const bNum = parseFloat(String(b).replace(',', '.'));
 
@@ -557,7 +557,8 @@ export class DialogManager {
 
         })
         : [];
-      if (this.org.toUpperCase() == 'COZY' && window.tempGroupNumber == '59') {
+      const aliasesFile = formsManager.getAliases(this.param.NAME).file
+      if (aliasesFile == 'paramdict-KOLOR-COZY.txt' && window.tempGroupNumber == '59') {
         sortedValues = [
           'Prijsgroup #Bamboe Pk1',
           'Prijsgroup #Bamboe Pk2',
@@ -580,7 +581,7 @@ export class DialogManager {
           id: `${filterName}-${value}`
         }, li);
 
-        // Tłumaczenia dla STAN
+        
         let displayText = value;
         if (filterName === this.stan) {
           const translations = {
@@ -601,7 +602,7 @@ export class DialogManager {
       });
 
 
-      // Obsługa zmian (delegacja zdarzeń)
+      
       dropdownMenu.addEventListener('change', (e) => this.handleFilter(e, filterName));
     }
 
@@ -614,11 +615,11 @@ export class DialogManager {
       style: { float: 'right', backgroundColor: '#fff', color: '#000' }
     }, content);
 
-    // Clear all filters: uncheck specific checkboxes, check the "-all" ones,
-    // reset activeFilters object and refresh visible options.
+    
+    
     clearFiltersBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      // reset checkbox states inside filterControls
+      
       const checkboxes = filterControls.querySelectorAll('input[type="checkbox"]');
       checkboxes.forEach(cb => {
         if (cb.id && cb.id.endsWith('-all')) {
@@ -628,10 +629,10 @@ export class DialogManager {
         }
       });
 
-      // reset active filters state
+      
       this.activeFilters = {};
 
-      // refresh displayed options (keep current search term)
+      
       const searchTerm = this.searchInput ? this.searchInput.value.toLowerCase() : '';
       this.filterAndDisplayOptions(searchTerm, this.activeFilters);
     });
@@ -660,7 +661,7 @@ export class DialogManager {
 
     this.options.forEach(option => {
       if (attrVals) {
-        // Usuń końcówkę ~<cyfra> z option.VALUE
+        
         const val = option?.VALUE ?? '';
         const normalizedValue = val.replace(/~\d+$/, '');
 
@@ -720,9 +721,9 @@ export class DialogManager {
     if (missingStanOptions.length > 0) {
     }
 
-    // Dodaj filtr STAN
+    
     if (stockStatuses.size > 0 && (this.env || this.user.pin == '0000')) {
-      // console.log(this.env, 'env version')
+      
       this.stan = t('form.warehouse_stock') || 'Stan magazynowy';
       this.filters[this.stan] = Array.from(stockStatuses);
     }
@@ -797,13 +798,13 @@ export class DialogManager {
     const bottom = document.createElement('div');
     bottom.classList.add('image-box-bottom');
     if (this.isMultiChoice) {
-      colorBox.classList.add('multi-selectable'); // Nowa klasa dla stylizacji
+      colorBox.classList.add('multi-selectable'); 
     }
     for (const [key, value] of Object.entries(option)) {
-      // Pomijamy standardowe pola
+      
       if (['VALUE', 'DESCRIPTION', 'ROW_NUM'].includes(key)) continue;
 
-      // Dodaj właściwość jako atrybut data-*
+      
       if (value) {
         colorBox.dataset[key.toLowerCase()] = value;
       }
@@ -936,7 +937,7 @@ export class DialogManager {
     try {
       const response = await fetch(`/position/favs/${groupNumber}`, {
         method: 'GET',
-        credentials: 'include', // jeśli korzystasz z sesji/cookies
+        credentials: 'include', 
         headers: {
           'Accept': 'application/json'
         }
@@ -954,7 +955,7 @@ export class DialogManager {
     }
   }
 
-  // Przykład użycia:
+  
   applySorting(sortMethod) {
 
     const container = this.listContainer;
@@ -1038,12 +1039,12 @@ export class DialogManager {
 
     }
   }
-  // Tworzenie wrappera dla obrazu
+  
   createImageWrapper(option, filename) {
 
     let normalizedValue = option.VALUE
 
-    // console.log(normalizedValue, 'normalizedValue')
+    
     const imageSrc = `/photos/${this.groupNumber}/${this.param.NAME}/${filename}`;
     const colorImage = document.createElement('img');
     colorImage.classList.add('diag-image');
@@ -1068,18 +1069,18 @@ export class DialogManager {
     return imageWrapper;
   }
 
-  // Obsługa kliknięcia opcji
+  
   handleOptionClick(clickedElement) {
 
     if (this.isMultiChoice && clickedElement.id != '<NONE>') {
-      // TRYB WIELOKROTNEGO WYBORU
-      // 1. Toggle zaznaczenia
+      
+      
       clickedElement.classList.toggle('active');
 
-      // 2. Pobranie wartości
+      
       const value = clickedElement.querySelector('.image-name').dataset.value;
 
-      // 3. Aktualizacja listy wybranych wartości
+      
       const index = this.selectedValues.indexOf(value);
       if (index === -1) {
         this.selectedValues.push(value);
@@ -1099,14 +1100,14 @@ export class DialogManager {
 
 
 
-  // Obsługa kliknięcia podglądu
+  
   handlePreviewClick(imageSrc) {
     const previewDialog = document.getElementById('image-preview-dialog');
     const previewImage = document.getElementById('preview-image');
     previewImage.src = imageSrc;
     previewDialog.showModal();
 
-    // Zamknij dialog przy kliknięciu poza nim
+    
     previewDialog.addEventListener('click', (e) => {
       if (e.target === previewDialog) {
         previewDialog.close();
@@ -1114,17 +1115,17 @@ export class DialogManager {
     });
   }
 
-  // Obsługa wyszukiwania
+  
   handleSearch(searchInput) {
     const searchTerm = searchInput.value.toLowerCase();
     this.filterAndDisplayOptions(searchTerm, this.activeFilters);
 
   }
 
-  // Obsługa filtrowania
+  
   handleFilter(event, filterName) {
     const dropdownMenu = event.currentTarget;
-    const escapedFilterName = CSS.escape(filterName); // ESCAPUJEMY!
+    const escapedFilterName = CSS.escape(filterName); 
     const allCheckbox = dropdownMenu.querySelector(`#${escapedFilterName}-all`);
     const otherCheckboxes = Array.from(
       dropdownMenu.querySelectorAll(`input[type="checkbox"]:not([id="${escapedFilterName}-all"])`)
@@ -1156,23 +1157,23 @@ export class DialogManager {
     let numberOfOptions = 0;
     const optionElements = this.listContainer.querySelectorAll('.image-box');
 
-    // Upewnij się, że searchTerm to string i zamień na małe litery
+    
     const normalizedSearchTerm = (searchTerm || '').toLowerCase();
 
     optionElements.forEach(element => {
       const name = element.querySelector('.image-name').textContent.toLowerCase();
       const matchesSearch = !normalizedSearchTerm || name.includes(normalizedSearchTerm);
-      // Pobierz pełne dane opcji z this.options
+      
       const option = this.options.find(
         o => o.VALUE === element.querySelector('.image-name').dataset.value
       );
 
       let matchesFilters = true;
 
-      // Sprawdź każdy aktywny filtr
+      
       for (const [filterName, selectedValues] of Object.entries(filters)) {
 
-        // Filtr STAN
+        
         if (filterName === this.stan && selectedValues.length > 0) {
           let stanValue = option.STAN || '';
           if (stanValue == "ZERO" && option.OBSOLETE) { stanValue = "OBSOLETE" }
@@ -1186,7 +1187,7 @@ export class DialogManager {
           continue;
         }
 
-        // Filtr Grupa cenowa (PRICES)
+        
         if (filterName === this.prices && selectedValues.length > 0) {
 
           const priceGroup = option?.ALIAS ? option.ALIAS_DESCRIPTION : option.DESCRIPTION;
@@ -1198,7 +1199,7 @@ export class DialogManager {
           continue;
         }
 
-        // Inne filtry
+        
         const attributeValue = option.ATTRIBUTES?.[filterName];
         if (selectedValues.length > 0 && (!attributeValue || !selectedValues.includes(attributeValue))) {
           matchesFilters = false;
@@ -1223,7 +1224,7 @@ export class DialogManager {
       return;
     }
 
-    // Wywołanie funkcji obsługi z zewnętrznego modułu
+    
     if (typeof window.dialogConfirmHandler === 'function') {
       window.dialogConfirmHandler(selectedData);
 
@@ -1232,7 +1233,7 @@ export class DialogManager {
     this.dialog.close();
   }
 
-  // Obsługa przycisku anulowania
+  
   handleCancel() {
     this.removeExistingUIElements()
     this.dialog.close();
@@ -1264,7 +1265,7 @@ export class DialogManager {
         const response = await fetch(`/position/favs/clear/${this.groupNumber}`, {
           method: 'POST',
           body: JSON.stringify({ favList: this.favList }),
-          credentials: 'include', // jeśli korzystasz z sesji/cookies
+          credentials: 'include', 
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
@@ -1292,7 +1293,7 @@ export class DialogManager {
 
 }
 
-// Funkcja pomocnicza do aktualizacji formularza
+
 function updateFormWithSelectedValue(values, inputs, selectedData, options) {
 
   let valuesString = false;
@@ -1332,13 +1333,13 @@ function updateFormWithSelectedValue(values, inputs, selectedData, options) {
 
 const dialogManager = new DialogManager();
 
-// Funkcja do tworzenia dialogu - wywoływana z createInputField
+
 export async function createDialog(param, options, grNr, filters, attrs) {
   logFunctionName('createDialog');
 
   await dialogManager.initialize(param, options, grNr, filters, attrs);
 
-  // Przechwyć aktualne options w closure
+  
 }
 
 

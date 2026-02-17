@@ -14,27 +14,26 @@ const { group } = require('console');
 const { fileExists } = require('../utils/fileManager');
 const { ordersManager } = require('../utils/saveOrdersOutput.js');
 const { file } = require('pdfkit');
-// Konfiguracja multer do przechowywania plików tymczasowo
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
+
 function normalizeFilename(filename) {
   if (filename) {
     return filename
-      .split('.')[0]                        // usuń rozszerzenie
-      .replace(/~\d+$/, '')                 // usuń końcowe _123 jeśli jest
-      .replace(/\s+/g, '')                  // usuń spacje
-      .replace(/_+/g, '')                   // usuń podkreślenia
-      .toLowerCase();                      // zamień na małe litery
+      .split('.')[0]                       
+      .replace(/~\d+$/, '')                
+      .replace(/\s+/g, '')                  
+      .replace(/_+/g, '')               
+      .toLowerCase();                    
   }
   return '';
 }
 
-// Middleware do automatycznego dodawania users dla owner'ów
+
 router.use(async (req, res, next) => {
-  // Ustaw owner dla wszystkich widoków
   res.locals.owner = req.session?.user?.isOwner || false;
   res.locals.admin = req.session?.user?.isAdmin || false;
   res.locals.isEmployee = req.session?.user?.isEmployee || false;
@@ -50,20 +49,13 @@ router.use(async (req, res, next) => {
   next();
 });
 
+
 router.post('/save', requireLogin, upload.any(), async (req, res) => {
   try {
-    // Parsuj JSON z pola 'data'
     const formData = JSON.parse(req.body.data);
     const total = formData.total;
-
-    // Odczytaj pliki z req.files
     const files = req.files || [];
-
-
-
     const result = await db.insertNewForm(formData);
-
-    // Przenumeruj pozycje w zamówieniu
     await db.reindexOrderPositions(formData.order);
 
     if (files.length > 0) {
@@ -88,18 +80,14 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
   }
 });
 
+
 router.patch('/edit/save', requireLogin, upload.any(), async (req, res) => {
   try {
-    // Parsuj JSON z pola 'data'
     const formData = JSON.parse(req.body.data);
     const total = formData.total;
-
-    // Odczytaj pliki z req.files
     const files = req.files || [];
-
     const result = await db.updatePosition(formData, total);
 
-    // Jeśli są pliki, zapisz je
     if (files.length > 0) {
       const orderpos = await db.getOrderpos(formData.id);
       const saver = new ordersManager();
@@ -119,9 +107,7 @@ router.patch('/edit/save', requireLogin, upload.any(), async (req, res) => {
 
 router.delete('/:positionId/delete', requireLogin, async (req, res) => {
   try {
-    // Pobierz pozycję przed usunięciem (potrzebujemy order_id)
     const position = await db.getPosition(req.params.positionId);
-
     if (!position) {
       return res.status(404).json({
         success: false,
@@ -130,14 +116,10 @@ router.delete('/:positionId/delete', requireLogin, async (req, res) => {
     }
 
     const orderId = position.order_id;
-
-    // Usuń pozycję
     const response = await db.deletePosition(req.params.positionId);
 
     if (response) {
-      // Przenumeruj pozostałe pozycje w zamówieniu
       await db.reindexOrderPositions(orderId);
-
       return res.status(200).json({
         success: true,
         message: 'position.delete_msg'
@@ -156,7 +138,6 @@ router.delete('/:positionId/delete', requireLogin, async (req, res) => {
     });
   }
 });
-
 
 
 router.get('/photo', requireLogin, async (req, res) => {
@@ -202,7 +183,6 @@ router.get('/photo', requireLogin, async (req, res) => {
 });
 
 
-
 router.get('/:positionId/edit/', requireLogin, async (req, res) => {
   let result = await db.getPosition(req.params.positionId);
   let orderId = result.order_id;
@@ -215,6 +195,7 @@ router.get('/:positionId/edit/', requireLogin, async (req, res) => {
     })
   }
 })
+
 
 router.get('/:orderId/:positionId/attachments', requireLogin, async (req, res) => {
   try {
@@ -257,13 +238,10 @@ router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
       position.group_name,
       position.parameters_short
     )
-
   )
 
   if (result) {
-    // Przenumeruj pozycje w zamówieniu
     await db.reindexOrderPositions(orderId);
-
     const newPositionId = result[0].insertId;
     return res.status(200).json({ redirect: `/position/${newPositionId}/edit` })
   }
@@ -273,6 +251,7 @@ router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
     })
   }
 })
+
 
 router.get('/:positionId/data', requireLogin, async (req, res) => {
   let result = await db.getPosition(req.params.positionId);
@@ -289,14 +268,12 @@ router.get('/:positionId/data', requireLogin, async (req, res) => {
 
 router.post('/favorites/toggle', requireLogin, async (req, res) => {
   const currentUser = ownerService.getCurrentUser(req);
-  const userId = currentUser.userId; // lub z JWT: req.user.id
+  const userId = currentUser.userId;
   const { productValue, groupNumber } = req.body;
 
   if (!userId) {
     return res.status(401).json({ error: 'Brak autoryzacji' });
   }
-
-  // Sprawdź, czy już istnieje ulubiony
   try {
     const exists = await db.checkFavoriteExists(userId, productValue, groupNumber);
 
@@ -335,10 +312,11 @@ router.get('/:positionId', requireLogin, async (req, res) => {
   }
 })
 
+
 router.get('/favs/:groupNr', requireLogin, async (req, res) => {
   const groupNumber = req.params.groupNr;
   const currentUser = ownerService.getCurrentUser(req);
-  const userId = currentUser.userId; // lub z JWT: req.user.id}
+  const userId = currentUser.userId;
   const favs = await db.getFavs(userId, groupNumber);
   if (!favs || favs.length === 0) {
     return res.status(200).json({
@@ -354,6 +332,7 @@ router.get('/favs/:groupNr', requireLogin, async (req, res) => {
     });
   }
 })
+
 
 router.post('/check-images', requireLogin, async (req, res) => {
   try {
@@ -394,12 +373,14 @@ router.post('/check-images', requireLogin, async (req, res) => {
   }
 });
 
+
 router.get('/version/:groupNr/', requireLogin, async (req, res) => {
   const lang = req.getLocale();
   let version = await db.getAppVersion(req.params.groupNr, process.env.NODE_ENV || 'dev');
 
   return res.status(200).json({ version: version })
 })
+
 
 router.post('/versions/update/', requireLogin, async (req, res) => {
   try {
@@ -408,10 +389,7 @@ router.post('/versions/update/', requireLogin, async (req, res) => {
     if (!paths || !Array.isArray(paths)) {
       return res.status(400).json({ error: "Nieprawidłowy format ścieżek" });
     }
-
     const results = [];
-
-
     const manager = await versionManager.checkVersion(paths);
 
     res.json({
@@ -427,7 +405,7 @@ router.post('/versions/update/', requireLogin, async (req, res) => {
   }
 });
 
-// Endpoint do przesuwania pozycji w górę
+
 router.post('/:id/move-up', requireLogin, async (req, res) => {
   try {
     const positionId = req.params.id;
@@ -444,7 +422,7 @@ router.post('/:id/move-up', requireLogin, async (req, res) => {
   }
 });
 
-// Endpoint do przesuwania pozycji w dół
+
 router.post('/:id/move-down', requireLogin, async (req, res) => {
   try {
     const positionId = req.params.id;
@@ -461,7 +439,7 @@ router.post('/:id/move-down', requireLogin, async (req, res) => {
   }
 });
 
-// Endpoint do ustawiania indeksu pozycji
+
 router.post('/:id/set-idx', requireLogin, async (req, res) => {
   try {
     const positionId = req.params.id;
@@ -478,6 +456,7 @@ router.post('/:id/set-idx', requireLogin, async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
+
 
 router.post('/favs/clear/:groupNr', requireLogin, async (req, res) => {
   try {
@@ -496,4 +475,5 @@ router.post('/favs/clear/:groupNr', requireLogin, async (req, res) => {
     return res.status(500).json({ error: 'Database operation failed' });
   }
 });
+
 module.exports = router;

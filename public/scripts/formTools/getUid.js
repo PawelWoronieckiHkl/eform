@@ -10,9 +10,9 @@ export async function getUid() {
       },
     });
     const result = await response.json();
-    // console.log(result,'result uid fetch')
+    
     if (result.success) {
-        // console.log(result.uid,'uid')
+        
         return result.uid;
         
     }

@@ -35,7 +35,7 @@ import {
 import { isSource } from '../form.js';
 export function logFunctionName(functionName) {
 	const sep = '-'.repeat(10)
-	// console.log(`${sep} ${functionName} ${sep}`)
+	
 }
 
 export function findParamFromValues(values, paramDict) {
@@ -84,15 +84,15 @@ export function searchForParameterByAlias(value, paramDict, paramName) {
 export function normalizeFilename(filename) {
 	if (filename) {
 		return filename
-			.split('.')[0]                        // usuń rozszerzenie
-			.replace(/~\d+$/, '')                 // usuń końcowe _123 jeśli jest
+			.split('.')[0]                        
+			.replace(/~\d+$/, '')                 
 	}
 	return '';
 }
 
 export function setDescription(values, value, allOptionsByParameter, name, caller = '') {
 
-	// if (value === '<NONE>') console.log('NONE VALUE');
+	
 
 	const valObj = searchForParameter(value, allOptionsByParameter, name)
 	
@@ -122,20 +122,20 @@ export function fillInputDescription(inputs, params, values, allOptionsByParamet
 		if (!isSource(param)) {
 			values[param.NAME + "___TITLE"] = param.DESCRIPTION;
 		} else {
-			// Dla parametrów SOURCE meta-pola są już ustawione w processSourceValues
-			// Ale można ustawić główny ___TITLE
+			
+			
 			values[param.NAME + "___TITLE"] = param.DESCRIPTION;
 		}
 
 		if (!window.enabledParams || !window.enabledParams[param.NAME]) {
-			continue; // Pomiń wyłączone parametry
+			continue; 
 		}
 
 	}
 }
 
 export function checkIfOptionsExist(allOptionsByParameter, paramName, values) {
-	// Dla normalnych parametrów (nie SOURCE) ustaw ___DICT na podstawie obecności opcji
+	
 	if (allOptionsByParameter[paramName] && allOptionsByParameter[paramName].length > 0) {
 		values[paramName + '___DICT'] = true;
 	} else {
@@ -147,7 +147,7 @@ export function checkIfOptionsExist(allOptionsByParameter, paramName, values) {
 export function roundInputValue(value, step) {
 
 	if (isNaN(value) || value === null || !value) {
-		return value; // Nie można zaokrąglić bez prawidłowego kroku
+		return value; 
 	}
 
 

@@ -59,7 +59,7 @@ filterStatusSelect.addEventListener('change', () => {
         const matchesSearch = commissionText.includes(searchTerm);
         const matchesStatus = selectedStatus === '0' || statusText === selectedStatus.toLowerCase();
 
-    //    console.log(selectedStatus, statusText);
+    
         if (matchesSearch && matchesStatus) {
             row.style.display = '';
         } else if (selectedStatus === 'all') {

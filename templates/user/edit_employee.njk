@@ -22,10 +22,8 @@
                             </div>
                             <div
                                 class="card-body">
-                                <!-- Widok tylko do odczytu -->
                                 <div
                                     id="view-mode">
-                                    <!-- Dane osobowe -->
                                     <div class="section-header mb-3">
                                         <h5 class="text-secondary">
                                             <i class="fas fa-id-card"></i>
@@ -50,7 +48,6 @@
                                             <label class="form-label text-muted">{{ __('employee.phone') or 'Telefon' }}</label>
                                             <div class="form-control-plaintext fw-bold" id="view-phone">{{ employee.phone or '-' }}</div>
                                         </div>
-                                        <!-- Hasło -->
                                         <div class="section-header mb-3">
                                             <h5 class="text-secondary">
                                                 <i class="fas fa-key"></i>
@@ -61,7 +58,7 @@
                                                 <label class="form-label text-muted">{{ __('login.password_label') or 'Hasło' }}</label>
                                                 <div class="form-control-plaintext">••••••••</div>
                                             </div>
-                                            <!-- Przyciski w trybie odczytu -->
+
                                             <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
                                                 <a href="/user/employee-panel" class="btn btn-secondary">
                                                     <i class="fas fa-arrow-left"></i>
@@ -73,10 +70,8 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <!-- Formularz edycji (ukryty domyślnie) -->
                                         <form
                                             id="edit-employee-form" style="display: none;">
-                                            <!-- Dane osobowe -->
                                             <div class="section-header mb-3">
                                                 <h5 class="text-secondary">
                                                     <i class="fas fa-id-card"></i>
@@ -156,7 +151,6 @@
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <!-- Przyciski akcji w trybie edycji -->
                                                                                 <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
                                                                                     <button type="button" class="btn btn-secondary" id="cancel-edit-btn">
                                                                                         <i class="fas fa-times"></i>

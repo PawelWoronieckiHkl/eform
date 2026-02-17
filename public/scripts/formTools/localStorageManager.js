@@ -1,5 +1,5 @@
 export function fillLocalPositionObject(values = false, displayValues = false) {
-    // console.log('createFormDataObject called', values, displayValues);
+    
     const formData = {};
     if (values) {
         formData.values = values;
@@ -7,7 +7,7 @@ export function fillLocalPositionObject(values = false, displayValues = false) {
     else {
         formData.values = {}
     }
-    // Konwertuj Map do array przed zapisem
+    
     if (displayValues) {
         formData.displayValues = Array.from(displayValues.entries());
     }
@@ -17,7 +17,7 @@ export function fillLocalPositionObject(values = false, displayValues = false) {
 
     localStorage.setItem('formData', JSON.stringify(formData));
     let x = localStorage.getItem('formData');
-   // console.log(JSON.parse(x), 'Z localstorage');
+   
 }
 
 export function checkIfLocalPositionObjectExists() {

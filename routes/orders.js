@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { requireLogin, checkOrderOwnership, requireOwner, isOwner } = require('../middleware/loginMixture');
 const db = require("../db/db_helper.js");
+const fs = require('fs');
 const adminDb = require("../db/admin/db_helper.js");
 const orderService = require('../services/orderService.js');
 const ownerService = require('../services/owner.js');
@@ -13,8 +14,9 @@ const { buildOrderItemStructure } = require('../services/itemBuilder.js');
 const { getPriceAfterDiscount } = require('../services/getDiscount.js');
 const { SyncProdStatus, setParcelHref } = require('../services/prodStatus.js');
 const { getExtraAttachments } = require('../services/mailBot/extraAttachments');
+
+
 router.use(async (req, res, next) => {
-    // Ustaw owner dla wszystkich widoków
     res.locals.owner = req.session?.user?.isOwner || false;
     res.locals.admin = req.session?.user?.isAdmin || false;
     res.locals.isEmployee = req.session?.user?.isEmployee || false;
@@ -34,7 +36,6 @@ router.use(async (req, res, next) => {
 router.get('/edit/:orderId', requireLogin, async (req, res) => {
 
     const orderData = await db.getOrderDetails(req.params.orderId);
-
     res.render('edit_order.njk', {
         orderData: orderData
     })
@@ -50,23 +51,18 @@ router.get("/userOrders", requireLogin, requireOwner, async (req, res) => {
             return res.redirect('/orders');
         }
 
-        // Ustawienie kontekstu użytkownika na podstawie userIdent
         await ownerService.setContextUserByIdent(req, userIdent);
 
         const page = parseInt(req.query.page) || 1;
         const limit = 10;
         const offset = (page - 1) * limit;
         const userId = await db.getUserIdByIdent(userIdent);
-
-        // Pobierz zamówienia dla konkretnego użytkownika
         const [orders, totalOrders] = await Promise.all([
             db.getUserOrders(userId, limit, offset),
             db.countUserOrders(userId)
         ]);
 
         const totalPages = Math.ceil(totalOrders / limit);
-
-        // Pobierz dane użytkownika dla nagłówka
         const selectedUser = await db.getUserData(userIdent);
 
         res.render("orders_owner.njk", {
@@ -90,8 +86,6 @@ router.get("/userOrders", requireLogin, requireOwner, async (req, res) => {
 });
 
 router.get("/", requireLogin, async (req, res) => {
-
-
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const offset = (page - 1) * limit;
@@ -110,7 +104,6 @@ router.get("/", requireLogin, async (req, res) => {
             db.countUserOrders(currentUser.userId)
         ]);
     }
-    // console.log(req.session.user.isOwner, 'IS OWNER IN ORDERS LIST@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     const totalPages = Math.ceil(totalOrders / limit);
     if (req.session.user?.isOwner) {
         res.render("orders_owner.njk", {
@@ -138,6 +131,7 @@ router.get("/", requireLogin, async (req, res) => {
     }
 });
 
+
 router.get('/organization-orders?:history', requireLogin, requireOwner, async (req, res) => {
     ownerService.clearContextUser(req);
     const page = parseInt(req.query.page) || 1;
@@ -158,8 +152,6 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
             db.countUserOrders(currentUser.userId, false, req.session.user.organization)
         ]);
     }
-
-
     const totalPages = Math.ceil(totalOrders / limit);
 
     if (req.session.user?.isOwner) {
@@ -185,7 +177,6 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
         }
     }
 });
-
 
 
 router.get("/history", requireLogin, async (req, res) => {
@@ -237,11 +228,11 @@ router.get("/history", requireLogin, async (req, res) => {
 
 });
 
+
 router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
 
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
     const currentUser = ownerService.getCurrentUser(req);
-    // console.log(orderDetails, 'CURRENT USER IN ORDER HISTORY VIEW');
     let statuses = await db.getUserStatuses(currentUser.ident, orderDetails.order_idx);
     statuses = setParcelHref(statuses);
 
@@ -254,7 +245,6 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
             res.render("order_sent_prices.njk",
                 {
                     orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, statuses: statuses
-
                 }
             );
             req.session.user.showPricesOnce = false;
@@ -271,17 +261,16 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
     else {
         return res.render('order.njk', { orderDetails: orderDetails[0] });
     }
-
-
 });
-
 
 
 router.get("/add-order", requireLogin, async (req, res) => {
     const currentUser = ownerService.getCurrentUser(req);
-    const addr = await db.getUserAddresses(currentUser.userId)
+    const addr = await db.getUserAddresses(currentUser.userId);
+    const emails = await db.getUserMails(currentUser.userId);
+    console.log(addr, 'USER ADDRESSES IN ADD ORDER VIEW');
 
-    res.render("new-order.njk", { addr: addr });
+    res.render("new-order.njk", { addr: addr, emails: emails });
 });
 
 
@@ -293,7 +282,6 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
         const totalPrice = await db.getTotal(orderDetails.id)
 
-        // console.log(total, ' total order')
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render('order_prices.njk', {
                 orderDetails,
@@ -304,8 +292,8 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 isEmployee: req.session.user?.isEmployee || false,
                 totalPrice: totalPrice
             });
-            req.session.user.showPricesOnce = false; // Reset after first access
-            return;  // zakończ obsługę
+            req.session.user.showPricesOnce = false;
+            return;
         } else {
             res.render('order.njk', {
                 orderDetails,
@@ -340,6 +328,7 @@ router.get('/order/:orderId/discount-info', requireLogin, checkOrderOwnership, a
         });
     }
 });
+
 
 router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
     try {
@@ -384,6 +373,7 @@ router.post('/order/:orderId/set-discount', requireLogin, checkOrderOwnership, a
     }
 });
 
+
 router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOwnership, async (req, res) => {
     try {
         const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
@@ -401,14 +391,12 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         const sender = new OrderSender.OrderSender(req, order.orderDetails, order.orderItems);
         await sender.init();
         const sendData = sender.getData();
-        // console.log('SEND DATA IN ORDER PDF', sendData);
         const totalPrice = await db.getTotal(order.orderDetails.id)
         const currentUser = ownerService.getCurrentUser(req);
         const photoFile = await db.getUserLogo(currentUser?.pin);
         const logoPath = path.join(__dirname, '../img/', photoFile);
 
-        // Konwertuj logo do base64 z obsługą błędów
-        const fs = require('fs');
+
         let logoDataUri = null;
         try {
             if (fs.existsSync(logoPath)) {
@@ -420,14 +408,12 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
             console.error('Błąd przy odczycie logo:', error);
         }
 
-        // Konfiguracja i18n tak jak w pdfGenerator.js
         const nunjucks = require('nunjucks');
         const confLang = require('../services/mailBot/conf');
         const lang = req.getLocale();
         const i18n = confLang(lang);
         const __ = (key) => i18n.__(key, { locale: lang });
 
-        // Konfiguracja Nunjucks z funkcją tłumaczenia
         const env = nunjucks.configure('templates', {
             autoescape: true,
             trimBlocks: true,
@@ -435,12 +421,9 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         });
         env.addGlobal('__', __);
 
-
-        // Określ czy pokazać ceny (sprawdź przed resetowaniem showPricesOnce)
         const shouldShowPrices = req.session.user?.showPrices || req.session.user?.showPricesOnce || req.params.showPrices === 'true';
         const isShort = req.params.short === 'true';
-        // console.log(req.params.short, isShort, 'isShort param', req.params.showPrices, shouldShowPrices, 'should show prices in pdf');
-        // Wyrenderuj template do HTML
+
         let html;
         if (!isShort) {
             html = env.render('order_to_print.njk', {
@@ -473,7 +456,6 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         }
 
 
-        // Użyj Playwright do wygenerowania PDF z HTML
         const { chromium } = require('playwright');
         const browser = await chromium.launch({
             headless: true,
@@ -497,13 +479,10 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
 
         await browser.close();
 
-        // Ustaw nagłówki dla pobrania pliku
         const fileName = `zamowienie_${orderDetails.id}.pdf`;
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
         res.setHeader('Content-Length', pdfBuffer.length);
-
-        // Wyślij PDF
         res.send(pdfBuffer);
 
     } catch (error) {
@@ -517,9 +496,9 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
 
 
 router.get("/order/:orderId/new-position/", requireLogin, (req, res) => {
-
     res.render("form.njk", { orderId: req.params.orderId });
 });
+
 
 router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
     try {
@@ -552,8 +531,6 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev') {
                 mailList = [extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu']
             }
-            // console.log(clientName, orderDetails, 'CLIENT NAME IN SEND ORDER ?@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-
             mailBot.sendMail(
                 mailList,
                 lang,
@@ -582,6 +559,8 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
         console.error(err);
     }
 });
+
+
 router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res) => {
     let orderAddress = null;
     let sendAddress = null;
@@ -604,8 +583,6 @@ router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res
         return res.status(500).json({ status: "error", message: "Nie udało się skopiować zamówienia" });
     }
     for (const item of orderItems) {
-
-        // console.log(item, 'ITEM TO COPY');
         let body = buildOrderItemStructure(
             newOrderId,
             item.list_price,
@@ -626,8 +603,6 @@ router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res
             item.group_name,
             item.parameters_short
         );
-        // console.log(body, 'BODY TO INSERT AS NEW ITEM');
-        // console.log(item.total_price, item.unit_price, 'PRICES IN ITEM TO COPY');
         const newItem = await db.insertNewForm(body);
     }
     return res.json({ status: "success", message: "Zamówienie skopiowane poprawnie", redirect: `/orders/order/${newOrderId}` });
@@ -644,6 +619,8 @@ router.post('/lock', requireLogin, async (req, res) => {
         console.error(err);
     }
 });
+
+
 router.post('/save-order', requireLogin, async (req, res) => {
     try {
         let { commission, orderContactInfo, comment, orderSendAddress } = req.body;
@@ -676,6 +653,7 @@ router.post('/save-order', requireLogin, async (req, res) => {
     }
 });
 
+
 router.put('/update-order/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
     try {
         const { commission, orderContactInfo, orderSendAddress, comment } = req.body;
@@ -699,8 +677,8 @@ router.put('/update-order/:orderId', requireLogin, checkOrderOwnership, async (r
     }
 })
 
+
 router.delete('/order/:orderId/delete/', requireLogin, checkOrderOwnership, async (req, res) => {
-    // console.log(req.params.orderId);
     let response = await db.deleteOrder(req.params.orderId);
     if (response) {
         return res.status(200).json({
@@ -716,10 +694,10 @@ router.delete('/order/:orderId/delete/', requireLogin, checkOrderOwnership, asyn
     }
 })
 
+
 router.patch('/:orderId/comment/update', requireLogin, async (req, res) => {
     const { orderId } = req.params;
     const { comment } = req.body;
-
     try {
         const orderRows = await db.getOrderDetails(orderId);
         if (!orderRows || orderRows.length === 0) {
@@ -737,7 +715,7 @@ router.patch('/:orderId/comment/update', requireLogin, async (req, res) => {
     }
 });
 
-// Clear context user endpoint
+
 router.get('/clear-context', requireLogin, requireOwner, async (req, res) => {
     try {
         ownerService.clearContextUser(req);

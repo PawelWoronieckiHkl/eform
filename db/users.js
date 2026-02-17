@@ -2,7 +2,6 @@ const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('./core')
 const dateUtils = require("../utils/humanize_date.js");
 const e = require("express");
 const bcrypt = require('bcryptjs');
-const { get } = require('lodash');
 
 
 async function getLanguage(pin) {
@@ -24,11 +23,13 @@ async function getFirstLogonInfo(pin) {
     return result[0].first_login_at
 }
 
+
 async function getUserByEmployye(pin) {
     const query = `select u.* from user u join employee e on u.id = e.user_id where e.login = ?`;
     let result = await selectQuery(query, [pin])
     return result && result.length > 0 ? result[0] : null;
 }
+
 
 async function uodateFirstLogonInfo(pin) {
     const query = 'UPDATE `user` SET first_login_at = ? WHERE pin LIKE ?'
@@ -37,6 +38,8 @@ async function uodateFirstLogonInfo(pin) {
     console.log(result, 'first logon update result')
     return result
 }
+
+
 async function setUserAcceptedRODO(pin) {
     const query = 'UPDATE `user` SET privacy_policy_accepted_at = ? WHERE pin LIKE ?'
     const now = dateUtils.getDbTimestamp()
@@ -46,11 +49,13 @@ async function setUserAcceptedRODO(pin) {
     return result
 }
 
+
 async function getPolicyState(pin) {
     const query = 'SELECT privacy_policy_accepted_at from `user` where pin like ?'
     let result = await selectQuery(query, pin)
     return result[0].privacy_policy_accepted_at
 }
+
 
 async function insertUserIntousrtble(ident,pin,password){
     const query = `INSERT INTO eform.usrtblpsswd (ident, pin, password) VALUES (?, ?, ?)`;
@@ -58,33 +63,42 @@ async function insertUserIntousrtble(ident,pin,password){
     return result;
 }
 
+
 async function getAllOrganizations() {
     const query = 'SELECT * FROM organization'
     let result = await selectQuery(query)
     return result;
 }
 
+
 async function getEmployyeInfo(login) {
     const query = 'select * from employee where login = ?'
     let result = await selectQuery(query, [login])
     return result[0];
 }
+
+
 async function getUserLogo(pin) {
     const query = `select o.photo_path from user u join organization o on u.organization_id = o.id
     where u.pin = ?`;
     let result = await selectQuery(query, pin)
     return result && result.length > 0 ? result[0].photo_path : 'hkl.png';
 }
+
+
 async function getLogo(id) {
     const query = `select photo_path from organization where id = ?`;
     let result = await selectQuery(query, [id])
     return result && result.length > 0 ? result[0].photo_path : 'hkl.png';
 }
+
+
 async function getUserMail(pin) {
     const query = 'select o.email as organization_email,o.email2 as organization_email2,u.email as user_email from `user` u join organization o on u.organization_id = o.id where u.pin = ?';
     let result = await selectQuery(query, pin)
     return result[0];
 }
+
 
 async function logEmployeeLogin(employeeId) {
     const sql = `update employee set last_login = ? where id = ?`;
@@ -93,12 +107,14 @@ async function logEmployeeLogin(employeeId) {
     return result;
 }
 
+
 async function getOwner(pin) {
     const query = `select o.ident as orgIdent, o.id as orgId, u.ident as userIdent from user u join organization o on u.organization_id = o.id
     where u.pin = ?`;
     let result = await selectQuery(query, pin)
     return result[0];
 }
+
 
 async function getOwnerByUserId(userId) {
     const query = `select o.ident as orgIdent, o.id as orgId, u.ident as userIdent from user u join organization o on u.organization_id = o.id
@@ -115,9 +131,7 @@ async function updateUserPasswordByPin(pin, hash) {
 }
 
 
-
 async function getDbPassword(pin) {
-
     const query = `SELECT password FROM user WHERE pin LIKE ?`;
 
     try {
@@ -137,18 +151,23 @@ async function getDbPassword(pin) {
     }
 }
 
+
 async function getUserId(pin) {
     const query = `SELECT id FROM user WHERE pin LIKE ?`;
     const result = await selectQuery(query, [pin])
 
     return result[0].id;
 }
+
+
 async function getUserIdent(pin) {
     const query = `SELECT ident FROM user WHERE pin LIKE ?`;
     const result = await selectQuery(query, [pin])
 
     return result[0].ident;
 }
+
+
 async function getUserData(pin) {
     const query = `SELECT * FROM \`user\` WHERE pin LIKE ?`;
 
@@ -182,17 +201,20 @@ async function getUsers() {
     return result;
 }
 
+
 async function deleteUserByPin(pin) {
     const sql = `DELETE FROM eform.\`user\` WHERE pin = ?`;
     const result = await deleteQuery(sql, [pin]);
     return result;
 }
 
+
 async function getUserName(pin) {
     const query = `SELECT client_name FROM \`user\` WHERE pin LIKE ?`;
     const result = await selectQuery(query, [pin]);
     return result[0].client_name;
 }
+
 
 async function addUser(userData) {
     const {
@@ -248,17 +270,22 @@ async function addUser(userData) {
         throw new Error('Błąd przy dodawaniu użytkownika: ' + err.message);
     }
 }
+
+
 async function updateUser(userPin, email = '', phone = '') {
     const sql = `UPDATE eform.\`user\` set phone = ?, email = ? where pin like ?`;
     const result = await updateQuery(sql, [phone, email, userPin]);
     return result;
 }
+
+
 async function updatePlain(userId, plainPassword) {
 
     const sql = `UPDATE eform.\`user\` set plain = ? where ident = ?`;
     const result = await updateQuery(sql, [plainPassword, userId]);
     return result;
 }
+
 async function getUserAddresses(userId) {
 
     const query = 'select a.id,a.street,a.city,a.zip,a.country,a.phone,a.email,o.commision, o.user_id  from `order` o join order_address a on o.order_address_id  = a.id where o.user_id =?';
@@ -267,7 +294,6 @@ async function getUserAddresses(userId) {
     return { addresses }
 }
 
-// ===== EMPLOYEE FUNCTIONS =====
 
 async function getEmployeesByUserId(userId) {
     const query = `
@@ -280,11 +306,13 @@ async function getEmployeesByUserId(userId) {
     return result || [];
 }
 
+
 async function getEmployeeById(employeeId) {
     const query = `SELECT * FROM employee WHERE id = ?`;
     const result = await selectQuery(query, [employeeId]);
     return result && result.length > 0 ? result[0] : null;
 }
+
 
 async function getEmployeeByLogin(login) {
     const query = `SELECT * FROM employee WHERE login = ?`;
@@ -292,10 +320,11 @@ async function getEmployeeByLogin(login) {
     return result && result.length > 0 ? result[0] : null;
 }
 
+
 async function addEmployee(employeeData) {
     const { name, surname, login, password, phone, userId } = employeeData;
     console.log('jestem w addEmployee', employeeData)
-    // Check if the user already exists
+    
     const checkEmployeeQuery = `SELECT id FROM employee WHERE login = ?`;
     const checkUserQuery = `SELECT id FROM eform.\`user\` WHERE pin = ?`;
     const existingEmployee = await selectQuery(checkEmployeeQuery, [login]);
@@ -323,13 +352,14 @@ async function addEmployee(employeeData) {
     }
 }
 
+
 async function deleteEmployee(employeeId) {
     try {
-        // Usunij powiązanie: ustaw employee_id na NULL dla wszystkich zamówień
+        
         const updateSql = `UPDATE \`order\` SET employee_id = NULL WHERE employee_id = ?`;
         await updateQuery(updateSql, [employeeId]);
         
-        // Następnie usuń pracownika
+        
         const deleteSql = `DELETE FROM employee WHERE id = ?`;
         return await deleteQuery(deleteSql, [employeeId]);
     } catch (error) {
@@ -337,6 +367,7 @@ async function deleteEmployee(employeeId) {
         throw error;
     }
 }
+
 
 async function getEmployeeOrders(employeeId, limit = 50, offset = 0) {
     const query = `
@@ -360,11 +391,13 @@ async function getEmployeeOrders(employeeId, limit = 50, offset = 0) {
     return resultWithHumanizedDates || [];
 }
 
+
 async function countEmployeeOrders(employeeId) {
     const query = `SELECT COUNT(*) as total FROM \`order\` WHERE employee_id = ?`;
     const result = await selectQuery(query, [employeeId]);
     return result && result.length > 0 ? result[0].total : 0;
 }
+
 
 async function updateEmployeeLastLogin(employeeId) {
     const sql = `UPDATE employee SET last_login = ? WHERE id = ?`;
@@ -372,6 +405,8 @@ async function updateEmployeeLastLogin(employeeId) {
     const result = await updateQuery(sql, [now, employeeId]);
     return result;
 }
+
+
 async function updateEmployee(employeeId, updatedData) {
     const fields = [];
     const values = [];
@@ -392,11 +427,13 @@ async function updateEmployee(employeeId, updatedData) {
     }
 }
 
+
 async function getOrgInfo(id) {
     const query = 'SELECT * FROM organization where id like ?'
     let result = await selectQuery(query, id)
     return result[0]
 }
+
 
 async function updateUserData(pin, updatedData) {
     const query = 'UPDATE eform.`user` set tax_id = ?, street = ?, zip = ?, city = ?, email = ? WHERE pin = ?';

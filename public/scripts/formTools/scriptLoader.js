@@ -3,20 +3,20 @@ import {
 } from "./formTools.js";
 export function loadScript(scriptFile, values, displayValues, groupNumber, allOptionsByParameter, param, callback) {
 
-    // console.log('Ładowanie skryptu:', scriptFile, 'dla grupy:', groupNumber);
-    // console.log('odczytuje skrypt', scriptFile)
+    
+    
     const scriptPath = scriptFile;
     const script = document.createElement('script');
-    // console.log('Loading script from path cenapodwyzka:', scriptPath);
+    
     script.crossOrigin = 'anonymous';
     script.src = scriptPath;
-    //    console.log('scriptOperations to execute:', scriptPath);
+    
     const scriptInput = prepareValuesForScript(values, displayValues, allOptionsByParameter);
 
-    // Flaga czy callback już wywołany
+    
     let finished = false;
 
-    // Globalny listener błędów (także syntax error)
+    
     const handleGlobalError = (event) => {
         if (event.filename && event.filename.includes(scriptPath) && !finished) {
             console.error('Globalny błąd skryptu:', event.message || event.error);
@@ -30,7 +30,7 @@ export function loadScript(scriptFile, values, displayValues, groupNumber, allOp
 
     script.onload = () => {
 
-        if (finished) return; // błąd już wcześniej złapany
+        if (finished) return; 
         try {
             if (typeof f === 'function') {
                 const result = f(scriptInput);
@@ -104,7 +104,7 @@ function errorShield(scriptPath, param) {
 }
 
 function roundPrices(pricesObject) {
-    //    console.log()
+    
     if (!pricesObject || typeof pricesObject !== 'object') {
         return pricesObject;
     }
@@ -112,11 +112,11 @@ function roundPrices(pricesObject) {
     const rounded = {};
     for (const [key, value] of Object.entries(pricesObject)) {
         if (!isNaN(value) && value !== null && value !== '') {
-            //    console.log(key, value, 'liczymy ceny')
+            
             const floatValue = parseFloat(value);
             rounded[key] = Math.round(floatValue * 100) / 100;
         } else {
-            // Zachowaj inne typy danych bez zmian
+            
             rounded[key] = value;
         }
     }

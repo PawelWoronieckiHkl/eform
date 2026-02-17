@@ -4,7 +4,7 @@ import { loadScript } from './scriptLoader.js';
 import { buildValuesToDisplay } from "./updateFieldsAndValues.js";
 import { validateFormInput } from "./validateUtils.js";
 
-// Funkcja formatująca liczby - usuwa .00 dla liczb całkowitych
+
 function formatNumberForDisplay(value) {
     const num = parseFloat(value);
 
@@ -40,7 +40,7 @@ export function checkIfPriceIsCorrect(values, inputs, displayValues) {
                 destinationParams.forEach(paramName => {
 
                     let displayValue = displayValues.get(paramName);
-                    // console.log('Ustawiamy według cennika dla', paramName, displayValue.locked);
+                    
                     if (inputs[paramName]) {
                         inputs[paramName].type = 'text';
                         inputs[paramName].value = t('form.pricelist_info')
@@ -62,7 +62,7 @@ export function checkIfPriceIsCorrect(values, inputs, displayValues) {
 
 
 export function calculateFromScript(param, values, inputs, displayValues, groupNumber, allOptionsByParameter, key, paramName, onComplete) {
-    // console.log('SCRIPT to ', param.SOURCE, 'dla', param.NAME);
+    
     const wrongValues = ['', 0, null, undefined, NaN];
     const checkParams = ['SZEROKOSC', 'WYSOKOSC'].filter(p => {
         let input = inputs[p];
@@ -78,7 +78,7 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
             console.log('Przygotowywanie wartości dla skryptu:', values);
 
             loadScript(param.SOURCE, values, displayValues, groupNumber, allOptionsByParameter, param, function (scriptResult) {
-                // console.log('Wynik SCRIPT u dla', param.NAME, scriptResult);
+                
                 if (scriptResult) {
                     for (const [scriptParamName, scriptValue] of Object.entries(scriptResult)) {
                         console.log('Ustawiamy wartość ze SCRIPT u:', scriptParamName, scriptValue);
@@ -99,7 +99,7 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
                     }
                 }
 
-                // Wywołaj callback po zakończeniu skryptu (WEWNĄTRZ callbacka loadScript!)
+                
                 if (onComplete && typeof onComplete === 'function') {
                     onComplete();
                 }
@@ -111,7 +111,7 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
             }
             values[param.NAME] = 0;
 
-            // Wywołaj callback nawet w przypadku błędu
+            
             if (onComplete && typeof onComplete === 'function') {
                 onComplete();
             }
@@ -122,7 +122,7 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
         }
         values[param.NAME] = 0;
 
-        // Wywołaj callback gdy warunki nie są spełnione
+        
         if (onComplete && typeof onComplete === 'function') {
             onComplete();
 
@@ -131,7 +131,7 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
     return paramName;
 }
 
-// Funkcja obsługująca FORMULA (formuły) - wykonuje się synchronicznie
+
 export function calculateFromFormula(param, values, inputs, displayValues, groupNumber, allOptionsByParameter, key, paramName) {
     if (param.FORMULA.includes('RABAT')) {
     }
@@ -148,12 +148,12 @@ export function calculateFromFormula(param, values, inputs, displayValues, group
             }
             values[param.NAME] = 0;
         } else {
-            // console.log(inputs[param.NAME])
+            
             result = parseFloat(result);
-            // console.log(result,'wynik po zaokrągleniu')
+            
             if (inputs[param.NAME]) {
                 inputs[param.NAME].value = formatNumberForDisplay(result);
-                // console.log(inputs[param.NAME].value, 'ustawione')
+                
             }
             values[param.NAME] = parseFloat(result?.toFixed(2)) ?? 0;
             buildValuesToDisplay(allOptionsByParameter, formatNumberForDisplay(result), param.NAME, displayValues, 'INPUT ');

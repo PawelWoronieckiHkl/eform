@@ -3,6 +3,7 @@ const { selectQuery, insertQuery, updateQuery, deleteQuery, connetToDb } = requi
 const { get } = require('lodash');
 const connection = connetToDb()
 
+
 async function insertNewForm(formData) {
     const orderpos = await getPosCounter(formData.order) + 1;
     formData.orderpos = orderpos;
@@ -43,16 +44,20 @@ async function getAttachments(positionId) {
     return response[0] ? response[0].attachments : null;
 }
 
+
 async function updateAttachments(positionId, attachments) {
     const query = 'UPDATE order_item SET attachments = ? WHERE id = ?';
     const response = await updateQuery(query, [JSON.stringify(attachments), positionId]);
     return response;
 }
+
+
 async function getPosCounter(orderId) {
     const query = 'SELECT COUNT(*) as count FROM order_item WHERE order_id = ?'
     const response = await selectQuery(query, orderId);
     return response[0].count;
 }
+
 
 async function updateOrderpos(orderId, orderPos) {
     const query = 'UPDATE order_item SET orderpos = ? WHERE order_id = ?';
@@ -60,14 +65,9 @@ async function updateOrderpos(orderId, orderPos) {
     return response;
 }
 
-/**
- * Reindeksuje orderpos dla wszystkich pozycji w zamówieniu
- * Zapewnia ciągłą numerację 1, 2, 3... bez luk
- * @param {number} orderId - ID zamówienia
- * @returns {Promise<number>} - liczba przenumerowanych pozycji
- */
+
 async function reindexOrderPositions(orderId) {
-    // Pobierz wszystkie pozycje dla tego zamówienia, sortując po aktualnym orderpos i id
+    
     const query = 'SELECT id FROM order_item WHERE order_id = ? ORDER BY orderpos ASC, id ASC';
     const positions = await selectQuery(query, orderId);
 
@@ -75,7 +75,6 @@ async function reindexOrderPositions(orderId) {
         return 0;
     }
 
-    // Zaktualizuj orderpos dla każdej pozycji - nadaj kolejne numery 1, 2, 3...
     for (let i = 0; i < positions.length; i++) {
         const query = 'UPDATE order_item SET orderpos = ? WHERE id = ?';
         await updateQuery(query, [i + 1, positions[i].id]);
@@ -85,11 +84,13 @@ async function reindexOrderPositions(orderId) {
     return positions.length;
 }
 
+
 async function getOrderpos(posId) {
     const query = 'SELECT orderpos FROM order_item WHERE id = ?'
     const response = await selectQuery(query, posId);
     return response[0].orderpos;
 }
+
 
 async function updateOrderPrice(orderId, newPrice) {
     let total = 0;
@@ -119,17 +120,20 @@ async function updateOrderPrice(orderId, newPrice) {
     return response;
 }
 
+
 async function getPosition(positionId) {
     const query = 'SELECT * FROM order_item WHERE id LIKE ?'
     let result = await selectQuery(query, positionId)
     return result[0];
 }
 
+
 async function getLastChoice(userId) {
     const query = 'SELECT * FROM department,asortment_group WHERE user_pin LIKE ?'
     let result = await selectQuery(query, userId)
     return result[0];
 }
+
 
 async function updatePosition(positionData, total) {
     const query = `
@@ -160,7 +164,6 @@ async function updatePosition(positionData, total) {
     console.log(response)
     return response
 }
-
 
 
 async function deletePosition(positionId) {
@@ -242,7 +245,6 @@ async function updateAppVersion(version, groupNr, nodeVer) {
 }
 
 
-
 async function getFormVersion(groupNr) {
     const query = `select ver from order_item where asortment_group_number = ? order by id desc limit 1`
 
@@ -250,6 +252,7 @@ async function getFormVersion(groupNr) {
 
     return response[0];
 }
+
 
 async function checkFavoriteExists(userId, productValue, groupNumber) {
     const sql = `
@@ -271,6 +274,8 @@ async function checkFavoriteExists(userId, productValue, groupNumber) {
     }
 
 }
+
+
 async function getFavs(userId, groupNumber) {
     const sql = `
     select * from user_favorites
@@ -278,6 +283,7 @@ async function getFavs(userId, groupNumber) {
     and group_number = ${groupNumber}`;
     return selectQuery(sql);
 }
+
 
 async function addFavorite(userId, productValue, groupNumber) {
     const sql = `
@@ -287,12 +293,14 @@ async function addFavorite(userId, productValue, groupNumber) {
     return insertQuery(sql, [userId, productValue, groupNumber]);
 }
 
+
 async function removeFavorite(userId, productValue, groupNumber) {
     const sql = `
     DELETE FROM user_favorites WHERE user_id = ${userId} AND product_value = '${productValue}' AND group_number = ${groupNumber}
   `;
     return deleteQuery(sql);
 }
+
 
 async function duplicateSendAddress(id) {
     const selectQueryStr = `
@@ -325,6 +333,7 @@ async function duplicateSendAddress(id) {
     }
     return null;
 }
+
 
 async function duplicateOrderAddress(id) {
     const selectQueryStr = `
@@ -359,16 +368,14 @@ async function duplicateOrderAddress(id) {
     return null;
 }
 
-// Funkcje do zmiany kolejności pozycji (swap ID)
+
 async function movePositionUp(positionId) {
     try {
-        // Pobierz aktualną pozycję
         const currentPosition = await selectQuery('SELECT order_id, id FROM order_item WHERE id = ?', [positionId]);
         if (!currentPosition.length) return { success: false, message: 'Position not found' };
 
         const { order_id } = currentPosition[0];
 
-        // Znajdź pozycję powyżej (z mniejszym ID)
         const abovePosition = await selectQuery(
             'SELECT id FROM order_item WHERE order_id = ? AND id < ? ORDER BY id DESC LIMIT 1',
             [order_id, positionId]
@@ -376,14 +383,12 @@ async function movePositionUp(positionId) {
 
         if (!abovePosition.length) return { success: false, message: 'Already at top' };
 
-        // Zamień ID miejscami
         const tempId = -Math.abs(positionId) - Math.abs(abovePosition[0].id);
 
         await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [tempId, positionId]);
         await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [positionId, abovePosition[0].id]);
         await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [abovePosition[0].id, tempId]);
 
-        // Przenumeruj pozycje w zamówieniu
         await reindexOrderPositions(order_id);
 
         return { success: true, message: 'Position moved up' };
@@ -392,6 +397,7 @@ async function movePositionUp(positionId) {
         return { success: false, message: 'Database error' };
     }
 }
+
 
 async function setPositionIdx(positionId, newIdx) {
     try {
@@ -403,15 +409,14 @@ async function setPositionIdx(positionId, newIdx) {
     }
 }
 
+
 async function movePositionDown(positionId) {
     try {
-        // Pobierz aktualną pozycję
         const currentPosition = await selectQuery('SELECT order_id, id FROM order_item WHERE id = ?', [positionId]);
         if (!currentPosition.length) return { success: false, message: 'Position not found' };
 
         const { order_id } = currentPosition[0];
 
-        // Znajdź pozycję poniżej (z większym ID)
         const belowPosition = await selectQuery(
             'SELECT id FROM order_item WHERE order_id = ? AND id > ? ORDER BY id ASC LIMIT 1',
             [order_id, positionId]
@@ -419,14 +424,11 @@ async function movePositionDown(positionId) {
 
         if (!belowPosition.length) return { success: false, message: 'Already at bottom' };
 
-        // Zamień ID miejscami
         const tempId = -Math.abs(positionId) - Math.abs(belowPosition[0].id);
 
         await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [tempId, positionId]);
         await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [positionId, belowPosition[0].id]);
         await updateQuery('UPDATE order_item SET id = ? WHERE id = ?', [belowPosition[0].id, tempId]);
-
-        // Przenumeruj pozycje w zamówieniu
         await reindexOrderPositions(order_id);
 
         return { success: true, message: 'Position moved down' };

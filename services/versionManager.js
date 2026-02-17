@@ -46,7 +46,6 @@ class VersionManagerLocal {
             langPaths = pathlist
             const okFileExists = await this.checkOkFileAndRemove(group);
             if (!okFileExists) {
-                // Jeśli plik .ok nie istnieje, pomijamy aktualizację dla tej grupy
                 console.log(`Brak pliku ${group}.ok – pomijam aktualizację`);
                 continue;
             }
@@ -61,10 +60,6 @@ class VersionManagerLocal {
                 currentMetadata[lang] = await this.getRemoteMetadataForDir(fullPath);
             }
 
-            // Rezygnujemy z getLastVersionForGroup i pliku version_control.json
-            // Pobieramy wersję z bazy i wyliczamy nową wewnątrz processGroupChanges
-
-            // Zaznaczamy wersję jako zmienioną i wywołujemy proces aktualizacji
             await this.processGroupChanges(group, groupDataPath, currentMetadata);
 
         }
@@ -133,16 +128,13 @@ class VersionManagerLocal {
 
         await dbHelper.updateAppVersion(newVersion, group, process.env.NODE_ENV || 'dev');
 
-        // Utwórz katalog wersji
         const versionDir = path.join(groupPath, 'versions', newVersion);
         await fs.promises.mkdir(versionDir, { recursive: true, mode: 0o775 });
 
-        // Skopiuj WSZYSTKIE języki dla grupy
         for (let [lang, files] of Object.entries(currentMetadata)) {
             const langVersionDir = path.join(versionDir, lang);
             await fs.promises.mkdir(langVersionDir, { recursive: true });
 
-            // Kopiuj wszystkie pliki zdefiniowane w filesToUpdate
             for (const filename of this.filesToUpdate) {
                 try {
                     const src = path.join(groupPath, lang, filename);
@@ -153,8 +145,6 @@ class VersionManagerLocal {
                 }
             }
         }
-
-        // Nie zapisujemy już pliku version_control.json
     }
 }
 

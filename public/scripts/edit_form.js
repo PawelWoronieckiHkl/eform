@@ -18,30 +18,30 @@ import { startSpin, stopSpin } from "./components/hourglass.js";
 
 
 function getPositionIdFromUrl() {
-    // Sprawdź najpierw query parameter ?id=123
+    
     const params = new URLSearchParams(window.location.search);
     const queryId = params.get('id');
 
     if (queryId) {
-        //    console.log('ID z query params:', queryId);
+        
         return queryId;
     }
 
-    // Jeśli nie ma query param, czytaj z URL path /position/123/edit
+    
     const pathParts = window.location.pathname.split('/');
     const positionIndex = pathParts.findIndex(part => part === 'position');
 
     if (positionIndex !== -1 && pathParts[positionIndex + 1]) {
         const pathId = pathParts[positionIndex + 1];
-        //    console.log('ID z URL path:', pathId);
+        
         return pathId;
     }
 
-    //    console.log('Nie znaleziono ID w URL');
+    
     return null;
 }
 async function getPositionInfo(id) {
-    //    console.log(id, 'semaasdsad')
+    
     try {
         const response = await fetch(`/position/${id}/data`, {
             method: "GET",
@@ -107,24 +107,24 @@ function setUpSaveButton(id, values, valuesToDisplay, comment, orderId, inputs) 
     const showButton = document.getElementById('show-button');
 
     showButton.onclick = function () {
-        // Sprawdź czy już wysłano
+        
         if (sentState) {
             console.log('⚠️ Formularz już został wysłany');
             showToast('warning', 'Formularz już został wysłany');
             throw new Error('Already sent');
         }
 
-        // Sprawdź czy trwają obliczenia
+        
         if (window.isCalculating) {
             showToast('warning', 'Trwają obliczenia, poczekaj...');
             return;
         }
 
-        // 🔥 KROK 1: Wymuś przeliczenie ostatnio zmienionego pola
+        
         console.log('🚀 Wymuszam przeliczenie przed zapisem...');
         recalculateLastChangedField()
             .then(() => {
-                // KROK 2: Czekaj aż kolejka się opróżni
+                
                 console.log('⏳ Czekam na zakończenie wszystkich obliczeń...');
                 return new Promise(resolve => {
                     const checkQueue = () => {
@@ -138,13 +138,13 @@ function setUpSaveButton(id, values, valuesToDisplay, comment, orderId, inputs) 
                 });
             })
             .then(() => {
-                // KROK 2.5: Wymuś sprawdzenie cen i aktualizację displayValues
+                
                 console.log('💰 Sprawdzam i aktualizuję ceny...');
                 valuesToDisplay = checkIfPriceIsCorrect(values, inputs, valuesToDisplay);
                 console.log('✅ DisplayValues zaktualizowane:', valuesToDisplay);
             })
             .then(() => {
-                // KROK 3: Walidacja
+                
                 console.log('✅ Przeliczenie zakończone, przechodzę do walidacji...');
                 return validateForm(inputs, values);
             })
@@ -154,7 +154,7 @@ function setUpSaveButton(id, values, valuesToDisplay, comment, orderId, inputs) 
                     throw new Error('Validation failed');
                 }
 
-                // KROK 4: Ostateczne sprawdzenie flag
+                
 
 
                 console.log('✅ Wszystkie warunki spełnione, wysyłam dane...');
@@ -196,7 +196,7 @@ async function sendData(id, values, valuesToDisplay, comment, orderId) {
 
     }
     const total = getTotal(valuesToDisplay);
-    //    console.log(total, 'TOTAL')
+    
     postBody.total = total;
 
     try {
@@ -219,13 +219,13 @@ async function sendData(id, values, valuesToDisplay, comment, orderId) {
 }
 
 export async function validateForm(inputs, values) {
-    //    console.log('validateForm')
+    
     const visibleInputsObj = Object.fromEntries(
         Object.entries(inputs).filter(
             ([key, elem]) => getComputedStyle(elem).display !== 'none'
         )
     );
-    //    console.log(visibleInputsObj)
+    
     validateAllFieldsOnSubmit(visibleInputsObj, values)
     const correctFlag = await checkFlags();
     if (typeof correctFlag !== 'boolean') {
@@ -237,7 +237,7 @@ export async function validateForm(inputs, values) {
 }
 
 function highlightInvalidFields(flags) {
-    //    console.log('highlightInvalidFields')
+    
     for (let { key } of flags) {
         let elem = document.getElementById(key);
         if (elem) {

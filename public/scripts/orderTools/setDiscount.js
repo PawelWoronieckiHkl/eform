@@ -31,7 +31,7 @@ export async function showDiscountModal() {
     const dialog = createElement('dialog', { id: 'discount-dialog', class: ['dialog', 'discount-dialog'] }, dialogContainer);
     const title = createElement('h2', { text: t('order.set_discount_for_order'), class: ['discount-dialog-title'] }, dialog);
 
-    // Aktualny rabat
+    
     const currentValueContainer = createElement('div', { class: ['current-discount-container'] }, dialog);
     createElement('span', { text: t('order.order_value'), class: ['current-discount-label'] }, currentValueContainer);
     createElement('span', { text: ` ${getTotal()} €`, id: 'current-discount-value', class: ['current-discount-value'] },
@@ -41,7 +41,7 @@ export async function showDiscountModal() {
     createElement('span', { text: t('order.current_discount'), class: ['current-discount-label'] }, currentDiscountContainer);
     createElement('span', { text: discountText, id: 'current-discount-value', class: ['current-discount-value'] }, currentDiscountContainer);
 
-    // Sekcja rabatu procentowego
+    
     const percentSection = createElement('div', { class: ['discount-section'] }, dialog);
     const percentCheckboxContainer = createElement('div', { class: ['discount-checkbox-container'] }, percentSection);
     const percentCheckbox = createElement('input', {
@@ -68,7 +68,7 @@ export async function showDiscountModal() {
     }, percentInputContainer);
     createElement('span', { text: '%', class: ['discount-unit'] }, percentInputContainer);
 
-    // Wyświetlanie wyliczonej kwoty dla rabatu procentowego
+    
     const percentCalculatedAmount = createElement('div', {
         class: ['discount-calculated-amount'],
         text: `${t('order.discount_amount')}: 0 €`,
@@ -83,7 +83,7 @@ export async function showDiscountModal() {
         style: 'display: none;'
     }, percentSection);
 
-    // Walidacja wartości procentowej podczas wpisywania
+    
     percentInput.addEventListener('input', () => {
         let value = parseFloat(percentInput.value);
         if (value > 100) {
@@ -94,7 +94,7 @@ export async function showDiscountModal() {
             value = 0;
         }
 
-        // Oblicz i wyświetl kwotę rabatu
+        
         const totalValue = getTotal();
         const discountAmount = (totalValue * value) / 100;
         const finalAmount = totalValue - discountAmount;
@@ -110,7 +110,7 @@ export async function showDiscountModal() {
         }
     });
 
-    // Sekcja rabatu kwotowego
+    
     const amountSection = createElement('div', { class: ['discount-section'] }, dialog);
     const amountCheckboxContainer = createElement('div', { class: ['discount-checkbox-container'] }, amountSection);
     const amountCheckbox = createElement('input', {
@@ -136,10 +136,10 @@ export async function showDiscountModal() {
     }, amountInputContainer);
     createElement('span', { text: '€', class: ['discount-unit'] }, amountInputContainer);
 
-    // Wyświetlanie procentowego rabatu dla rabatu kwotowego
+    
 
 
-    // Wyświetlanie kwoty po rabacie dla rabatu kwotowego
+    
     const amountFinalAmount = createElement('div', {
         class: ['discount-final-amount'],
         text: `Kwota po rabacie: ${getTotal().toFixed(2)} €`,
@@ -147,7 +147,7 @@ export async function showDiscountModal() {
         style: 'display: none;'
     }, amountSection);
 
-    // Walidacja wartości kwotowej podczas wpisywania
+    
     amountInput.addEventListener('input', () => {
         let value = parseFloat(amountInput.value);
         const totalValue = getTotal();
@@ -161,7 +161,7 @@ export async function showDiscountModal() {
             value = 0;
         }
 
-        // Oblicz i wyświetl kwotę po rabacie
+        
         const finalAmount = totalValue - value;
 
         if (value > 0) {
@@ -172,7 +172,7 @@ export async function showDiscountModal() {
         }
     });
 
-    // Przełączanie między checkboxami
+    
     percentCheckbox.addEventListener('change', () => {
         if (percentCheckbox.checked) {
             amountCheckbox.checked = false;
@@ -216,7 +216,7 @@ export async function showDiscountModal() {
                 showToast('Proszę wprowadzić prawidłową wartość rabatu między 0 a 100%.', 'error');
                 return;
             }
-            // Tutaj można dodać logikę zastosowania rabatu procentowego
+            
             setDiscount(discountValue, 0);
             showToast(`Rabat ${discountValue}% został zastosowany do zamówienia.`, 'success');
         } else if (amountCheckbox.checked) {

@@ -5,7 +5,6 @@ const logService = require('../services/logService.js');
 const { formatLoginTime } = require('../utils/humanize_date.js');
 const db = require("../db/db_helper.js");
 
-// Middleware do automatycznego dodawania users dla owner'ów
 router.use(async (req, res, next) => {
     if (req.session.user?.isOwner) {
         try {
@@ -19,8 +18,6 @@ router.use(async (req, res, next) => {
 });
 
 
-
-// Middleware sprawdzający uprawnienia administratora
 function requireAdmin(req, res, next) {
     if (!req.session.user || !req.session.user.isAdmin) {
         return res.status(403).render('no-permission.njk');
@@ -28,22 +25,17 @@ function requireAdmin(req, res, next) {
     next();
 }
 
-// Panel administracyjny - główna strona
 router.get('/', requireLogin, requireAdmin, async (req, res) => {
     res.render('admin/admin_panel.njk');
 });
 
-// Historia logowań
 router.get('/login-history', requireLogin, requireAdmin, async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 50;
         const offset = (page - 1) * limit;
-
-        // Pobierz historię logowań z paginacją
         const loginHistory = await logService.getRecentLogins(limit);
 
-        // Formatuj daty w historii logowań
         let formattedLoginHistory = [];
         if (loginHistory && loginHistory.length > 0) {
             formattedLoginHistory = loginHistory.map(login => ({
@@ -52,7 +44,6 @@ router.get('/login-history', requireLogin, requireAdmin, async (req, res) => {
             }));
         }
 
-        // Pobierz dodatkowe informacje jeśli potrzebne
         const totalLogins = loginHistory ? loginHistory.length : 0;
 
         res.render('admin/login_history.njk', {
@@ -60,7 +51,7 @@ router.get('/login-history', requireLogin, requireAdmin, async (req, res) => {
             currentPage: page,
             limit: limit,
             totalLogins: totalLogins,
-            hasNextPage: totalLogins === limit, // Prosta logika - jeśli otrzymaliśmy pełny limit, może być więcej
+            hasNextPage: totalLogins === limit, 
             hasPrevPage: page > 1
         });
     } catch (error) {
@@ -71,7 +62,6 @@ router.get('/login-history', requireLogin, requireAdmin, async (req, res) => {
     }
 });
 
-// API endpoint dla historii logowań (do AJAX)
 router.get('/api/login-history', requireLogin, requireAdmin, async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
@@ -87,12 +77,12 @@ router.get('/api/login-history', requireLogin, requireAdmin, async (req, res) =>
             loginHistory = await logService.getRecentLogins(limit);
         }
 
-        // Formatuj daty przed wysłaniem
+
         if (loginHistory && loginHistory.length > 0) {
             loginHistory = loginHistory.map(login => ({
                 ...login,
                 login_time_formatted: formatLoginTime(login.login_time),
-                login_time: login.login_time // Zachowaj oryginalny timestamp
+                login_time: login.login_time 
             }));
         }
 
@@ -108,7 +98,8 @@ router.get('/api/login-history', requireLogin, requireAdmin, async (req, res) =>
             message: 'Błąd podczas pobierania historii logowań'
         });
     }
-});// Placeholder routes dla pozostałych funkcji administracyjnych
+});
+
 router.get('/users', requireLogin, requireAdmin, (req, res) => {
     res.render('admin/placeholder.njk', {
         title: 'Zarządzanie Użytkownikami',

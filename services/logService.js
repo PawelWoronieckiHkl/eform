@@ -1,12 +1,6 @@
 const { insertQuery } = require('../db/core.js');
 const { getDbTimestamp } = require('../utils/humanize_date.js');
 
-/**
- * Zapisuje historię logowania do bazy danych
- * @param {string} userPin - PIN użytkownika
- * @param {string} userIdent - Identyfikator użytkownika
- * @returns {Promise<boolean>} True jeśli pomyślnie zapisano, false w przypadku błędu
- */
 async function logUserLogin(userPin, userIdent) {
     try {
         if (userPin === 'admin') { return false }
@@ -14,7 +8,7 @@ async function logUserLogin(userPin, userIdent) {
             throw new Error('userPin jest wymagany');
         }
 
-        const timestamp = getDbTimestamp(); // Użyj polskiego czasu
+        const timestamp = getDbTimestamp(); 
 
         const query = `
             INSERT INTO login_history (user_pin, login_time, user_ident) 
@@ -39,12 +33,6 @@ async function logUserLogin(userPin, userIdent) {
     }
 }
 
-/**
- * Pobiera historię logowania dla konkretnego użytkownika
- * @param {string} userPin - PIN użytkownika
- * @param {number} limit - Limit rekordów (domyślnie 10)
- * @returns {Promise<Array|false>} Tablica z historią logowania lub false w przypadku błędu
- */
 async function getUserLoginHistory(userPin, limit = 10) {
     try {
         if (!userPin) {
@@ -73,12 +61,6 @@ async function getUserLoginHistory(userPin, limit = 10) {
     }
 }
 
-/**
- * Pobiera historię logowania dla konkretnego user_ident
- * @param {string} userIdent - User ident
- * @param {number} limit - Limit rekordów (domyślnie 10)
- * @returns {Promise<Array|false>} Tablica z historią logowania lub false w przypadku błędu
- */
 async function getUserLoginHistoryByIdent(userIdent, limit = 10) {
     try {
         if (!userIdent) {
@@ -107,11 +89,6 @@ async function getUserLoginHistoryByIdent(userIdent, limit = 10) {
     }
 }
 
-/**
- * Pobiera ostatnie logowania wszystkich użytkowników
- * @param {number} limit - Limit rekordów (domyślnie 50)
- * @returns {Promise<Array|false>} Tablica z historią logowania lub false w przypadku błędu
- */
 async function getRecentLogins(limit = 50) {
     try {
         const { selectQuery } = require('../db/core.js');

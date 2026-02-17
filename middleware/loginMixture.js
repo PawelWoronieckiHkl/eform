@@ -10,7 +10,7 @@ function requireLogin(req, res, next) {
 }
 
 async function addOrganizationsForAdmin(req, res, next) {
-  // Override res.render to add organizations for admin users
+  
   const originalRender = res.render;
 
   res.render = async function (view, options = {}) {
@@ -34,7 +34,7 @@ async function addOrganizationsForAdmin(req, res, next) {
 
 function requirePermission(req, res, next) {
   if (req.session.user?.isOwner) {
-    return next(); // Owners have all permissions
+    return next(); 
   }
   const sessionShow = req.session.user?.showPrices;
   const paramShow = req.session.user?.showPricesOnce ?? false;
@@ -49,7 +49,7 @@ function requirePermission(req, res, next) {
 async function checkOrderOwnership(req, res, next) {
   try {
     if (req.session.user?.isOwner) {
-      return next(); // Owners have all permissions
+      return next(); 
     }
 
     const userId = req.session.user?.userId;

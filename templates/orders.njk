@@ -142,13 +142,13 @@
                                                                         </li>
                                                                     {% endif %}
                                                                 {% endfor %}
-                                                                <!-- Ellipsis after first 3 if needed -->
+                                                                
                                                                 {% if totalPages > 6 %}
                                                                     <li class="page-item disabled">
                                                                         <span class="page-link page-ellipsis">...</span>
                                                                     </li>
                                                                 {% endif %}
-                                                                <!-- Middle page (only show if page is between 4 and totalPages-3) -->
+                                                               
                                                                 {% if totalPages > 7 and page > 3 and page < totalPages - 2 %}
                                                                     <li class="page-item page-active">
                                                                         <a class="page-link" href="?page={{ page }}">{{ page }}</a>

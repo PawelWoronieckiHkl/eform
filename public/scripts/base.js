@@ -33,7 +33,7 @@ async function getLogo() {
     }
 }
 
-// Wywołanie z obsługą błędów
+
 getLogo()
     .catch(err => console.error('Final error:', err));
 
@@ -55,7 +55,7 @@ export function validate(validateClass) {
     inputs.forEach(field => {
         const value = typeof field.value === 'string' ? field.value.trim() : '';
 
-        // Szukamy istniejącego komunikatu błędu
+        
         let errorMsg = field.nextElementSibling;
         if (!errorMsg || !errorMsg.classList.contains('input-error-msg')) {
             errorMsg = null;
@@ -66,7 +66,7 @@ export function validate(validateClass) {
             allValid = false;
 
             if (!errorMsg) {
-                // Tworzymy komunikat, jeśli jeszcze go nie ma
+                
                 errorMsg = document.createElement('div');
                 errorMsg.className = 'input-error-msg';
                 errorMsg.textContent = t('form.field_cant_be_empty');
@@ -96,7 +96,7 @@ export async function getUserName() {
         throw new Error('Błąd pobierania nazwy użytkownika: ' + data.message);
     }
 
-    // Sprawdź context user
+    
     let contextInfo = '';
     try {
         const contextBtns = document.querySelectorAll('.context-button');
@@ -125,7 +125,7 @@ export async function getUserName() {
     }
 
     setTimeout(() => {
-        // console.log(t('base.user'), data.name);
+        
         document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${data.name}
         </br> <p class='pt-2'>Mail: </br> ${data.email}</p>  ${contextInfo}`;
         getEmp();
@@ -145,7 +145,7 @@ async function getConfigNum() {
 
 
 
-    // console.log('wersja', data);
+    
 
     document.getElementById('config-number-info').innerHTML =
 
@@ -166,7 +166,7 @@ function getEmp() {
             .then(response => response.json())
 
             .then(data => {
-                // console.log('siema', data)
+                
                 if (data.success && !data.isEmployee) {
                     empBtn.classList.remove('d-none');
                     empBtn.href = data?.path ?? '/';
@@ -198,14 +198,14 @@ getConfigNum()
 getUserName()
     .catch(err => console.error('getUserName Error:', err));
 
-// Desktop navigation toggle functionality
+
 document.addEventListener('DOMContentLoaded', function () {
     const lastUserBtn = document.getElementById('last-user-btn')
     const navToggleBtn = document.getElementById('navToggleBtn');
     const desktopNav = document.querySelector('.desktop-nav');
 
     if (navToggleBtn && desktopNav) {
-        // Check for saved state in localStorage and sync with html class
+        
         const isCollapsed = localStorage.getItem('nav-collapsed') === 'true';
         if (isCollapsed) {
             document.documentElement.classList.add('nav-collapsed');
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Logout functionality for both desktop and mobile nav
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const desktopLogoutLink = document.querySelector('[data-action="logout"]');
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function handleLogout(event) {
         event.preventDefault();
 
-        // Create a form and submit it for POST logout
+        
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '/user/logout';
@@ -287,7 +287,7 @@ function getLocalStorageUsers() {
         .then(data => {
             if (data.success) {
                 console.log('Pomyślnie ustawiono organizację i kontekst użytkownika');
-                // Przekieruj na odpowiednią ścieżkę
+                
                 if (data.redirectUrl) {
                     window.location.href = data.redirectUrl;
                 }

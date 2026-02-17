@@ -65,7 +65,7 @@ function manipulateElem(element, attributes = {}, parent = null) {
             element.src = value;
         }
         else if (key === 'href') {
-            element.href = value;  // tu był błąd – brak przypisania!
+            element.href = value;  
         }
         else {
             element.setAttribute(key, value);
@@ -90,7 +90,7 @@ export function createInfoDialog({
 } = {}) {
     if (!parent) throw new Error("Parent element is required!");
 
-    // Usuń istniejący dialog jeśli istnieje
+    
     const existingDialog = document.getElementById("delete-dialog");
     if (existingDialog) {
         existingDialog.remove();
@@ -132,7 +132,7 @@ export function createInfoDialog({
                 if (typeof action === "function") {
                     action();
                 }
-                // Zawsze zamknij i usuń dialog po kliknięciu
+                
                 dialog.close();
                 dialog.remove();
             }
@@ -141,7 +141,7 @@ export function createInfoDialog({
         buttonElements.push(btn);
     });
 
-    // Obsługa klawisza Enter - wywołuje kliknięcie przycisku z enter: true
+    
     const enterButton = buttonElements.find(btn => btn.dataset.enter === "true");
     if (enterButton) {
         dialog.addEventListener("keydown", (e) => {
@@ -156,7 +156,7 @@ export function createInfoDialog({
         console.log("Opening delete dialog - showModal supported");
         dialog.showModal();
 
-        // iOS Safari fallback - force visibility
+        
         setTimeout(() => {
             dialog.style.display = 'grid';
             dialog.style.visibility = 'visible';
@@ -165,7 +165,7 @@ export function createInfoDialog({
         }, 50);
     } else {
         console.log("showModal not supported - using fallback");
-        // Fallback for older browsers
+        
         dialog.style.display = 'grid';
         dialog.style.visibility = 'visible';
         dialog.style.opacity = '1';

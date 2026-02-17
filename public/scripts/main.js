@@ -27,7 +27,7 @@ const formContainer = document.getElementById("dynamic-form");
 const attachmentContainer = document.getElementById('attachment-container');
 const attachmentsLabel = document.querySelector('.attachment-label');
 let sentState = false;
-let isPreparingForm = false; // Flag to prevent duplicate calls
+let isPreparingForm = false; 
 
 function initialize() {
 	console.log('initialize')
@@ -35,7 +35,7 @@ function initialize() {
 	setupGlobalListeners();
 	loadJsonConfig()
 	processCommissionInput(false);
-	// setupCommissionButton();
+	
 	(async () => {
 		if (performance.getEntriesByType("navigation")[0].type === "reload") {
 			await refreshFormBehaviour();
@@ -54,7 +54,7 @@ export async function buildMainSelect(files) {
 	const inputContainer = document.querySelector(".asortment-inputs");
 	createChecboxField(inputContainer);
 
-	// Dodaj przycisk ładowania ostatniej konfiguracji
+	
 	const { container, lastConfigButton } = createLastConfigInfoPopUp();
 	window.lastConfigButton = lastConfigButton
 	lastConfigButton.addEventListener('click', async () => {
@@ -71,7 +71,7 @@ export async function buildMainSelect(files) {
 		container.style.display = 'none';
 	});
 
-	// Sprawdź czy jest zapisana konfiguracja i pokaż/ukryj przycisk
+	
 	const hasConfig = checkIfLocalPositionObjectExists();
 	if (hasConfig) {
 		container.style.display = 'flex';
@@ -80,7 +80,7 @@ export async function buildMainSelect(files) {
 	}
 
 	departmentSelect.innerHTML = `<option value="" disabled selected>${t("form.department_label")}</option>`;
-	// console.log('buildMainSelect', files)
+	
 	for (let department of files) {
 		const groups = await window.formsManager.getGroups(department.num);
 		if (groups.length > 0) {
@@ -119,7 +119,7 @@ async function buildGroupSelect(selectedDepartment, asortmentGroupSelect) {
 		}
 	}
 
-	// Dodaj listener dla wyboru grupy
+	
 	asortmentGroupSelect.addEventListener("change", async () => {
 		await prepareForm(asortmentGroupSelect.value, selectedDepartment);
 	});
@@ -147,7 +147,7 @@ function setupMainSelectListener(asortmentGroupSelect, departmentSelect) {
 	if (!departmentSelect || !asortmentGroupSelect) return;
 
 	departmentSelect.addEventListener("change", async () => {
-		// Clear the dynamic form container when department changes
+		
 		formContainer.innerHTML = "";
 		const selectedDepartment = departmentSelect.value;
 		await buildGroupSelect(selectedDepartment, asortmentGroupSelect);
@@ -165,7 +165,7 @@ async function prepareForm(asortmentGroup, department, config = null) {
 		return;
 	}
 
-	isPreparingForm = true; // Set the flag
+	isPreparingForm = true; 
 
 	try {
 		window.formsManager.setCurrentRootPath(asortmentGroup);
@@ -178,7 +178,7 @@ async function prepareForm(asortmentGroup, department, config = null) {
 	} catch (err) {
 		handleFormLoadError(err);
 	} finally {
-		isPreparingForm = false; // Reset the flag
+		isPreparingForm = false; 
 	}
 }
 function showOrderReminder() {
@@ -222,7 +222,7 @@ async function buildDynamicForm(version, groupNumber, config = null) {
 function setupShowButton(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber) {
 	console.log('setupShowButton')
 	console.log('inputs object keys:', Object.keys(inputs));
-	// Sprawdź czy są file inputy w obiekcie
+	
 	const fileInputsInObject = Object.values(inputs).filter(inp => inp?.type === 'file');
 	console.log('File inputs w obiekcie inputs:', fileInputsInObject.length);
 	fileInputsInObject.forEach((inp, i) => {
@@ -345,23 +345,23 @@ function handleFormLoadError(err) {
 
 
 /*  Obsługa przycisku zapisu komisji */
-// function setupCommissionButton() {
-// 	console.log('setupCommissionButton');
-// 	let saveCommissionButton = document.getElementById('commision-save-btn');
-// 	let commissionForm = document.getElementById('commission-form'); // <-- Twój <form>
 
-// 	saveCommissionButton.addEventListener('click', function (event) {
-// 		event.preventDefault(); // ważne!
-// 		processCommissionInput(false);
-// 		loadJsonConfig();
-// 	});
 
-// 	commissionForm.addEventListener('submit', function (event) {
-// 		event.preventDefault(); // blokuje domyślne wysłanie formularza
-// 		processCommissionInput(false);
-// 		loadJsonConfig();
-// 	});
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function showVersion(version) {
 	console.log('showVersion')
 	const versionDiv = document.getElementById('version-space')
@@ -402,10 +402,10 @@ async function resumeForm(choice, config = null) {
 	const depSelect = document.getElementById("department-select");
 	const asortSelect = document.getElementById("asortment-group-select");
 
-	// Upewnij się, że departments są załadowane
+	
 	const departments = await window.formsManager.getAvailableForms();
 
-	// Znajdź department i sprawdź czy istnieje - porównaj jako string
+	
 	const department = departments.find(d => String(d.num) === String(choice.department));
 	if (!department) {
 
@@ -462,9 +462,9 @@ async function refreshFormBehaviour(config = null) {
 	}, 1500);
 }
 
-// Mobile filter controls collapsible functionality
+
 function initMobileFilterControls() {
-	// Obserwator dla dodawanych filtrów
+	
 	const observer = new MutationObserver((mutations) => {
 		mutations.forEach((mutation) => {
 			mutation.addedNodes.forEach((node) => {
@@ -475,13 +475,13 @@ function initMobileFilterControls() {
 		});
 	});
 
-	// Obserwuj zmiany w dokumencie
+	
 	observer.observe(document.body, {
 		childList: true,
 		subtree: true
 	});
 
-	// Sprawdź istniejące filtry
+	
 	document.querySelectorAll('.filter-controls').forEach(setupCollapsibleFilter);
 }
 
@@ -489,7 +489,7 @@ function setupCollapsibleFilter(filterElement) {
 	if (filterElement.hasAttribute('data-mobile-setup')) return;
 	filterElement.setAttribute('data-mobile-setup', 'true');
 
-	// Dodaj header z przyciskiem toggle
+	
 	const header = document.createElement('div');
 	header.className = 'filter-controls-header';
 	header.innerHTML = `
@@ -497,21 +497,21 @@ function setupCollapsibleFilter(filterElement) {
 		<span class="filter-controls-toggle">▼</span>
 	`;
 
-	// Przenieś zawartość do content
+	
 	const content = document.createElement('div');
 	content.className = 'filter-controls-content';
 	while (filterElement.firstChild) {
 		content.appendChild(filterElement.firstChild);
 	}
 
-	// Dodaj header i content
+	
 	filterElement.appendChild(header);
 	filterElement.appendChild(content);
 
-	// Ustaw domyślnie zwinięte
+	
 	filterElement.classList.add('collapsed');
 
-	// Obsługa kliknięcia
+	
 	header.addEventListener('click', () => {
 		if (filterElement.classList.contains('collapsed')) {
 			filterElement.classList.remove('collapsed');
@@ -523,7 +523,7 @@ function setupCollapsibleFilter(filterElement) {
 	});
 }
 
-// Inicjalizuj po załadowaniu
+
 document.addEventListener('DOMContentLoaded', initMobileFilterControls);
 
 initialize();

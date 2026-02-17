@@ -1,7 +1,7 @@
-// Funkcja do definiowania kroków dla różnych stron
+
 function getStepsForPage(pathname) {
     const stepsConfig = {
-        '/': [ // Strona główna
+        '/': [ 
             {
                 intro: "Witamy w aplikacji eForm! Przejdziemy szybką wycieczkę, żeby pomóc Ci zacząć.",
                 position: 'floating',
@@ -35,7 +35,7 @@ function getStepsForPage(pathname) {
             }
 
         ],
-        '/orders/add-order': [ // Strona dodawania zamówienia
+        '/orders/add-order': [ 
             {
                 intro: "Utwórz tutaj nowe zamówienie. Wypełnij wszystkie wymagane pola.",
                 position: 'floating',
@@ -60,7 +60,7 @@ function getStepsForPage(pathname) {
                 tooltipClass: 'introjs-under-tooltip'
             }
         ],
-        '/orders': [ // Strona zamówień
+        '/orders': [ 
             {
                 intro: "To jest Twoja strona zamówień. Tutaj możesz zarządzać wszystkimi swoimi zamówieniami.",
                 position: 'floating',
@@ -97,14 +97,14 @@ function getStepsForPage(pathname) {
             }
         ],
 
-        '/orders/history': [ // Strona historii zamówień
+        '/orders/history': [ 
             {
                 intro: "Wyświetl tutaj pełną historię swoich zamówień.",
                 position: 'floating',
                 tooltipClass: 'introjs-center-tooltip'
             }
         ],
-        '/user/employee-panel': [ // Strona panelu pracownika
+        '/user/employee-panel': [ 
             {
                 intro: "Witamy w panelu pracownika! Tutaj możesz zarządzać swoimi zadaniami i zamówieniami.",
                 position: 'floating',
@@ -128,7 +128,7 @@ function getStepsForPage(pathname) {
         ]       
     };
 
-    // Sprawdź czy to strona szczegółów zamówienia (orders/order/NUMER)
+    
     const orderDetailPattern = /^\/orders\/order\/\d+$/;
     if (orderDetailPattern.test(pathname)) {
         const isAnyPostion = document.querySelector('.order-table') !== null || undefined;
@@ -180,7 +180,7 @@ function getStepsForPage(pathname) {
         }
     }
 
-    // Sprawdź czy to strona szczegółów pozycji (position/NUMER)
+    
     const positionDetailPattern = /^\/position\/\d+$/;
     if (positionDetailPattern.test(pathname)) {
         return [
@@ -212,7 +212,7 @@ function getStepsForPage(pathname) {
         ];
     }
 
-    // Sprawdź czy to strona tworzenia nowej pozycji (orders/order/NUMER/new-position/)
+    
     const newPositionPattern = /^\/orders\/order\/\d+\/new-position\/?$/;
     if (newPositionPattern.test(pathname)) {
         return [
@@ -244,7 +244,7 @@ function getStepsForPage(pathname) {
         ];
     }
 
-    // Sprawdź czy to strona edycji pozycji (position/NUMER/edit)
+    
     const editPositionPattern = /^\/position\/\d+\/edit$/;
     if (editPositionPattern.test(pathname)) {
         return [
@@ -276,8 +276,8 @@ function getStepsForPage(pathname) {
         ];
     }
 
-    // Zwróć kroki dla danej strony lub puste jeśli nie znaleziono
+    
     return stepsConfig[pathname] || [];
 }
 
-// Główna funkcja intro tour
+

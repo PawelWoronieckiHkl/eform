@@ -10,7 +10,7 @@ export function checkAttachmentFileSize(file, maxSizeMB) {
 
 }
 
-// Funkcja do resetowania tylko UI załącznika (bez dotykania values i displayValues)
+
 export function resetAttachmentUI(input, attachmentImage, fileIcon, removeBtn, param) {
     input.value = '';
     attachmentImage.src = '/img/attachment.png';
@@ -37,7 +37,7 @@ export function changeAttachmentAppearance(input, attachmentImage, fileIcon, rem
             return false;
         }
 
-        // Przechowuj tylko nazwę pliku (bez pełnej ścieżki c:\fakepath\)
+        
         input.dataset.filename = file.name;
         attachmentImage.src = '/img/attachment-green.png';
         fileIcon.dataset.tooltip = `${file.name}`;

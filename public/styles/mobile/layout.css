@@ -1,6 +1,4 @@
 @media (max-width: 767.98px) {
-
-    /* Base mobile layout - 100% height, white background */
     html,
     body {
         height: 100% !important;
@@ -9,27 +7,20 @@
         margin: 0 !important;
         padding: 0 !important;
     }
-
     body {
         display: flex !important;
         flex-direction: column !important;
     }
-
-    /* Main content with padding for fixed navbar and footer */
     main {
         flex: 1 !important;
         background-color: white !important;
         padding-top: 70px !important;
-        /* Space for fixed navbar */
         padding-bottom: 70px !important;
-        /* Space for fixed footer */
         padding-left: 15px !important;
         padding-right: 15px !important;
         overflow-y: auto !important;
         min-height: calc(100vh - 140px) !important;
     }
-
-    /* Top app bar */
     .app-bar {
         display: flex;
         align-items: center;
@@ -37,13 +28,11 @@
         padding: 10px 0;
         background: transparent;
     }
-
     .app-title {
         font-size: 1.1rem;
         font-weight: 700;
         color: var(--text);
     }
-
     .back-btn {
         background: var(--surface);
         padding: 8px;
@@ -54,11 +43,9 @@
         align-items: center;
         justify-content: center;
     }
-
     .has-tooltip {
         z-index: 0 !important;
     }
-
     .site-footer {
         position: sticky;
         bottom: 0;
@@ -72,11 +59,9 @@
         justify-content: center;
         z-index: 1000;
     }
-
     .footer-links {
         margin-right: 0% !important;
     }
-
     .navbar {
         position: fixed !important;
         top: 0;
@@ -85,33 +70,27 @@
         width: 100%;
         z-index: 1000;
     }
-
     .mobile-nav {
         flex-direction: column;
         background: var(--surface);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         padding: 10px;
     }
-
     .mobile-nav .navbar-brand {
         display: flex;
         align-items: center;
         gap: 8px;
     }
-
     .mobile-rm-card {
         box-shadow: none !important;
         border: none !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-
     .languages {
         top: 1rem !important;
         left: 11rem !important;
     }
-
-    /* Delete dialog - wyłączone z globalnych stylów w dialog.css */
     #delete-dialog[open] {
         display: grid !important;
         grid-template-rows: auto 1fr auto !important;
@@ -136,28 +115,23 @@
         box-sizing: border-box !important;
         -webkit-transform: translate(-50%, -50%) !important;
     }
-
-    /* Dialog elements */
     #delete-dialog h3 {
         padding: 16px !important;
         margin: 0 !important;
         text-align: center !important;
         border-bottom: 1px solid #eee !important;
     }
-
     #delete-dialog p {
         padding: 20px !important;
         margin: 0 !important;
         text-align: center !important;
     }
-
     #delete-dialog .confirmation-buttons {
         display: flex !important;
         gap: 10px !important;
         padding: 16px !important;
         border-top: 1px solid #eee !important;
     }
-
     #delete-dialog .confirmation-buttons button {
         flex: 1 !important;
         padding: 12px !important;
@@ -166,23 +140,19 @@
         cursor: pointer !important;
         font-size: 1rem !important;
     }
-
     .mobile-nav .navbar-toggler {
         border: none;
         background: var(--muted);
         padding: 8px;
         border-radius: 6px;
     }
-
     .mobile-nav .nav {
         display: flex;
         flex-direction: column;
         gap: 12px;
         margin-top: 10px;
     }
-
     .mobile-nav .nav-link {
-
         color: var(--text);
         font-size: 1rem;
         padding: 8px 12px;
@@ -190,17 +160,14 @@
         background: var(--bg);
         text-decoration: none;
     }
-
     .mobile-nav .nav-link:hover {
         background: var(--muted); 
     }
-
     .logo {
         margin-top: 1vh !important;
         margin-left: 1vh !important;
         max-width: 40vw !important;
     }
-
     .language-switcher {
         border-radius: 15%;
         display: flex !important;
@@ -210,23 +177,18 @@
         gap: 2px;
         width: fit-content;
     }
-
     .order-date {
         display: none !important;
     }
-
     .footer-links a {
         margin: 0 5px;
     }
-
     .arrow {
         display: none;
     }
-
     .back-text {
         display: none;
     }
-
     .content {
         padding: 10px !important;
         margin-left: 0 !important;
@@ -234,59 +196,45 @@
         min-width: 100% !important;
         max-width: 100% !important;
     }
-
     .mobile-bg-white {
         background: white !important;
     }
-
     .col-9 {
         width: 100% !important;
     }
-
     .mobile-rm-card {
         box-shadow: none !important;
         border: none !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-
-    /* Mobile helper classes */
     .mobile-hide {
         display: none !important;
     }
-
     .mobile-full-width {
         width: 100% !important;
     }
-
     .mobile-text-center {
         text-align: center !important;
     }
-
     .mobile-no-margin {
         margin: 0 !important;
     }
-
     .mobile-small-padding {
         padding: 8px !important;
     }
-
-    /* Mobile responsive tables */
     .mobile-table-responsive {
         display: block !important;
         width: 100% !important;
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
     }
-
     .mobile-table-stack {
         display: block !important;
     }
-
     .mobile-table-stack thead {
         display: none !important;
     }
-
     .mobile-table-stack tr {
         display: block !important;
         border: 1px solid #ddd !important;
@@ -296,7 +244,6 @@
         background: white !important;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
     }
-
     .mobile-table-stack td {
         display: block !important;
         text-align: right !important;
@@ -304,11 +251,9 @@
         padding: 5px 0 !important;
         border-bottom: 1px solid #eee !important;
     }
-
     .mobile-table-stack td:last-child {
         border-bottom: none !important;
     }
-
     .mobile-table-stack td:before {
         content: attr(data-label) ": " !important;
         font-weight: bold !important;
@@ -317,28 +262,21 @@
         font-size: 0.8em !important;
         color: #666 !important;
     }
-
-    /* Mobile buttons */
     .mobile-btn-stack {
         display: flex !important;
         flex-direction: column !important;
         gap: 8px !important;
     }
-
     .mobile-btn-full {
         width: 100% !important;
         margin-bottom: 8px !important;
     }
-
     .rm-col-7 {
         width: 100% !important;
     }
-
     .rm-p-5 {
         padding: 0 !important;
     }
-
-    /* Backdrop dla delete dialog - wysoka specyfikowość */
     @media (max-width: 767.98px) {
         html body main dialog#delete-dialog[open]::backdrop {
             display: block !important;
@@ -346,8 +284,5 @@
             backdrop-filter: blur(2px) !important;
             -webkit-backdrop-filter: blur(2px) !important;
         }
-        
-
     }
-
 }

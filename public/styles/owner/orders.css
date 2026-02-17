@@ -1,14 +1,9 @@
-
-
 .dropdown-container {
     position: relative;
 }
-
-
 .custom-dropdown.show {
     display: block;
 }
-
 .dropdown-item {
     padding: 8px 12px;
     cursor: pointer;
@@ -19,24 +14,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .dropdown-item:hover {
     background-color: #f8f9fa;
 }
-
 .dropdown-item.highlighted {
     background-color: #e9ecef;
 }
-
 .dropdown-item:last-child {
     border-bottom: none;
 }
-
 .dropdown-item.hidden {
     display: none;
 }
-
-/* Responsywność dla urządzeń mobilnych */
 @media (max-width: 768px) {
     #userSelectContainer {
         max-width: 100%;

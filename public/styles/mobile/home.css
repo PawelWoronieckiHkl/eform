@@ -1,10 +1,8 @@
-/* mobile home placeholder */
 @media (max-width: 767.98px) {
     body {
         background-color: white !important;
         padding-bottom: 0%;
     }
-
     .home-hero {
         display: flex;
         align-items: center;
@@ -12,12 +10,10 @@
         gap: 12px;
         margin-bottom: 12px;
     }
-
     .home-hero .welcome {
         font-size: 1.05rem;
         font-weight: 700;
     }
-
     .quick-actions {
         display: flex;
         gap: 8px;
@@ -27,7 +23,6 @@
     .container{
         margin-top: 13% !important;
     }
-
     .add-info-box h2 {
         min-height: 5rem !important;
         display: flex !important;
@@ -35,7 +30,6 @@
         justify-content: center !important;
         text-align: center !important;
     }
-
     .quick-actions .action {
         min-width: 88px;
         padding: 10px;
@@ -44,14 +38,11 @@
         box-shadow: var(--card-shadow);
         text-align: center;
     }
-
     .orders-list {
         display: grid;
         grid-template-columns: 1fr;
         gap: 12px;
     }
-
-    /* Modal Overlay */
     .modal-overlay {
         position: fixed;
         top: 0;
@@ -64,7 +55,6 @@
         justify-content: center;
         z-index: 1050;
     }
-
     .modal-content {
         background: var(--surface);
         padding: 20px;
@@ -73,112 +63,80 @@
         width: 90%;
         max-width: 400px;
     }
-
     .modal-buttons {
         display: flex;
         justify-content: space-between;
-
     }
-
-    /* User Information Section */
     .content .container {
         padding-left: 5px !important;
         padding-right: 5px !important;
     }
-
     .content {
         width: 105% !important;
         padding: 0% !important;
-
     }
-
     #last-orders-section {
         margin-top: 0 !important
     }
-
     .custom-checkbox-wrapper {
         margin-top: 0 !important;
     }
-
     .content h3,
     .content h5 {
         font-size: 1.2rem;
         font-weight: bold;
         margin-bottom: 10px;
     }
-
     .content p {
         font-size: 1rem;
         margin-bottom: 8px;
     }
-
-    /* Orders Section */
     .last-orders-list {
         display: grid;
         grid-template-columns: 1fr;
         gap: 12px;
     }
-
     .order-card {
         padding: 5px;
-        /* Reduced padding to minimize empty spaces */
         border-radius: 8px;
         background: var(--surface);
         box-shadow: var(--card-shadow);
     }
-
     .order-card-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
-
     .order-id {
         font-weight: bold;
         color: var(--text);
     }
-
     .order-actions {
         display: none;
-        /* Hide action buttons */
     }
-
-    /* Sent Orders Section */
     .history-order-card {
         padding: 5px;
-        /* Reduced padding to minimize empty spaces */
         border-radius: 8px;
         background: var(--surface);
         box-shadow: var(--card-shadow);
     }
-
     .history-order-id {
         font-weight: bold;
         color: var(--text-muted);
     }
-
-    /* Dialog Container */
     #dialog-container {
         display: none;
     }
-
     .order-info {
         flex: 0 0 100% !important
     }
-
     .order-card-row {
         flex-wrap: nowrap !important;
     }
-
-    /* Mobile container layout - stack vertically with 100% width */
-
-    /* Change parent flexbox direction to column */
     #last-orders-section.d-flex {
         flex-direction: column !important;
         align-items: stretch !important;
     }
-
-    /* Target last orders and history containers */
     .container.add-info-box {
         width: 100% !important;
         max-width: 100% !important;
@@ -186,8 +144,6 @@
         margin-right: 0 !important;
         flex: none !important;
     }
-
-    /* Specific targeting for Bootstrap classes */
     .container.col-4.add-info-box,
     .container.col-6.add-info-box {
         width: 100% !important;
@@ -196,5 +152,4 @@
         margin-right: 0 !important;
         flex: none !important;
     }
-
 }

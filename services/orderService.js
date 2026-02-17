@@ -23,7 +23,6 @@ async function jsonTextBackToMap(orderItems) {
       parsed = [];
     }
 
-    // Zastosuj array of [key, param], oraz headerKey = param_description + '||' + key
     const jsonParameters = new Map(parsed);
     let currentHeaderKeys1 = [];
     let currentDisplayHeaders1 = [];
@@ -33,10 +32,10 @@ async function jsonTextBackToMap(orderItems) {
     for (const [key, param] of jsonParameters.entries()) {
 
       const display = param && param.param_description ? param.param_description : key;
-      const headerKey = display + "||" + key; // rozróżnia nawet powtarzalne "MODEL"
+      const headerKey = display + "||" + key; 
       const rowStr = (param && param.row !== undefined) ? String(param.row) : '1';
       if (rowStr === '0') {
-        continue; // pomiń parametry z row === '0'
+        continue; 
       }
       const isRow2 = rowStr === '2';
 
@@ -51,7 +50,6 @@ async function jsonTextBackToMap(orderItems) {
 
     const currentHeaderKeys = currentHeaderKeys1.concat(currentHeaderKeys2);
 
-    // Jeśli nagłówki się zmieniły, zamknij poprzednią tabelę
     if (!areArraysEqual(prevHeaderKeys, currentHeaderKeys)) {
       if (table.rows.length > 0) {
         cleanOrderItems.push(removeEmptyColumns({
@@ -73,8 +71,6 @@ async function jsonTextBackToMap(orderItems) {
 
       };
     }
-
-    // Tworzymy wiersz jako obiekt: [headerKey] => wartość, plus na display mapujemy nagłówek po kolei
     item.lockedParams = []
     item.posId = item.id || 0
     let rowObj = {};
@@ -83,7 +79,7 @@ async function jsonTextBackToMap(orderItems) {
       const headerKey = display + "||" + key;
       const rowStr = (param && param.row !== undefined) ? String(param.row) : '1';
       if (rowStr === '0') {
-        continue; // pomiń parametry z row === '0'
+        continue; 
       }
       let value = "-";
       if (param) {
@@ -112,7 +108,6 @@ async function jsonTextBackToMap(orderItems) {
         }
       }
 
-      // inicjuj komórkę jeśli nie istnieje i zapisz do odpowiedniego row1/row2
       if (!rowObj[headerKey]) {
         rowObj[headerKey] = { row1: null, row2: null };
       }
@@ -138,7 +133,6 @@ async function jsonTextBackToMap(orderItems) {
 
     }));
   }
-  // console.log(JSON.stringify(cleanOrderItems, null, 2));
   return { cleanOrderItems, total };
 }
 
@@ -157,7 +151,6 @@ function removeEmptyColumns(table) {
 
   const columnsToRemove = [];
 
-  // kolumna pusta gdy dla wszystkich wierszy zarówno row1 jak i row2 są "-"
   for (let idx = 0; idx < combinedHeaderKeys.length; idx++) {
     let allEmpty = true;
     const headerKey = combinedHeaderKeys[idx];
@@ -175,14 +168,11 @@ function removeEmptyColumns(table) {
     }
   }
 
-  // jeśli nie ma kolumn do usunięcia - zwróć oryginalne headers1/headers2 i mapowane rows
   if (columnsToRemove.length === 0) {
     const mappedRows = rows.map(r => {
       const row1 = {};
       const row2 = {};
       
-      // Sort headerKeys to process non-formula values first, then formulas
-      // This ensures real values are not overwritten by formulas
       const sortedHeaderKeys1 = headerKeys1.slice().sort((a, b) => {
         const cellA = r.row[a] || { row1: "-" };
         const cellB = r.row[b] || { row1: "-" };
@@ -211,7 +201,6 @@ function removeEmptyColumns(table) {
         const cell = r.row[headerKey] || { row1: "-" };
         const value = cell.row1;
         
-        // Skip if display already exists and this is a formula
         if (row1[display] !== undefined && typeof value === 'string' && value.includes('(')) {
           continue;
         }
@@ -225,7 +214,6 @@ function removeEmptyColumns(table) {
         const cell = r.row[headerKey] || { row2: "-" };
         const value = cell.row2;
         
-        // Skip if display already exists and this is a formula
         if (row2[display] !== undefined && typeof value === 'string' && value.includes('(')) {
           continue;
         }
@@ -242,7 +230,6 @@ function removeEmptyColumns(table) {
     };
   }
 
-  // Filtrujemy po pozycjach - rozdzielamy indeksy dla headers1 i headers2
   const newHeaderKeys1 = headerKeys1.filter((_, idx) => !columnsToRemove.includes(idx));
   const newHeaders1 = headers1.filter((_, idx) => !columnsToRemove.includes(idx));
 
@@ -252,8 +239,7 @@ function removeEmptyColumns(table) {
 
   const newRows = rows.map(rowObj => {
     const filteredRow = { row1: {}, row2: {} };
-    
-    // Sort to process non-formula values first
+
     const sortedNewHeaderKeys1 = newHeaderKeys1.slice().sort((a, b) => {
       const cellA = rowObj.row[a] || { row1: "-" };
       const cellB = rowObj.row[b] || { row1: "-" };
@@ -280,8 +266,7 @@ function removeEmptyColumns(table) {
       const display = newHeaders1[headerIdx];
       const cell = rowObj.row[headerKey] || { row1: "-" };
       const value = cell.row1;
-      
-      // Skip if display already exists and new value is formula
+
       if (filteredRow.row1[display] !== undefined && typeof value === 'string' && value.includes('(')) {
         continue;
       }
@@ -295,7 +280,6 @@ function removeEmptyColumns(table) {
       const cell = rowObj.row[headerKey] || { row2: "-" };
       const value = cell.row2;
       
-      // Skip if display already exists and new value is formula
       if (filteredRow.row2[display] !== undefined && typeof value === 'string' && value.includes('(')) {
         continue;
       }
