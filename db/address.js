@@ -31,9 +31,49 @@ async function getUserMails(userId) {
     return mails;
 }
 
+async function getAddressById(addressId) {
+    const query = `SELECT id, name, phone_number AS phone, street, city, zip, country FROM delivery_address WHERE id = ?`;
+    const addresses = await selectQuery(query, [addressId]);
+    return addresses[0];
+}
+
+async function getMailById(mailId) {
+    const query = `SELECT id, email FROM contact_info WHERE id = ?`;
+    const mails = await selectQuery(query, [mailId]);
+    return mails[0];
+}
+
+async function updateAddress(addressId, payload) {
+    const query = `UPDATE delivery_address SET name = ?, phone_number = ?, street = ?, city = ?, zip = ?, country = ? WHERE id = ?`;
+    const { name, phone, street, city, zip, country } = payload;
+    await updateQuery(query, [name, phone, street, city, zip, country, addressId]);
+}
+
+async function updateMail(mailId, payload) {
+    const query = `UPDATE contact_info SET email = ? WHERE id = ?`;
+    const { mail } = payload;
+    await updateQuery(query, [mail, mailId]);
+}
+
+async function deleteAddress(addressId) {
+    const query = `DELETE FROM delivery_address WHERE id = ?`;
+    await deleteQuery(query, [addressId]);
+}
+
+async function deleteMail(mailId) {
+    const query = `DELETE FROM contact_info WHERE id = ?`;
+    await deleteQuery(query, [mailId]);
+}
+
 module.exports = {
     insertDeliveryAddress,
     insertMailAddress,
     getUserAddresses,
-    getUserMails
+    getUserMails,
+    getAddressById,
+    getMailById,
+    updateAddress,
+    updateMail,
+    deleteAddress,
+    deleteMail
 }

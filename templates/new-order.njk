@@ -61,11 +61,11 @@
                                                             </select>
                                                         {% endblock %}
                                                         <div class='manipulate-address d-flex'>
-                                                            <button id='edit-delivery-address-btn' class='btn p-0 ms-4 has-tooltip' data-tooltip="Edytuj adres dostawy">
-                                                                <img src="/img/edit_address.png" alt="edit address" class='icon'/>
+                                                            <button id='edit-delivery-address-btn' class='btn p-0 ms-1 has-tooltip d-none' data-tooltip="Edytuj adres dostawy">
+                                                                <img src="/img/edit_address.png" alt="edit address" class='icon '/>
                                                             </button>
-                                                            <button id='delete-delivery-address-btn' class='btn p-0 ms-2 has-tooltip' data-tooltip="Usuń adres dostawy">
-                                                                <img src="/img/delete_address.png" alt="delete address" class='icon'/>
+                                                            <button id='delete-delivery-address-btn' class='btn p-0 ms-2 has-tooltip d-none' data-tooltip="Usuń adres dostawy">
+                                                                <img src="/img/delete_address.png" alt="delete address" class='icon '/>
                                                             </button>
                                                         </div>
                                                         <div class='add-new-address'>
@@ -82,6 +82,14 @@
                                                                     <p class='fw-bold'>{{ email.email }}</option>
                                                                 {% endfor %}
                                                             </select>
+                                                            <div class='manipulate-mail d-flex'>
+                                                                <button id='edit-mail-btn' class='btn p-0 ms-1 has-tooltip d-none' data-tooltip="Edytuj adres Email">
+                                                                    <img src="/img/edit_mail.png" alt="edit address" class='icon '/>
+                                                                </button>
+                                                                <button id='delete-mail-btn' class='btn p-0 ms-2 has-tooltip d-none' data-tooltip="Usuń adres Email">
+                                                                    <img src="/img/delete_mail.png" alt="delete address" class='icon '/>
+                                                                </button>
+                                                            </div>
                                                             <div class='add-new-address'>
                                                                 <button id='add-mail-btn' class='btn p-0 ms-4 has-tooltip' data-tooltip="Dodaj nowy adres Email">
                                                                     <img src="/img/mail.png" alt="add new address" class='icon'/>
@@ -309,5 +317,6 @@
                                 });
                             </script>
                             <script type="module" src="/scripts/orders.js"></script>
+                            <script type="module" src="/scripts/new-order.js"></script>
                             <script type="module" src="/scripts/createNewAddress.js"></script>
                         {% endblock scripts %}

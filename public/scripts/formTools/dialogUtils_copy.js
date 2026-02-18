@@ -10,15 +10,17 @@ import {
   showToastInContainer
 } from '../components/index.js';
 import { createElement } from '../components/htmlManipulator.js'
+import { createInfoIcon } from '../components/info.js';
 import { stopSpin, startSpin } from "../components/hourglass.js";
 import { getEnvVersion } from "../getEnv.js";
 import { getUserName } from "../base.js";
-import { chcekIfDateDeliveryCorrect } from './checkIfDateDeliveryCorrect.js';
+import { chcekIfDateDeliveryCorrect, checkIfCupon } from './checkIfDateDeliveryCorrect.js';
+
 
 
 export class DialogManager {
   constructor() {
-    this.isMultiChoice = false; 
+    this.isMultiChoice = false;
     this.isLink;
     this.isInfo;
     this.selectedValues = [];
@@ -61,13 +63,13 @@ export class DialogManager {
     this.org = await window.formsManager.getOrgIdent();
 
     this.isMultiChoice = param?.MULTI == 'true' ?? false;
-    
+
     this.isLink = param?.LINK == 'true' ?? false;
-    
+
 
     this.isInfo = param?.INFO != '<NULL>' ?? false;
     this.extraInfoText = param?.INFO;
-    
+
     this.selectedValues = [];
     this.confirmButton.style.display = this.isMultiChoice ? 'inline-block' : 'none';
     if (this.dialogTitle) {
@@ -75,26 +77,26 @@ export class DialogManager {
       this.dialogTitle.textContent = param.DESCRIPTION;
     }
 
-    
+
     const imageMap = await this.fetchImageMap(param, options, groupNumber);
 
     this.env = await getEnvVersion();
 
-    
+
     if (this.attrValues && this.attrValues != undefined && Object.keys(this.attrValues).length > 0) {
       this.getUniqueCategories()
     }
 
-    
+
     this.setupUI();
 
-    
+
     await this.renderOptions(imageMap);
 
-    
+
     this.dialog.showModal();
 
-    
+
     if (this.listContainer) {
       this.listContainer.scrollTop = 0;
     }
@@ -106,7 +108,7 @@ export class DialogManager {
     }
   }
 
-  
+
   async fetchImageMap(param, options, groupNumber) {
     const response = await fetch('/position/check-images', {
       method: 'POST',
@@ -121,17 +123,17 @@ export class DialogManager {
     return await response.json();
   }
 
-  
+
   setupUI() {
-    
+
     if (this.listContainer) {
       this.listContainer.innerHTML = '';
     }
 
-    
+
     this.removeExistingUIElements();
 
-    
+
     this.addSearchAndFilters();
 
     this.setupExtraInfo();
@@ -140,30 +142,30 @@ export class DialogManager {
 
 
   setupExtraInfo(text, link) {
-    
+
     const container = this.extraInfo;
     if (!container) return;
 
-    
+
     container.innerHTML = '';
 
-    
+
     let infoHtml = text || this.extraInfoText || '';
     let href = link || this.param?.LINK_URL || this.param?.LINK || null;
 
-    
+
     const bracketMatch = infoHtml.match(/<([^>]+)>/);
     if (bracketMatch) {
       const extractedPath = bracketMatch[1].trim();
 
-      
+
       infoHtml = infoHtml.replace(/<[^>]+>/, '').trim();
 
-      
+
       if (extractedPath.startsWith('http:') || extractedPath.startsWith('https:')) {
-        href = extractedPath; 
+        href = extractedPath;
       } else {
-        href = extractedPath; 
+        href = extractedPath;
       }
     }
 
@@ -175,35 +177,35 @@ export class DialogManager {
         style: { gap: '0.75rem' }
       }, container);
 
-      
+
       const topRow = createElement('div', {
         class: ['d-flex', 'align-items-start'],
         style: { gap: '0.5rem' }
       }, panel);
 
-      
+
       const iconWrap = createElement('div', {
         class: ['extra-info-icon', 'flex-shrink-0']
       }, topRow);
-      
+
       iconWrap.innerHTML = `
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http:
           <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.12"></circle>
           <path d="M11 17h2v-6h-2v6zm0-8h2V7h-2v2z" fill="currentColor"></path>
         </svg>`;
 
-      
+
       const content = createElement('div', {
         class: ['extra-info-content', 'flex-grow-1']
       }, topRow);
-      
+
       let normalized = String(infoHtml || '');
       normalized = normalized.replace(/\\n/g, '\n');
-      
+
       const htmlWithBreaks = normalized.replace(/\n/g, '<br>');
       content.innerHTML = htmlWithBreaks;
 
-      
+
       if (this.isLink || href) {
         const buttonRow = createElement('div', {
           class: ['d-flex', 'justify-content-start', 'ms-1']
@@ -211,16 +213,16 @@ export class DialogManager {
 
         const linkHref = href || '#';
 
-        
+
         let finalHref;
         let buttonText;
 
         if (linkHref.startsWith('http:') || linkHref.startsWith('https:')) {
-          
+
           finalHref = linkHref;
           buttonText = linkHref;
         } else {
-          
+
           const rootFilePath = '/photos/files/';
           finalHref = rootFilePath + linkHref;
           buttonText = linkHref;
@@ -235,7 +237,7 @@ export class DialogManager {
         }, buttonRow);
       }
     } else if (this.isLink && (this.param || link)) {
-      
+
       const panel = createElement('div', {
         class: ['extra-info-panel', 'mb-3'],
         role: 'region',
@@ -244,16 +246,16 @@ export class DialogManager {
       const content = createElement('div', { class: ['extra-info-content'] }, panel);
       const linkHref = href || '#';
 
-      
+
       let finalHref;
       let buttonText;
 
       if (linkHref.startsWith('http:') || linkHref.startsWith('https:')) {
-        
+
         finalHref = linkHref;
         buttonText = linkHref;
       } else {
-        
+
         const rootFilePath = '/photos/files/';
         finalHref = rootFilePath + linkHref;
         buttonText = linkHref;
@@ -269,29 +271,29 @@ export class DialogManager {
     }
   }
 
-  
+
   removeExistingUIElements() {
-    
+
     const existingSearch = this.dialogContainer.querySelector('.search-container');
     if (existingSearch) existingSearch.remove();
 
-    
+
     const existingFilters = this.dialogContainer.querySelector('.filter-controls');
     if (existingFilters) existingFilters.remove();
   }
 
-  
+
   addSearchAndFilters() {
-    
+
     const controlsContainer = document.createElement('div');
     controlsContainer.classList.add('dialog-controls');
 
-    
+
     const searchContainer = this.createSearchField();
     controlsContainer.appendChild(searchContainer);
 
 
-    
+
     const filterControls = this.createFilterControls();
     if (filterControls) {
       controlsContainer.appendChild(filterControls);
@@ -299,12 +301,12 @@ export class DialogManager {
 
     const sortingContainer = this.createSortingControls(this.handleSortChange.bind(this), this.currentSort || 'default');
     controlsContainer.appendChild(sortingContainer);
-    
+
     if (this.dialogContainer && this.listContainer) {
       this.dialogContainer.insertBefore(controlsContainer, this.listContainer);
     }
 
-    
+
     setTimeout(() => {
 
       let dialogSortMethod = localStorage.getItem(`${this.param.NAME}-dialogSortMethod`) || 'default';
@@ -314,10 +316,10 @@ export class DialogManager {
         selectElement.value = dialogSortMethod;
 
 
-        
+
         if (selectElement.value !== dialogSortMethod) {
           console.warn('Failed to set select value, falling back to first option');
-          selectElement.selectedIndex = 0; 
+          selectElement.selectedIndex = 0;
         }
       }
 
@@ -366,7 +368,7 @@ export class DialogManager {
         value: opt.value,
         text: opt.label
       }, select);
-      option.textContent = opt.label; 
+      option.textContent = opt.label;
     }
 
     return sortingContainer;
@@ -374,7 +376,7 @@ export class DialogManager {
 
 
   handleSortChange(sortMethod) {
-    
+
     const method = sortMethod || 'default';
 
 
@@ -453,14 +455,14 @@ export class DialogManager {
 
     for (const [filterName, filterValues] of Object.entries(this.filters)) {
       if (!filterName || filterName.trim() === '' || filterName.trim() === '-') continue;
-      
+
       const filterGroup = createElement('div', { class: ['filter-group', 'me-3'] }, content);
 
 
-      
-      
-      
-      
+
+
+
+
 
       const dropdown = createElement('div', { class: ['dropdown', 'd-inline-block'] }, filterGroup);
 
@@ -479,7 +481,7 @@ export class DialogManager {
         style: { maxHeight: '320px', overflowY: 'auto' }
       }, dropdown);
 
-      
+
       const allLi = createElement('li', {}, dropdownMenu);
       const allCheckbox = createElement('input', {
         type: 'checkbox',
@@ -493,7 +495,7 @@ export class DialogManager {
         for: `${filterName}-all`
       }, allLi);
 
-      
+
 
 
       let sortedValues = Array.isArray(filterValues)
@@ -505,7 +507,7 @@ export class DialogManager {
             const extractValue = (str) => {
 
               const match = String(str).match(/#(.+)$/);
-              
+
               return match ? match[1].trim().slice(0, 1) : '';
 
             };
@@ -516,7 +518,7 @@ export class DialogManager {
             const aIsNumber = /^\d+$/.test(aValue);
             const bIsNumber = /^\d+$/.test(bValue);
 
-            
+
             if (!aIsNumber && !bIsNumber) {
               return aValue.localeCompare(bValue, undefined, {
                 sensitivity: 'base',
@@ -524,7 +526,7 @@ export class DialogManager {
               });
             }
 
-            
+
             if (!aIsNumber && bIsNumber) {
               return -1;
             }
@@ -533,11 +535,11 @@ export class DialogManager {
               return 1;
             }
 
-            
+
             return parseInt(aValue, 10) - parseInt(bValue, 10);
           }
 
-          
+
           const aNum = parseFloat(String(a).replace(',', '.'));
           const bNum = parseFloat(String(b).replace(',', '.'));
 
@@ -581,7 +583,7 @@ export class DialogManager {
           id: `${filterName}-${value}`
         }, li);
 
-        
+
         let displayText = value;
         if (filterName === this.stan) {
           const translations = {
@@ -602,7 +604,7 @@ export class DialogManager {
       });
 
 
-      
+
       dropdownMenu.addEventListener('change', (e) => this.handleFilter(e, filterName));
     }
 
@@ -615,11 +617,11 @@ export class DialogManager {
       style: { float: 'right', backgroundColor: '#fff', color: '#000' }
     }, content);
 
-    
-    
+
+
     clearFiltersBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      
+
       const checkboxes = filterControls.querySelectorAll('input[type="checkbox"]');
       checkboxes.forEach(cb => {
         if (cb.id && cb.id.endsWith('-all')) {
@@ -629,10 +631,10 @@ export class DialogManager {
         }
       });
 
-      
+
       this.activeFilters = {};
 
-      
+
       const searchTerm = this.searchInput ? this.searchInput.value.toLowerCase() : '';
       this.filterAndDisplayOptions(searchTerm, this.activeFilters);
     });
@@ -661,7 +663,7 @@ export class DialogManager {
 
     this.options.forEach(option => {
       if (attrVals) {
-        
+
         const val = option?.VALUE ?? '';
         const normalizedValue = val.replace(/~\d+$/, '');
 
@@ -721,9 +723,9 @@ export class DialogManager {
     if (missingStanOptions.length > 0) {
     }
 
-    
+
     if (stockStatuses.size > 0 && (this.env || this.user.pin == '0000')) {
-      
+
       this.stan = t('form.warehouse_stock') || 'Stan magazynowy';
       this.filters[this.stan] = Array.from(stockStatuses);
     }
@@ -798,13 +800,13 @@ export class DialogManager {
     const bottom = document.createElement('div');
     bottom.classList.add('image-box-bottom');
     if (this.isMultiChoice) {
-      colorBox.classList.add('multi-selectable'); 
+      colorBox.classList.add('multi-selectable');
     }
     for (const [key, value] of Object.entries(option)) {
-      
+
       if (['VALUE', 'DESCRIPTION', 'ROW_NUM'].includes(key)) continue;
 
-      
+
       if (value) {
         colorBox.dataset[key.toLowerCase()] = value;
       }
@@ -836,7 +838,11 @@ export class DialogManager {
             colorBox.classList.add("unavailable")
           }
           if (option?.ATTR_DESC) {
-            let date = chcekIfDateDeliveryCorrect(option.ATTR_DESC)
+            let isCupon = false;
+            let date = chcekIfDateDeliveryCorrect(option.ATTR_DESC);
+            ({ date, isCupon } = checkIfCupon(date));
+            option.IS_CUPON = isCupon;
+
             circleElem = createElement('span', {
               class: ['stock-badge', info.class,],
               'aria-hidden': 'true'
@@ -875,6 +881,14 @@ export class DialogManager {
 
     const filename = imageMap[option.VALUE];
 
+    const isCuponOption = option?.IS_CUPON === true || option?.IS_CUPON === 'true';
+    if (isCuponOption) {
+      createInfoIcon({
+        info: t('form.cupon_info'),
+        parent: top,
+        defaultLabel: t('form.cupon_info_label')
+      });
+    }
     if (filename) {
       const imageWrapper = this.createImageWrapper(option, filename);
       top.appendChild(imageWrapper);
@@ -918,6 +932,8 @@ export class DialogManager {
     else {
       colorName.classList.add('ml-3');
     }
+
+
     bottom.appendChild(colorName);
     bottom.appendChild(heartIcon);
     colorBox.appendChild(top);
@@ -937,7 +953,7 @@ export class DialogManager {
     try {
       const response = await fetch(`/position/favs/${groupNumber}`, {
         method: 'GET',
-        credentials: 'include', 
+        credentials: 'include',
         headers: {
           'Accept': 'application/json'
         }
@@ -955,7 +971,7 @@ export class DialogManager {
     }
   }
 
-  
+
   applySorting(sortMethod) {
 
     const container = this.listContainer;
@@ -1039,12 +1055,12 @@ export class DialogManager {
 
     }
   }
-  
+
   createImageWrapper(option, filename) {
 
     let normalizedValue = option.VALUE
 
-    
+
     const imageSrc = `/photos/${this.groupNumber}/${this.param.NAME}/${filename}`;
     const colorImage = document.createElement('img');
     colorImage.classList.add('diag-image');
@@ -1069,18 +1085,18 @@ export class DialogManager {
     return imageWrapper;
   }
 
-  
+
   handleOptionClick(clickedElement) {
 
     if (this.isMultiChoice && clickedElement.id != '<NONE>') {
-      
-      
+
+
       clickedElement.classList.toggle('active');
 
-      
+
       const value = clickedElement.querySelector('.image-name').dataset.value;
 
-      
+
       const index = this.selectedValues.indexOf(value);
       if (index === -1) {
         this.selectedValues.push(value);
@@ -1100,14 +1116,14 @@ export class DialogManager {
 
 
 
-  
+
   handlePreviewClick(imageSrc) {
     const previewDialog = document.getElementById('image-preview-dialog');
     const previewImage = document.getElementById('preview-image');
     previewImage.src = imageSrc;
     previewDialog.showModal();
 
-    
+
     previewDialog.addEventListener('click', (e) => {
       if (e.target === previewDialog) {
         previewDialog.close();
@@ -1115,17 +1131,17 @@ export class DialogManager {
     });
   }
 
-  
+
   handleSearch(searchInput) {
     const searchTerm = searchInput.value.toLowerCase();
     this.filterAndDisplayOptions(searchTerm, this.activeFilters);
 
   }
 
-  
+
   handleFilter(event, filterName) {
     const dropdownMenu = event.currentTarget;
-    const escapedFilterName = CSS.escape(filterName); 
+    const escapedFilterName = CSS.escape(filterName);
     const allCheckbox = dropdownMenu.querySelector(`#${escapedFilterName}-all`);
     const otherCheckboxes = Array.from(
       dropdownMenu.querySelectorAll(`input[type="checkbox"]:not([id="${escapedFilterName}-all"])`)
@@ -1157,23 +1173,23 @@ export class DialogManager {
     let numberOfOptions = 0;
     const optionElements = this.listContainer.querySelectorAll('.image-box');
 
-    
+
     const normalizedSearchTerm = (searchTerm || '').toLowerCase();
 
     optionElements.forEach(element => {
       const name = element.querySelector('.image-name').textContent.toLowerCase();
       const matchesSearch = !normalizedSearchTerm || name.includes(normalizedSearchTerm);
-      
+
       const option = this.options.find(
         o => o.VALUE === element.querySelector('.image-name').dataset.value
       );
 
       let matchesFilters = true;
 
-      
+
       for (const [filterName, selectedValues] of Object.entries(filters)) {
 
-        
+
         if (filterName === this.stan && selectedValues.length > 0) {
           let stanValue = option.STAN || '';
           if (stanValue == "ZERO" && option.OBSOLETE) { stanValue = "OBSOLETE" }
@@ -1187,7 +1203,7 @@ export class DialogManager {
           continue;
         }
 
-        
+
         if (filterName === this.prices && selectedValues.length > 0) {
 
           const priceGroup = option?.ALIAS ? option.ALIAS_DESCRIPTION : option.DESCRIPTION;
@@ -1199,7 +1215,7 @@ export class DialogManager {
           continue;
         }
 
-        
+
         const attributeValue = option.ATTRIBUTES?.[filterName];
         if (selectedValues.length > 0 && (!attributeValue || !selectedValues.includes(attributeValue))) {
           matchesFilters = false;
@@ -1224,7 +1240,7 @@ export class DialogManager {
       return;
     }
 
-    
+
     if (typeof window.dialogConfirmHandler === 'function') {
       window.dialogConfirmHandler(selectedData);
 
@@ -1233,7 +1249,7 @@ export class DialogManager {
     this.dialog.close();
   }
 
-  
+
   handleCancel() {
     this.removeExistingUIElements()
     this.dialog.close();
@@ -1265,7 +1281,7 @@ export class DialogManager {
         const response = await fetch(`/position/favs/clear/${this.groupNumber}`, {
           method: 'POST',
           body: JSON.stringify({ favList: this.favList }),
-          credentials: 'include', 
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
@@ -1339,7 +1355,7 @@ export async function createDialog(param, options, grNr, filters, attrs) {
 
   await dialogManager.initialize(param, options, grNr, filters, attrs);
 
-  
+
 }
 
 

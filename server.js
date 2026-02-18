@@ -10,6 +10,7 @@ const positionsRoutes = require('./routes/positions');
 const userRoutes = require('./routes/users');
 const mainRoutes = require('./routes/index');
 const adminRoutes = require('./routes/admin');
+const addressRoutes = require('./routes/address');
 const { addOrganizationsForAdmin } = require('./middleware/loginMixture.js');
 const bodyParser = require("body-parser");
 const { photoPath, dataDir, localesDir, availabeLanguages, defaultLanguage } = require('./config');
@@ -122,6 +123,7 @@ app.use('/admin', adminRoutes);
 app.use('/', mainRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/position', positionsRoutes);
+app.use('/address', addressRoutes);
 
 
 app.all('*', (req, res) => {

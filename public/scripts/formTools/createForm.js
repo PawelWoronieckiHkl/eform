@@ -1,6 +1,7 @@
 import { logFunctionName, searchForParameter } from './formTools.js';
 import { createDialog } from './dialogUtils_copy.js'
 import { isEnabled, createElement } from '../components/htmlManipulator.js';
+import { createInfoIcon } from '../components/info.js';
 import { SourceWindow } from './slope.js';
 import { attachmentBehaviorOnClick, changeAttachmentAppearance, resetAttachmentUI } from './attachment.js';
 import { showToast } from '../components/toast.js';
@@ -40,75 +41,16 @@ export function createInputField(param, options, groupNumber, filters, allOption
     options = options.possibleElements;
 
     const createLabelWithInfo = () => {
-        const rootFilePath = '/photos/files/';
         const labelWrapper = createElement('div', { class: ['field-label-row'] }, parrent);
         createElement('label', { text: `${param.DESCRIPTION} ` }, labelWrapper);
 
-        const hasInfo = param?.INFO && param.INFO !== '<NULL>' && `${param.INFO}`.trim() !== '';
-        if (hasInfo) {
-            const rawInfo = `${param.INFO}`;
-            const bracketMatch = rawInfo.match(/<([^>]+\.[^>]+)>/);
-            const extractedFilePath = bracketMatch ? bracketMatch[1].trim() : null;
-            const cleanInfoText = rawInfo.replace(/<[^>]+>/g, '').trim();
-
-            const iconLabel = cleanInfoText || t('Dodatkowe informacje');
-            const infoIcon = createElement('span', {
-                class: ['param-info-icon'],
-                text: 'i',
-                tabindex: '0',
-                'aria-label': iconLabel
-            }, labelWrapper);
-
-            const tooltip = createElement('div', {
-                class: ['param-info-tooltip'],
-                role: 'tooltip'
-            }, infoIcon);
-
-            if (cleanInfoText) {
-                const normalizedInfoText = cleanInfoText.replace(/\\n/g, '\n').replace(/\n/g, '<br>');
-                createElement('div', {
-                    class: ['param-info-tooltip-text'],
-                    html: normalizedInfoText
-                }, tooltip);
-            }
-
-            if (extractedFilePath) {
-                const normalizedFilePath = extractedFilePath.replace(/^\/+/, '');
-                const encodedFilePath = normalizedFilePath.split('/').map(segment => encodeURIComponent(segment)).join('/');
-                const fileUrl = `${rootFilePath}${encodedFilePath}`;
-                const fileName = normalizedFilePath.split('/').pop() || 'plik';
-
-                createElement('button', {
-                    class: ['param-info-download-btn'],
-                    type: 'button',
-                    html: `<span class="download-icon" aria-hidden="true">⬇</span><span>${fileName}</span>`,
-                    'aria-label': `${t('Pobierz')} ${fileName}`,
-                    onclick: async function (event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        try {
-                            const response = await fetch(fileUrl);
-                            if (!response.ok) {
-                                throw new Error(`HTTP ${response.status}`);
-                            }
-
-                            const blob = await response.blob();
-                            const blobUrl = URL.createObjectURL(blob);
-                            const anchor = createElement('a', {
-                                href: blobUrl,
-                                download: fileName
-                            });
-                            document.body.appendChild(anchor);
-                            anchor.click();
-                            document.body.removeChild(anchor);
-                            URL.revokeObjectURL(blobUrl);
-                        } catch (error) {
-                            showToast('error', `Nie udało się pobrać pliku: ${fileName}`);
-                        }
-                    }
-                }, tooltip);
-            }
-        }
+        createInfoIcon({
+            info: param?.INFO,
+            parent: labelWrapper,
+            rootFilePath: '/photos/files/',
+            defaultLabel: t('Dodatkowe informacje'),
+            downloadLabel: t('Pobierz')
+        });
     }
 
     if (param.SOURCE == param.NAME) {
@@ -140,7 +82,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
                 : `${t('form.check_word')}`
         }, parrent);
 
-        
+
         btn.addEventListener('click', function () {
             createDialog(param, options, groupNumber, filters[param.NAME], attrs);
         });
@@ -155,13 +97,13 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
         select.appendChild(new Option(t('form.check_option'), ""));
 
-        
+
         const seenOptions = new Set();
         for (let idx = 0; idx < allOptions.length; idx++) {
             let row = allOptions[idx];
             const optionKey = `${row.ROW_NUM}-${row.VALUE}`;
 
-            
+
             if (seenOptions.has(optionKey)) {
                 continue;
             }
@@ -253,7 +195,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
             input.click();
         });
 
-        
+
         const removeBtn = createElement('button', {
             type: 'button',
             class: ['file-remove-btn'],
@@ -276,21 +218,21 @@ export function createInputField(param, options, groupNumber, filters, allOption
         input.id = param.NAME;
         console.log(`✅ Tworzę file input: name="${param.NAME}", id="${param.NAME}"`, input);
 
-        
-        
+
+
         Object.defineProperty(input, 'value', {
             get() {
                 if (this.files && this.files.length > 0) {
-                    return this.files[0].name; 
+                    return this.files[0].name;
                 }
                 return this._fileInputValue || '';
             },
             set(val) {
-                
+
                 if (val === '') {
                     this._fileInputValue = '';
                 }
-                
+
             },
             configurable: true
         });
@@ -301,13 +243,13 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
             const applied = changeAttachmentAppearance(input, attachmentImage, fileIcon, removeBtn, param, 10);
             if (applied && file) {
-                
+
                 if (!Array.isArray(window.attachments)) {
                     window.attachments = [];
                 }
                 window.attachments.push(file.name);
 
-                
+
                 if (window.values && input.name) {
                     window.values[input.name] = file.name;
                 }
@@ -333,14 +275,14 @@ export function createInputField(param, options, groupNumber, filters, allOption
 }
 
 export function fillFields(displayValues, inputs, values) {
-    
+
     for (let input of Object.values(inputs)) {
         const tag = input.tagName
         const labelData = displayValues.get(input.name)
-        
+
         if (values[input.name] == "<NONE>") {
             let description = input?.name + '___DESCRIPTION' || '';
-            
+
             if (labelData) {
                 labelData.option_description = values[description];
                 input.textContent = `${labelData.option_description}`;
@@ -408,14 +350,14 @@ export function checkIfParamHidden(formula, values, param) {
         if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE && !shouldEnable) {
             window.skipCountParams.push(param.NAME)
         }
-        
+
         if (shouldEnable == 'password') { shouldEnable = false }
 
 
     }
     catch (error) {
 
-        
+
 
         showToast('error', `Error:  ${error.message}`)
     }
@@ -428,7 +370,7 @@ export function hideLocked(inputs, displayValues) {
     for (const [key, value] of displayValues) {
         if (window.lockedParams.includes(key)) {
 
-            
+
             value['locked'] = true
         }
         else {
@@ -443,11 +385,11 @@ export function hideParams(params, inputs) {
     for (let param of params) {
 
         let input = inputs[param.NAME]
-        
+
         if (param.FORMROW == '0') {
             input.parentElement.style.display = 'none'
         }
-        
+
 
     }
 }

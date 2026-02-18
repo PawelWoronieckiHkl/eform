@@ -1,0 +1,3 @@
+Tkaniny kuponowe - wyświetlanie info 
+Zmiana adresów efor - można wybierać z listy 
+adresy email do wybrania

@@ -16,14 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 ["city", "Miasto"],
                 ["zip", "Kod pocztowy"],
                 ["country", "Kraj"]
-            ], '/user/add-delivery-address');
+            ], '/address/add-delivery-address');
         });
     }
 
     if (addMailBtn) {
         addMailBtn.addEventListener("click", (event) => {
             event.preventDefault();
-            openAddAddressModal([["mail", "Email"]], '/user/add-mail-address');
+            openAddAddressModal([["mail", "Email"]], '/address/add-mail-address');
         });
     }
 });

@@ -12,4 +12,5 @@ module.exports = {
   shortJsonDir: path.join(process.env.ROOT_DIR, 'json_short') || '/mnt/eform/json_short',
   availabeLanguages: ['pl', 'en', 'de', 'fr', 'nl'],
   defaultLanguage: 'en',
+  logsDir: path.join(process.env.LOG_PATH || '/mnt/eform/log/datadev')
 };
