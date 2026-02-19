@@ -6,7 +6,8 @@ export function createInfoIcon({
     parent,
     rootFilePath = "/photos/files/",
     defaultLabel = "Dodatkowe informacje",
-    downloadLabel = "Pobierz"
+    infoStyle = 'i',
+    downloadLabel = "Pobierz",
 } = {}) {
     const hasInfo = info && info !== "<NULL>" && `${info}`.trim() !== "";
     if (!hasInfo || !parent) {
@@ -17,14 +18,23 @@ export function createInfoIcon({
     const bracketMatch = rawInfo.match(/<([^>]+\.[^>]+)>/);
     const extractedFilePath = bracketMatch ? bracketMatch[1].trim() : null;
     const cleanInfoText = rawInfo.replace(/<[^>]+>/g, "").trim();
-
+    let infoIcon;
     const iconLabel = cleanInfoText || defaultLabel;
-    const infoIcon = createElement("span", {
-        class: ["param-info-icon"],
-        text: "i",
-        tabindex: "0",
-        "aria-label": iconLabel
-    }, parent);
+    if (infoStyle == 'i') {
+        infoIcon = createElement("span", {
+            class: ["param-info-icon"],
+            text: "i",
+            tabindex: "0",
+            "aria-label": iconLabel
+        }, parent);
+    } else if (infoStyle == 'btn-cupon') {
+        infoIcon = createElement("span", {
+            class: ["param-info-icon", "param-info-cupon"],
+            text: "Coupon",
+            tabindex: "0",
+            "aria-label": iconLabel
+        }, parent);
+    }
 
     const tooltip = createElement("div", {
         class: ["param-info-tooltip"],

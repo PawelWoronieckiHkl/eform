@@ -49,6 +49,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
             parent: labelWrapper,
             rootFilePath: '/photos/files/',
             defaultLabel: t('Dodatkowe informacje'),
+            infoStyle:'i',
             downloadLabel: t('Pobierz')
         });
     }

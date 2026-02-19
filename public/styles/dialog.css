@@ -435,7 +435,16 @@ dialog::backdrop {
 .extra-info-cta:hover {
 	background-color: #0b5ed7 !important;
 }
-
+.param-info-cupon {
+    background-color: #fd6f44ce;/* lub inny kolor */
+    color: #fffefece;
+    border-radius: 25px;
+	border:#fd6f44ce solid 1px;
+	padding: 4px 12px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	width: 70%;
+}
 @media (max-width: 560px) {
 	.extra-info-panel {
 		flex-direction: column;
@@ -487,6 +496,10 @@ dialog::backdrop {
 
 .stock-unknown {
 	background-color: #6c757d;
+}
+
+.stock-coupon {
+	background-color: #0d6efd;
 }
 
 .unavailable {

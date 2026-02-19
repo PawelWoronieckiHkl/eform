@@ -189,7 +189,7 @@ export class DialogManager {
       }, topRow);
 
       iconWrap.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http:
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.12"></circle>
           <path d="M11 17h2v-6h-2v6zm0-8h2V7h-2v2z" fill="currentColor"></path>
         </svg>`;
@@ -691,16 +691,16 @@ export class DialogManager {
             option.STAN = foundEntry[normalizedValue];
           }
 
-          const match = String(option.STAN).match(/ZERO|SAFE|LOW|CRITICAL/i);
-
-          if (match && match[0] != 'ZERO') {
+          const match = String(option.STAN).match(/ZERO|SAFE|LOW|CRITICAL|COUPON/i);
+          console.log(match, 'stan magazynowy', option.VALUE, option.STAN, option.OBSOLETE)
+          if (match && match[0] != 'ZERO' && match[0] != 'COUPON') {
             stockStatuses.add(match[0].toUpperCase());
-          }
-          else {
+          } else if (match && match[0] == 'COUPON') {
+            stockStatuses.add('COUPON');
+          } else {
             if (option.OBSOLETE) {
               stockStatuses.add('OBSOLETE')
-            }
-            else {
+            } else if (match) {
               stockStatuses.add(match[0].toUpperCase());
             }
           }
@@ -820,13 +820,14 @@ export class DialogManager {
       try {
 
         const raw = String(option?.STAN || '');
-        const match = raw.match(/ZERO|SAFE|LOW|CRITICAL/i);
+        const match = raw.match(/ZERO|SAFE|LOW|CRITICAL|COUPON/i);
         const status = match ? match[0].toUpperCase() : null;
         if (status) {
           const map = {
             ZERO: { class: 'stock-zero' },
             SAFE: { class: 'stock-safe' },
             LOW: { class: 'stock-low' },
+            COUPON: { class: 'stock-coupon' },
             CRITICAL: { class: 'stock-critical' }
           };
           const info = map[status] || { class: 'stock-unknown' };
@@ -839,26 +840,37 @@ export class DialogManager {
           }
           if (option?.ATTR_DESC) {
             let isCupon = false;
-            let date = chcekIfDateDeliveryCorrect(option.ATTR_DESC);
-            ({ date, isCupon } = checkIfCupon(date));
+            let date = '';
+            let dateResult = chcekIfDateDeliveryCorrect(option.ATTR_DESC);
+            ({ date, isCupon } = checkIfCupon(dateResult));
+            console.log(option.IS_CUPON, 'czy kupon', isCupon, option.ATTR_DESC, date, option)
             option.IS_CUPON = isCupon;
 
             circleElem = createElement('span', {
               class: ['stock-badge', info.class,],
               'aria-hidden': 'true'
             });
-            deliveryInfo = createElement('div', {
-              class: ['delivery-info'],
-              'aria-hidden': 'true',
-              text: date
-            });
-          }
 
-          else {
-            circleElem = createElement('span', {
-              class: ['stock-badge', info.class],
-              'aria-hidden': 'true'
-            });
+            if (!option.IS_CUPON) {
+              deliveryInfo = createElement('div', {
+                class: ['delivery-info'],
+                'aria-hidden': 'true',
+                text: date
+              });
+            } else {
+              deliveryInfo = createElement('div', {
+                class: ['delivery-info'],
+                'aria-hidden': 'true'
+              });
+
+              createInfoIcon({
+                info: t('form.cupon_info'),
+                parent: deliveryInfo,
+                defaultLabel: t('form.cupon_info_label'),
+                infoStyle: 'btn-cupon',
+                downloadLabel: "Pobierz"
+              });
+            }
           }
         }
       } catch (err) {
@@ -883,11 +895,13 @@ export class DialogManager {
 
     const isCuponOption = option?.IS_CUPON === true || option?.IS_CUPON === 'true';
     if (isCuponOption) {
-      createInfoIcon({
-        info: t('form.cupon_info'),
-        parent: top,
-        defaultLabel: t('form.cupon_info_label')
-      });
+    createInfoIcon({
+    info: t('form.cupon_info'),
+    parent: top,
+    defaultLabel: t('form.cupon_info_label'),
+    infoStyle :'i',
+    downloadLabel: "Pobierz"
+    });
     }
     if (filename) {
       const imageWrapper = this.createImageWrapper(option, filename);
@@ -1193,7 +1207,7 @@ export class DialogManager {
         if (filterName === this.stan && selectedValues.length > 0) {
           let stanValue = option.STAN || '';
           if (stanValue == "ZERO" && option.OBSOLETE) { stanValue = "OBSOLETE" }
-          const match = String(stanValue).match(/ZERO|SAFE|LOW|CRITICAL|OBSOLETE/i);
+          const match = String(stanValue).match(/ZERO|SAFE|LOW|CRITICAL|OBSOLETE|COUPON/i);
           const status = match ? match[0].toUpperCase() : '';
 
           if (!selectedValues.includes(status)) {
