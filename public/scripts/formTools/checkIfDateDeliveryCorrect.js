@@ -27,12 +27,12 @@ export function chcekIfDateDeliveryCorrect(dateString) {
 
     return dateString;
 }
-export function checkIfCupon(dateString) {
-    if (dateString.endsWith('(k)')) {
-        dateString = dateString.slice(0, -3).trim();
-        return { date: dateString, isCupon: true };
-    }
-    else {
-        return { date: dateString, isCupon: false };
-    }
-}
+// export function checkIfCupon(dateString) {
+    // if (dateString.endsWith('(k)')) {
+        // dateString = dateString.slice(0, -3).trim();
+        // return { date: dateString, isCupon: true };
+    // }
+    // else {
+        // return { date: dateString, isCupon: false };
+    // }
+// }

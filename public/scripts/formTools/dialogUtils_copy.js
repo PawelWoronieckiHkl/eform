@@ -14,7 +14,7 @@ import { createInfoIcon } from '../components/info.js';
 import { stopSpin, startSpin } from "../components/hourglass.js";
 import { getEnvVersion } from "../getEnv.js";
 import { getUserName } from "../base.js";
-import { chcekIfDateDeliveryCorrect, checkIfCupon } from './checkIfDateDeliveryCorrect.js';
+import { chcekIfDateDeliveryCorrect } from './checkIfDateDeliveryCorrect.js';
 
 
 
@@ -838,18 +838,18 @@ export class DialogManager {
           else if (status == "ZERO") {
             colorBox.classList.add("unavailable")
           }
-          if (option?.ATTR_DESC) {
-            let isCupon = false;
-            let date = '';
-            let dateResult = chcekIfDateDeliveryCorrect(option.ATTR_DESC);
-            ({ date, isCupon } = checkIfCupon(dateResult));
-            console.log(option.IS_CUPON, 'czy kupon', isCupon, option.ATTR_DESC, date, option)
-            option.IS_CUPON = isCupon;
+          if (status == 'COUPON') {
+            option.IS_CUPON = true;}
+          // Zawsze twórz badge dla statusu
+          circleElem = createElement('span', {
+            class: ['stock-badge', info.class],
+            'aria-hidden': 'true'
+          });
 
-            circleElem = createElement('span', {
-              class: ['stock-badge', info.class,],
-              'aria-hidden': 'true'
-            });
+          if (option?.ATTR_DESC) {
+            let date = chcekIfDateDeliveryCorrect(option.ATTR_DESC);
+            // ({ date, isCupon } = checkIfCupon(dateResult));
+
 
             if (!option.IS_CUPON) {
               deliveryInfo = createElement('div', {
@@ -895,13 +895,13 @@ export class DialogManager {
 
     const isCuponOption = option?.IS_CUPON === true || option?.IS_CUPON === 'true';
     if (isCuponOption) {
-    createInfoIcon({
-    info: t('form.cupon_info'),
-    parent: top,
-    defaultLabel: t('form.cupon_info_label'),
-    infoStyle :'i',
-    downloadLabel: "Pobierz"
-    });
+      createInfoIcon({
+        info: t('form.cupon_info'),
+        parent: top,
+        defaultLabel: t('form.cupon_info_label'),
+        infoStyle: 'i',
+        downloadLabel: "Pobierz"
+      });
     }
     if (filename) {
       const imageWrapper = this.createImageWrapper(option, filename);
