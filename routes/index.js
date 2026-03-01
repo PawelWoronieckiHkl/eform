@@ -16,13 +16,18 @@ const e = require('express');
 
 
 router.use(async (req, res, next) => {
+  console.log('siema z index.js');
+
+  console.log('isOwner:', req.session?.user?.isOwner); 
   res.locals.owner = req.session?.user?.isOwner || false;
   res.locals.admin = req.session?.user?.isAdmin || false;
   res.locals.isEmployee = req.session?.user?.isEmployee || false;
 
   if (req.session?.user?.isOwner) {
     try {
+      console.log ('Ładowanie użytkowników dla właściciela...');
       res.locals.users = await db.getUsersByOwner(req);
+      console.log('Użytkownicy załadowani:', res.locals.users);
     } catch (error) {
       console.error('Error loading users for owner:', error);
       res.locals.users = [];

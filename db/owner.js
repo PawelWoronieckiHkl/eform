@@ -6,7 +6,15 @@ async function getUsersByOwner(req) {
     if (!req.session.user?.isOwner) {
         throw new Error("User is not an owner or session is invalid.");
     }
-    const organizationId = req.session.user.organization;
+    console.log(req.session.user, 'session user in getUsersByOwner');
+    let organizationId ;
+    if (req.session.user.isAdmin) {
+        organizationId = req.session.user.organization;
+    }
+    else{
+        organizationId = req.session.user.orgId;
+    }
+    console
     const query = `
         SELECT u.client_name, u.ident, u.pin, u.id 
         FROM user u
