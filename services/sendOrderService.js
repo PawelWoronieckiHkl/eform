@@ -93,7 +93,7 @@ class OrderSender {
         this.fileName = result.fileName;
         this.fullPath = result.fullPath;
 
-        await this.saveToFile()
+
         return this.data
     }
 

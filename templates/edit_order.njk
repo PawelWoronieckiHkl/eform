@@ -1,85 +1,105 @@
 {% extends "new-order.njk" %}
-{% block title %}{{__('edit_order.title') }}
+{% block title %}
+  {{ __('edit_order.title') }}
 {% endblock title %}
-{% block order_title %}{{__('edit_order.h1') }}
+{% block order_title %}
+  {{ __('edit_order.h1') }}
 {% endblock order_title %}
-
 {% block commision_input %}
-  <input type="text" class="form-control validate" maxlength="60" id="commission-input" value='{{orderData.commision}}' placeholder="{{__('edit_order.order_name_placeholder') }}"/>
+  <input type="text" class="form-control validate" maxlength="60" id="commission-input" value='{{ orderData.commision }}' placeholder="{{ __('edit_order.order_name_placeholder') }}"/>
 {% endblock commision_input %}
 address_id
 {% block checkbox_label %}
-  {{__('edit_order.edit_client_data') }}
-
-{% endblock %}
-{% block client_select %}
-  <select id="address-select" name="selected_address" class="form-select mb-2">
-    <option value="{{ orderData.address_id }}" selected="selected">
-      {{ orderData.street }},
-      {{ orderData.city }},
-      {{ orderData.zip }}
-      {{ orderData.country }}</option>
-  </select>
+  {{ __('edit_order.edit_client_data') }}
 {% endblock %}
 {% block name_input %}
-
-  <input type="text" class="form-control" id="name" placeholder="{{ __('new-order.client_name_placeholder') }}" value='{{orderData.name}}'/>
+  <input type="text" class="form-control" id="name" placeholder="{{ __('new-order.client_name_placeholder') }}" value='{{ orderData.name }}'/>
 {% endblock name_input %}
 {% block email_input %}
-  <input type="text" class="form-control" id="email" value='{{orderData.email}}' placeholder="{{__('edit_order.email_placeholder') }}"/>
+  <input type="text" class="form-control" id="email" value='{{ orderData.email }}' placeholder="{{ __('edit_order.email_placeholder') }}"/>
 {% endblock email_input %}
-
 {% block phone_input %}
-  <input type="number" class="form-control" id="phone" placeholder="{{__('edit_order.phone_placeholder') }}" value='{{orderData.phone}}'/>
+  <input type="number" class="form-control" id="phone" placeholder="{{ __('edit_order.phone_placeholder') }}" value='{{ orderData.phone }}'/>
 {% endblock phone_input %}
-
 {% block street_input %}
-  <input type="text" class="form-control" id="street" placeholder="{{__('edit_order.street_placeholder') }}" value='{{orderData.street}}'/>
+  <input type="text" class="form-control" id="street" placeholder="{{ __('edit_order.street_placeholder') }}" value='{{ orderData.street }}'/>
 {% endblock street_input %}
 {% block city_input %}
-  <input type="text" class="form-control" id="city" placeholder="{{__('edit_order.street_placeholder') }}" value='{{orderData.city}}'/>
+  <input type="text" class="form-control" id="city" placeholder="{{ __('edit_order.street_placeholder') }}" value='{{ orderData.city }}'/>
 {% endblock city_input %}
 {% block zip_input %}
-  <input type="text" class="form-control" id="zip" placeholder="{{__('edit_order.zip_placeholder') }}" value='{{orderData.zip}}'/>
+  <input type="text" class="form-control" id="zip" placeholder="{{ __('edit_order.zip_placeholder') }}" value='{{ orderData.zip }}'/>
 {% endblock zip_input %}
 {% block country_input %}
-  <input type="text" class="form-control" id="country" value='{{orderData.country}}'/>
+  <input type="text" class="form-control" id="country" value='{{ orderData.country }}'/>
 {% endblock country_input %}
-
-{% block checkbox_address2 %}{{__('edit_order.edit_send_data') }}
-
+{% block checkbox_address2 %}
+  {{ __('edit_order.edit_send_data') }}
 {% endblock %}
-
 {% block send_name_input %}
-  <input type="text" class="form-control" id="sendName" placeholder="{{ __('new-order.client_name_placeholder') }}" value='{{orderData.send_name}}'/>
+  <input type="text" class="form-control" id="sendName" placeholder="{{ __('new-order.client_name_placeholder') }}" value='{{ orderData.send_name }}'/>
 {% endblock send_name_input %}
-
 {% block send_email_input %}
-  <input type="text" class="form-control" id="sendEmail" placeholder="{{ __('new-order.email_placeholder') }}" value='{{orderData.send_email}}'/>
+  <input type="text" class="form-control" id="sendEmail" placeholder="{{ __('new-order.email_placeholder') }}" value='{{ orderData.send_email }}'/>
 {% endblock send_email_input %}
 {% block send_phone_input %}
-  <input type="number" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value='{{orderData.send_phone}}'/>
+  <input type="number" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value='{{ orderData.send_phone }}'/>
 {% endblock send_phone_input %}
-
 {% block send_street_input %}
-  <input type="text" class="form-control" id="sendStreet" placeholder="{{ __('new-order.street_placeholder') }}" value='{{orderData.send_street}}'/>
+  <input type="text" class="form-control" id="sendStreet" placeholder="{{ __('new-order.street_placeholder') }}" value='{{ orderData.send_street }}'/>
 {% endblock send_street_input %}
 {% block send_city_input %}
-  <input type="text" class="form-control" id="sendCity" placeholder="{{ __('new-order.city_placeholder') }}" value='{{orderData.send_city}}'/>
+  <input type="text" class="form-control" id="sendCity" placeholder="{{ __('new-order.city_placeholder') }}" value='{{ orderData.send_city }}'/>
 {% endblock send_city_input %}
 {% block send_zip_input %}
-  <input type="text" class="form-control" id="sendZip" placeholder="{{ __('new-order.zip_placeholder') }}" value='{{orderData.send_zip}}'/>
+  <input type="text" class="form-control" id="sendZip" placeholder="{{ __('new-order.zip_placeholder') }}" value='{{ orderData.send_zip }}'/>
 {% endblock send_zip_input %}
 {% block send_country_input %}
-  <input type='text' class="form-control" id="sendCountry" value='{{orderData.send_country}}'/>
-
+  <input type='text' class="form-control" id="sendCountry" value='{{ orderData.send_country }}'/>
 {% endblock send_country_input %}
-
 {% block comment_input %}
-  <textarea type="text" class="form-control" id="comment" placeholder="{{__('edit_order.comment_placeholder') }}" cols="40" rows="5" maxlength="250">
-    {{orderData.comment}}</textarea>
-    <small id="charCount">0/250</small>
+  <textarea type="text" class="form-control" id="comment" placeholder="{{ __('edit_order.comment_placeholder') }}" cols="40" rows="5" maxlength="250">
+    {{ orderData.comment }}</textarea>
+  <small id="charCount">0/250</small>
 {% endblock comment_input %}
 {% block sendBbtn %}
-  <button class="btn btn-outline-secondary p-2 col-3" id="update-order" type="button" data-id="{{orderData.id}}">{{__('edit_order.save_button') }}</button>
+  <button class="btn btn-outline-secondary p-2 col-3" id="update-order" type="button" data-id="{{ orderData.id }}">{{ __('edit_order.save_button') }}</button>
 {% endblock %}
+
+{% block scripts %}
+  <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
+  <script>
+    let neworderbtn = document.getElementById('new-order-nav-btn');
+    if (neworderbtn) {
+      neworderbtn.classList.add('active');
+    }
+    $(function () {
+      $("#country").countrySelect({
+        preferredCountries: [
+          "pl",
+          "de",
+          "gb",
+          'nl',
+          'fr'
+        ],
+        defaultCountry: "pl"
+      });
+    });
+    $(function () {
+      $("#sendCountry").countrySelect({
+        preferredCountries: [
+          "pl",
+          "de",
+          "gb",
+          'nl',
+          'fr'
+        ],
+        defaultCountry: "pl"
+      });
+    });
+  </script>
+  <script type="module" src="/scripts/orders.js"></script>
+  <script type="module" src="/scripts/new-order.js"></script>
+    <script type="module" src="/scripts/edit-order.js"></script>
+  <script type="module" src="/scripts/createNewAddress.js"></script>
+{% endblock scripts %}

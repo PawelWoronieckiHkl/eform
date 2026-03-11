@@ -34,10 +34,15 @@ router.use(async (req, res, next) => {
 
 
 router.get('/edit/:orderId', requireLogin, async (req, res) => {
-
+    const currentUser = ownerService.getCurrentUser(req);
+    const addr = await db.getUserAddresses(currentUser.userId);
+    const emails = await db.getUserMails(currentUser.userId);
     const orderData = await db.getOrderDetails(req.params.orderId);
     res.render('edit_order.njk', {
-        orderData: orderData
+        orderData: orderData,
+        addr: addr,
+        emails: emails,
+        selectedAddrId: orderAddress?.[0]?.id || null
     })
 })
 
@@ -512,6 +517,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
         if (orderItems || orderItems.length > 0) {
             const sender = new OrderSender.OrderSender(req, orderDetails, orderItems);
             const sendData = await sender.init()
+            await sender.saveToFile();
 
             const currentUser = ownerService.getCurrentUser(req);
             const user = await db.getUserData(currentUser?.pin)
@@ -623,15 +629,11 @@ router.post('/lock', requireLogin, async (req, res) => {
 
 router.post('/save-order', requireLogin, async (req, res) => {
     try {
-        let { commission, orderContactInfo, comment, orderSendAddress } = req.body;
+        let { commission, comment, addrId, mailId, orderSendAddress } = req.body;
 
         let response
         let sendAddrId = null;
-        let addrId = null;
-        if (orderContactInfo) {
-            response = await db.insertOrderAddress(orderContactInfo)
-            addrId = response;
-        }
+
         if (orderSendAddress) {
             response = await db.insertSendAddress(orderSendAddress);
             sendAddrId = response
@@ -641,10 +643,10 @@ router.post('/save-order', requireLogin, async (req, res) => {
         let id = 0;
         if (req.session.user.isEmployee) {
 
-            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, req.session?.employee.id ?? null);
+            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, req.session?.employee.id ?? null, mailId);
         }
         else {
-            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId);
+            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, null, mailId );
         }
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: `/orders/order/${id}` });
     }

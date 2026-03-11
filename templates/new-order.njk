@@ -49,7 +49,10 @@
                                                 <div id="address-dropdown-container" class="d-flex align-items-center gap-2">
                                                     {% block client_select %}
                                                         <select id="address-select" name="selected_address" class="form-select mb-0 flex-grow-1">
-                                                            <option value="" selected disabled>Wybierz adres dostawy</option>
+                                                            {% block selected_address_option %}
+                                                                <option value="" selected disabled>{{ __('new-order.select_address') }}</option>
+                                                            {% endblock %}
+
                                                             {% for address in addr %}
                                                                 <option value="{{ address.id }}">
                                                                     <p class='fw-bold'>{{ address.name }} &nbsp;&nbsp; {{ address.mail }} ({{ address.street }}

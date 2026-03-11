@@ -8,16 +8,9 @@ async function prepareRestData() {
 
 	const orderCommision = document.getElementById("commission-input").value;
 	const comment = document.getElementById('comment').value;
-	const orderContactInfo = {
-		'name': document.getElementById('name').value,
-		'phone': document.getElementById('phone').value,
-		'email': document.getElementById('email').value,
-		'street': document.getElementById("street").value,
-		'city': document.getElementById("city").value,
-		'zip': document.getElementById("zip").value,
-		'country': document.getElementById("country_code")?.value ?? '',
+	const addrId = document.getElementById('address-select').value;
+	const mailId = document.getElementById('mail-select').value;
 
-	}
 	const orderSendAddress = {
 		'name': document.getElementById('sendName').value,
 		'phone': document.getElementById('sendPhone').value,
@@ -28,11 +21,11 @@ async function prepareRestData() {
 		'country': document.getElementById("sendCountry_code")?.value ?? '',
 
 	}
-	console.log(addrFlag.value, otherAddrFlag.value)
 	let body = JSON.stringify({
 		commission: orderCommision,
-		...(addrFlag.value ? { orderContactInfo: orderContactInfo } : false),
 		comment: comment,
+		addrId: addrId,
+		mailId: mailId,
 		...(otherAddrFlag.value ? { orderSendAddress: orderSendAddress } : false)
 	})
 	return body;

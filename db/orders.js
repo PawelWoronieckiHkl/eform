@@ -382,11 +382,11 @@ async function insertSendAddress(address) {
     }
 }
 
-async function insertNewOrder(commision, addressId, userId, comment, sendAddressId = null, totalPrice = 0, employeeId = null) {
+async function insertNewOrder(commision, addressId, userId, comment, sendAddressId = null, totalPrice = 0, employeeId = null, mailId = null) {
     
     const query = `INSERT INTO \`order\` 
     (user_id,
-    order_address_id,
+    delivery_address_id,
     commision,
     total_price,
     organization_id,
@@ -394,10 +394,11 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
     status,
     created_date,
     send_address_id,
+    contact_info_id,
     employee_id)
     values (?,?,?,?,
     (select u.organization_id from eform.\`user\` u  where u.id =?) 
-    ,?,'active',?,?,?)`
+    ,?,'active',?,?,?,?)`
     try {
         const response = await insertQuery(query,
             [userId,
@@ -408,6 +409,7 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
                 comment,
                 dateUtils.getDbTimestamp(),
                 sendAddressId !== undefined && sendAddressId !== null ? sendAddressId : null,
+                mailId ?? null,
                 employeeId
             ]
         )
