@@ -39,6 +39,7 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
     }
 
     const preparedInputs = inputsList.map(normalizeInputConfig);
+    const initialData = options.initialData || options.addressData || {};
 
     const dialog = createElement("dialog", {
         id: MODAL_ID,
@@ -73,7 +74,7 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
             id: inputConfig.id,
             name: inputConfig.name,
             placeholder: inputConfig.placeholder,
-            value: inputConfig.value,
+            value: initialData[inputConfig.name] ?? inputConfig.value,
             class: ["form-control"]
         }, wrapper);
 
@@ -124,7 +125,7 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
             }
 
             try {
-                const response = await sendAddressData(url, payload);
+                const response = await sendAddressData(url, payload, options.requestMethod || "POST");
                 if (typeof options.onSubmit === "function") {
                     options.onSubmit(response, payload);
                 }
@@ -187,9 +188,9 @@ function toSafeId(value) {
         .replace(/^-+|-+$/g, "");
 }
 
-async function sendAddressData(url, data) {
+async function sendAddressData(url, data, method = "POST") {
     const response = await fetch(url, {
-        method: "POST",
+        method,
         headers: {
             "Content-Type": "application/json"
         },

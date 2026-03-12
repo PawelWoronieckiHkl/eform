@@ -30,6 +30,8 @@ async function getOrderDetails(orderId) {
     \`order\`.commision,
     \`order\`.created_date,
     \`order\`.comment,
+    \`order\`.delivery_address_id,
+    \`order\`.contact_info_id,
     order_address.id as address_id,
     order_address.street,
     order_address.phone,

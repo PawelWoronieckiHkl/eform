@@ -92,7 +92,7 @@ router.post("/add-mail-address", requireLogin, async (req, res) => {
     }
 });
 
-router.get('/:id?orderId', requireLogin, async (req, res) => {
+router.get('/:id', requireLogin, async (req, res) => {
     try {
         const address = await db.getAddressById(req.params.id);
         if (!address) {
@@ -104,7 +104,7 @@ router.get('/:id?orderId', requireLogin, async (req, res) => {
         else {
             return res.status(200).json({
                 success: true,
-                address
+                addressData: address
             });
         }
     } catch (err) {
@@ -116,11 +116,8 @@ router.get('/:id?orderId', requireLogin, async (req, res) => {
     }
 });
 
-router.get('/mail/:id?orderId', requireLogin, async (req, res) => {
+router.get('/mail/:id', requireLogin, async (req, res) => {
     try {
-        if (req.params.orderId){
-            console.log('ORDER ID IN MAIL GET:', req.params.orderId);
-        }
         const mail = await db.getMailById(req.params.id);
         if (!mail) {
             return res.status(404).json({

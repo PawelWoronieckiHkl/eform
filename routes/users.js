@@ -32,6 +32,10 @@ router.use(async (req, res, next) => {
 
 
 router.get("/login", (req, res) => {
+    if (process.env.autolog === "true") {
+        const loginPath = `${req.baseUrl}/auth/login?pin=admin&password=eforszef123`;
+        return res.redirect(loginPath);
+    }
     updateClients()
     res.render("login.njk");
 });
@@ -63,72 +67,21 @@ router.post("/accept-rodo", async (req, res, next) => {
 });
 
 
-router.post("/auth/login", async (req, res, next) => {
-    try {
-        const { pin, password } = req.body;
-        const isValid = await authService.checkPassword(pin, password);
-        const isEmployeeLogin = await authService.checkEmployeePassword(pin, password);
-        if (isValid) {
-            const isFirst = await authService.checkFirstLogon(pin)
-            let owner = await db.getOwner(pin);
 
-            if (!owner) {
-                return res.render("login.njk", { message: "Dane nieprawidłowe" });
-            }
 
-            const userId = await db.getUserId(pin)
-            req.session.user = { userId, pin, password, showPrices: false, organization: (owner.orgIdent).toUpperCase(), orgId: owner.orgId, ident: owner.userIdent };
-            req.session.user.isOwner = await isOwner(owner);
-            req.session.user.isAdmin = pin == "admin";
+router.get("/auth/login", async (req, res, next) => {
+    const { pin, password } = req.query;
 
-            await logService.logUserLogin(pin, await db.getUserIdent(pin));
-            langVer.checkTranslateLegacy(localesDir)
-            let lang;
-            try {
-                lang = await db.getLanguage(pin)
-            }
-            catch {
-                lang = 'en'
-            }
-            if (!req.cookies.lang) {
-                langManager.setLang(lang, res)
-            }
-            req.session.mustAcceptRODO = isFirst;
-
-            if (req.session.user.isAdmin) {
-                req.session.user.isOwner = true;
-            }
-
-            return res.redirect("/");
-
-        } else if (isEmployeeLogin) {
-            const employee = await db.getEmployeeByLogin(pin);
-            const user = await db.getUserByEmployye(pin);
-
-            if (!user) {
-                return res.render("login.njk", { message: "Dane nieprawidłowe" });
-            }
-
-            const organization = await db.getOwner(user.pin);
-
-            if (!organization) {
-                return res.render("login.njk", { message: "Dane nieprawidłowe" });
-            }
-            req.session.user = { pin: user.pin, password: user.password, showPrices: false, organization: organization.orgId, userId: user.id };
-            req.session.user.isOwner = false;
-            req.session.user.isEmployee = true;
-            req.session.employee = { name: employee.name, surname: employee.surname, id: employee.id, login: employee.login, phone: employee.phone };
-
-            logEmployeeLogin = await db.logEmployeeLogin(employee.id);
-
-            req.session.mustAcceptRODO = false;
-            return res.redirect("/");
-        } else {
-            return res.render("login.njk", { message: "Dane nieprawidłowe" });
-        }
-    } catch (err) {
-        return next(err);
+    if (!pin || !password) {
+        return res.redirect(`${req.baseUrl}/login`);
     }
+
+    return authService.handleAuthLogin(req, res, next, pin, password);
+});
+
+router.post("/auth/login", async (req, res, next) => {
+    const { pin, password } = req.body;
+    return handleAuthLogin(req, res, next, pin, password);
 });
 
 router.get('/edit-user', requireLogin, async (req, res) => {

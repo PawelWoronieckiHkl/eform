@@ -1,5 +1,7 @@
 import { createElement } from "./components/htmlManipulator.js";
 import { getEnvVersion } from "./getEnv.js";
+import {get} from "./components/api_connector.js";
+
 async function getLogo() {
     try {
         const response = await fetch('/user/logo', {
@@ -105,13 +107,15 @@ export async function getUserName() {
             credentials: 'include'
         });
         if (contextResponse.ok) {
+
             const contextData = await contextResponse.json();
+            setContextUserSelected(contextData.ident);
             if (contextData.success && contextData.contextUser) {
                 window.context = true
                 contextBtns.forEach(contextBtn => {
                     contextBtn.classList.remove('d-none');
                 });
-                contextInfo = `<br>(${contextData.ident})`;
+                contextInfo = `<br><p id='ident'>ID: ${contextData.ident}</p>(${contextData.userName}) `;
             }
             else {
                 window.context = false
@@ -131,6 +135,16 @@ export async function getUserName() {
         getEmp();
     }, 100);
     return data;
+}
+
+function setContextUserSelected(ident) {
+    const dropdownInput = document.getElementById('userSelect')
+    if (dropdownInput && ident) {
+        dropdownInput.value = ident;
+    }
+    else{
+        dropdownInput.value = '';
+    }
 }
 
 async function getConfigNum() {

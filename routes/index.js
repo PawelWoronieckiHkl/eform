@@ -187,7 +187,7 @@ router.get('/config-num', requireLogin, async (req, res) => {
 router.get('/context-user', requireLogin, async (req, res) => {
   try {
     const contextUser = ownerService.getContextUser(req);
-
+    console.log('Context user:', contextUser);
     if (!contextUser) {
       return res.status(200).json({
         success: false,
@@ -198,7 +198,8 @@ router.get('/context-user', requireLogin, async (req, res) => {
     return res.status(200).json({
       success: true,
       contextUser: true,
-      ident: contextUser.clientName
+      userName: contextUser.clientName,
+      ident: contextUser.ident
     });
   } catch (error) {
     console.error('Error checking context user:', error);

@@ -25,6 +25,11 @@
 		font-size: 12px;
 		text-align: start;
 	}
+	#ident{
+		color:#1d4ed8;
+		margin: 0;
+		padding: 0;
+	}
 	#userDropdown {
 		max-height: 25vh;
 		overflow-y: auto;

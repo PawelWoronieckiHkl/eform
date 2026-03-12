@@ -38,11 +38,13 @@ router.get('/edit/:orderId', requireLogin, async (req, res) => {
     const addr = await db.getUserAddresses(currentUser.userId);
     const emails = await db.getUserMails(currentUser.userId);
     const orderData = await db.getOrderDetails(req.params.orderId);
+    console.log('siemanko@@@@ ', orderData)
     res.render('edit_order.njk', {
         orderData: orderData,
         addr: addr,
         emails: emails,
-        selectedAddrId: orderAddress?.[0]?.id || null
+        selectedAddrId: orderData?.delivery_address_id || null,
+        selectedMailId: orderData?.contact_info_id || null
     })
 })
 

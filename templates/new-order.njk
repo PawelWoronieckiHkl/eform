@@ -9,6 +9,7 @@
     <button class="modern-back-btn" onclick="window.location.href='/'">
     {% endblock %}
     {% block head %}
+        
         <link rel="stylesheet" href="/styles/mobile/new-order.css">
             <link rel="stylesheet" href="/vendor/country-select-js/build/css/countrySelect.css"/>
             <link rel="stylesheet" href="/styles/new-order.css">
@@ -50,11 +51,11 @@
                                                     {% block client_select %}
                                                         <select id="address-select" name="selected_address" class="form-select mb-0 flex-grow-1">
                                                             {% block selected_address_option %}
-                                                                <option value="" selected disabled>{{ __('new-order.select_address') }}</option>
+                                                                <option value="" {% if not selectedAddrId %}selected{% endif %} disabled>{{ __('new-order.select_address') }}</option>
                                                             {% endblock %}
 
                                                             {% for address in addr %}
-                                                                <option value="{{ address.id }}">
+                                                                <option value="{{ address.id }}" {% if selectedAddrId and address.id == selectedAddrId %}selected{% endif %}>
                                                                     <p class='fw-bold'>{{ address.name }} &nbsp;&nbsp; {{ address.mail }} ({{ address.street }}
                                                                         {{ address.city }}
                                                                         {{ address.zip }}
@@ -79,9 +80,9 @@
                                                     </div>
                                                     <div id="mail-dropdown-container" class="d-flex align-items-center gap-2 mt-2">
                                                         <select id="mail-select" name="selected_mail" class="form-select mb-0 flex-grow-1">
-                                                            <option value="" selected disabled>Wybierz adres Email</option>
+                                                            <option value="" {% if not selectedMailId %}selected{% endif %} disabled>Wybierz adres Email</option>
                                                             {% for email in emails %}
-                                                                <option value="{{ email.id }}">
+                                                                <option value="{{ email.id }}" {% if selectedMailId and email.id == selectedMailId %}selected{% endif %}>
                                                                     <p class='fw-bold'>{{ email.email }}</option>
                                                                 {% endfor %}
                                                             </select>
