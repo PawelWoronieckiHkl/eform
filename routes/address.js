@@ -41,7 +41,7 @@ router.post("/add-delivery-address", requireLogin, async (req, res) => {
             success: true,
             message: 'Adres dostawy został zapisany',
             data: {
-                id: insertResult?.insertId || null,
+                id: insertResult || null,
                 userId,
                 ...payload
             }
@@ -51,6 +51,25 @@ router.post("/add-delivery-address", requireLogin, async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas zapisu adresu dostawy'
+        });
+    }
+});
+
+router.get('/list', requireLogin, async (req, res) => {
+    try {
+        const currentUser = ownerService.getCurrentUser(req);
+        const userId = await db.getUserId(currentUser.pin);
+        const addresses = await db.getUserAddresses(userId);
+
+        return res.status(200).json({
+            success: true,
+            addresses
+        });
+    } catch (error) {
+        console.error('Error fetching user addresses:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Blad podczas pobierania listy adresow'
         });
     }
 });

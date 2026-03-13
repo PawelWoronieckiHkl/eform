@@ -1,98 +1,102 @@
 <!DOCTYPE html>
 <html lang="{{ locale | default('en') }}">
-
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <title>
-        {% block title %}{{ __('base.portal_title') }}
-        {% endblock title %}
-    </title>
-
-    <link rel="stylesheet" href="/styles/main.css">
-    <link rel="stylesheet" href="/scripts/components/toast.css">
-    <link rel="stylesheet" href="/styles/layout.css">
-    <link rel="stylesheet" href="/styles/form.css">
-    <link rel="stylesheet" href="/styles/components.css">
-    <link rel="stylesheet" href="/styles/responsive.css">
-    <link rel="stylesheet" href="/styles/intro.css">
-    <script>
-    </script>
-    <link rel="stylesheet" href="/styles/mobile/main.css">
-    <link rel="stylesheet" href="/scripts/components/mobile-toast.css">
-    <link rel="stylesheet" href="/styles/mobile/layout.css">
-    <link rel="stylesheet" href="/styles/mobile/form.css">
-    <link rel="stylesheet" href="/styles/mobile/components.css">
-    <link rel="stylesheet" href="/styles/mobile/responsive.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-        
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@13.0.0/dist/css/shepherd.css" />
-    {% if admin %}
-    <link rel="stylesheet" href="/styles/admin_section.css">
-    {% endif %}
-    <script type="module" src="https://cdn.jsdelivr.net/npm/shepherd.js@13.0.0/dist/esm/shepherd.mjs"></script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <script type="module" src="/scripts/tools/langChanger.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script>
-        window.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape' || event.keyCode === 27) {
-                {% block key_nav %} {% endblock %}
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <title>
+            {% block title %}
+                {{ __('base.portal_title') }}
+            {% endblock title %}
+        </title>
+        <link rel="stylesheet" href="/styles/main.css">
+        <link rel="stylesheet" href="/scripts/components/toast.css">
+        <link rel="stylesheet" href="/styles/layout.css">
+        <link rel="stylesheet" href="/styles/form.css">
+        <link rel="stylesheet" href="/styles/components.css">
+        <link rel="stylesheet" href="/styles/confirm-prompt.css">
+        <link rel="stylesheet" href="/styles/responsive.css">
+        <link rel="stylesheet" href="/styles/intro.css">
+        <script></script>
+        <link rel="stylesheet" href="/styles/mobile/main.css">
+        <link rel="stylesheet" href="/scripts/components/mobile-toast.css">
+        <link rel="stylesheet" href="/styles/mobile/layout.css">
+        <link rel="stylesheet" href="/styles/mobile/form.css">
+        <link rel="stylesheet" href="/styles/mobile/components.css">
+        <link rel="stylesheet" href="/styles/mobile/responsive.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet"/>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+            crossorigin="anonymous">
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@13.0.0/dist/css/shepherd.css"/>
+        {% if admin %}
+            <link rel="stylesheet" href="/styles/admin_section.css">
+        {% endif %}
+        <script type="module" src="https://cdn.jsdelivr.net/npm/shepherd.js@13.0.0/dist/esm/shepherd.mjs"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+        <script type="module" src="/scripts/tools/langChanger.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+        <script>
+            window.addEventListener('keydown', function (event) {
+                    if (event.key === 'Escape' || event.keyCode === 27) {
+                        {% block key_nav %}
+                    {% endblock %}
             }
-        });
-    </script>
-    <style>
-        .hidden {
-            display: none;
         }
-    </style>
-    <script>
-
-        (function () {
-            const isCollapsed = localStorage.getItem('nav-collapsed') === 'true';
-            const backText = document.querySelector('.back-text');
-
-            if (isCollapsed) {
-                document
-                    .documentElement
-                    .classList
-                    .add('nav-collapsed');
-                backText.style.display = isCollapsed
-                    ? 'none'
-                    : 'inline';
-            }
-        })();
-    </script>
-    {% block head %}{% endblock head %}
-</head>
-
-<body>
-    {% block nav %}
-
+    );
+        </head>
+    </html>
+</script>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+<script>
+    (function () {
+        const isCollapsed = localStorage.getItem('nav-collapsed') === 'true';
+        const backText = document.querySelector('.back-text');
+        if (isCollapsed) {
+            document
+                .documentElement
+                .classList
+                .add('nav-collapsed');
+            backText.style.display = isCollapsed
+                ? 'none'
+                : 'inline';
+        }
+    })();
+</script>
+{% block head %}{% endblock head %}</head><body>
+{% block nav %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light mobile-nav">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
                 <img alt="logo " class="logo">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav"
-                aria-controls="mobileNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mobileNav"
+                aria-controls="mobileNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="mobileNav">
                 <ul class="nav flex-column">
-
                     <li class="nav-item">
                         <a href="/orders/add-order" class="nav-link">{{ __('base.new_order') }}</a>
                     </li>
@@ -111,15 +115,12 @@
             </div>
         </div>
     </nav>
-
     <nav class="desktop-nav">
         <button class="nav-toggle-btn" id="navToggleBtn" type="button">
             <svg class="nav-toggle-icon" width="20" height="20" viewbox="0 0 24 24" fill="none">
-                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </button>
-
         <a href="/">
             <img class="logo w-75 m-3" alt="logo">
         </a>
@@ -132,69 +133,53 @@
         <div class="side-nav">
             <ul class="nav flex-column">
                 {% block extra_nav_links %}
-                <a href="/orders/clear-context" id='context-button'
-                    class="custom-nav-link context-button has-tooltip d-none"
-                    data-tooltip="{{ __('base.turn_off_context') }}">
-                    <img src="/img/power.png" class='nav-icon' alt="new-order-icon">
-                    <span class="nav-text">{{ __('base.turn_off_context') }}</span>
-                </a>
+                    <a href="/orders/clear-context" id='context-button' class="custom-nav-link context-button has-tooltip d-none" data-tooltip="{{ __('base.turn_off_context') }}">
+                        <img src="/img/power.png" class='nav-icon' alt="new-order-icon">
+                        <span class="nav-text">{{ __('base.turn_off_context') }}</span>
+                    </a>
                 {% endblock %}
-
-                <a href="/orders/add-order" id='new-order-nav-btn' class="custom-nav-link nav-link-primary has-tooltip"
-                    data-tooltip="{{ __('base.new_order') }}">
+                <a href="/orders/add-order" id='new-order-nav-btn' class="custom-nav-link nav-link-primary has-tooltip" data-tooltip="{{ __('base.new_order') }}">
                     <img src="/img/new-order.png" class='nav-icon' alt="new-order-icon">
                     <span class="nav-text fw-bold text-black">{{ __('base.new_order') }}</span>
                 </a>
-
-                <a href="/orders" id='orders-nav-btn' class="custom-nav-link has-tooltip"
-                    data-tooltip="{{ __('base.your_orders') }}">
+                <a href="/orders" id='orders-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="{{ __('base.your_orders') }}">
                     <img src="/img/orders.png" class='nav-icon' alt="orders-ico">
                     <span class="nav-text">{{ __('base.your_orders') }}</span>
                 </a>
-
-                <a href="/orders/history" id='orders-history-nav-btn' class="custom-nav-link has-tooltip"
-                    data-tooltip="{{ __('base.orders_history') }}">
+                <a href="/orders/history" id='orders-history-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="{{ __('base.orders_history') }}">
                     <img src="/img/orders_history.png" class='nav-icon' alt="orders-ico">
                     <span class="nav-text">{{ __('base.orders_history') }}</span>
                 </a>
-
-                <a id='employee-panel-nav-btn' class="custom-nav-link has-tooltip d-none"
-                    data-tooltip="{{ __('base.employee_panel_tooltip') }}">
+                <a id='employee-panel-nav-btn' class="custom-nav-link has-tooltip d-none" data-tooltip="{{ __('base.employee_panel_tooltip') }}">
                     <img src="/img/employee.png" class='nav-icon' alt="orders-ico">
                     <span class="nav-text">{{ __('base.employee_panel') }}</span>
                 </a>
-
-                <a href="#" data-action="logout" id='logout-nav-btn' class="custom-nav-link has-tooltip"
-                    data-tooltip="{{ __('base.logout') }}" style="text-decoration: none;">
+                <a href="#" data-action="logout" id='logout-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="{{ __('base.logout') }}" style="text-decoration: none;">
                     <img src="/img/logout.png" class='nav-icon' alt="orders-ico">
                     <span class="nav-text">{{ __('base.logout') }}</span>
                 </a>
-
                 {% block user_select %}
-                {% if owner and not admin %}
-                <div id='userSelectContainer'>
-                    <label for='userSelect' id='userSelectLabel' class="mt-5">{{ __('orders.users_list') }}</label>
-                    <div class="dropdown-container">
-                        <input type="text" id="userSelect" class="dropdown-input w-100"
-                            placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %}
-                            value="{{ selectedUser.client_name }}" {% endif %} />
-                        <div id="userDropdown" class="dropdown-menu custom-dropdown">
-                            <div class="dropdown-item context-button">
-                                <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
-                                    <span class="nav-text">{{ __('base.turn_off_context') }}</span>
-                                </a>
+                    {% if owner and not admin %}
+                        <div id='userSelectContainer'>
+                            <label for='userSelect' id='userSelectLabel' class="mt-5">{{ __('orders.users_list') }}</label>
+                            <div class="dropdown-container">
+                                <input type="text" id="userSelect" class="dropdown-input w-100" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
+                                <div id="userDropdown" class="dropdown-menu custom-dropdown">
+                                    <div class="dropdown-item context-button">
+                                        <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
+                                            <span class="nav-text">{{ __('base.turn_off_context') }}</span>
+                                        </a>
+                                    </div>
+                                    {% if users %}
+                                        {% for user in users %}
+                                            <div class="dropdown-item pt-5 pb-5" data-value="{{ user.ident }}">{{ user.ident }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
                             </div>
-                            {% if users %}
-                            {% for user in users %}
-                            <div class="dropdown-item pt-5 pb-5" data-value="{{ user.ident }}">{{ user.ident }}</div>
-                            {% endfor %}
-                            {% endif %}
                         </div>
-                    </div>
-                </div>
-                {% endif %}
+                    {% endif %}
                 {% endblock %}
-               
                 <div class="side-nav" id="bottom-nav-menu">
                     <ul class="nav flex-column">
                         <li class="nav-item">
@@ -203,147 +188,101 @@
                     </ul>
                 </div>
             </ul>
-
         </div>
         <div id='config-div'>
             <p id='config-number-info'></p>
         </div>
-
     </nav>
-
-    {% endblock %}
-    <header class="languages">
-        <div class="language-switcher">
-            <a href="/change-language?lang=pl" {% if locale=='pl' %} class="active"
-                data-tooltip="{{ __('base.base.polish_tooltip') }}" {% endif %}><img src="/img/poland.png"
-                    alt="Poland flag" width="30" height="28"></a>
-            <a href="/change-language?lang=en" {% if locale=='en' %} class="active"
-                data-tooltip="{{ __('base.base.english_tooltip') }}" {% endif %}><img src="/img/united-kingdom.png"
-                    alt="UK flag" width="30" height="28"></a>
-            <a href="/change-language?lang=de" {% if locale=='de' %} class="active"
-                data-tooltip="{{ __('base.german_tooltip') }}" {% endif %}><img src="/img/germany.png"
-                    alt="Germany flag" width="30" height="28"></a>
-            <a href="/change-language?lang=nl" {% if locale=='nl' %} class="active"
-                data-tooltip="{{ __('base.netherlands_tooltip') }}" {% endif %}><img src="/img/netherlands.png"
-                    alt="Netherlands flag" width="30" height="28"></a>
-            <a href="/change-language?lang=fr" {% if locale=='fr' %} class="active"
-                data-tooltip="{{ __('base.french_tooltip') }}" {% endif %}><img src="/img/france.png" alt="France flag"
-                    width="30" height="28"></a>
-        </div>
-    </header>
-    <main>
-        {% block back_link %}{% endblock %}
-        <span class="arrow">
-            <img src="/img/go-back-arrow.png" class='icon' alt="">
-        </span>
-        <span class="back-text fw-bold">{{ __('base.back_button') }}</span>
-        </button>
-                {# ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+{% endblock %}
+<header class="languages">
+    <div class="language-switcher">
+        <a href="/change-language?lang=pl" {% if locale=='pl' %} class="active" data-tooltip="{{ __('base.base.polish_tooltip') }}" {% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28">
+        </a>
+        <a href="/change-language?lang=en" {% if locale=='en' %} class="active" data-tooltip="{{ __('base.base.english_tooltip') }}" {% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30" height="28">
+        </a>
+        <a href="/change-language?lang=de" {% if locale=='de' %} class="active" data-tooltip="{{ __('base.german_tooltip') }}" {% endif %}><img src="/img/germany.png" alt="Germany flag" width="30" height="28">
+        </a>
+        <a href="/change-language?lang=nl" {% if locale=='nl' %} class="active" data-tooltip="{{ __('base.netherlands_tooltip') }}" {% endif %}><img src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28">
+        </a>
+        <a href="/change-language?lang=fr" {% if locale=='fr' %} class="active" data-tooltip="{{ __('base.french_tooltip') }}" {% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28">
+        </a>
+    </div>
+</header>
+<main>
+    {% block back_link %}{% endblock %}
+    <span class="arrow">
+        <img src="/img/go-back-arrow.png" class='icon' alt="">
+    </span>
+    <span class="back-text fw-bold">{{ __('base.back_button') }}</span>
+</button>
+{# ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 {% if admin %}
-            <div class='admin-section'>
-           
-            <div  id='org-dropdown-container'>
-                <button class="admin-btn" type="button" id="organizationDropdown"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="nav-text">{{ __('base.organization') }}</span>
-                </button>
-                <ul class="dropdown-menu">
-                    {% for org in organizations %}
+    <div class='admin-section'>
+        <div id='org-dropdown-container'>
+            <button class="admin-btn" type="button" id="organizationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="nav-text">{{ __('base.organization') }}</span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for org in organizations %}
                     <li>
                         <a class="dropdown-item pt-3 pb-3" href="/set-organization/{{ org.id }}">{{ org.ident | upper }}</a>
                     </li>
-                    {% endfor %}
-                </ul>
-            </div>
-             <div id='userSelectContainer'>
-                <div class="dropdown-container">
-                    <input type='text' id="userSelect" class="dropdown-input admin-btn admin-input"
-                        autocomplete="off"
-                        placeholder='{{ __('orders.select_user') }}' {% if selectedUser %}
-                        value="{{ selectedUser.client_name }}" {% endif %} />
-                    <div id="userDropdown" class="dropdown-menu custom-dropdown">
-                        <div class="dropdown-item context-button">
-                            <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
-                                <span class="nav-text">{{ __('base.turn_off_context') }}</span>
-                            </a>
-                        </div>
-                        {% if users %}
-                        {% for user in users %}
-                        <div class="dropdown-item pt-5 pb-5" data-value="{{ user.ident }}">{{ user.ident }}</div>
-                        {% endfor %}
-                        {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div id='userSelectContainer'>
+            <div class="dropdown-container">
+                <input type='text' id="userSelect" class="dropdown-input admin-btn admin-input" autocomplete="off" placeholder='{{ __('orders.select_user') }}' {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
+                <div id="userDropdown" class="dropdown-menu custom-dropdown">
+                    <div class="dropdown-item context-button">
+                        <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
+                            <span class="nav-text">{{ __('base.turn_off_context') }}</span>
+                        </a>
                     </div>
+                    {% if users %}
+                        {% for user in users %}
+                            <div class="dropdown-item pt-5 pb-5" data-value="{{ user.ident }}">{{ user.ident }}</div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
-                        <button id='last-user-btn' class='admin-btn custom-nav-link has-tooltip'>
-                Ostatni klient</button>
-            <button class='admin-btn'>
+        </div>
+        <button id='last-user-btn' class='admin-btn custom-nav-link has-tooltip'>
+            Ostatni klient</button>
+        <button class='admin-btn'>
             <a href="/admin" id='admin-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="Admin Panel">
                 <span class="nav-text">Admin panel</span>
             </a>
-            </button>
-
-                </div>
+        </button>
+    </div>
 {% endif %}
-        {# END ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-        {% block content %}{% endblock %}
-        <div id='dialog-container'>
-            <dialog id='dialog-space'></dialog>
-            <dialog id="delete-dialog">
-                <h3 class="text-center" id='dialog-title'>{{ __('order.delete_element') }}</h3>
-                <p class="text-center" id='for-sure'>{{ __('order.delete_confirm') }}</p>
-                <div class="alert" id='status-info'></div>
-                <div class="confirmattion-buttons">
-                    <button id="cancel-btn" class="btn btn-secondary me-1" type="button">{{ __('order.cancel')
-                        }}</button>
-                    <button id="confirm-btn" class="btn btn-danger ms-1" type="button">{{ __('order.confirm')
-                        }}</button>
-                </div>
-            </dialog>
+{# END ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+{% block content %}{% endblock %}
+<div id='dialog-container'>
+    <dialog id='dialog-space'></dialog>
+    <dialog id="delete-dialog">
+        <h3 class="text-center" id='dialog-title'>{{ __('order.delete_element') }}</h3>
+        <p class="text-center" id='for-sure'>{{ __('order.delete_confirm') }}</p>
+        <div class="alert" id='status-info'></div>
+        <div class="confirmattion-buttons">
+            <button id="cancel-btn" class="btn btn-secondary me-1" type="button">{{ __('order.cancel') }}</button>
+            <button id="confirm-btn" class="btn btn-danger ms-1" type="button">{{ __('order.confirm') }}</button>
         </div>
-    </main>
-    {% block footer %}
-
-    <footer class="site-footer">
-        <div class="footer-links">
-            <a href="/privacy">{{ __('site.privacy') }}</a>
-            <a href="/terms">{{ __('site.terms') }}</a>
-            <a href="/contact">{{ __('site.contact') }}</a>
-        </div>
-        <div class="footer-copy"></div>
-    </footer>
-
-    {% endblock %}
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/8.3.2/intro.min.js"
-        integrity="sha512-5ykRz1AkSpATwLO5fFqJb7Y5kprfzu/q9PbRVSOspLcn2Tm7m6vZIAyoUA4a5GFNRIlxM43kHXmYEphfz3eOWA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hot-formula-parser@4.0.0/dist/formula-parser.min.js"></script>
-
-    <script src="/scripts/formula.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jstat@1.9.2/dist/jstat.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/formulajs/formulajs@2.9.3/dist/formula.min.js"></script>
-    <script src="/scripts/translation.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.js"
-        integrity="sha512-qOOdnUM5GtxFYZtMURfJthJ+1PphZz6uCofz6oBnCxCyP3Oc+ieRzc8sb7c+YL1vrenZNwu/C0EaqBaVvbiRhw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    {#
-    <script type='module' src="/scripts/intro/main.js"></script> #}
-
-    <script type='module' src='/scripts/base.js'></script>
-    <script type="module" src="/scripts/getEnv.js"></script>
-    <script src="/scripts/navActiveState.js"></script>
-    <script type="module" src="/scripts/owner/owner.js"></script>
-
-    <script>
-        window.loadTranslations(document.documentElement.lang || 'en');
-        window.loadLangs()
-    </script>
- 
-    {% block scripts %}{% endblock scripts %}
-</body>
-
-</html>
+    </dialog>
+</div></body></main>{% block footer %}<footer class="site-footer">
+<div class="footer-links">
+    <a href="/privacy">{{ __('site.privacy') }}</a>
+    <a href="/terms">{{ __('site.terms') }}</a>
+    <a href="/contact">{{ __('site.contact') }}</a>
+</div>
+<div class="footer-copy"></div></footer>{% endblock %}<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/8.3.2/intro.min.js"
+    integrity="sha512-5ykRz1AkSpATwLO5fFqJb7Y5kprfzu/q9PbRVSOspLcn2Tm7m6vZIAyoUA4a5GFNRIlxM43kHXmYEphfz3eOWA=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hot-formula-parser@4.0.0/dist/formula-parser.min.js"></script><script src="/scripts/formula.js"></script><script src="https://cdn.jsdelivr.net/npm/jstat@1.9.2/dist/jstat.min.js"></script><script src="https://cdn.jsdelivr.net/gh/formulajs/formulajs@2.9.3/dist/formula.min.js"></script><script src="/scripts/translation.js"></script><script
+    src="https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.js"
+    integrity="sha512-qOOdnUM5GtxFYZtMURfJthJ+1PphZz6uCofz6oBnCxCyP3Oc+ieRzc8sb7c+YL1vrenZNwu/C0EaqBaVvbiRhw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>{#
+                        <script type='module' src="/scripts/intro/main.js"></script> #}<script type='module' src='/scripts/base.js'></script><script type="module" src="/scripts/getEnv.js"></script><script src="/scripts/navActiveState.js"></script><script type="module" src="/scripts/owner/owner.js"></script><script>window.loadTranslations(document.documentElement.lang || 'en');
+    window.loadLangs()</script>{% block scripts %}{% endblock scripts %}</body></html>

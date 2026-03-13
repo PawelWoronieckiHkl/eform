@@ -67,7 +67,7 @@ async function updateOrderpos(orderId, orderPos) {
 
 
 async function reindexOrderPositions(orderId) {
-    
+
     const query = 'SELECT id FROM order_item WHERE order_id = ? ORDER BY orderpos ASC, id ASC';
     const positions = await selectQuery(query, orderId);
 
@@ -335,40 +335,6 @@ async function duplicateSendAddress(id) {
 }
 
 
-async function duplicateOrderAddress(id) {
-    const selectQueryStr = `
-        SELECT * FROM order_address WHERE id = ?
-    `;
-
-    const response = await selectQuery(selectQueryStr, id);
-    if (response.length > 0) {
-        const { id, ...data } = response[0];
-        console.log(data, 'DATA TO DUPLICATE')
-        const newId = await insertQuery(`INSERT INTO order_address (
-  street,
-  city,
-  zip,
-  country,
-  phone,
-  email,
-  user_id,
-  name) values (?, ?, ?, ?, ?, ?, ?, ?);`,
-            [
-                data.street,
-                data.city,
-                data.zip,
-                data.country,
-                data.phone,
-                data.email,
-                data.user_id,
-                data.name
-            ])
-        return newId[0].insertId;
-    }
-    return null;
-}
-
-
 async function movePositionUp(positionId) {
     try {
         const currentPosition = await selectQuery('SELECT order_id, id FROM order_item WHERE id = ?', [positionId]);
@@ -441,7 +407,6 @@ async function movePositionDown(positionId) {
 module.exports = {
     insertNewForm,
     getPosition,
-    duplicateOrderAddress,
     getLastChoice,
     updatePosition,
     deletePosition,

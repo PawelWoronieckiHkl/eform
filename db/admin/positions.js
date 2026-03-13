@@ -232,43 +232,9 @@ async function duplicateSendAddress(id) {
     return null;
 }
 
-async function duplicateOrderAddress(id) {
-    const selectQueryStr = `
-        SELECT * FROM order_address WHERE id = ?
-    `;
-
-    const response = await selectQuery(selectQueryStr, id);
-    if (response.length > 0) {
-        const { id, ...data } = response[0];
-        console.log(data, 'DATA TO DUPLICATE')
-        const newId = await insertQuery(`INSERT INTO order_address (
-  street,
-  city,
-  zip,
-  country,
-  phone,
-  email,
-  user_id,
-  name) values (?, ?, ?, ?, ?, ?, ?, ?);`,
-            [
-                data.street,
-                data.city,
-                data.zip,
-                data.country,
-                data.phone,
-                data.email,
-                data.user_id,
-                data.name
-            ])
-        return newId[0].insertId;
-    }
-    return null;
-}
-
 module.exports = {
     insertNewForm,
     getPosition,
-    duplicateOrderAddress,
     getLastChoice,
     updatePosition,
     deletePosition,

@@ -1,9 +1,24 @@
 import { showToast } from "./components/toast.js";
 import { createInfoDialog } from "./components/htmlManipulator.js";
+import { confirmPrompt } from "./components/confirmPrompt.js";
 import { validate } from './base.js'
 
 const otherAddrFlag = { value: false };
 const addrFlag = { value: false };
+
+async function confirmMissingAddress() {
+	const addrId = document.getElementById('address-select')?.value;
+	if (!addrId && !otherAddrFlag.value) {
+		return await confirmPrompt({
+			title: t('new_order.no_address_title') || 'Brak adresu',
+			message: t('new_order.no_address_message') || 'Nie wybrałeś żadnego adresu, zostanie pobrany adres do faktur',
+			confirmLabel: t('orders.accept') || 'OK',
+			cancelLabel: t('orders.abort') || 'Anuluj',
+			icon: 'bi bi-exclamation-triangle'
+		});
+	}
+	return true;
+}
 async function prepareRestData() {
 
 	const orderCommision = document.getElementById("commission-input").value;
@@ -210,29 +225,26 @@ const newOrderButton = document.getElementById("save-order-btn");
 if (updateOrderButton) {
 
 	const orderId = updateOrderButton.dataset.id;
-	updateOrderButton.addEventListener('click', () => {
-		if (validate('.validate')) {
+	updateOrderButton.addEventListener('click', async () => {
+		if (validate('.validate') && await confirmMissingAddress()) {
 			updateOrder(orderId)
 		}
 	})
 }
 
 else if (newOrderButton) {
-	const runCreateOrder = () => {
-		if (validate('.validate')) {
+	const runCreateOrder = async () => {
+		if (validate('.validate') && await confirmMissingAddress()) {
 			createOrder();
-		} else {
-			console.log('no nie true');
-			return;
 		}
 	};
 
 	newOrderButton.addEventListener('click', runCreateOrder);
 
 	document.addEventListener('keydown', (event) => {
-		
+
 		if (event.key === 'Enter') {
-			event.preventDefault(); 
+			event.preventDefault();
 			runCreateOrder();
 		}
 	});

@@ -24,7 +24,7 @@ async function getUserAddresses(userId, orderId = null) {
 
     query = `SELECT id, name, phone_number AS phone, street, city, zip, country FROM delivery_address WHERE user_id = ?`;
     if (orderId) {
-        query += ` AND id = (SELECT order_address_id FROM \`order\` WHERE id = ?)`;
+        query += ` AND id = (SELECT delivery_address_id FROM \`order\` WHERE id = ?)`;
     }
     const addresses = await selectQuery(query, orderId ? [userId, orderId] : [userId]);
     return addresses;

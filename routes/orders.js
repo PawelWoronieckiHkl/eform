@@ -570,7 +570,6 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
 
 
 router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res) => {
-    let orderAddress = null;
     let sendAddress = null;
 
     const orderId = req.params.orderId;
@@ -579,14 +578,11 @@ router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res
         return res.status(404).json({ status: "error", message: "Nie znaleziono zamówienia" });
     }
 
-    if (orderDetails?.order_address_id) {
-        orderAddress = await db.duplicateOrderAddress(orderDetails.order_address_id);
-    }
     if (orderDetails?.send_address_id) {
         sendAddress = await db.duplicateSendAddress(orderDetails.send_address_id);
     }
 
-    const newOrderId = await db.insertNewOrder(orderDetails.commision, orderAddress, orderDetails.user_id, orderDetails.comment, sendAddress);
+    const newOrderId = await db.insertNewOrder(orderDetails.commision, orderDetails.delivery_address_id || null, orderDetails.user_id, orderDetails.comment, sendAddress, 0, null, orderDetails.contact_info_id || null);
     if (!newOrderId) {
         return res.status(500).json({ status: "error", message: "Nie udało się skopiować zamówienia" });
     }
@@ -648,7 +644,7 @@ router.post('/save-order', requireLogin, async (req, res) => {
             id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, req.session?.employee.id ?? null, mailId);
         }
         else {
-            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, null, mailId );
+            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, null, mailId);
         }
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: `/orders/order/${id}` });
     }
@@ -660,18 +656,15 @@ router.post('/save-order', requireLogin, async (req, res) => {
 
 router.put('/update-order/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
     try {
-        const { commission, orderContactInfo, orderSendAddress, comment } = req.body;
+        const { commission, addrId, mailId, orderSendAddress, comment } = req.body;
         const { orderId } = req.params;
         const existingOrder = await db.getOrderDetails(orderId);
         let response = false;
         if (existingOrder) {
-            response = await db.updateOrderDetails(orderId, comment, commission, orderContactInfo, orderSendAddress);
+            response = await db.updateOrderDetails(orderId, comment, commission, addrId || null, mailId || null, orderSendAddress);
         }
         else {
-            response = await db.insertOrderAddress(orderContactInfo)
-            const addrId = response[0].insertId;
-            const currentUser = ownerService.getCurrentUser(req);
-            response = db.insertNewOrder(commission, addrId, currentUser.userId);
+            return res.status(404).json({ status: "error", message: "Nie znaleziono zamówienia" });
         }
 
         return res.json({ response: response, redirect: `/orders/order/${orderId}` });

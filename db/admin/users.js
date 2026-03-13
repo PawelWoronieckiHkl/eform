@@ -247,7 +247,7 @@ async function updateUserById(userId, updateData) {
 
 async function getUserAddresses(userId) {
 
-    const query = 'select a.id,a.street,a.city,a.zip,a.country,a.phone,a.email,o.commision, o.user_id  from `order` o join order_address a on o.order_address_id  = a.id where o.user_id =?';
+    const query = 'SELECT id, name, phone_number AS phone, street, city, zip, country FROM delivery_address WHERE user_id = ?';
     const addresses = await selectQuery(query, userId);
 
     return { addresses }

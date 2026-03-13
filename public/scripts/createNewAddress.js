@@ -16,7 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 ["city", "Miasto"],
                 ["zip", "Kod pocztowy"],
                 ["country", "Kraj"]
-            ], '/address/add-delivery-address');
+            ], '/address/add-delivery-address', {
+                onSubmit: async (response) => {
+                    await refreshUserAddressList(response?.data?.id);
+                }
+            });
         });
     }
 
@@ -69,17 +73,29 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
             class: ["form-label", "mb-1"]
         }, wrapper);
 
-        const inputElement = createElement("input", {
-            type: inputConfig.type,
-            id: inputConfig.id,
-            name: inputConfig.name,
-            placeholder: inputConfig.placeholder,
-            value: initialData[inputConfig.name] ?? inputConfig.value,
-            class: ["form-control"]
-        }, wrapper);
+        if (inputConfig.name === "country") {
+            const countryInput = createElement("input", {
+                type: "text",
+                id: inputConfig.id,
+                name: inputConfig.name,
+                placeholder: inputConfig.placeholder,
+                class: ["form-control"]
+            }, wrapper);
 
-        if (inputConfig.required) {
-            inputElement.required = true;
+            inputConfig._isCountrySelect = true;
+        } else {
+            const inputElement = createElement("input", {
+                type: inputConfig.type,
+                id: inputConfig.id,
+                name: inputConfig.name,
+                placeholder: inputConfig.placeholder,
+                value: initialData[inputConfig.name] ?? inputConfig.value,
+                class: ["form-control"]
+            }, wrapper);
+
+            if (inputConfig.required) {
+                inputElement.required = true;
+            }
         }
     });
 
@@ -108,6 +124,12 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
             const payload = {};
 
             for (const inputConfig of preparedInputs) {
+                if (inputConfig._isCountrySelect) {
+                    const codeInput = document.getElementById(inputConfig.id + "_code");
+                    payload[inputConfig.name] = codeInput ? codeInput.value.trim() : "";
+                    continue;
+                }
+
                 const inputElement = document.getElementById(inputConfig.id);
                 if (!inputElement) {
                     continue;
@@ -116,6 +138,12 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
                 const value = inputElement.value.trim();
 
                 if (inputConfig.required && !value) {
+                    inputElement.focus();
+                    inputElement.reportValidity();
+                    return;
+                }
+
+                if (value && !inputElement.checkValidity()) {
                     inputElement.focus();
                     inputElement.reportValidity();
                     return;
@@ -149,6 +177,18 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
         dialog.setAttribute("open", "");
     }
 
+    // Initialize countrySelect on country fields after dialog is in the DOM
+    preparedInputs.forEach((inputConfig) => {
+        if (inputConfig._isCountrySelect && typeof $ !== "undefined" && $.fn.countrySelect) {
+            const $el = $(`#${inputConfig.id}`);
+            const initCountry = initialData[inputConfig.name] || "pl";
+            $el.countrySelect({
+                preferredCountries: ["pl", "de", "gb", "nl", "fr"],
+                defaultCountry: initCountry.length === 2 ? initCountry.toLowerCase() : "pl"
+            });
+        }
+    });
+
     return dialog;
 }
 
@@ -167,12 +207,14 @@ function normalizeInputConfig(input) {
 
         const extraConfig = input[2] && typeof input[2] === "object" ? input[2] : {};
 
+        const isEmailField = ["mail", "email"].includes(rawName.toLowerCase());
+
         return {
             name: rawName,
             id: `${toSafeId(rawName)}-input`,
             label,
-            type: extraConfig.type || "text",
-            placeholder: extraConfig.placeholder || "",
+            type: extraConfig.type || (isEmailField ? "email" : "text"),
+            placeholder: extraConfig.placeholder || (isEmailField ? "nazwa@domena.pl" : ""),
             required: Boolean(extraConfig.required),
             value: extraConfig.value || ""
         };
@@ -186,6 +228,53 @@ function toSafeId(value) {
         .toLowerCase()
         .replace(/[^a-z0-9_-]+/g, "-")
         .replace(/^-+|-+$/g, "");
+}
+
+async function refreshUserAddressList(selectedAddressId = null) {
+    const addressSelect = document.getElementById("address-select");
+    if (!addressSelect) {
+        return;
+    }
+
+    const response = await fetch('/address/list', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Blad podczas odswiezania adresow: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    const addresses = Array.isArray(result.addresses) ? result.addresses : [];
+
+    addressSelect.innerHTML = '';
+
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Wybierz adres dostawy';
+    placeholderOption.disabled = true;
+    addressSelect.appendChild(placeholderOption);
+
+    addresses.forEach((address) => {
+        const option = document.createElement('option');
+        option.value = String(address.id);
+        option.textContent = `${address.name}  (${address.street} ${address.city} ${address.zip} ${address.country})`;
+
+        if (selectedAddressId && String(address.id) === String(selectedAddressId)) {
+            option.selected = true;
+        }
+
+        addressSelect.appendChild(option);
+    });
+
+    if (!selectedAddressId) {
+        placeholderOption.selected = true;
+    }
+
+    addressSelect.dispatchEvent(new Event('change'));
 }
 
 async function sendAddressData(url, data, method = "POST") {

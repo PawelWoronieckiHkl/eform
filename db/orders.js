@@ -6,10 +6,10 @@ const { result } = require('lodash');
 
 async function getOrderWithItems(orderId) {
 
-    const orderItemsQuery = 'SELECT * FROM order_item WHERE order_id LIKE ?';
+    const orderItemsQuery = 'SELECT * FROM order_item WHERE order_id = ?';
     const orderItems = await selectQuery(orderItemsQuery, orderId);
 
-    const orderDetailsQuery = 'SELECT * FROM \`order\` WHERE id LIKE ?';
+    const orderDetailsQuery = 'SELECT * FROM \`order\` WHERE id = ?';
     let orderDetails = await selectQuery(orderDetailsQuery, orderId);
     orderDetails = dateUtils.humanizeData(orderDetails);
 
@@ -32,12 +32,14 @@ async function getOrderDetails(orderId) {
     \`order\`.comment,
     \`order\`.delivery_address_id,
     \`order\`.contact_info_id,
-    order_address.id as address_id,
-    order_address.street,
-    order_address.phone,
-    order_address.email,
-    order_address.city,
-    order_address.zip,
+    da.id as address_id,
+    da.street,
+    da.phone_number as phone,
+    da.city,
+    da.zip,
+    da.name,
+    da.country,
+    ci.email,
     send_address.id as send_address_id,
     send_address.name as send_name,
     send_address.street as send_street,
@@ -45,66 +47,27 @@ async function getOrderDetails(orderId) {
     send_address.email as send_email,
     send_address.city as send_city,
     send_address.zip as send_zip,
-    send_address.country as send_country,
-    order_address.name,
-    order_address.country
+    send_address.country as send_country
     FROM \`order\`
-    LEFT JOIN order_address ON \`order\`.order_address_id = order_address.id
+    LEFT JOIN delivery_address da ON \`order\`.delivery_address_id = da.id
+    LEFT JOIN contact_info ci ON \`order\`.contact_info_id = ci.id
     LEFT JOIN send_address ON \`order\`.send_address_id = send_address.id
     WHERE \`order\`.id = ?`;
 
     let orderDetails = await selectQuery(orderDetailsQuery, orderId);
-    
+
     orderDetails = dateUtils.humanizeData(orderDetails);
     return orderDetails[0];
 }
 
 
-async function updateOrderDetails(orderId, comment, commission, contactInfo, sendAddress) {
+async function updateOrderDetails(orderId, comment, commission, deliveryAddressId, contactInfoId, sendAddress) {
     let values;
-    let query = `UPDATE \`order\` SET commision = ?, comment = ? WHERE id = ?`;
+    let query = `UPDATE \`order\` SET commision = ?, comment = ?, delivery_address_id = ?, contact_info_id = ? WHERE id = ?`;
 
-    const res = await updateQuery(query, [commission, comment, orderId]);
+    const res = await updateQuery(query, [commission, comment, deliveryAddressId || null, contactInfoId || null, orderId]);
 
-    
-    if (contactInfo) {
-        
-        const orderAddressId = await getOrderAddressId(orderId);
-        if (!orderAddressId) {
-            
-            const newOrderAddrId = await insertOrderAddress(contactInfo);
-            query = `UPDATE \`order\` SET order_address_id = ? WHERE id = ?`;
-            await updateQuery(query, [newOrderAddrId, orderId]);
-        } else {
-            
-            query = `
-                UPDATE \`order\`
-                JOIN order_address ON \`order\`.order_address_id = order_address.id
-                SET 
-                    order_address.name = ?,
-                    order_address.street = ?,
-                    order_address.phone = ?,
-                    order_address.email = ?,
-                    order_address.city = ?,
-                    order_address.zip = ?,
-                    order_address.country = ?
-                WHERE \`order\`.id = ?
-            `;
-            values = [
-                contactInfo.name,
-                contactInfo.street,
-                contactInfo.phone,
-                contactInfo.email,
-                contactInfo.city,
-                contactInfo.zip,
-                contactInfo.country,
-                orderId
-            ];
-            await updateQuery(query, values);
-        }
-    }
 
-    
     if (sendAddress) {
         const sendAddressId = await getSendAddressId(orderId);
         if (!sendAddressId) {
@@ -144,55 +107,63 @@ async function updateOrderDetails(orderId, comment, commission, contactInfo, sen
 
 
 async function getSendAddressId(orderId) {
-    const sendAddQuery = 'SELECT send_address_id from \`order\` where id like ?';
+    const sendAddQuery = 'SELECT send_address_id from \`order\` where id = ?';
     const sendAddId = await selectQuery(sendAddQuery, orderId);
     if (!sendAddId[0]?.send_address_id) {
         return false;
-    };
+    }
+    return sendAddId[0].send_address_id;
 }
 async function getOrderNo(orderId) {
-    const query = 'SELECT order_idx from \`order\` where id like ?';
+    const query = 'SELECT order_idx from \`order\` where id = ?';
     const orderNo = await selectQuery(query, orderId);
     if (!orderNo[0]?.order_idx) {
         return false;
     };
     return orderNo[0]?.order_idx;
 }
-async function getOrderAddressId(orderId) {
-    const sendAddQuery = 'SELECT order_address_id from \`order\` where id like ?';
-    const sendAddId = await selectQuery(sendAddQuery, orderId);
-    if (!sendAddId[0]?.order_address_id) {
+async function getDeliveryAddressId(orderId) {
+    const query = 'SELECT delivery_address_id from \`order\` where id = ?';
+    const result = await selectQuery(query, orderId);
+    if (!result[0]?.delivery_address_id) {
         return false;
-    };
+    }
+    return result[0].delivery_address_id;
 }
 
 async function getOrderDataToSend(orderId) {
-    const orderItemsQuery = 'SELECT * FROM order_item WHERE order_id LIKE ?';
+    const orderItemsQuery = 'SELECT * FROM order_item WHERE order_id = ?';
     const orderItems = await selectQuery(orderItemsQuery, orderId);
-    const sendAddQuery = 'SELECT send_address_id from \`order\` where id like ?';
-    const sendAddId = await selectQuery(sendAddQuery, orderId);
+    const orderFlagsQuery = 'SELECT send_address_id, delivery_address_id, contact_info_id FROM `order` WHERE id = ?';
+    const orderFlags = await selectQuery(orderFlagsQuery, orderId);
+    const hasSendAddress = !!orderFlags[0]?.send_address_id;
+    const hasDeliveryAddress = !!orderFlags[0]?.delivery_address_id;
     let orderDetailsQuery = '';
 
-    if (!sendAddId[0]?.send_address_id) {
-
-        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment,o.total_price,o.total_price_hidden, u.client_name , u.tax_id, u.ident as user_ident,org.ident as org_ident,o.commision as name,u.street,u.zip,u.city,u.country, u.phone, u.email
-FROM eform.\`order\` o 
-join \`user\` u on  u.id = o.user_id
-join organization org on org.id = o.organization_id 
-where o.id like ?
-`}
-    else {
-
-        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.comment, o.order_idx, u.client_name , u.tax_id, u.ident as user_ident,org.ident as org_ident,s.name,s.street,s.zip,s.city,s.country, s.phone, s.email
-FROM \`order\` o 
-join \`user\` u on  u.id = o.user_id
-join send_address s on s.id = o.send_address_id 
-join organization org on org.id = o.organization_id 
-where o.id like ?`
+    if (hasSendAddress) {
+        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.comment, o.order_idx, o.total_price, o.total_price_hidden, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, s.name, s.street, s.zip, s.city, s.country, s.phone, s.email
+FROM \`order\` o
+join \`user\` u on u.id = o.user_id
+join send_address s on s.id = o.send_address_id
+join organization org on org.id = o.organization_id
+where o.id = ?`;
+    } else if (hasDeliveryAddress) {
+        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, da.name, da.street, da.zip, da.city, da.country, da.phone_number as phone, COALESCE(ci.email, u.email) as email
+FROM \`order\` o
+join \`user\` u on u.id = o.user_id
+join delivery_address da on da.id = o.delivery_address_id
+left join contact_info ci on ci.id = o.contact_info_id
+join organization org on org.id = o.organization_id
+where o.id = ?`;
+    } else {
+        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, o.commision as name, u.street, u.zip, u.city, u.country, u.phone, u.email
+FROM \`order\` o
+join \`user\` u on u.id = o.user_id
+join organization org on org.id = o.organization_id
+where o.id = ?`;
     }
 
     let orderDetails = await selectQuery(orderDetailsQuery, orderId);
-    
     orderDetails = dateUtils.humanizeData(orderDetails)[0];
 
     return { orderDetails, orderItems }
@@ -200,7 +171,7 @@ where o.id like ?`
 
 
 async function deleteOrder(orderId) {
-    const query = "DELETE FROM \`order\` WHERE id like ?";
+    const query = "DELETE FROM \`order\` WHERE id = ?";
     const response = await deleteQuery(query, orderId);
     return response;
 }
@@ -211,10 +182,10 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
 
 
     if (organization) {
-        
+
         if (!sent) {
             query = `
-             SELECT o.id,o.user_id,o.order_address_id, o.commision,o.total_price,o.created_date,o.sent_date,o.organization_id,o.comment,o.status,o.send_address_id,o.order_idx, u.ident as user_ident FROM \`order\` o
+             SELECT o.id,o.user_id,o.delivery_address_id, o.commision,o.total_price,o.created_date,o.sent_date,o.organization_id,o.comment,o.status,o.send_address_id,o.order_idx, u.ident as user_ident FROM \`order\` o
             join \`user\` u on o.user_id = u.id
             WHERE o.organization_id = ? and o.status like 'active'
             ORDER BY o.id DESC 
@@ -222,7 +193,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
         `;
         } else {
             query = `
-            SELECT o.id,o.user_id,o.order_address_id, o.commision,o.total_price,o.created_date,o.sent_date,o.organization_id,o.comment,o.status,o.send_address_id,o.order_idx, u.ident as user_ident FROM \`order\` o
+            SELECT o.id,o.user_id,o.delivery_address_id, o.commision,o.total_price,o.created_date,o.sent_date,o.organization_id,o.comment,o.status,o.send_address_id,o.order_idx, u.ident as user_ident FROM \`order\` o
             join \`user\` u on o.user_id = u.id
             WHERE o.organization_id = ? and o.status like 'sent'
             ORDER BY o.sent_date DESC 
@@ -249,7 +220,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
 
     if (!sent) {
         query = `
-        SELECT o.id, o.user_id, o.order_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.value, o.total_price_hidden, o.employee_id
+        SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.value, o.total_price_hidden, o.employee_id
 ,e.id as emp_id, e.name, e.surname FROM \`order\` o 
         left join employee e on e.id = o.employee_id
         WHERE  o.user_id = ? ${sqlInput} and o.status like 'active'
@@ -259,7 +230,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
     }
     else {
         query = `
-        SELECT o.id, o.user_id, o.order_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.value, o.total_price_hidden, o.employee_id
+        SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.value, o.total_price_hidden, o.employee_id
 ,e.id as emp_id, e.name, e.surname FROM \`order\` o 
         left join employee e on e.id = o.employee_id
         WHERE o.user_id = ? ${sqlInput} and o.status like 'sent'
@@ -278,7 +249,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
 
         const result = dateUtils.humanizeData(rows);
         if (result.length == 0) { return false }
-        
+
         return result;
     }
     catch (err) {
@@ -299,7 +270,7 @@ async function countUserOrders(userId, sent = false, organization = false, emplo
     try {
         let count
         if (organization) {
-            
+
             if (!sent) {
                 count = await selectQuery(
                     "SELECT COUNT(*) as count FROM `order` WHERE organization_id = ? and status like 'active'", organization
@@ -338,29 +309,6 @@ async function countUserOrders(userId, sent = false, organization = false, emplo
     }
 }
 
-async function insertOrderAddress(address) {
-    const query = `INSERT INTO order_address(name,street,city,zip,country,phone,email) values (?,?,?,?,?,?,?)`
-    try {
-        const response = await insertQuery(query,
-            [
-                address['name'],
-                address['street'],
-                address['city'],
-                address['zip'],
-                address['country'],
-                address['phone'],
-                address['email']])
-
-        return response[0]?.insertId;
-
-    }
-
-    catch (err) {
-        console.error(err);
-        return false;
-    }
-}
-
 async function insertSendAddress(address) {
     const query = `INSERT INTO send_address(name,street,city,zip,country,phone,email) values (?,?,?,?,?,?,?)`
     try {
@@ -385,7 +333,11 @@ async function insertSendAddress(address) {
 }
 
 async function insertNewOrder(commision, addressId, userId, comment, sendAddressId = null, totalPrice = 0, employeeId = null, mailId = null) {
-    
+    addressId = addressId || null;
+    mailId = mailId || null;
+    sendAddressId = sendAddressId || null;
+    employeeId = employeeId || null;
+
     const query = `INSERT INTO \`order\` 
     (user_id,
     delivery_address_id,
@@ -410,8 +362,8 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
                 userId,
                 comment,
                 dateUtils.getDbTimestamp(),
-                sendAddressId !== undefined && sendAddressId !== null ? sendAddressId : null,
-                mailId ?? null,
+                sendAddressId,
+                mailId,
                 employeeId
             ]
         )
@@ -478,7 +430,7 @@ async function saveDiscount(orderId, discountPercentage, discountValue) {
     const query = `UPDATE \`order\` SET client_discount_percentage = ?, client_discount_value = ? WHERE id = ?`;
     try {
         const response = await updateQuery(query, [discountPercentage, discountValue, orderId]);
-        
+
         return {
             discountPercentage: response[0]?.client_discount_percentage,
             discountValue: response[0]?.client_discount_value
@@ -500,10 +452,10 @@ async function getDiscount(orderId) {
 }
 
 async function getOrderWithItems(orderId) {
-    const orderItemsQuery = 'SELECT * FROM order_item WHERE order_id LIKE ?';
+    const orderItemsQuery = 'SELECT * FROM order_item WHERE order_id = ?';
     const orderItems = await selectQuery(orderItemsQuery, orderId);
 
-    const orderDetailsQuery = 'SELECT * FROM `order` WHERE id LIKE ?';
+    const orderDetailsQuery = 'SELECT * FROM `order` WHERE id = ?';
     let orderDetails = await selectQuery(orderDetailsQuery, orderId);
     orderDetails = dateUtils.humanizeData(orderDetails);
 
@@ -518,7 +470,7 @@ module.exports = {
     deleteOrder,
     getUserOrders,
     countUserOrders,
-    insertOrderAddress,
+    getDeliveryAddressId,
     insertNewOrder,
     updateOrderComment,
     changeOrderStatus,

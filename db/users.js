@@ -57,7 +57,7 @@ async function getPolicyState(pin) {
 }
 
 
-async function insertUserIntousrtble(ident,pin,password){
+async function insertUserIntousrtble(ident, pin, password) {
     const query = `INSERT INTO eform.usrtblpsswd (ident, pin, password) VALUES (?, ?, ?)`;
     let result = await insertQuery(query, [ident, pin, password]);
     return result;
@@ -288,7 +288,7 @@ async function updatePlain(userId, plainPassword) {
 
 async function getUserAddresses(userId) {
 
-    const query = 'select a.id,a.street,a.city,a.zip,a.country,a.phone,a.email,o.commision, o.user_id  from `order` o join order_address a on o.order_address_id  = a.id where o.user_id =?';
+    const query = 'SELECT id, name, phone_number AS phone, street, city, zip, country FROM delivery_address WHERE user_id = ?';
     const addresses = await selectQuery(query, userId);
 
     return { addresses }
@@ -324,7 +324,7 @@ async function getEmployeeByLogin(login) {
 async function addEmployee(employeeData) {
     const { name, surname, login, password, phone, userId } = employeeData;
     console.log('jestem w addEmployee', employeeData)
-    
+
     const checkEmployeeQuery = `SELECT id FROM employee WHERE login = ?`;
     const checkUserQuery = `SELECT id FROM eform.\`user\` WHERE pin = ?`;
     const existingEmployee = await selectQuery(checkEmployeeQuery, [login]);
@@ -346,7 +346,7 @@ async function addEmployee(employeeData) {
 
     try {
         const result = await insertQuery(sql, [name, surname, login, hashedPassword, phone, userId]);
-        return { insertId: result.insertId , success: true };
+        return { insertId: result.insertId, success: true };
     } catch (err) {
         throw new Error('Błąd przy dodawaniu pracownika: ' + err.message);
     }
@@ -355,11 +355,11 @@ async function addEmployee(employeeData) {
 
 async function deleteEmployee(employeeId) {
     try {
-        
+
         const updateSql = `UPDATE \`order\` SET employee_id = NULL WHERE employee_id = ?`;
         await updateQuery(updateSql, [employeeId]);
-        
-        
+
+
         const deleteSql = `DELETE FROM employee WHERE id = ?`;
         return await deleteQuery(deleteSql, [employeeId]);
     } catch (error) {
@@ -422,7 +422,7 @@ async function updateEmployee(employeeId, updatedData) {
     try {
         const result = await updateQuery(sql, values);
         return result;
-    }       catch (err) {
+    } catch (err) {
         throw new Error('Błąd przy aktualizacji pracownika: ' + err.message);
     }
 }
