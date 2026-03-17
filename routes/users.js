@@ -10,6 +10,7 @@ const langVer = require('../services/languageManager')
 const { dataDir, localesDir } = require('../config');
 const path = require("path");
 const { updateClients } = require('../services/dbUserSync');
+const { get } = require('lodash');
 const hashUser = require('../utils/hashUser').hashUser;
 
 
@@ -81,7 +82,7 @@ router.get("/auth/login", async (req, res, next) => {
 
 router.post("/auth/login", async (req, res, next) => {
     const { pin, password } = req.body;
-    return handleAuthLogin(req, res, next, pin, password);
+    return authService.handleAuthLogin(req, res, next, pin, password);
 });
 
 router.get('/edit-user', requireLogin, async (req, res) => {
@@ -248,8 +249,9 @@ router.post("/auth/check-password", async (req, res, next) => {
         const { password, remember, orderId } = req.body;
         const currentUser = req.session.user
         const pin = currentUser.pin;
+        const role = await db.getUserRole(pin);
         let isValid = await authService.checkPassword(pin, password);
-        if (pin === 'admin') {
+        if (role === 'admin') {
             isValid = true;
         }
         let redirectUrl;

@@ -215,6 +215,13 @@ async function getUserName(pin) {
     return result[0].client_name;
 }
 
+async function getUserRole(pin) {
+    const query = `SELECT role FROM \`user\` WHERE pin LIKE ?`;
+    const result = await selectQuery(query, [pin]);
+    return result && result.length > 0 ? result[0].role : null;
+}
+
+
 
 async function addUser(userData) {
     const {
@@ -479,5 +486,6 @@ module.exports = {
     deleteUserByPin,
     logEmployeeLogin,
     getOrgInfo,
-    insertUserIntousrtble
+    insertUserIntousrtble,
+    getUserRole
 }

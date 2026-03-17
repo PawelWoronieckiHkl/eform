@@ -9,23 +9,39 @@ function requireLogin(req, res, next) {
   next();
 }
 
-async function addOrganizationsForAdmin(req, res, next) {
-  
-  const originalRender = res.render;
+function addOrganizationsForAdmin(req, res, next) {
+  const originalRender = res.render.bind(res);
 
-  res.render = async function (view, options = {}) {
-    if (req.session.user && req.session.user.isAdmin) {
-      try {
-        const orgs = await usersDb.getAllOrganizations();
-        options.organizations = customOrgSorting(orgs);
-        options.admin = true;
-      } catch (error) {
-        console.error('Error fetching organizations:', error);
-        options.organizations = [];
-      }
+  res.render = function (view, options, callback) {
+    let renderOptions = options;
+    let renderCallback = callback;
+
+    if (typeof renderOptions === 'function') {
+      renderCallback = renderOptions;
+      renderOptions = {};
     }
 
-    return originalRender.call(this, view, options);
+    if (!renderOptions || typeof renderOptions !== 'object') {
+      renderOptions = {};
+    }
+
+    if (!req.session.user || !req.session.user.isAdmin) {
+      return originalRender(view, renderOptions, renderCallback);
+    }
+
+    usersDb.getAllOrganizations()
+      .then((orgs) => {
+        const organizations = Array.isArray(orgs) ? orgs : [];
+        renderOptions.organizations = customOrgSorting(organizations);
+        renderOptions.admin = true;
+        originalRender(view, renderOptions, renderCallback);
+      })
+      .catch((error) => {
+        console.error('Error fetching organizations:', error);
+        renderOptions.organizations = [];
+        renderOptions.admin = true;
+        originalRender(view, renderOptions, renderCallback);
+      });
   };
 
   next();
@@ -34,7 +50,7 @@ async function addOrganizationsForAdmin(req, res, next) {
 
 function requirePermission(req, res, next) {
   if (req.session.user?.isOwner) {
-    return next(); 
+    return next();
   }
   const sessionShow = req.session.user?.showPrices;
   const paramShow = req.session.user?.showPricesOnce ?? false;
@@ -49,7 +65,7 @@ function requirePermission(req, res, next) {
 async function checkOrderOwnership(req, res, next) {
   try {
     if (req.session.user?.isOwner) {
-      return next(); 
+      return next();
     }
 
     const userId = req.session.user?.userId;

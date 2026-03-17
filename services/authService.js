@@ -22,7 +22,8 @@ async function handleAuthLogin(req, res, next, pin, password) {
             const userId = await db.getUserId(pin)
             req.session.user = { userId, pin, password, showPrices: false, organization: (owner.orgIdent).toUpperCase(), orgId: owner.orgId, ident: owner.userIdent };
             req.session.user.isOwner = await isOwner(owner);
-            req.session.user.isAdmin = pin == "admin";
+            const role = await db.getUserRole(pin);
+            req.session.user.isAdmin = role === "admin";
 
             await logService.logUserLogin(pin, await db.getUserIdent(pin));
             langVer.checkTranslateLegacy(localesDir)
@@ -130,4 +131,4 @@ async function checkEmployeePassword(login, password) {
 }
 
 
-module.exports = { checkPassword, checkFirstLogon, checkEmployeePassword, handleAuthLogin };
+module.exports = { checkPassword, checkFirstLogon, checkEmployeePassword, handleAuthLogin};

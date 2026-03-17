@@ -223,7 +223,7 @@ async function updateExistingClients(clientsToUpdate) {
 }
 
 async function deleteNonExistingClients(clientsToDelete) {
-  const excludedPins = new Set(['0000', 'admin', '000000']);
+  const excludedPins = new Set(['0000', 'admin', '000000', 'biuro']);
 
   let deleted = 0;
   let skipped = 0;
