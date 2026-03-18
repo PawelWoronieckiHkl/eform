@@ -10,6 +10,7 @@ export function createInfoIcon({
     downloadLabel = "Pobierz",
 } = {}) {
     const hasInfo = info && info !== "<NULL>" && `${info}`.trim() !== "";
+    console.log('Creating info icon with info:', info);
     if (!hasInfo || !parent) {
         return null;
     }
@@ -17,7 +18,9 @@ export function createInfoIcon({
     const rawInfo = `${info}`;
     const bracketMatch = rawInfo.match(/<([^>]+\.[^>]+)>/);
     const extractedFilePath = bracketMatch ? bracketMatch[1].trim() : null;
+
     const cleanInfoText = rawInfo.replace(/<[^>]+>/g, "").trim();
+    console.log('Clean info text:', cleanInfoText);
     let infoIcon;
     const iconLabel = cleanInfoText || defaultLabel;
     if (infoStyle == 'i') {
@@ -30,7 +33,7 @@ export function createInfoIcon({
     } else if (infoStyle == 'btn-cupon') {
         infoIcon = createElement("span", {
             class: ["param-info-icon", "param-info-cupon"],
-            text: "Coupon",
+            text: cleanInfoText,
             tabindex: "0",
             "aria-label": iconLabel
         }, parent);

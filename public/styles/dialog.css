@@ -179,11 +179,7 @@ dialog::backdrop {
 	z-index: 1000;
 }
 
-.image-box-top .param-info-icon:hover .param-info-tooltip,
-.image-box-top .param-info-icon:focus .param-info-tooltip,
-.image-box-top .param-info-icon:focus-within .param-info-tooltip {
-	transform: translate(-50%, 0);
-}
+
 
 .image-box-top .param-info-icon::before {
 	top: calc(100% + 4px);
@@ -443,7 +439,9 @@ dialog::backdrop {
 	padding: 4px 12px;
 	font-size: 0.75rem;
 	font-weight: 600;
-	width: 70%;
+	width: 90%;
+	height: 20%;
+	max-height: fit-content;
 }
 @media (max-width: 560px) {
 	.extra-info-panel {
