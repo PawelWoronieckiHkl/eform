@@ -32,7 +32,7 @@ export function createInfoIcon({
         }, parent);
     } else if (infoStyle == 'btn-cupon') {
         infoIcon = createElement("span", {
-            class: ["param-info-icon", "param-info-cupon"],
+            class: ["param-info-cupon"],
             text: cleanInfoText,
             tabindex: "0",
             "aria-label": iconLabel

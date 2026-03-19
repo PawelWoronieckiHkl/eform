@@ -838,16 +838,19 @@ export class DialogManager {
           else if (status == "ZERO") {
             colorBox.classList.add("unavailable")
           }
-          if (status == 'COUPON') {
-            option.IS_CUPON = true;}
+          const attrDescText = String(option?.ATTR_DESC ?? '');
+          console.log(option?.ATTR_DESC)
+          if (attrDescText.includes('KUPON')) {
+            option.IS_CUPON = true;
+          }
           // Zawsze twórz badge dla statusu
           circleElem = createElement('span', {
             class: ['stock-badge', info.class],
             'aria-hidden': 'true'
           });
 
-          if (option?.ATTR_DESC) {
-            let date = chcekIfDateDeliveryCorrect(option.ATTR_DESC);
+          if (attrDescText) {
+            let date = chcekIfDateDeliveryCorrect(attrDescText);
             // ({ date, isCupon } = checkIfCupon(dateResult));
 
 

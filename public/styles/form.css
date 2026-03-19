@@ -125,13 +125,7 @@ input[type="number"]:focus {
 	transition: all 0.2s ease;
 	user-select: none;
 }
-.param-info-icon:hover,
-.param-info-icon:focus {
-	background-color: #f76707;
-	border-color: #f76707;
-	color: #ffffff;
-	outline: none;
-}
+
 .param-info-tooltip {
 	position: absolute;
 	left: 50%;
