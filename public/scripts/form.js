@@ -469,6 +469,7 @@ export async function updateProcedure({
   if (updateStates) {
     await updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value);
   }
+  console.log('valuesy ', values)
   window.checkedParams = findParamFromValues(values, allOptionsByParameter);
   if (afterSend) validateAllFieldsOnSubmit(inputs, values)
   if (resetDeps) resetDependences([params, displayValues], name, inputs, values, allOptionsByParameter);
