@@ -74,6 +74,25 @@ router.get('/list', requireLogin, async (req, res) => {
     }
 });
 
+router.get('/mail-list', requireLogin, async (req, res) => {
+    try {
+        const currentUser = ownerService.getCurrentUser(req);
+        const userId = await db.getUserId(currentUser.pin);
+        const emails = await db.getUserMails(userId);
+
+        return res.status(200).json({
+            success: true,
+            emails
+        });
+    } catch (error) {
+        console.error('Error fetching user mail addresses:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Błąd podczas pobierania listy adresów email'
+        });
+    }
+});
+
 
 router.post("/add-mail-address", requireLogin, async (req, res) => {
     try {
@@ -98,10 +117,12 @@ router.post("/add-mail-address", requireLogin, async (req, res) => {
             success: true,
             message: 'Adres email został zapisany',
             data: {
+                id: insertResult || null,
                 userId,
                 mail: email
             }
         });
+
     } catch (error) {
         console.error('Error adding mail address:', error);
         return res.status(500).json({

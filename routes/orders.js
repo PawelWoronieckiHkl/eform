@@ -532,7 +532,8 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             const lang = req.getLocale();
             const mail = await db.getUserMail(currentUser?.pin)
             const orderIdx = await db.getUserOrderId(req.params.orderId)
-            let mailList = [mail.user_email, mail.organization_email, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'];
+            const confirmationEmail = orderDetails?.email || mail.user_email;
+            let mailList = [confirmationEmail, mail.organization_email, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'];
             const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx)
             const orgData = await db.getOrgInfo(req.session.user.organization)
 

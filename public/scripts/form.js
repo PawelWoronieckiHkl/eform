@@ -315,22 +315,14 @@ export async function generateForm(
 
 
       inputs[key].addEventListener("input", function () {
-        if (this.tagName === "INPUT") {
-          
-            
-              
-              
-              
-            
+        if (this.tagName === "INPUT") { 
           
           console.log(this.tagName, 'input event, value:', this.value, 'name:', this.name);
           values[this.name] = roundInputValue(this.value);
 
-          
           if (inputDebounceTimer) {
             clearTimeout(inputDebounceTimer);
           }
-
           
           inputDebounceTimer = setTimeout(() => {
             updateProcedure({
@@ -342,13 +334,9 @@ export async function generateForm(
       });
 
 
-
-
     } else {
       inputs[key].addEventListener('change', function () {
-
         values[this.name] = this.value;
-
         window.lastChangedField = {
           name: this.name,
           value: this.value,
@@ -365,7 +353,6 @@ export async function generateForm(
   }
 
   document.getElementById('dialog-confirm').onclick = async () => {
-
 
     let valueToUpdate;
     let [selectedValue, paramName] = getInfoFromDialog(values, inputs, allOptionsByParameter);
@@ -391,8 +378,6 @@ export async function generateForm(
   window.formValues = values;
   window.formDisplayValues = displayValues;
   window.allOptionsByParameter = allOptionsByParameter;
-
-  
   setupFileRemovalListener(params, inputs, values, displayValues);
 
   return [inputs, values, displayValues, shortJson];
@@ -481,7 +466,6 @@ export async function updateProcedure({
   if (spin) {
     stopSpin()
   }
-  
   window.calculationQueue.shift();
 
   if (window.calculationQueue.length === 0) {

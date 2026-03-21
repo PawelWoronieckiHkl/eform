@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ["country", "Kraj"]
             ], '/address/add-delivery-address', {
                 onSubmit: async (response) => {
-                    await refreshUserAddressList(response?.data?.id);
+                    await refreshSelectList('address-select', '/address/list', response?.data?.id, 'address');
                 }
             });
         });
@@ -27,7 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (addMailBtn) {
         addMailBtn.addEventListener("click", (event) => {
             event.preventDefault();
-            openAddAddressModal([["mail", "Email"]], '/address/add-mail-address');
+            openAddAddressModal([["mail", "Email"]], '/address/add-mail-address', {
+                onSubmit: async (response) => {
+                    await refreshSelectList('mail-select', '/address/mail-list', response?.data?.id, 'mail');
+                }
+            });
         });
     }
 });
@@ -230,51 +234,84 @@ function toSafeId(value) {
         .replace(/^-+|-+$/g, "");
 }
 
-async function refreshUserAddressList(selectedAddressId = null) {
-    const addressSelect = document.getElementById("address-select");
-    if (!addressSelect) {
+/**
+ * Generyczna funkcja do odświeżania listy w select (adresy dostawy lub emaile)
+ * @param {string} selectId - ID elementu select do odświeżenia
+ * @param {string} apiUrl - URL do pobrania danych (np. '/address/list' lub '/address/mail-list')
+ * @param {number|string} selectedId - ID elementu do wybrania po odświeżeniu (opcjonalne)
+ * @param {string} type - Typ danych: 'address' lub 'mail'
+ */
+async function refreshSelectList(selectId, apiUrl, selectedId = null, type = 'address') {
+    const select = document.getElementById(selectId);
+    if (!select) {
         return;
     }
 
-    const response = await fetch('/address/list', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
 
-    if (!response.ok) {
-        throw new Error(`Blad podczas odswiezania adresow: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    const addresses = Array.isArray(result.addresses) ? result.addresses : [];
-
-    addressSelect.innerHTML = '';
-
-    const placeholderOption = document.createElement('option');
-    placeholderOption.value = '';
-    placeholderOption.textContent = 'Wybierz adres dostawy';
-    placeholderOption.disabled = true;
-    addressSelect.appendChild(placeholderOption);
-
-    addresses.forEach((address) => {
-        const option = document.createElement('option');
-        option.value = String(address.id);
-        option.textContent = `${address.name}  (${address.street} ${address.city} ${address.zip} ${address.country})`;
-
-        if (selectedAddressId && String(address.id) === String(selectedAddressId)) {
-            option.selected = true;
+        if (!response.ok) {
+            throw new Error(`Błąd podczas odświeżania listy: ${response.statusText}`);
         }
 
-        addressSelect.appendChild(option);
-    });
+        const result = await response.json();
 
-    if (!selectedAddressId) {
-        placeholderOption.selected = true;
+        // Obsługi różne struktury odpowiedzi w zależności od typu
+        let items = [];
+        if (type === 'mail') {
+            items = Array.isArray(result.emails) ? result.emails : [];
+        } else {
+            items = Array.isArray(result.addresses) ? result.addresses :
+                Array.isArray(result) ? result : [];
+        }
+
+        select.innerHTML = '';
+
+        // Utwórz placeholder
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.textContent = type === 'mail'
+            ? 'Wybierz adres Email'
+            : 'Wybierz adres dostawy';
+        placeholderOption.disabled = true;
+        select.appendChild(placeholderOption);
+
+        // Dodaj opcje
+        items.forEach((item) => {
+            const option = document.createElement('option');
+            option.value = String(item.id);
+
+            if (type === 'mail') {
+                option.textContent = item.email;
+            } else {
+                option.textContent = `${item.name}  (${item.street} ${item.city} ${item.zip} ${item.country})`;
+            }
+
+            if (selectedId && String(item.id) === String(selectedId)) {
+                option.selected = true;
+            }
+
+            select.appendChild(option);
+        });
+
+        if (!selectedId) {
+            placeholderOption.selected = true;
+        }
+
+        select.dispatchEvent(new Event('change'));
+    } catch (error) {
+        console.error('Błąd podczas odświeżania listy:', error);
     }
+}
 
-    addressSelect.dispatchEvent(new Event('change'));
+// Zachowaj starą funkcję dla wstecznej zgodności
+async function refreshUserAddressList(selectedAddressId = null) {
+    return refreshSelectList('address-select', '/address/list', selectedAddressId, 'address');
 }
 
 async function sendAddressData(url, data, method = "POST") {
@@ -292,4 +329,4 @@ async function sendAddressData(url, data, method = "POST") {
     return response.json();
 }
 
-export { openAddAddressModal, sendAddressData };
+export { openAddAddressModal, sendAddressData, refreshSelectList, refreshUserAddressList };

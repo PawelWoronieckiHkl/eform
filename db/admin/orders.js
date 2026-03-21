@@ -134,10 +134,11 @@ async function getOrderDataToSend(orderId) {
     let orderDetailsQuery = '';
 
     if (hasSendAddress) {
-        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.comment, o.order_idx, o.total_price, o.total_price_hidden, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, s.name, s.street, s.zip, s.city, s.country, s.phone, s.email
+        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.comment, o.order_idx, o.total_price, o.total_price_hidden, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, s.name, s.street, s.zip, s.city, s.country, s.phone, COALESCE(ci.email, s.email, u.email) as email
 FROM \`order\` o
 join \`user\` u on u.id = o.user_id
 join send_address s on s.id = o.send_address_id
+left join contact_info ci on ci.id = o.contact_info_id
 join organization org on org.id = o.organization_id
 where o.id = ?`;
     } else if (hasDeliveryAddress) {
@@ -149,9 +150,10 @@ left join contact_info ci on ci.id = o.contact_info_id
 join organization org on org.id = o.organization_id
 where o.id = ?`;
     } else {
-        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, o.commision as name, u.street, u.zip, u.city, u.country, u.phone, u.email
+        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, o.commision as name, u.street, u.zip, u.city, u.country, u.phone, COALESCE(ci.email, u.email) as email
 FROM \`order\` o
 join \`user\` u on u.id = o.user_id
+left join contact_info ci on ci.id = o.contact_info_id
 join organization org on org.id = o.organization_id
 where o.id = ?`;
     }
