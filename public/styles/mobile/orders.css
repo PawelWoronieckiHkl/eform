@@ -2,40 +2,59 @@
     body {
         background-color: white !important;
     }
+
     .content {
         margin-left: 0 !important;
         width: 100% !important;
         background: white !important;
     }
+
     .container {
         padding: 15px !important;
         width: 100% !important;
     }
-    .d-flex.justify-content-between {
+
+    .orders-topbar {
+        display: flex !important;
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 10px !important;
     }
+
+    .orders-topbar-left,
+    .orders-topbar-center,
+    .orders-topbar-right {
+        width: 100% !important;
+        justify-content: flex-start !important;
+        justify-self: auto !important;
+        text-align: left !important;
+    }
+
     .header {
         font-size: 2rem !important;
         margin-bottom: 0 !important;
-        padding-bottom:2rem !important;
+        padding-bottom: 2rem !important;
     }
+
     #delivery-btn {
         padding: 8px !important;
     }
+
     #delivery-btn img {
         height: 30px !important;
         width: 30px !important;
     }
+
     .table {
         display: none !important;
     }
+
     .mobile-orders-list {
         display: flex !important;
         flex-direction: column !important;
         gap: 15px !important;
     }
+
     .mobile-order-card {
         background: white !important;
         border: 1px solid #e0e0e0 !important;
@@ -44,6 +63,7 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
         margin-bottom: 10px !important;
     }
+
     .mobile-order-header {
         display: flex !important;
         justify-content: space-between !important;
@@ -52,26 +72,31 @@
         border-bottom: 1px solid #f0f0f0 !important;
         padding-bottom: 8px !important;
     }
+
     .mobile-order-number {
         font-weight: bold !important;
         font-size: 1.1rem !important;
         color: #434547 !important;
     }
+
     .mobile-order-date {
         font-size: 0.85rem !important;
         color: #666 !important;
     }
+
     .mobile-order-commission {
         font-size: 1rem !important;
         font-weight: 600 !important;
         margin: 8px 0 !important;
     }
+
     .mobile-order-actions {
         display: flex !important;
         gap: 8px !important;
         justify-content: flex-end !important;
         flex-wrap: wrap !important;
     }
+
     .mobile-order-actions .btn {
         padding: 6px 12px !important;
         font-size: 0.85rem !important;
@@ -80,12 +105,15 @@
         min-width: 80px !important;
         text-align: center !important;
     }
+
     .text-center.py-5 {
         padding: 30px 15px !important;
     }
+
     .text-center.py-5 h3 {
         font-size: 1.2rem !important;
     }
+
     #new-order-button {
         width: 100% !important;
         padding: 15px !important;
@@ -93,6 +121,7 @@
         border-radius: 8px !important;
         margin-top: 20px !important;
     }
+
     .pagination {
         margin: 20px 0 !important;
         padding: 0 15px !important;
@@ -101,9 +130,11 @@
         flex-wrap: wrap !important;
         gap: 5px !important;
     }
+
     .pagination .page-item {
         margin: 2px !important;
     }
+
     .pagination .page-link {
         padding: 8px 12px !important;
         font-size: 0.9rem !important;

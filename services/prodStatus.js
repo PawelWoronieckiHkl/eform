@@ -93,6 +93,11 @@ class SyncProdStatus {
                 console.log('Inserted status with result:', result);
             }
         }
+
+        const uniqueOrders = [...new Set(this.statusesData.map(r => r.ORDERNO))];
+        for (const orderIdx of uniqueOrders) {
+            await db.syncOrderFromStatuses(this.userIdent, orderIdx);
+        }
     }
 
 
@@ -124,4 +129,50 @@ function setParcelHref(statuses) {
     return statuses;
 }
 
-module.exports = { SyncProdStatus, setParcelHref };
+function parseSpeditionNumbers(speditionNumbersJson) {
+    if (!speditionNumbersJson) {
+        return [];
+    }
+
+    try {
+        const parcelCodes = typeof speditionNumbersJson === 'string'
+            ? JSON.parse(speditionNumbersJson)
+            : speditionNumbersJson;
+
+        if (!Array.isArray(parcelCodes)) {
+            return [];
+        }
+
+        return parcelCodes.map(parcelCode => {
+            if (!parcelCode) return null;
+
+            const [carrier, code] = parcelCode.split(' ');
+            if (!code) return { carrier: '', code: parcelCode, href: null };
+
+            let href = null;
+            switch (carrier) {
+                case 'DPD':
+                    href = `https://www.dpd.com.pl/tracking/?parcelNumber=${code}`;
+                    break;
+                case 'UPS':
+                    href = `https://www.ups.com/track?loc=en_US&tracknum=${code}`;
+                    break;
+                case 'DHL':
+                    href = `https://www.dhl.com/en/express/tracking.html?AWB=${code}&brand=DHL`;
+                    break;
+            }
+
+            return {
+                carrier,
+                code,
+                href,
+                fullCode: parcelCode
+            };
+        }).filter(item => item !== null);
+    } catch (error) {
+        console.error('Error parsing spedition numbers:', error);
+        return [];
+    }
+}
+
+module.exports = { SyncProdStatus, setParcelHref, parseSpeditionNumbers };

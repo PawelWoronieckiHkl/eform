@@ -26,7 +26,7 @@ async function insertStatus(record) {
         record.PARCELCODE
     ]);
     return result;
-}	
+}
 
 
 async function getUserStatuses(userIdent, orderIdx) {
@@ -55,10 +55,48 @@ async function updateStatus(record) {
     return result;
 }
 
+async function syncOrderFromStatuses(userIdent, orderIdx) {
+    const query = `
+        UPDATE \`order\` o
+        JOIN \`user\` u ON o.user_id = u.id AND u.ident = ?
+        SET
+            o.delivery_date = (
+                SELECT DATE(MAX(ps.shipping_date))
+                FROM position_statuses ps
+                WHERE ps.user_ident = ? AND ps.order_idx = ?
+            ),
+            o.prod_status = (
+                SELECT ps.status
+                FROM position_statuses ps
+                WHERE ps.user_ident = ? AND ps.order_idx = ?
+                  AND ps.shipping_date IS NOT NULL
+                ORDER BY ps.shipping_date DESC
+                LIMIT 1
+            ),
+            o.spedition_numbers = (
+                SELECT JSON_ARRAYAGG(DISTINCT ps.parcel_code)
+                FROM position_statuses ps
+                WHERE ps.user_ident = ? AND ps.order_idx = ?
+                  AND ps.parcel_code IS NOT NULL
+                  AND ps.parcel_code != ''
+            )
+        WHERE o.order_idx = ?`;
+    const result = await updateQuery(query, [
+        userIdent,
+        userIdent, orderIdx,
+        userIdent, orderIdx,
+        userIdent, orderIdx,
+        orderIdx
+    ]);
+    console.log(`syncOrderFromStatuses [${userIdent} / ${orderIdx}]:`, result);
+    return result;
+}
 
-module.exports = { 
+
+module.exports = {
     checkIfStatusExists,
     insertStatus,
     getUserStatuses,
-    updateStatus 
+    updateStatus,
+    syncOrderFromStatuses
 };

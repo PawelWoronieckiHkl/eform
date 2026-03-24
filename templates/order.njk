@@ -20,209 +20,246 @@
                     <button class="modern-back-btn" onclick="window.history.back()">
                     {% endblock %}
                     {% block content %}
-                        <div class="content  col-9 center-content">
-                            <div id='order-nav' class='bg-white'>
-                                <div class="order-nav-main">
-                                    <div class="mobile-top-row d-block d-md-none">
-                                        <div id="order-buttons">
-                                            <a
-                                                href="/orders/order/{{ orderDetails.id }}/new-position/"
-                                                class="action-btn action-btn-send "
-                                                id="new-order-button"
-                                                type="button">
-                                                <img class='ico' src="/img/new-position.png" alt=""></a>
-                                                <a href="/orders/edit/{{ orderDetails.id }}" class="action-btn action-btn-edit" id="edit-order-button" type="button">
-                                                    <img class='ico' src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
-                                                </div>
-                                                <div id="generate-container-mobile">
-                                                    <button id="unlockBtn" class="btn">
-                                                        <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
-                                                        <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'>
-                                                            <img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
-                                                            <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip') }}">
-                                                                <img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
-                                                            </div>
+                    <div class="content  col-9 center-content">
+                        <div id='order-nav' class='bg-white'>
+                            <div class="order-nav-main">
+                                <div class="mobile-top-row d-block d-md-none">
+                                    <div id="order-buttons">
+                                        <a
+                                            href="/orders/order/{{ orderDetails.id }}/new-position/"
+                                            class="action-btn action-btn-send "
+                                            id="new-order-button"
+                                            type="button">
+                                            <img class='ico' src="/img/new-position.png" alt=""></a>
+                                            <a href="/orders/edit/{{ orderDetails.id }}" class="action-btn action-btn-edit" id="edit-order-button" type="button">
+                                                <img class='ico' src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
+                                            </div>
+                                            <div id="generate-container-mobile">
+                                                <button id="unlockBtn" class="btn">
+                                                    <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
+                                                    <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'>
+                                                        <img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
+                                                        <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip') }}">
+                                                            <img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
                                                         </div>
-                                                        <div id="order-buttons" class="d-none d-md-flex">
-                                                            {% block new_pos_btn %}
+                                                    </div>
+                                                    <div id="order-buttons" class="d-none d-md-flex">
+                                                        {% block new_pos_btn %}
+                                                            <a
+                                                                href="/orders/order/{{ orderDetails.id }}/new-position/"
+                                                                class="action-btn action-btn-send custom-order-btn"
+                                                                id="new-order-button"
+                                                                type="button">
+                                                                {{ __('order.add_position_btn') }}
+                                                            </a>
+                                                        {% endblock %}
+                                                    </div>
+                                                    {% block order_space %}
+                                                        <div class="floating-order w-50 d-none d-md-block" id='desktop-floating-order'>
+                                                        {% endblock %}
+                                                        <h2 class="fw-bold header text-center" id='order-title' data-id="{{ orderDetails.id }}">
+                                                            {% block order_title %}
+                                                                {{ __('order.title') }}
+                                                            {% endblock %}
+                                                            {{ orderDetails.order_idx }} <br/>
+                                                            {% if orderDetails.commision %}
+                                                                <p id='commission-name' data-name='{{ orderDetails.commision }}'>"{{ orderDetails.commision }}"</p>
+                                                            {% endif %}
+                                                        </h2>
+                                                    </div>
+                                                    {% block print_space %}
+                                                        <div id="generate-container" class='me-3 d-none d-md-flex'>
+                                                            {% block edit_order_btn %}
                                                                 <a
-                                                                    href="/orders/order/{{ orderDetails.id }}/new-position/"
-                                                                    class="action-btn action-btn-send custom-order-btn"
-                                                                    id="new-order-button"
+                                                                    href="/orders/edit/{{ orderDetails.id }}"
+                                                                    class="action-btn action-btn-edit row me-2"
+                                                                    id="edit-order-button"
                                                                     type="button">
-                                                                    {{ __('order.add_position_btn') }}
+                                                                    {{ __('edit_order.title') }}
                                                                 </a>
                                                             {% endblock %}
-                                                        </div>
-                                                        {% block order_space %}
-                                                            <div class="floating-order w-50 d-none d-md-block" id='desktop-floating-order'>
-                                                            {% endblock %}
-                                                            <h2 class="fw-bold header text-center" id='order-title' data-id="{{ orderDetails.id }}">
-                                                                {% block order_title %}
-                                                                    {{ __('order.title') }}
-                                                                {% endblock %}
-                                                                {{ orderDetails.order_idx }} <br/>
-                                                                {% if orderDetails.commision %}
-                                                                    <p id='commission-name' data-name='{{ orderDetails.commision }}'>"{{ orderDetails.commision }}"</p>
-                                                                {% endif %}
-                                                            </h2>
-                                                        </div>
-                                                        {% block print_space %}
-                                                            <div id="generate-container" class='me-3 d-none d-md-flex'>
-                                                                {% block edit_order_btn %}
-                                                                    <a
-                                                                        href="/orders/edit/{{ orderDetails.id }}"
-                                                                        class="action-btn action-btn-edit row me-2"
-                                                                        id="edit-order-button"
-                                                                        type="button">
-                                                                        {{ __('edit_order.title') }}
-                                                                    </a>
-                                                                {% endblock %}
-                                                                <div class='d-flex'>
-                                                                    <button class="btn has-tooltip" data-tooltip="{{ __('base.give_discount_tooltip') }}" id='discount-btn'>
-                                                                        <img src="/img/sale.png" alt="sale icon" class='icon'></button>
-                                                                        <button id="unlockBtn" class="btn">
-                                                                            <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
-                                                                            <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_short_pdf_tooltip') }}" id='short-print-button'>
-                                                                                <img src="/img/pdf-short.png" alt="pdf icon" class='icon'></button>
-                                                                                <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'>
-                                                                                    <img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
-                                                                                    <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip') }}">
-                                                                                        <img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
-                                                                                    </div>
+                                                            <div class='d-flex'>
+                                                                <button class="btn has-tooltip" data-tooltip="{{ __('base.give_discount_tooltip') }}" id='discount-btn'>
+                                                                    <img src="/img/sale.png" alt="sale icon" class='icon'></button>
+                                                                    <button id="unlockBtn" class="btn">
+                                                                        <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
+                                                                        <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_short_pdf_tooltip') }}" id='short-print-button'>
+                                                                            <img src="/img/pdf-short.png" alt="pdf icon" class='icon'></button>
+                                                                            <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'>
+                                                                                <img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
+                                                                                <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip') }}">
+                                                                                    <img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="floating-order w-100 mobile d-block d-md-none">
-                                                                                <h2 class="fw-bold header text-center p-4" id='order-title-mobile' data-id="{{ orderDetails.id }}">
-                                                                                    {{ __('order.title') }}
-                                                                                    {{ orderDetails.order_idx }} <br/>
-                                                                                    {% if orderDetails.commision %}
-                                                                                        <p id='commission-name-mobile' data-name='{{ orderDetails.commision }}'>"{{ orderDetails.commision }}"</p>
-                                                                                    {% endif %}
-                                                                                </h2>
-                                                                            </div>
-                                                                            <!-- Komentarz pod tytułem -->
-                                                                            <div class="comment-space d-flex align-items-center justify-content-center w-100">
-                                                                                <h3 id='comment' class='h3 fw-bold btn row' data-id="{{ orderDetails.id }}">
-                                                                                    {% if orderDetails.comment and orderDetails.comment.trim() and orderDetails.comment.trim() != '' and orderDetails.comment.trim() != '-' %}
-                                                                                        {{ __('order.comment') }}: {{ orderDetails.comment }}
-                                                                                    {% endif %}
-                                                                                </h3>
-                                                                            </div>
                                                                         </div>
-                                                                    {% endblock %}
-                                                                    <div class="container my-5 padding-top mobile-rm-card">
-                                                                        <div class="position-relative mb-4 static-head"></div>
-                                                                        {% if cleanOrderItems.length > 0 %}
-                                                                            <div class="order-table-container" style="overflow-x: auto;">
-                                                                                {% block table %}
-                                                                                    {% set globalIndex = 1 %}
-                                                                                    {% for table in cleanOrderItems %}
-                                                                                        <div class="table-scroll mb-5">
-                                                                                            {% block table_style %}
-                                                                                                <!-- Desktop table -->
-                                                                                                <table class="table align-left table-bordered order-table mt-5 d-none d-md-table">
-                                                                                                    <thead>
+                                                                        <div class="floating-order w-100 mobile d-block d-md-none">
+                                                                            <h2 class="fw-bold header text-center p-4" id='order-title-mobile' data-id="{{ orderDetails.id }}">
+                                                                                {{ __('order.title') }}
+                                                                                {{ orderDetails.order_idx }} <br/>
+                                                                                {% if orderDetails.commision %}
+                                                                                    <p id='commission-name-mobile' data-name='{{ orderDetails.commision }}'>"{{ orderDetails.commision }}"</p>
+                                                                                {% endif %}
+                                                                            </h2>
+                                                                        </div>
+                                                                        <!-- Komentarz pod tytułem -->
+                                                                        <div class="comment-space d-flex align-items-center justify-content-center w-100">
+                                                                            <h3 id='comment' class='h3 fw-bold btn row' data-id="{{ orderDetails.id }}">
+                                                                                {% if orderDetails.comment and orderDetails.comment.trim() and orderDetails.comment.trim() != '' and orderDetails.comment.trim() != '-' %}
+                                                                                    {{ __('order.comment') }}: {{ orderDetails.comment }}
+                                                                                {% endif %}
+                                                                            </h3>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endblock %}
+                                                                <div class="container my-5 padding-top mobile-rm-card">
+                                                                    <div class="position-relative mb-4 static-head"></div>
+                                                                    {% if cleanOrderItems.length > 0 %}
+                                                                        <div class="order-table-container" style="overflow-x: auto;">
+                                                                            {% block table %}
+                                                                                {% set globalIndex = 1 %}
+                                                                                {# Pre-compute max production days across all items in this order #}
+                                                                                {% set maxProdDays = 0 %}
+                                                                                {% for table in cleanOrderItems %}
+                                                                                    {% for rowObj in table.rows %}
+                                                                                        {% set _d = productionTimes[rowObj.item.department] %}
+                                                                                        {% if _d and _d > maxProdDays %}
+                                                                                            {% set maxProdDays = _d %}
+                                                                                        {% endif %}
+                                                                                    {% endfor %}
+                                                                                {% endfor %}
+                                                                                {% for table in cleanOrderItems %}
+                                                                                    <div class="table-scroll mb-5">
+                                                                                        {% block table_style %}
+                                                                                            <!-- Desktop table -->
+                                                                                            <table class="table align-left table-bordered order-table mt-5 d-none d-md-table">
+                                                                                                <thead>
+                                                                                                {% endblock %}
+                                                                                                <tr>
+                                                                                                    {% block btns_head %}
+                                                                                                        <th class="edit-buttons">{{ __('order.action') }}</th>
                                                                                                     {% endblock %}
-                                                                                                    <tr>
-                                                                                                        {% block btns_head %}
-                                                                                                            <th class="edit-buttons">{{ __('order.action') }}</th>
+                                                                                                    <th class="edit-buttons">#</th>
+                                                                                                    {% for header in table.headers1 %}
+                                                                                                        {% if not(header in table.locked) %}
+                                                                                                            <th class="th-field">{{ header }}</th>
+                                                                                                        {% endif %}
+                                                                                                    {% endfor %}
+                                                                                                    <th class="edit-buttons">{{ __('order.department') }}</th>
+                                                                                                    <th class="edit-buttons">{{ __('order.group_name') }}</th>
+                                                                                                    <th class="edit-buttons">{{ __('order.name') }}</th>
+                                                                                                    <th class="edit-buttons">{{ __('order.comment') }}</th>
+                                                                                                </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                                {% for rowObj in table.rows %}
+                                                                                                    {% block item_redirect %}
+                                                                                                        <tr style="cursor: pointer display:grid" onclick="window.location.href='/position/{{ rowObj.item.id }}'">
                                                                                                         {% endblock %}
-                                                                                                        <th class="edit-buttons">#</th>
-                                                                                                        {% for header in table.headers1 %}
-                                                                                                            {% if not(header in table.locked) %}
-                                                                                                                <th class="th-field">{{ header }}</th>
-                                                                                                            {% endif %}
-                                                                                                        {% endfor %}
-                                                                                                        <th class="edit-buttons">{{ __('order.department') }}</th>
-                                                                                                        <th class="edit-buttons">{{ __('order.group_name') }}</th>
-                                                                                                        <th class="edit-buttons">{{ __('order.name') }}</th>
-                                                                                                        <th class="edit-buttons">{{ __('order.comment') }}</th>
-                                                                                                    </tr>
-                                                                                                </thead>
-                                                                                                <tbody>
-                                                                                                    {% for rowObj in table.rows %}
-                                                                                                        {% block item_redirect %}
-                                                                                                            <tr style="cursor: pointer display:grid" onclick="window.location.href='/position/{{ rowObj.item.id }}'">
-                                                                                                            {% endblock %}
-                                                                                                            {% block pos_btns %}
-                                                                                                                <td class="d-flex align-items-center">
-                                                                                                                    <div class="position-controls d-flex flex-column align-items-center me-2">
-                                                                                                                        <button class="btn move-up-btn has-tooltip" data-tooltip="{{ __('order.move_up') }}" data-id="{{ rowObj.item.id }}" onclick="event.stopPropagation()">
-                                                                                                                            <svg viewbox="0 0 16 16">
-                                                                                                                                <path
-                                                                                                                                    fill-rule="evenodd"
-                                                                                                                                    d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5
-                                                                                                                                        5.707V11.5a.5.5 0 0 0 .5.5z"/>
-                                                                                                                            </svg>
-                                                                                                                        </button>
-                                                                                                                        <button class="btn move-down-btn has-tooltip" data-tooltip="{{ __('order.move_down') }}" data-id="{{ rowObj.item.id }}" onclick="event.stopPropagation()">
-                                                                                                                            <svg viewbox="0 0 16 16">
-                                                                                                                                <path
-                                                                                                                                    fill-rule="evenodd"
-                                                                                                                                    d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5
-                                                                                                                                        10.293V4.5A.5.5 0 0 1 8 4z"/>
-                                                                                                                            </svg>
-                                                                                                                        </button>
-                                                                                                                    </div>
-                                                                                                                    <button class="action-btn action-btn-duplicate me-1 p-1 duplicate-btn has-tooltip" data-tooltip="{{ __('order.duplicate_pos') }}" data-id='{{ rowObj.item.id }}' onclick="event.stopPropagation()">
-                                                                                                                        <img src="/img/duplicate.png" class='icon' alt="{{ __('order.edit') }}"></button>
-                                                                                                                        <a class="action-btn action-btn-edit me-1 p-1 edit-position-btn has-tooltip" data-tooltip="{{ __('order.edit_pos') }}" href="/position/{{ rowObj.item.id }}/edit?id={{ rowObj.item.id }}" onclick="event.stopPropagation()">
-                                                                                                                            <img src="/img/edit-text.png" alt="{{ __('order.edit') }}"></a>
-                                                                                                                            <button class="action-btn action-btn-delete p-1 delete-position-btn has-tooltip" data-tooltip="{{ __('order.delete_pos') }}" type="button" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
-                                                                                                                                <img src="/img/delete.png" alt="{{ __('order.delete') }}"/>
-                                                                                                                            </button>
-                                                                                                                        {% endblock %}
-                                                                                                                    </td>
-                                                                                                                    <th scope="row" class='order-idx' data-id="{{ rowObj.item.id }}" data-idx='{{ globalIndex }}'>{{ globalIndex }}</th>
-                                                                                                                    {% for header in table.headers1 %}
-                                                                                                                        {% if (not(header in rowObj.item.lockedParams)) %}
-                                                                                                                            <td class="td-val">{{ rowObj.row.row1[header] or '-' }}</td>
-                                                                                                                        {% endif %}
-                                                                                                                    {% endfor %}
-                                                                                                                    <td>{{ rowObj.item.department or '-' }}
-                                                                                                                    </td>
-                                                                                                                    <td>{{ rowObj.item.group_name or '-' }}
-                                                                                                                    </td>
-                                                                                                                    <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-" }}</td>
-                                                                                                                    <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
-                                                                                                                </tr>
-                                                                                                                <tr id='price-row'>
-                                                                                                                    {% for header in table.headers2 %}
-                                                                                                                        {% if (not(header in rowObj.item.lockedParams)) %}
-                                                                                                                            {% set value = rowObj.row.row2[header] %}
-                                                                                                                            {% if value and value != '-' and value != '' %}
-                                                                                                                                <td class="price" colspan="2">
-                                                                                                                                    <span class="price-label">{{ header }}:</span>
-                                                                                                                                    <b>{{ value }}</b>
-                                                                                                                                </td>
-                                                                                                                            {% endif %}
-                                                                                                                        {% endif %}
-                                                                                                                    {% endfor %}
-                                                                                                                </tr>
-                                                                                                                {% block extra_rows %}{% endblock %}
-                                                                                                                {% set globalIndex = globalIndex + 1 %}
-                                                                                                            {% endfor %}
-                                                                                                        </tbody>
-                                                                                                    </table>
-                                                                                                    <div class="mobile-items-list d-block d-md-none">
-                                                                                                        {% set mobileIndex = globalIndex - table.rows.length %}
-                                                                                                        {% for rowObj in table.rows %}
-                                                                                                            {% set mobileIndex = mobileIndex + 1 %}
-                                                                                                            <div class="mobile-item-card" data-position-url="/position/{{ rowObj.item.id }}">
-                                                                                                                <div class="mobile-item-header">
-                                                                                                                    <div class="mobile-item-basic">
-                                                                                                                        <span class="mobile-item-name">{{ rowObj.item.commision | truncate(25, true, "...") or "-" }}</span>
-                                                                                                                        <span class="mobile-item-group">{{ rowObj.item.group_name or '-' }}</span>
-                                                                                                                    </div>
-                                                                                                                    <span class="mobile-item-number">#{{ mobileIndex }}</span>
+                                                                                                        {% block pos_btns %}
+                                                                                                            <td class="d-flex align-items-center">
+                                                                                                                <div class="position-controls d-flex flex-column align-items-center me-2">
+                                                                                                                    <button class="btn move-up-btn has-tooltip" data-tooltip="{{ __('order.move_up') }}" data-id="{{ rowObj.item.id }}" onclick="event.stopPropagation()">
+                                                                                                                        <svg viewbox="0 0 16 16">
+                                                                                                                            <path
+                                                                                                                                fill-rule="evenodd"
+                                                                                                                                d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5
+                                                                                                                                    5.707V11.5a.5.5 0 0 0 .5.5z"/>
+                                                                                                                        </svg>
+                                                                                                                    </button>
+                                                                                                                    <button class="btn move-down-btn has-tooltip" data-tooltip="{{ __('order.move_down') }}" data-id="{{ rowObj.item.id }}" onclick="event.stopPropagation()">
+                                                                                                                        <svg viewbox="0 0 16 16">
+                                                                                                                            <path
+                                                                                                                                fill-rule="evenodd"
+                                                                                                                                d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5
+                                                                                                                                    10.293V4.5A.5.5 0 0 1 8 4z"/>
+                                                                                                                        </svg>
+                                                                                                                    </button>
                                                                                                                 </div>
-                                                                                                                <div class="mobile-item-details">
-                                                                                                                    <div class="mobile-item-detail">
-                                                                                                                        <strong>{{ __('order.department') }}:</strong>
-                                                                                                                        <br>
-                                                                                                                            {{ rowObj.item.department or '-' }}
-                                                                                                                        </div>
+                                                                                                                <button class="action-btn action-btn-duplicate me-1 p-1 duplicate-btn has-tooltip" data-tooltip="{{ __('order.duplicate_pos') }}" data-id='{{ rowObj.item.id }}' onclick="event.stopPropagation()">
+                                                                                                                    <img src="/img/duplicate.png" class='icon' alt="{{ __('order.edit') }}"></button>
+                                                                                                                    <a class="action-btn action-btn-edit me-1 p-1 edit-position-btn has-tooltip" data-tooltip="{{ __('order.edit_pos') }}" href="/position/{{ rowObj.item.id }}/edit?id={{ rowObj.item.id }}" onclick="event.stopPropagation()">
+                                                                                                                        <img src="/img/edit-text.png" alt="{{ __('order.edit') }}"></a>
+                                                                                                                        <button class="action-btn action-btn-delete p-1 delete-position-btn has-tooltip" data-tooltip="{{ __('order.delete_pos') }}" type="button" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
+                                                                                                                            <img src="/img/delete.png" alt="{{ __('order.delete') }}"/>
+                                                                                                                        </button>
+                                                                                                                    {% endblock %}
+                                                                                                                </td>
+                                                                                                                <th scope="row" class='order-idx' data-id="{{ rowObj.item.id }}" data-idx='{{ globalIndex }}'>{{ globalIndex }}</th>
+                                                                                                                {% for header in table.headers1 %}
+                                                                                                                    {% if (not(header in rowObj.item.lockedParams)) %}
+                                                                                                                        <td class="td-val">{{ rowObj.row.row1[header] or '-' }}</td>
+                                                                                                                    {% endif %}
+                                                                                                                {% endfor %}
+                                                                                                                <td>{{ rowObj.item.department or '-' }}
+                                                                                                                </td>
+                                                                                                                <td>{{ rowObj.item.group_name or '-' }}
+                                                                                                                </td>
+                                                                                                                <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-" }}</td>
+                                                                                                                <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
+                                                                                                            </tr>
+                                                                                                            <tr id='price-row'>
+                                                                                                                {% for header in table.headers2 %}
+                                                                                                                    {% if (not(header in rowObj.item.lockedParams)) %}
+                                                                                                                        {% set value = rowObj.row.row2[header] %}
+                                                                                                                        {% if value and value != '-' and value != '' %}
+                                                                                                                            <td class="price" colspan="2">
+                                                                                                                                <span class="price-label">{{ header }}:</span>
+                                                                                                                                <b>{{ value }}</b>
+                                                                                                                            </td>
+                                                                                                                        {% endif %}
+                                                                                                                    {% endif %}
+                                                                                                                {% endfor %}
+                                                                                                            </tr>
+                                                                                                            {% set itemProdDays = productionTimes[rowObj.item.department] %}
+                                                                                                            <tr class="prod-time-row">
+                                                                                                                <td class="prod-time-row-cell" colspan="1">
+                                                                                                                    <span class="prod-time-label">{{ __('order.production_time_label') }}</span>
+                                                                                                                    {% if itemProdDays %}
+                                                                                                                        <span class="prod-days-item">{{ itemProdDays }}
+                                                                                                                            {{ __('termin.days') }}</span>
+                                                                                                                        <span class="prod-days-max">/ {{ __('order.commission_time_prefix') }}
+                                                                                                                            {{ maxProdDays }}
+                                                                                                                            {{ __('termin.days') }}</span>
+                                                                                                                    {% else %}
+                                                                                                                        <span class="text-muted">-</span>
+                                                                                                                    {% endif %}
+                                                                                                                </td>
+                                                                                                            </tr>
+                                                                                                            {% block extra_rows %}{% endblock %}
+                                                                                                            {% set globalIndex = globalIndex + 1 %}
+                                                                                                        {% endfor %}
+                                                                                                    </tbody>
+                                                                                                </table>
+                                                                                                <div class="mobile-items-list d-block d-md-none">
+                                                                                                    {% set mobileIndex = globalIndex - table.rows.length %}
+                                                                                                    {% for rowObj in table.rows %}
+                                                                                                        {% set mobileIndex = mobileIndex + 1 %}
+                                                                                                        <div class="mobile-item-card" data-position-url="/position/{{ rowObj.item.id }}">
+                                                                                                            <div class="mobile-item-header">
+                                                                                                                <div class="mobile-item-basic">
+                                                                                                                    <span class="mobile-item-name">{{ rowObj.item.commision | truncate(25, true, "...") or "-" }}</span>
+                                                                                                                    <span class="mobile-item-group">{{ rowObj.item.group_name or '-' }}</span>
+                                                                                                                </div>
+                                                                                                                <span class="mobile-item-number">#{{ mobileIndex }}</span>
+                                                                                                            </div>
+                                                                                                            <div class="mobile-item-details">
+                                                                                                                <div class="mobile-item-detail">
+                                                                                                                    <strong>{{ __('order.department') }}:</strong>
+                                                                                                                    <br>
+                                                                                                                        {{ rowObj.item.department or '-' }}
+                                                                                                                    </div>
+                                                                                                                    {% set itemProdDays = productionTimes[rowObj.item.department] %}
+                                                                                                                    {% if itemProdDays %}
+                                                                                                                        <div class="mobile-item-detail">
+                                                                                                                            <strong>{{ __('order.production_time_short_label') }}</strong>
+                                                                                                                            <br>
+                                                                                                                                <span class="prod-days-item">{{ itemProdDays }}
+                                                                                                                                    {{ __('order.days_label') }}</span>
+                                                                                                                                <span class="prod-days-max">({{ __('order.commission_time_prefix') }}
+                                                                                                                                    {{ maxProdDays }}
+                                                                                                                                    {{ __('order.days_label') }})</span>
+                                                                                                                            </div>
+                                                                                                                        {% endif %}
                                                                                                                     </div>
                                                                                                                     {% if table.headers1.length > 0 %}
                                                                                                                         <div class="mobile-item-specs">

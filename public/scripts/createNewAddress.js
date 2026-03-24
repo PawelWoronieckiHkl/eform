@@ -1,6 +1,7 @@
 import { createElement } from "./components/htmlManipulator.js";
 
 const MODAL_ID = "add-address-modal";
+const i18n = (key) => (typeof t === 'function' ? t(key) : key);
 
 document.addEventListener("DOMContentLoaded", () => {
     const addDeliveryAddressBtn = document.getElementById("add-delivery-address-btn");
@@ -10,13 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
         addDeliveryAddressBtn.addEventListener("click", (event) => {
             event.preventDefault();
             openAddAddressModal([
-                ["name", "Nazwa adresu"],
-                ["phone", "Telefon"],
-                ["street", "Ulica"],
-                ["city", "Miasto"],
-                ["zip", "Kod pocztowy"],
-                ["country", "Kraj"]
+                ["name", i18n('order.address_name')],
+                ["phone", i18n('new-order.phone')],
+                ["street", i18n('new-order.street')],
+                ["city", i18n('new-order.city')],
+                ["zip", i18n('new-order.zip')],
+                ["country", i18n('new-order.country')]
             ], '/address/add-delivery-address', {
+                title: i18n('order.create_address'),
                 onSubmit: async (response) => {
                     await refreshSelectList('address-select', '/address/list', response?.data?.id, 'address');
                 }
@@ -27,7 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (addMailBtn) {
         addMailBtn.addEventListener("click", (event) => {
             event.preventDefault();
-            openAddAddressModal([["mail", "Email"]], '/address/add-mail-address', {
+            openAddAddressModal([["mail", i18n('new-order.email')]], '/address/add-mail-address', {
+                title: i18n('order.create_mail'),
                 onSubmit: async (response) => {
                     await refreshSelectList('mail-select', '/address/mail-list', response?.data?.id, 'mail');
                 }
@@ -60,7 +63,7 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
     }, dialog);
 
     createElement("h5", {
-        text: options.title || "Dodaj nowy adres",
+        text: options.title || i18n('order.create_address'),
         class: ["mb-1"]
     }, form);
 
@@ -109,7 +112,7 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
 
     createElement("button", {
         type: "button",
-        text: options.cancelLabel || "Anuluj",
+        text: options.cancelLabel || i18n('form.cancel_button'),
         class: ["btn", "btn-outline-secondary"],
         onclick: () => {
             dialog.close("cancel");
@@ -122,7 +125,7 @@ function openAddAddressModal(inputsList = [], url, options = {}) {
 
     createElement("button", {
         type: "button",
-        text: options.submitLabel || "Zapisz",
+        text: options.submitLabel || i18n('new-order.save_button'),
         class: ["btn", "btn-success"],
         onclick: async () => {
             const payload = {};
@@ -276,8 +279,8 @@ async function refreshSelectList(selectId, apiUrl, selectedId = null, type = 'ad
         const placeholderOption = document.createElement('option');
         placeholderOption.value = '';
         placeholderOption.textContent = type === 'mail'
-            ? 'Wybierz adres Email'
-            : 'Wybierz adres dostawy';
+            ? i18n('order.select_email_address')
+            : i18n('new-order.select_address');
         placeholderOption.disabled = true;
         select.appendChild(placeholderOption);
 

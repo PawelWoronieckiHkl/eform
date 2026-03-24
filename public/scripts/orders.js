@@ -1,6 +1,7 @@
 import { showToast } from "./components/toast.js";
 import { createInfoDialog } from "./components/htmlManipulator.js";
 import { confirmPrompt } from "./components/confirmPrompt.js";
+import { initSearchTool } from "./components/searchingTool.js";
 import { validate } from './base.js'
 
 const otherAddrFlag = { value: false };
@@ -97,7 +98,6 @@ async function updateOrder(orderId) {
 	}
 }
 
-const deletePositionBtns = document.querySelectorAll('.delete-position-btn');
 const confirmationDialog = document.getElementById('delete-dialog');
 const closeBtn = document.getElementById('cancel-btn');
 const confirmBtn = document.getElementById('confirm-btn');
@@ -123,15 +123,40 @@ async function deleteItem(path) {
 	}
 }
 
-function deleteDiag(btn) {
-	btn.addEventListener('click', () => {
-		confirmationDialog.showModal();
-		closeBtn.onclick = () => confirmationDialog.close();
-		confirmBtn.onclick = () => deleteItem(btn.dataset.href);
-	});
+function openDeleteDialog(btn) {
+	confirmationDialog.showModal();
+	closeBtn.onclick = () => confirmationDialog.close();
+	confirmBtn.onclick = () => deleteItem(btn.dataset.href);
 }
-console.log(deletePositionBtns)
-deletePositionBtns.forEach(deleteDiag);
+
+// Event delegation in capture phase — fires before <tr> onclick, works for static and dynamic buttons
+document.addEventListener('click', (e) => {
+	const deleteBtn = e.target.closest('.delete-position-btn');
+	if (deleteBtn) { e.stopPropagation(); openDeleteDialog(deleteBtn); return; }
+
+	const sendBtn = e.target.closest('.send-order-btn');
+	if (sendBtn) { e.stopPropagation(); buildAndShowDialog(sendBtn, 'sendOrder'); return; }
+
+	const copyBtn = e.target.closest('.copy-order-btn');
+	if (copyBtn) { e.stopPropagation(); buildAndShowDialog(copyBtn, 'copyItem'); return; }
+}, true);
+
+async function copyItem(btn) {
+	const orderId = btn.dataset.id;
+	try {
+		const response = await fetch(`/orders/copy/${orderId}`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' }
+		});
+		const result = await response.json();
+		if (result.redirect) {
+			showToast('success', t('orders.copied_success_label'));
+			setTimeout(() => { window.location.href = result.redirect; }, 500);
+		}
+	} catch (error) {
+		showToast('error', error.message);
+	}
+}
 
 
 function buildAndShowDialog(btn, functionName) {
@@ -250,57 +275,158 @@ else if (newOrderButton) {
 	});
 }
 
-const sendBtns = document.querySelectorAll('.send-order-btn');
-sendBtns.forEach(btn => {
-	btn.addEventListener('click', async (event) => {
-		event.stopPropagation();
-		buildAndShowDialog(btn, 'sendOrder');
-	});
-});
-
-
-
-
 document.getElementById('show-addresses-checkbox')?.addEventListener('change', () => { addrFlag.value = toggleAddressDropdown('show-addresses-checkbox', '.new-addr') });
 
 
 document.getElementById('show-send-address-checkbox')?.addEventListener('change', () => {
 	otherAddrFlag.value = toggleAddressDropdown('show-send-address-checkbox', '.new-send-addr');
-});
-
-const copyOrderBtns = document.querySelectorAll('.copy-order-btn');
-
-async function copyItem(btn) {
-	const orderId = btn.dataset.id;
-	try {
-		const response = await fetch(`/orders/copy/${orderId}`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			}
-		});
-		const result = await response.json();
-		if (result.redirect) {
-			showToast('success', t('orders.copied_success_label'));
-			setTimeout(() => {
-				window.location.href = result.redirect;
-			}, 500);
+	const addressSelect = document.getElementById('address-select');
+	const addressContainer = document.getElementById('address-dropdown-container');
+	if (addressSelect) {
+		if (otherAddrFlag.value) {
+			addressSelect.value = '';
+			addressSelect.disabled = true;
+			addressSelect.dispatchEvent(new Event('change'));
+			addressContainer?.classList.add('opacity-50');
+		} else {
+			addressSelect.disabled = false;
+			addressContainer?.classList.remove('opacity-50');
 		}
-	} catch (error) {
-		showToast('error', error.message);
 	}
-}
-
-copyOrderBtns.forEach(btn => {
-	btn.addEventListener('click', async (event) => {
-		event.stopPropagation();
-		buildAndShowDialog(btn, 'copyItem');
-	});
 });
 
 const textarea = document.getElementById('comment');
 const charCount = document.getElementById('charCount');
 
-textarea.addEventListener('input', function () {
+textarea?.addEventListener('input', function () {
 	charCount.textContent = `${this.value.length}/250`;
+});
+
+function escapeHtml(str) {
+	return String(str ?? '')
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;');
+}
+
+const searchMount = document.getElementById('orders-search-mount');
+const isSent = searchMount?.dataset.sent === 'true';
+const isEmployee = searchMount?.dataset.isEmployee === 'true';
+const orderPath = isSent ? '/orders/history/order' : '/orders/order';
+
+function renderTableRow(order) {
+	const id = escapeHtml(String(order.id));
+
+	// Render tracking numbers with links
+	let trackingCell = '';
+	if (isSent) {
+		let trackingHTML = '<span class="text-muted">-</span>';
+		if (order.parsedSpeditionNumbers && order.parsedSpeditionNumbers.length > 0) {
+			trackingHTML = order.parsedSpeditionNumbers.map(tracking => {
+				if (tracking.href) {
+					return `<a href="${escapeHtml(tracking.href)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="badge bg-primary text-white text-decoration-none me-1 mb-1" style="font-size: 0.85rem;">
+						${escapeHtml(tracking.carrier)} ${escapeHtml(tracking.code)}
+					</a>`;
+				} else {
+					return `<span class="badge bg-secondary me-1 mb-1" style="font-size: 0.85rem;">${escapeHtml(tracking.fullCode)}</span>`;
+				}
+			}).join('');
+		}
+		trackingCell = `<td>${trackingHTML}</td>`;
+	}
+
+	const extraCells = isSent ? `
+		<td>${escapeHtml(order.sent_date)}</td>
+		<th scope="row">${order.prod_status ? escapeHtml(t(order.prod_status)) : escapeHtml(t('order.status_order_sent'))}</th>
+		<th scope="row">${escapeHtml(order.delivery_date || '-')}</th>
+		${trackingCell}
+		<td>
+			<button class="btn btn-outline-secondary copy-order-btn stop-propagation" data-id="${id}" onclick="event.stopPropagation()">${escapeHtml(t('orders.reorder'))}</button>
+		</td>` : '';
+
+	const actionBtns = (!isSent && !isEmployee) ? `
+		<td class="buttons">
+			<button class="action-btn action-btn-delete p-1 delete-position-btn stop-propagation has-tooltip"
+				data-tooltip="${escapeHtml(t('orders.delete_order'))}"
+				data-href="/orders/order/${id}/delete" type="button" onclick="event.stopPropagation()">
+				<img src="/img/delete.png" style="height:24px;"/>
+			</button>
+			<a class="action-btn action-btn-edit p-1 stop-propagation has-tooltip"
+				data-tooltip="${escapeHtml(t('orders.edit_order_tooltip'))}" href="/orders/edit/${id}">
+				<img src="/img/edit-text.png">
+			</a>
+			<button class="action-btn action-btn-send p-1 stop-propagation send-order-btn has-tooltip"
+				data-tooltip="${escapeHtml(t('orders.send_order_tooltip'))}"
+				type="button" data-id="${id}">
+				<img src="/img/send.png">
+			</button>
+		</td>` : '';
+
+	return `<tr onclick="window.location.href='${orderPath}/${id}'" class="order-row" data-commission="${escapeHtml(order.commision)}">
+		<th scope="row">${escapeHtml(order.order_idx)}</th>
+		<td>${escapeHtml(order.commision)}${order.name ? ` (${escapeHtml(order.name)} ${escapeHtml(order.surname)})` : ''}</td>
+		<td>${escapeHtml(order.created_date)}</td>
+		${extraCells}${actionBtns}
+	</tr>`;
+}
+
+function renderMobileCard(order) {
+	const id = escapeHtml(String(order.id));
+
+	// Render tracking numbers for mobile
+	let trackingHTML = '';
+	if (isSent && order.parsedSpeditionNumbers && order.parsedSpeditionNumbers.length > 0) {
+		trackingHTML = '<div class="mobile-order-tracking">';
+		trackingHTML += order.parsedSpeditionNumbers.map(tracking => {
+			if (tracking.href) {
+				return `<a href="${escapeHtml(tracking.href)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="badge bg-primary text-white text-decoration-none me-1 mb-1" style="font-size: 0.85rem;">
+					${escapeHtml(tracking.carrier)} ${escapeHtml(tracking.code)}
+				</a>`;
+			} else {
+				return `<span class="badge bg-secondary me-1 mb-1" style="font-size: 0.85rem;">${escapeHtml(tracking.fullCode)}</span>`;
+			}
+		}).join('');
+		trackingHTML += '</div>';
+	}
+
+	const extraInfo = isSent ? `
+		<div class="mobile-order-extra">
+			<span>${escapeHtml(order.sent_date)}</span>
+			<span>${order.prod_status ? escapeHtml(t(order.prod_status)) : escapeHtml(t('order.status_order_sent'))}</span>
+			<span>${escapeHtml(order.delivery_date || '-')}</span>
+		</div>
+		${trackingHTML}` : '';
+
+	const actions = isSent
+		? `<button class="btn btn-outline-secondary copy-order-btn stop-propagation" data-id="${id}" onclick="event.stopPropagation()">${escapeHtml(t('orders.reorder'))}</button>`
+		: (!isEmployee ? `
+			<button class="action-btn action-btn-delete delete-position-btn stop-propagation"
+				data-href="/orders/order/${id}/delete" type="button" onclick="event.stopPropagation()">
+				${escapeHtml(t('orders.delete'))}
+			</button>
+			<a class="action-btn action-btn-edit stop-propagation" href="/orders/edit/${id}">${escapeHtml(t('orders.edit'))}</a>
+			<button class="action-btn action-btn-send stop-propagation send-order-btn" type="button" data-id="${id}">${escapeHtml(t('orders.send'))}</button>` : '');
+
+	return `<div class="mobile-order-card" data-commission="${escapeHtml(order.commision)}" onclick="window.location.href='${orderPath}/${id}'">
+		<div class="mobile-order-header">
+			<span class="mobile-order-number">#${escapeHtml(order.order_idx)}</span>
+			<span class="mobile-order-date">${escapeHtml(order.created_date)}</span>
+		</div>
+		<div class="mobile-order-commission">${escapeHtml(order.commision)}</div>
+		${extraInfo}
+		<div class="mobile-order-actions">${actions}</div>
+	</div>`;
+}
+
+initSearchTool({
+	mountSelector: '#orders-search-mount',
+	placeholder: t('orders.search_placeholder') || 'Szukaj...',
+	apiUrl: '/orders/search',
+	tableBodySelector: '.d-none.d-md-table tbody',
+	mobileListSelector: '.mobile-orders-list',
+	paginationSelector: 'nav[aria-label="Paginate"]',
+	debounceMs: 300,
+	renderTableRow,
+	renderMobileCard
 });

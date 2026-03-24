@@ -12,7 +12,7 @@ const OrderSender = require("../services/sendOrderService");
 const { generatePdf } = require('../services/mailBot/pdfGenerator');
 const { buildOrderItemStructure } = require('../services/itemBuilder.js');
 const { getPriceAfterDiscount } = require('../services/getDiscount.js');
-const { SyncProdStatus, setParcelHref } = require('../services/prodStatus.js');
+const { SyncProdStatus, setParcelHref, parseSpeditionNumbers } = require('../services/prodStatus.js');
 const { getExtraAttachments } = require('../services/mailBot/extraAttachments');
 
 
@@ -32,6 +32,42 @@ router.use(async (req, res, next) => {
     next();
 });
 
+
+router.get('/search', requireLogin, async (req, res) => {
+    try {
+        const q = (req.query.q || '').trim();
+        const page = parseInt(req.query.page) || 1;
+        const sent = req.query.sent === 'true';
+        const limit = 40;
+        const offset = (page - 1) * limit;
+        const currentUser = ownerService.getCurrentUser(req);
+        const employeeId = req.session.user?.isEmployee ? (req.session.employee?.id ?? null) : null;
+
+        const [orders, totalOrders] = await Promise.all([
+            db.searchUserOrders(currentUser.userId, q, limit, offset, sent, employeeId),
+            db.countSearchUserOrders(currentUser.userId, q, sent, employeeId)
+        ]);
+
+        // Parse spedition numbers for each order
+        if (orders && orders.length > 0) {
+            orders.forEach(order => {
+                if (order.spedition_numbers) {
+                    order.parsedSpeditionNumbers = parseSpeditionNumbers(order.spedition_numbers);
+                }
+            });
+        }
+
+        return res.json({
+            orders: orders || [],
+            totalOrders: totalOrders || 0,
+            totalPages: Math.ceil((totalOrders || 0) / limit),
+            page
+        });
+    } catch (err) {
+        console.error('Search error:', err);
+        return res.status(500).json({ orders: [], totalOrders: 0, totalPages: 0, page: 1 });
+    }
+});
 
 router.get('/edit/:orderId', requireLogin, async (req, res) => {
     const currentUser = ownerService.getCurrentUser(req);
@@ -161,6 +197,15 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
     }
     const totalPages = Math.ceil(totalOrders / limit);
 
+    // Parse spedition numbers for each order
+    if (orders && orders.length > 0) {
+        orders.forEach(order => {
+            if (order.spedition_numbers) {
+                order.parsedSpeditionNumbers = parseSpeditionNumbers(order.spedition_numbers);
+            }
+        });
+    }
+
     if (req.session.user?.isOwner) {
         if (history) {
             res.render('owner/organization_orders_history.njk', {
@@ -211,6 +256,16 @@ router.get("/history", requireLogin, async (req, res) => {
     }
 
     const totalPages = Math.ceil(totalOrders / limit);
+    
+    // Parse spedition numbers for each order
+    if (orders && orders.length > 0) {
+        orders.forEach(order => {
+            if (order.spedition_numbers) {
+                order.parsedSpeditionNumbers = parseSpeditionNumbers(order.spedition_numbers);
+            }
+        });
+    }
+    
     if (req.session.user?.isOwner) {
         res.render("orders_history_owner.njk", {
             orders,
@@ -532,13 +587,20 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             const lang = req.getLocale();
             const mail = await db.getUserMail(currentUser?.pin)
             const orderIdx = await db.getUserOrderId(req.params.orderId)
-            const confirmationEmail = orderDetails?.email || mail.user_email;
+            let confirmationEmail;
+            console.log(orderDetails?.contact_info_id, 'ORDER DETAILS CONTACT INFO ID @@@@@@@@@@@@@@@@@')
+            if (orderDetails?.contact_info_id) {
+                const contactInfo = await db.getMailById(orderDetails.contact_info_id);
+                confirmationEmail = contactInfo?.email || mail.user_email;
+            } else {
+                confirmationEmail = mail.user_email;
+            }
             let mailList = [confirmationEmail, mail.organization_email, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'];
             const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx)
             const orgData = await db.getOrgInfo(req.session.user.organization)
 
             if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev') {
-                mailList = [extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu']
+                mailList = [confirmationEmail, extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu']
             }
             mailBot.sendMail(
                 mailList,

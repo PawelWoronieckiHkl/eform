@@ -8,7 +8,7 @@ dayjs.extend(timezone);
 
 function humanizeData(dbResponse) {
 
-    for (let itemIdx = 0; itemIdx <= dbResponse.length; itemIdx++) {
+    for (let itemIdx = 0; itemIdx < dbResponse.length; itemIdx++) {
         try {
 
             const createdDate = new Date(dbResponse[itemIdx].created_date);
@@ -17,8 +17,11 @@ function humanizeData(dbResponse) {
             const sentDate = new Date(dbResponse[itemIdx].sent_date)
             dbResponse[itemIdx].sent_date = sentDate.toLocaleString('pl-PL');
 
-        }
-        catch {
+            if (dbResponse[itemIdx].delivery_date) {
+                const deliveryDate = new Date(dbResponse[itemIdx].delivery_date);
+                dbResponse[itemIdx].delivery_date = deliveryDate.toLocaleDateString('pl-PL');
+            }
+        } catch (error) {
             console.log('Puste pole')
         }
     }
@@ -42,14 +45,18 @@ function formatLoginTime(dbTimestamp) {
     }
 }
 
-function convertToSQLDate(inputDate) {
+function convertToSQLDate(inputDate, includeTime = true) {
     if (!inputDate) {
         return null;
     }
 
-    const parsedDate = dayjs(inputDate, 'YYYY-MM-DD', true);
+    const parsedDate = dayjs(inputDate, ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DD'], true);
     if (!parsedDate.isValid()) {
         return null;
+    }
+
+    if (includeTime) {
+        return parsedDate.format('YYYY-MM-DD HH:mm:ss');
     }
 
     return parsedDate.format('YYYY-MM-DD');

@@ -9,7 +9,6 @@
     <button class="modern-back-btn" onclick="window.location.href='/'">
     {% endblock %}
     {% block head %}
-        
         <link rel="stylesheet" href="/styles/mobile/new-order.css">
             <link rel="stylesheet" href="/vendor/country-select-js/build/css/countrySelect.css"/>
             <link rel="stylesheet" href="/styles/new-order.css">
@@ -51,11 +50,10 @@
                                                     {% block client_select %}
                                                         <select id="address-select" name="selected_address" class="form-select mb-0 flex-grow-1">
                                                             {% block selected_address_option %}
-                                                                <option value="" {% if not selectedAddrId %}selected{% endif %} disabled>{{ __('new-order.select_address') }}</option>
+                                                                <option value="" {% if not selectedAddrId %} selected {% endif %} disabled>{{ __('new-order.select_address') }}</option>
                                                             {% endblock %}
-
                                                             {% for address in addr %}
-                                                                <option value="{{ address.id }}" {% if selectedAddrId and address.id == selectedAddrId %}selected{% endif %}>
+                                                                <option value="{{ address.id }}" {% if selectedAddrId and address.id == selectedAddrId %} selected {% endif %}>
                                                                     <p class='fw-bold'>{{ address.name }} &nbsp;&nbsp; {{ address.mail }} ({{ address.street }}
                                                                         {{ address.city }}
                                                                         {{ address.zip }}
@@ -65,37 +63,37 @@
                                                             </select>
                                                         {% endblock %}
                                                         <div class='manipulate-address d-flex'>
-                                                            <button id='edit-delivery-address-btn' class='btn p-0 ms-1 has-tooltip d-none' data-tooltip="Edytuj adres dostawy">
+                                                            <button id='edit-delivery-address-btn' class='btn p-0 ms-1 has-tooltip d-none' data-tooltip="{{ __('order.edit_address') }}">
                                                                 <img src="/img/edit_address.png" alt="edit address" class='icon '/>
                                                             </button>
-                                                            <button id='delete-delivery-address-btn' class='btn p-0 ms-2 has-tooltip d-none' data-tooltip="Usuń adres dostawy">
+                                                            <button id='delete-delivery-address-btn' class='btn p-0 ms-2 has-tooltip d-none' data-tooltip="{{ __('order.delete_address') }}">
                                                                 <img src="/img/delete_address.png" alt="delete address" class='icon '/>
                                                             </button>
                                                         </div>
                                                         <div class='add-new-address'>
-                                                            <button id='add-delivery-address-btn' class='btn p-0 ms-4 has-tooltip' data-tooltip="Dodaj nowy adres dostawy">
+                                                            <button id='add-delivery-address-btn' class='btn p-0 ms-4 has-tooltip' data-tooltip="{{ __('order.create_address') }}">
                                                                 <img src="/img/add_address.png" alt="add new address" class='icon'/>
                                                             </button>
                                                         </div>
                                                     </div>
                                                     <div id="mail-dropdown-container" class="d-flex align-items-center gap-2 mt-2">
                                                         <select id="mail-select" name="selected_mail" class="form-select mb-0 flex-grow-1">
-                                                            <option value="" {% if not selectedMailId %}selected{% endif %} disabled>Wybierz adres Email</option>
+                                                            <option value="" {% if not selectedMailId %} selected {% endif %} disabled>{{ __('order.select_email_address') }}</option>
                                                             {% for email in emails %}
-                                                                <option value="{{ email.id }}" {% if selectedMailId and email.id == selectedMailId %}selected{% endif %}>
+                                                                <option value="{{ email.id }}" {% if selectedMailId and email.id == selectedMailId %} selected {% endif %}>
                                                                     <p class='fw-bold'>{{ email.email }}</option>
                                                                 {% endfor %}
                                                             </select>
                                                             <div class='manipulate-mail d-flex'>
-                                                                <button id='edit-mail-btn' class='btn p-0 ms-1 has-tooltip d-none' data-tooltip="Edytuj adres Email">
+                                                                <button id='edit-mail-btn' class='btn p-0 ms-1 has-tooltip d-none' data-tooltip="{{ __('order.edit_mail') }}">
                                                                     <img src="/img/edit_mail.png" alt="edit address" class='icon '/>
                                                                 </button>
-                                                                <button id='delete-mail-btn' class='btn p-0 ms-2 has-tooltip d-none' data-tooltip="Usuń adres Email">
+                                                                <button id='delete-mail-btn' class='btn p-0 ms-2 has-tooltip d-none' data-tooltip="{{ __('order.delete_mail') }}">
                                                                     <img src="/img/delete_mail.png" alt="delete address" class='icon '/>
                                                                 </button>
                                                             </div>
                                                             <div class='add-new-address'>
-                                                                <button id='add-mail-btn' class='btn p-0 ms-4 has-tooltip' data-tooltip="Dodaj nowy adres Email">
+                                                                <button id='add-mail-btn' class='btn p-0 ms-4 has-tooltip' data-tooltip="{{ __('order.create_mail') }}">
                                                                     <img src="/img/mail.png" alt="add new address" class='icon'/>
                                                                 </button>
                                                             </div>

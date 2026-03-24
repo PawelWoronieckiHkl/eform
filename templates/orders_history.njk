@@ -1,4 +1,5 @@
 {% extends "orders.njk" %}
+{% block search_data %}data-sent="true"{% endblock %}
 {% block title %}
     {{ __('orders.sent_orders') }}
 {% endblock title %}
@@ -22,6 +23,9 @@
                     {% block extra_heads %}
                         <th scope="col">
                             {{ __('orders.sent_date') }}</th>
+                        <th scope="col">{{ __('orders.status') }}</th>
+                        <th scope="col">{{ __('translate.delivery') }}</th>
+                        <th scope="col">{{ __('orders.tracking_numbers') or 'Numery przesyłek' }}</th>
                     {% endblock %}
                     {% block order_item_link %}
                         <tr onclick="window.location.href='/orders/history/order/{{ order.id }}'" class="order-row">
@@ -29,8 +33,25 @@
                         {% block action_th %}{% endblock %}
                         {% block extra_rows %}
                             <td>{{ order.sent_date }}</td>
+                            <th scope="row">{{ __(order.prod_status) if order.prod_status else __('order.status_order_sent') }}</th>
+                            <th scope="row">{{ order.delivery_date if order.delivery_date else '-' }}</th>
                             <td>
-                                <button class='btn btn-outline-secondary w-50 copy-order-btn' id="copy-order-btn" data-id='{{ order.id }}' onclick="event.stopPropagation()">{{ __('orders.reorder') }}</button>
+                                {% if order.parsedSpeditionNumbers and order.parsedSpeditionNumbers.length > 0 %}
+                                    {% for tracking in order.parsedSpeditionNumbers %}
+                                        {% if tracking.href %}
+                                            <a href="{{ tracking.href }}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="badge bg-primary text-white text-decoration-none me-1 mb-1" style="font-size: 0.85rem;">
+                                                {{ tracking.carrier }} {{ tracking.code }}
+                                            </a>
+                                        {% else %}
+                                            <span class="badge bg-secondary me-1 mb-1" style="font-size: 0.85rem;">{{ tracking.fullCode }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button class='btn btn-outline-secondary w-50 copy-order-btn' data-id='{{ order.id }}' onclick="event.stopPropagation()">{{ __('orders.reorder') }}</button>
                             </td>
                         {% endblock %}
                         {% block buttons_space %}{% endblock buttons_space %}

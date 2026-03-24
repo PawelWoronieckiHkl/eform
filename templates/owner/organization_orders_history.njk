@@ -22,6 +22,7 @@
                     {% block extra_heads %}
                         <th scope="col">
                             {{ __('orders.sent_date') }}</th>
+                        <th scope="col">{{ __('orders.tracking_numbers') or 'Numery przesyłek' }}</th>
                     {% endblock %}
                     {% block order_item_link %}
                         <tr onclick="window.location.href='/orders/history/order/{{ order.id }}'" class="order-row">
@@ -29,6 +30,21 @@
                         {% block action_th %}{% endblock %}
                         {% block extra_rows %}
                             <td>{{ order.sent_date }}</td>
+                            <td>
+                                {% if order.parsedSpeditionNumbers and order.parsedSpeditionNumbers.length > 0 %}
+                                    {% for tracking in order.parsedSpeditionNumbers %}
+                                        {% if tracking.href %}
+                                            <a href="{{ tracking.href }}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="badge bg-primary text-white text-decoration-none me-1 mb-1" style="font-size: 0.85rem;">
+                                                {{ tracking.carrier }} {{ tracking.code }}
+                                            </a>
+                                        {% else %}
+                                            <span class="badge bg-secondary me-1 mb-1" style="font-size: 0.85rem;">{{ tracking.fullCode }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 <button class='btn btn-outline-secondary w-50 copy-order-btn' data-id='{{ order.id }}' onclick="event.stopPropagation()">{{ __('orders.reorder') }}</button>
                             </td>

@@ -1,6 +1,8 @@
 import { openAddAddressModal, sendAddressData } from './createNewAddress.js';
 import { get, del } from './components/api_connector.js';
 
+const i18n = (key) => (typeof t === 'function' ? t(key) : key);
+
 function toggleBtns(select, btnIds) {
     const edit = document.getElementById('update-order');
     if (edit) {
@@ -40,15 +42,15 @@ async function openEditAddressModal() {
         const currentAddress = addressResponse.addressData;
 
         const fields = [
-            ["name", "Nazwa adresu"],
-            ["phone", "Telefon"],
-            ["street", "Ulica"],
-            ["city", "Miasto"],
-            ["zip", "Kod pocztowy"],
-            ["country", "Kraj"]];
+            ["name", i18n('order.address_name')],
+            ["phone", i18n('new-order.phone')],
+            ["street", i18n('new-order.street')],
+            ["city", i18n('new-order.city')],
+            ["zip", i18n('new-order.zip')],
+            ["country", i18n('new-order.country')]];
 
         openAddAddressModal(fields, `/address/${addrId}`, {
-            title: "Edytuj adres",
+            title: i18n('order.edit_address'),
             requestMethod: "PUT",
             initialData: currentAddress,
             onSubmit: (_response, payload) => {
@@ -68,10 +70,10 @@ async function openEditMailModal() {
     if (!mailId) return;
 
     const mailResponse = await get(`/address/mail/${mailId}`);
-    const fields = [["mail", "Email"]];
+    const fields = [["mail", i18n('new-order.email')]];
 
     openAddAddressModal(fields, `/address/mail/${mailId}`, {
-        title: "Edytuj adres Email",
+        title: i18n('order.edit_mail'),
         requestMethod: "PUT",
         initialData: { mail: mailResponse.mail?.email || '' },
         onSubmit: (_response, payload) => {
@@ -88,7 +90,7 @@ async function deleteSelectedAddress() {
     const addrId = addressSelect?.value;
     if (!addrId) return;
 
-    const shouldDelete = window.confirm('Czy na pewno usunac wybrany adres dostawy?');
+    const shouldDelete = window.confirm(i18n('order.delete_address_dialog_info'));
     if (!shouldDelete) return;
 
     await del(`/address/${addrId}`);
@@ -100,7 +102,7 @@ async function deleteSelectedMail() {
     const mailId = mailSelect?.value;
     if (!mailId) return;
 
-    const shouldDelete = window.confirm('Czy na pewno usunac wybrany adres email?');
+    const shouldDelete = window.confirm(i18n('order.delete_mail_dialog_info'));
     if (!shouldDelete) return;
 
     await del(`/address/mail/${mailId}`);

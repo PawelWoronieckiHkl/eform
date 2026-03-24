@@ -5,21 +5,27 @@
     margin: 20px 10px 25px 10px;
     box-shadow: 2px 2px rgb(224, 224, 224);
 }
+
 .content {
     width: calc(100% - 280px) !important;
     max-width: calc(100% - 280px) !important;
     margin-left: 275px !important;
 }
+
 html.nav-collapsed .content {
     width: calc(100% - 70px) !important;
     max-width: calc(100% - 70px) !important;
     margin-left: 65px !important;
 }
-#discount-amount{
+
+#discount-amount {
     width: 100px !important;
 }
-#discount-info{
-    width: 22% !important;}
+
+#discount-info {
+    width: 22% !important;
+}
+
 #order-nav {
     position: fixed;
     justify-content: space-between;
@@ -41,9 +47,11 @@ html.nav-collapsed .content {
     min-width: calc(100% - 340px);
     z-index: 100;
 }
+
 .mobile {
     display: none;
 }
+
 .order-nav-main {
     display: flex !important;
     justify-content: space-between !important;
@@ -51,11 +59,13 @@ html.nav-collapsed .content {
     max-width: calc(100%) !important;
     height: 50px !important;
 }
+
 html.nav-collapsed #order-nav {
     left: 80px;
     width: calc(100% - 222px);
     max-width: calc(100% - 222px);
 }
+
 .desktop-nav.collapsed~.languages~main #order-nav,
 .desktop-nav.collapsed+.languages+main #order-nav {
     left: 80px;
@@ -63,16 +73,19 @@ html.nav-collapsed #order-nav {
     max-width: calc(100% - 120px);
     transition: all 0.3s ease !important;
 }
+
 #send-order {
-    margin-right:3% !important ;
+    margin-right: 3% !important;
     margin-bottom: 2% !important;
     float: right;
     scale: 115% !important;
 }
+
 .bg-discount {
     background-color: rgba(235, 232, 75, 0.801) !important;
-    color:rgb(77, 77, 77) !important;
+    color: rgb(77, 77, 77) !important;
 }
+
 .order-table-container {
     margin-top: 100px !important;
     overflow-x: auto;
@@ -80,19 +93,24 @@ html.nav-collapsed #order-nav {
     padding-top: 20px !important;
     transition: margin-top 0.3s ease !important;
 }
+
 .diag-input-container {
     margin-left: 7% !important;
     margin-top: 15px !important;
 }
+
 .dialog-label {
     margin-top: 20px !important;
 }
+
 .dialog-input {
     padding: 20px;
 }
+
 .gold {
     background-color: rgba(236, 212, 76, 0.651) !important;
 }
+
 #order-buttons {
     display: flex;
     align-items: center;
@@ -102,9 +120,11 @@ html.nav-collapsed #order-nav {
     flex-shrink: 0 !important;
     z-index: 10 !important;
 }
+
 .static-head {
     padding-top: 10% !important;
 }
+
 .navbar-scrolled {
     margin-top: 0 !important;
     top: 0;
@@ -113,37 +133,46 @@ html.nav-collapsed #order-nav {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     padding-bottom: 120px;
 }
+
 .btn-link {
     text-decoration: none;
     color: green;
 }
+
 .btn-link:hover {
     text-decoration: none;
     color: rgb(255, 255, 255);
 }
-#new-order-button{
+
+#new-order-button {
     margin-left: 3% !important;
 }
+
 #new-order-button:hover {
     color: rgb(255, 255, 255);
 }
+
 .custom-order-btn {
     width: 10vw !important;
     height: 4vh !important;
     font-size: large !important;
     font-weight: bold !important;
 }
+
 .icon {
     max-width: 30px;
     max-height: 30px;
 }
+
 .edit-buttons {
     min-width: 100px;
 }
+
 .table-scroll {
     overflow-x: auto;
     width: 100%;
 }
+
 .order-table {
     width: max-content;
     table-layout: auto;
@@ -155,9 +184,11 @@ html.nav-collapsed #order-nav {
     background: white;
     border: 1px solid #dee2e6;
 }
+
 .order-table thead {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
+
 .order-table thead th {
     padding: 16px 12px;
     font-weight: 900;
@@ -171,31 +202,38 @@ html.nav-collapsed #order-nav {
     text-align: center;
     vertical-align: middle;
 }
+
 .order-table thead th:last-child {
     border-right: none;
 }
+
 .order-table tbody tr {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-bottom: 1px solid #f1f3f5;
     cursor: pointer;
 }
-.order-table tbody tr:not(#price-row):hover {
+
+.order-table tbody tr:not(#price-row):not(.prod-time-row):hover {
     background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
     transform: translateX(4px);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
-.order-table tbody tr:not(#price-row):hover td,
-.order-table tbody tr:not(#price-row):hover th {
+
+.order-table tbody tr:not(#price-row):not(.prod-time-row):hover td,
+.order-table tbody tr:not(#price-row):not(.prod-time-row):hover th {
     background: transparent;
 }
-.order-table tbody tr:not(#price-row):hover+#price-row {
+
+.order-table tbody tr:not(#price-row):not(.prod-time-row):hover+#price-row {
     background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
     transform: translateX(4px);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
-.order-table tbody tr:not(#price-row):hover+#price-row td {
+
+.order-table tbody tr:not(#price-row):not(.prod-time-row):hover+#price-row td {
     background: transparent;
 }
+
 .order-table th,
 .order-table td {
     white-space: nowrap;
@@ -206,21 +244,26 @@ html.nav-collapsed #order-nav {
     border-right: 1px solid #e9ecef;
     border-bottom: 1px solid #f1f3f5;
 }
+
 .order-table th:last-child,
 .order-table td:last-child {
     border-right: none;
 }
+
 .order-table tbody tr:last-child td {
     border-bottom: none;
 }
+
 .order-table th[scope="row"] {
     font-weight: 600;
     color: #495057;
 }
+
 .order-table td {
     color: black;
     font-weight: 480;
 }
+
 .th-field,
 .td-val {
     min-width: 50px;
@@ -229,21 +272,67 @@ html.nav-collapsed #order-nav {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.prod-time-th {
+    white-space: nowrap;
+    min-width: 120px;
+}
+
+.prod-time-td {
+    white-space: nowrap;
+}
+
+.prod-days-item {
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.prod-days-max {
+    color: #6c757d;
+    font-size: 0.82em;
+    margin-left: 3px;
+}
+
+.prod-time-row {
+    background: transparent !important;
+    cursor: default !important;
+}
+
+
+.prod-time-row-cell {
+    background: linear-gradient(90deg, #f3f8ff 0%, #eef7f2 100%);
+    border: 1px solid #dbe8ff;
+    border-left: 4px solid #4f8ef7;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 16px;
+    text-align: left;
+}
+
+.prod-time-label {
+    color: #405166;
+    font-weight: 700;
+    margin-right: 8px;
+}
+
 #price-row {
     background: #f8f9fa;
     font-size: 13px;
     cursor: default;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 #price-row:hover {
     background: #f8f9fa !important;
     transform: none !important;
     box-shadow: none !important;
 }
+
 .price-label {
     color: #6c757d;
     font-weight: 500;
 }
+
 .comment-space {
     display: flex;
     position: static !important;
@@ -257,6 +346,7 @@ html.nav-collapsed #order-nav {
     border-radius: 0 !important;
     overflow: visible !important;
 }
+
 #comment {
     white-space: normal !important;
     word-wrap: break-word !important;
@@ -270,20 +360,24 @@ html.nav-collapsed #order-nav {
     padding: 0 !important;
     text-align: center !important;
 }
+
 .desktop-nav.collapsed~.languages~main .comment-space,
 .desktop-nav.collapsed+.languages+main .comment-space {
     width: calc(100vw - 30px) !important;
     max-width: 100% !important;
 }
+
 #comment-btn {
     border-radius: 1% !important;
 }
+
 #comment-input {
     width: 100%;
     max-width: 80%;
     flex: 1;
     min-width: 200px;
 }
+
 #edit-icon {
     color: rgb(0, 0, 0);
     font-size: 20px;
@@ -291,17 +385,21 @@ html.nav-collapsed #order-nav {
     width: 25px;
     height: 25px;
 }
+
 #comment-input {
     border: 1px solid rgb(228, 228, 228) !important;
 }
+
 #generate-excel-btn.has-tooltip:hover::after {
     left: auto;
     right: -200%;
 }
+
 #generate-excel-btn.has-tooltip:hover::before {
     left: auto;
     right: 10px;
 }
+
 #generate-container {
     display: flex;
     align-items: center !important;
@@ -314,6 +412,7 @@ html.nav-collapsed #order-nav {
     background: transparent !important;
     visibility: visible !important;
 }
+
 #generate-container .btn {
     flex-shrink: 0 !important;
     min-width: 44px !important;
@@ -327,15 +426,19 @@ html.nav-collapsed #order-nav {
     background: white !important;
     border-radius: 6px !important;
 }
+
 .duplicate-btn {
     z-index: 0 !important;
 }
+
 .edit-position-btn {
     z-index: 0 !important;
 }
+
 .delete-position-btn {
     z-index: 0 !important;
 }
+
 .price {
     background: #f8f9fa;
     font-weight: bold;
@@ -349,13 +452,16 @@ html.nav-collapsed #order-nav {
     border: 0px solid #0e0e0e !important;
     border-radius: 0px !important;
 }
+
 .price strong,
 .price b {
     color: #0f0f0f;
 }
+
 #price-row {
     border: 1px solid #00000018 !important;
 }
+
 .price-label {
     background: #eaf4fd;
     color: #5a5a5a;
@@ -367,10 +473,12 @@ html.nav-collapsed #order-nav {
     font-weight: 500;
     display: inline-block;
 }
+
 #total-container {
     margin-top: 30px;
     margin-bottom: 30px;
 }
+
 .total-price {
     border-radius: 0;
     padding: 20px 24px;
@@ -382,6 +490,7 @@ html.nav-collapsed #order-nav {
     gap: 24px;
     flex-wrap: wrap;
 }
+
 .total-price .total {
     color: #5c5656;
     background: #eaf4fd;
@@ -395,6 +504,7 @@ html.nav-collapsed #order-nav {
     transition: none;
     box-shadow: 0 3px 5px rgba(113, 169, 230, 0.7);
 }
+
 .content .container .text-center.py-5 {
     margin-left: 0 !important;
     margin-right: 0 !important;
@@ -403,11 +513,13 @@ html.nav-collapsed #order-nav {
     width: 100% !important;
     max-width: none !important;
 }
+
 .content .container {
     margin-left: auto !important;
     margin-right: auto !important;
     max-width: none !important;
 }
+
 .order-nav-main .floating-order {
     position: static !important;
     flex: 1 !important;
@@ -420,6 +532,7 @@ html.nav-collapsed #order-nav {
     background: transparent !important;
     padding: 0 !important;
 }
+
 #order-nav .floating-order {
     position: static !important;
     flex: 1 !important;
@@ -432,6 +545,7 @@ html.nav-collapsed #order-nav {
     background: transparent !important;
     padding: 0 !important;
 }
+
 #order-title {
     width: 100%;
     margin-left: 20%;
@@ -440,68 +554,81 @@ html.nav-collapsed #order-nav {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
 @media (max-width: 1400px) {
     #generate-container {
         display: grid !important;
     }
+
     #edit-order-button {
         margin-left: 3%
     }
+
     #order-title {
         margin-left: 34%;
     }
 }
-    #commission-name {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    #order-nav.navbar-scrolled .floating-order {
-        padding: 25px !important;
-        top: 54px;
-    }
-    #order-nav.navbar-scrolled .comment-space {
-        top: 30px;
-    }
-    .position-controls {
-        gap: 1px;
-    }
-    .position-controls .btn,
-    .position-controls button.btn {
-        width: 30px !important;
-        height: 20px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        border-radius: 2px !important;
-        border: 1px solid #dee2e6 !important;
-        background-color: white !important;
-        padding: 0 !important;
-        font-size: 10px !important;
-        line-height: 1 !important;
-        min-height: 20px !important;
-        max-height: 20px !important;
-        z-index: 1 !important;
-    }
-    .position-controls .btn svg,
-    .position-controls button.btn svg {
-        width: 20px !important;
-        height: 20px !important;
-        fill: #000 !important;
-    }
-    .position-controls .btn:hover,
-    .position-controls button.btn:hover {
-        background-color: #f8f9fa !important;
-        border-color: #adb5bd !important;
-    }
-    .position-controls .btn:hover svg,
-    .position-controls button.btn:hover svg {
-        fill: #000 !important;
-    }
-    .position-controls .btn:hover svg {
-        fill: #000;
-    }
-    .table td.d-flex {
-        white-space: nowrap;
-        min-width: fit-content;
-    }
+
+#commission-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#order-nav.navbar-scrolled .floating-order {
+    padding: 25px !important;
+    top: 54px;
+}
+
+#order-nav.navbar-scrolled .comment-space {
+    top: 30px;
+}
+
+.position-controls {
+    gap: 1px;
+}
+
+.position-controls .btn,
+.position-controls button.btn {
+    width: 30px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 2px !important;
+    border: 1px solid #dee2e6 !important;
+    background-color: white !important;
+    padding: 0 !important;
+    font-size: 10px !important;
+    line-height: 1 !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    z-index: 1 !important;
+}
+
+.position-controls .btn svg,
+.position-controls button.btn svg {
+    width: 20px !important;
+    height: 20px !important;
+    fill: #000 !important;
+}
+
+.position-controls .btn:hover,
+.position-controls button.btn:hover {
+    background-color: #f8f9fa !important;
+    border-color: #adb5bd !important;
+}
+
+.position-controls .btn:hover svg,
+.position-controls button.btn:hover svg {
+    fill: #000 !important;
+}
+
+.position-controls .btn:hover svg {
+    fill: #000;
+}
+
+.table td.d-flex {
+    white-space: nowrap;
+    min-width: fit-content;
+}
