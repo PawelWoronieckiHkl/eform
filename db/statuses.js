@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 async function checkIfStatusExists(record) {
     let query = `SELECT id from position_statuses WHERE user_ident = ? and order_idx = ? and order_pos = ?`
     const result = await selectQuery(query, [record.USERIDENT, record.ORDERNO, record.ORDERPOS]);
-    console.log(result, 'result w checkIfStatusExists');
     return result;
 }
 
@@ -30,7 +29,6 @@ async function insertStatus(record) {
 
 
 async function getUserStatuses(userIdent, orderIdx) {
-    console.log(userIdent, orderIdx, 'getUserStatuses params');
     const query = `SELECT * FROM position_statuses WHERE user_ident = ? AND order_idx = ?`;
     const result = await selectQuery(query, [userIdent, orderIdx]);
     return result;
@@ -38,7 +36,6 @@ async function getUserStatuses(userIdent, orderIdx) {
 
 
 async function updateStatus(record) {
-    console.log(record, 'updateStatus record');
     const query = `UPDATE position_statuses SET
     status = ?,
     shipping_date = ?,
@@ -58,7 +55,6 @@ async function updateStatus(record) {
 async function syncOrderFromStatuses(userIdent, orderIdx) {
     const query = `
         UPDATE \`order\` o
-        JOIN \`user\` u ON o.user_id = u.id AND u.ident = ?
         SET
             o.delivery_date = (
                 SELECT DATE(MAX(ps.shipping_date))
@@ -80,15 +76,16 @@ async function syncOrderFromStatuses(userIdent, orderIdx) {
                   AND ps.parcel_code IS NOT NULL
                   AND ps.parcel_code != ''
             )
-        WHERE o.order_idx = ?`;
+        WHERE o.order_idx = ?
+          AND o.user_id = (SELECT id FROM \`user\` WHERE ident = ?)`;
     const result = await updateQuery(query, [
-        userIdent,
         userIdent, orderIdx,
         userIdent, orderIdx,
         userIdent, orderIdx,
-        orderIdx
+        orderIdx,
+        userIdent
     ]);
-    console.log(`syncOrderFromStatuses [${userIdent} / ${orderIdx}]:`, result);
+
     return result;
 }
 

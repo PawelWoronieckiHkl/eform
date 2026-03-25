@@ -595,15 +595,22 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             } else {
                 confirmationEmail = mail.user_email;
             }
-            let mailList = [confirmationEmail, mail.organization_email, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'];
+            
+            // Główny odbiorca - tylko organization_email
+            const mainRecipient = mail.organization_email;
+            
+            // UDW (BCC) - pozostałe adresy
+            let bccList = [confirmationEmail, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'].filter(Boolean).flat();
+            
             const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx)
             const orgData = await db.getOrgInfo(req.session.user.organization)
 
             if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev') {
-                mailList = [confirmationEmail, extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu']
+                bccList = [confirmationEmail, extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu'].filter(Boolean).flat();
             }
+            
             mailBot.sendMail(
-                mailList,
+                mainRecipient,
                 lang,
                 pdf,
                 attachments,
@@ -613,7 +620,8 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
                     logoPath: logoPath,
                     orderDetails: sendData,
                     organization: orgData
-                }
+                },
+                bccList.join(', ')
             );
 
         }

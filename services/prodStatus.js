@@ -82,19 +82,18 @@ class SyncProdStatus {
         if (!this.statusesData || this.statusesData.length === 0) {
             return;
         }
+        
         for (const record of this.statusesData) {
             const exists = await db.checkIfStatusExists(record);
             if (exists && exists.length > 0) {
-                let result = await db.updateStatus(record);
-                console.log('Updated status with result:', result);
+                await db.updateStatus(record);
             } else {
-                console.log(`Status does NOT exist in DB for ORDERNO: ${record.ORDERNO}, ORDERPOS: ${record.ORDERPOS}`);
-                let result = await db.insertStatus(record);
-                console.log('Inserted status with result:', result);
+                await db.insertStatus(record);
             }
         }
 
         const uniqueOrders = [...new Set(this.statusesData.map(r => r.ORDERNO))];
+        
         for (const orderIdx of uniqueOrders) {
             await db.syncOrderFromStatuses(this.userIdent, orderIdx);
         }
@@ -125,7 +124,6 @@ function setParcelHref(statuses) {
             }
         }
     }
-    console.log(statuses, 'STATUSES WITH PARCEL HREF');
     return statuses;
 }
 
