@@ -3,6 +3,7 @@ const db = require('../db/db_helper.js');
 const { usersPath } = require('../config.js');
 const path = require('path');
 const csv = require('csvtojson');
+const { log } = require('../utils/logging');
 
 async function updateClients() {
   if (process.env?.PRODUCTION === 'true' || process.env?.PRODUCTION) {
@@ -22,7 +23,7 @@ async function updateClients() {
   const diff = compareClients(fileClientsObj, dbClientsObj);
 
   if (Object.keys(diff.toAdd).length === 0) {
-    console.log('Baza klientów aktualna');
+    log('Baza klientów aktualna');
   } else {
     await insertClients(diff.toAdd);
   }
@@ -42,7 +43,7 @@ async function updateClients() {
 
 
   // if (false) {
-    // console.log('Rozpoczynam aktualizację haseł...');
+    // log('Rozpoczynam aktualizację haseł...');
     // let updated = 0;
     // let skipped = 0;
 // 
@@ -53,9 +54,9 @@ async function updateClients() {
           // try {
             // await db.updatePlain(user.ident, client.password);
             // updated++;
-            // console.log(`[${updated}] Zaktualizowano hasło dla użytkownika ${client.ident}`);
+            // log(`[${updated}] Zaktualizowano hasło dla użytkownika ${client.ident}`);
           // } catch (err) {
-            // console.error(`Błąd przy aktualizacji hasła dla ${client.ident}:`, err.message);
+            // log(`Błąd przy aktualizacji hasła dla ${client.ident}:`, err.message);
           // }
         // } else {
           // skipped++;
@@ -65,7 +66,7 @@ async function updateClients() {
       // }
     // }
 // 
-    // console.log(`Zakończono aktualizację haseł. Zaktualizowano: ${updated}, Pominięto: ${skipped}`);
+    // log(`Zakończono aktualizację haseł. Zaktualizowano: ${updated}, Pominięto: ${skipped}`);
   // }
 }
 
@@ -171,7 +172,7 @@ async function insertClients(clientsObj) {
       }
       const newUserId = await db.addUser(client);
     } catch (err) {
-      console.error(`Błąd przy dodawaniu ${client.ident}:`, err.message);
+      log(`Błąd przy dodawaniu ${client.ident}:`, err.message);
     }
   }
 }
@@ -217,7 +218,7 @@ async function updateExistingClients(clientsToUpdate) {
       updated++;
     } catch (err) {
       failed++;
-      console.error(`Błąd przy aktualizacji klienta ${clientUpdate.ident} (PIN: ${clientUpdate.pin}):`, err.message);
+      log(`Błąd przy aktualizacji klienta ${clientUpdate.ident} (PIN: ${clientUpdate.pin}):`, err.message);
     }
   }
 }
@@ -248,7 +249,7 @@ async function deleteNonExistingClients(clientsToDelete) {
       }
     } catch (err) {
       failed++;
-      console.error(`Błąd przy usuwaniu klienta ${client.ident} (PIN: ${client.pin}):`, err.message);
+      log(`Błąd przy usuwaniu klienta ${client.ident} (PIN: ${client.pin}):`, err.message);
     }
   }
 
@@ -309,7 +310,7 @@ async function fixEncodingInDatabase() {
 
             }
           } catch (err) {
-            console.error(`  Błąd dekodowania:`, err.message);
+            log(`  Błąd dekodowania:`, err.message);
           }
         }
 
@@ -328,7 +329,7 @@ async function fixEncodingInDatabase() {
         }
 
         if (fixedValue !== originalValue) {
-          console.log(`  RÓŻNICA! Original: "${originalValue}" -> Fixed: "${fixedValue}"`);
+          log(`  RÓŻNICA! Original: "${originalValue}" -> Fixed: "${fixedValue}"`);
           updates[field] = fixedValue;
           needsUpdate = true;
         }
@@ -347,8 +348,8 @@ async function fixEncodingInDatabase() {
 
         fixed++;
       } catch (err) {
-        console.error(`Błąd przy aktualizacji użytkownika ID ${user.id}:`, err.message);
-        console.error(`  Stack:`, err.stack);
+        log(`Błąd przy aktualizacji użytkownika ID ${user.id}:`, err.message);
+        log(`  Stack:`, err.stack);
       }
     } else {
       skipped++;

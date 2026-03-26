@@ -3,6 +3,7 @@ const path = require('path');
 const dbHelper = require('../db/db_helper.js');
 const { dataDir, availabeLanguages } = require('../config.js');
 const { json } = require('stream/consumers');
+const { log } = require('../utils/logging');
 
 class VersionManagerLocal {
     constructor() {
@@ -46,11 +47,11 @@ class VersionManagerLocal {
             langPaths = pathlist
             const okFileExists = await this.checkOkFileAndRemove(group);
             if (!okFileExists) {
-                console.log(`Brak pliku ${group}.ok – pomijam aktualizację`);
+                log(`Brak pliku ${group}.ok – pomijam aktualizację`);
                 continue;
             }
 
-            console.log('SPRAWDZAM WERSJE', group);
+            log('SPRAWDZAM WERSJE', group);
             const groupDataPath = path.join(dataDir, group, 'data');
 
             const currentMetadata = {};
@@ -82,7 +83,7 @@ class VersionManagerLocal {
                 }
             }
         } catch (err) {
-            console.error(`Błąd w katalogu ${dir}:`);
+            log(`Błąd w katalogu ${dir}:`);
         }
         return files;
     }
@@ -141,7 +142,7 @@ class VersionManagerLocal {
                     const dest = path.join(langVersionDir, filename);
                     await fs.promises.copyFile(src, dest);
                 } catch (err) {
-                    console.log(`Brak pliku ${filename} w języku ${lang}`);
+                    log(`Brak pliku ${filename} w języku ${lang}`);
                 }
             }
         }

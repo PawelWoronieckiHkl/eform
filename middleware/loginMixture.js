@@ -1,6 +1,7 @@
 const db = require("../db/db_helper.js");
 const usersDb = require("../db/users.js");
 const { customOrgSorting } = require('../utils/otherBossUtilities.js');
+const { log } = require('../utils/logging');
 
 function requireLogin(req, res, next) {
   if (!req.session.user) {
@@ -37,7 +38,7 @@ function addOrganizationsForAdmin(req, res, next) {
         originalRender(view, renderOptions, renderCallback);
       })
       .catch((error) => {
-        console.error('Error fetching organizations:', error);
+        log('Error fetching organizations:', error);
         renderOptions.organizations = [];
         renderOptions.admin = true;
         originalRender(view, renderOptions, renderCallback);
@@ -54,7 +55,7 @@ function requirePermission(req, res, next) {
   }
   const sessionShow = req.session.user?.showPrices;
   const paramShow = req.session.user?.showPricesOnce ?? false;
-  console.log('sessionShow', sessionShow, 'paramShow', paramShow, "REQUIRE PERMISSION");
+  log('sessionShow', sessionShow, 'paramShow', paramShow, "REQUIRE PERMISSION");
   if (!sessionShow && !paramShow) {
     return res.redirect("/user/no-permission");
   }
@@ -70,12 +71,12 @@ async function checkOrderOwnership(req, res, next) {
 
     const userId = req.session.user?.userId;
     const orderId = req.params.orderId;
-    console.log(userId, orderId, 'in checkOrderOwnership middleware');
+    // log(userId, orderId, 'in checkOrderOwnership middleware');
     if (!userId) {
       return res.redirect('/user/no-permission');
     }
     const order = await db.checkOwner(orderId, userId);
-    console.log(order, 'order ownership check result');
+    // log(order, 'order ownership check result');
     if (!order) {
       return res.redirect('/user/no-permission');
     }
@@ -91,9 +92,9 @@ async function checkOrderOwnership(req, res, next) {
 async function isOwner(owner) {
   try {
     if (owner) {
-      console.warn("Missing identifiers: ident or ownerIdent");
+      log("Missing identifiers: ident or ownerIdent");
     }
-    console.log(owner, 'in isOwner function');
+    log(owner, 'in isOwner function');
     if (owner.orgIdent.toUpperCase() == owner.userIdent.toUpperCase()) {
 
       return true;
@@ -102,7 +103,7 @@ async function isOwner(owner) {
       return false;
     }
   } catch (error) {
-    console.error("Error in isOwner function:", error);
+    log("Error in isOwner function:", error);
     return false;
   }
 }

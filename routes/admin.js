@@ -4,13 +4,14 @@ const { requireLogin } = require('../middleware/loginMixture');
 const logService = require('../services/logService.js');
 const { formatLoginTime } = require('../utils/humanize_date.js');
 const db = require("../db/db_helper.js");
+const { log } = require('../utils/logging');
 
 router.use(async (req, res, next) => {
     if (req.session.user?.isOwner) {
         try {
             res.locals.users = await db.getUsersByOwner(req);
         } catch (error) {
-            console.error('Error loading users for owner:', error);
+            log('Error loading users for owner:', error);
             res.locals.users = [];
         }
     }
@@ -55,7 +56,7 @@ router.get('/login-history', requireLogin, requireAdmin, async (req, res) => {
             hasPrevPage: page > 1
         });
     } catch (error) {
-        console.error('Error fetching login history:', error);
+        log('Error fetching login history:', error);
         res.status(500).render('error.njk', {
             message: 'Błąd podczas pobierania historii logowań'
         });
@@ -92,7 +93,7 @@ router.get('/api/login-history', requireLogin, requireAdmin, async (req, res) =>
             count: loginHistory ? loginHistory.length : 0
         });
     } catch (error) {
-        console.error('Error fetching login history API:', error);
+        log('Error fetching login history API:', error);
         res.status(500).json({
             success: false,
             message: 'Błąd podczas pobierania historii logowań'

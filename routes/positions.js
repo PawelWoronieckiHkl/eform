@@ -14,6 +14,7 @@ const { group } = require('console');
 const { fileExists } = require('../utils/fileManager');
 const { ordersManager } = require('../utils/saveOrdersOutput.js');
 const { file } = require('pdfkit');
+const { log } = require('../utils/logging');
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
@@ -42,7 +43,7 @@ router.use(async (req, res, next) => {
     try {
       res.locals.users = await db.getUsersByOwner(req);
     } catch (error) {
-      console.error('Error loading users for owner:', error);
+      log('Error loading users for owner:', error);
       res.locals.users = [];
     }
   }
@@ -72,7 +73,7 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
       filesProcessed: files.length
     });
   } catch (error) {
-    console.error('Błąd przy zapisywaniu:', error);
+    log('Błąd przy zapisywaniu:', error);
     res.status(500).json({
       status: "error",
       message: error.message
@@ -99,7 +100,7 @@ router.patch('/edit/save', requireLogin, upload.any(), async (req, res) => {
 
     res.json({ status: "success", message: "Dane zapisane poprawnie" });
   } catch (err) {
-    console.error('Błąd podczas zapisu pozycji:', err);
+    log('Błąd podczas zapisu pozycji:', err);
     return res.status(400).json({ error: "Niepoprawne dane" });
   }
 });
@@ -131,7 +132,7 @@ router.delete('/:positionId/delete', requireLogin, async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error deleting position:', error);
+    log('Error deleting position:', error);
     return res.status(500).json({
       success: false,
       message: 'Błąd serwera podczas usuwania pozycji'
@@ -177,7 +178,7 @@ router.get('/photo', requireLogin, async (req, res) => {
       photoName: actualFileName || photoName
     });
   } catch (err) {
-    console.error("Błąd sprawdzania zdjęcia:", err);
+    log("Błąd sprawdzania zdjęcia:", err);
     return res.status(500).json({ error: "Błąd serwera" });
   }
 });
@@ -209,7 +210,7 @@ router.get('/:orderId/:positionId/attachments', requireLogin, async (req, res) =
     return res.json({ attachments });
   }
   catch (error) {
-    console.error('Error fetching attachments:', error);
+    log('Error fetching attachments:', error);
     return res.status(500).json({ error: 'Failed to fetch attachments' });
   }
 })
@@ -285,7 +286,7 @@ router.post('/favorites/toggle', requireLogin, async (req, res) => {
       res.json({ isFavorite: true });
     }
   } catch (error) {
-    console.error('Database error:', error);
+    log('Database error:', error);
     res.status(500).json({ error: 'Database operation failed' });
   }
 });
@@ -368,7 +369,7 @@ router.post('/check-images', requireLogin, async (req, res) => {
 
     return res.json(result);
   } catch (err) {
-    console.error("Błąd sprawdzania obrazów:", err);
+    log("Błąd sprawdzania obrazów:", err);
     return res.status(500).json({ error: "Błąd serwera" });
   }
 });
@@ -397,7 +398,7 @@ router.post('/versions/update/', requireLogin, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Błąd aktualizacji wersji:', error);
+    log('Błąd aktualizacji wersji:', error);
     res.status(500).json({
       error: error.message,
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
@@ -417,7 +418,7 @@ router.post('/:id/move-up', requireLogin, async (req, res) => {
       res.status(400).json({ success: false, message: result.message });
     }
   } catch (error) {
-    console.error('Error moving position up:', error);
+    log('Error moving position up:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
@@ -434,7 +435,7 @@ router.post('/:id/move-down', requireLogin, async (req, res) => {
       res.status(400).json({ success: false, message: result.message });
     }
   } catch (error) {
-    console.error('Error moving position down:', error);
+    log('Error moving position down:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
@@ -452,7 +453,7 @@ router.post('/:id/set-idx', requireLogin, async (req, res) => {
       res.status(400).json({ success: false, message: result.message });
     }
   } catch (error) {
-    console.error('Error setting position index:', error);
+    log('Error setting position index:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
@@ -471,7 +472,7 @@ router.post('/favs/clear/:groupNr', requireLogin, async (req, res) => {
     return res.status(200).json({ success: true });
 
   } catch (error) {
-    console.error('Database error:', error);
+    log('Database error:', error);
     return res.status(500).json({ error: 'Database operation failed' });
   }
 });

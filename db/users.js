@@ -2,13 +2,14 @@ const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('./core')
 const dateUtils = require("../utils/humanize_date.js");
 const e = require("express");
 const bcrypt = require('bcryptjs');
+const { log } = require('../utils/logging');
 
 
 async function getLanguage(pin) {
     const query = 'SELECT country FROM \`user\` WHERE pin = ?'
     let result = await selectQuery(query, pin)
     if (result[0]) {
-        console.log(result[0])
+        log(result[0])
         return result[0].country.toLowerCase();
     }
     else {
@@ -35,7 +36,7 @@ async function uodateFirstLogonInfo(pin) {
     const query = 'UPDATE `user` SET first_login_at = ? WHERE pin LIKE ?'
     const now = dateUtils.getDbTimestamp()
     let result = await updateQuery(query, [now, pin])
-    console.log(result, 'first logon update result')
+    log(result, 'first logon update result')
     return result
 }
 
@@ -43,9 +44,9 @@ async function uodateFirstLogonInfo(pin) {
 async function setUserAcceptedRODO(pin) {
     const query = 'UPDATE `user` SET privacy_policy_accepted_at = ? WHERE pin LIKE ?'
     const now = dateUtils.getDbTimestamp()
-    console.log(now, pin, 'now')
+    log(now, pin, 'now')
     let result = await updateQuery(query, [now, pin])
-    console.log(result)
+    log(result)
     return result
 }
 
@@ -146,7 +147,7 @@ async function getDbPassword(pin) {
         }
     } catch (err) {
         await connection.end();
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -177,7 +178,7 @@ async function getUserData(pin) {
     }
     catch (err) {
         await connection.end();
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -330,16 +331,16 @@ async function getEmployeeByLogin(login) {
 
 async function addEmployee(employeeData) {
     const { name, surname, login, password, phone, userId } = employeeData;
-    console.log('jestem w addEmployee', employeeData)
+    log('jestem w addEmployee', employeeData)
 
     const checkEmployeeQuery = `SELECT id FROM employee WHERE login = ?`;
     const checkUserQuery = `SELECT id FROM eform.\`user\` WHERE pin = ?`;
     const existingEmployee = await selectQuery(checkEmployeeQuery, [login]);
     const existingUser = await selectQuery(checkUserQuery, [login]);
-    console.log('existingEmployee:', existingEmployee);
-    console.log('existingUser:', existingUser);
+    log('existingEmployee:', existingEmployee);
+    log('existingUser:', existingUser);
     if (existingEmployee.length > 0 || existingUser.length > 0) {
-        console.log('Employee already exists or user does not exist');
+        log('Employee already exists or user does not exist');
         return { success: false, info: 'USER_EXISTS' };
 
     }
@@ -370,7 +371,7 @@ async function deleteEmployee(employeeId) {
         const deleteSql = `DELETE FROM employee WHERE id = ?`;
         return await deleteQuery(deleteSql, [employeeId]);
     } catch (error) {
-        console.error('Błąd przy usuwaniu pracownika:', error);
+        log('Błąd przy usuwaniu pracownika:', error);
         throw error;
     }
 }

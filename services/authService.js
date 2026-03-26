@@ -6,6 +6,7 @@ const logService = require('../services/logService.js');
 const langManager = require('../services/setLanguage')
 const langVer = require('../services/languageManager')
 const { dataDir, localesDir } = require('../config');
+const { log } = require('../utils/logging');
 
 async function handleAuthLogin(req, res, next, pin, password) {
     try {
@@ -79,16 +80,16 @@ async function checkPassword(pin, password) {
 	const dbPassword = await db.getDbPassword(pin);
 	if (dbPassword) {
 		if (bcrypt.compareSync(password, dbPassword)) {
-			console.log("Hasło poprawne");
+			log("Hasło poprawne");
 			return true;
 		}
 		else if (password === dbPassword) {
-			console.log("Hasło poprawne (bez haszowania)");
+			log("Hasło poprawne (bez haszowania)");
 			return true;
 		}
 
 	} else {
-		console.log("Nie ma takiego użytkownika");
+		log("Nie ma takiego użytkownika");
 		return false;
 	}
 }
@@ -102,7 +103,7 @@ async function checkFirstLogon(pin) {
 	}
 	else {
 		const isPolicyAccepted = await db.getPolicyState(pin)
-		console.log(isPolicyAccepted, 'is policy accepted')
+		log(isPolicyAccepted, 'is policy accepted')
 		return isPolicyAccepted ? false : true
 	}
 }
@@ -110,23 +111,23 @@ async function checkFirstLogon(pin) {
 async function checkEmployeePassword(login, password) {
 	const employee = await db.getEmployeeByLogin(login);
 	if (!employee) {
-		console.log("Nie ma takiego pracownika");
+		log("Nie ma takiego pracownika");
 		return { valid: false, employee: null };
 	}
 
 
 	if (password === employee.password) {
-		console.log("Hasło pracownika poprawne (bez hashowania)");
+		log("Hasło pracownika poprawne (bez hashowania)");
 		return { valid: true, employee };
 	}
 
 
 	if (bcrypt.compareSync(password, employee.password)) {
-		console.log("Hasło pracownika poprawne (bcrypt)");
+		log("Hasło pracownika poprawne (bcrypt)");
 		return { valid: true, employee };
 	}
 
-	console.log("Hasło pracownika nieprawidłowe");
+	log("Hasło pracownika nieprawidłowe");
 	return { valid: false, employee: null };
 }
 

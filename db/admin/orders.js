@@ -1,6 +1,7 @@
 const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('../core')
 const dateUtils = require("../../utils/humanize_date.js");
 const bcrypt = require('bcryptjs');
+const { log } = require('../../utils/logging');
 
 
 
@@ -17,10 +18,10 @@ async function getOrderWithItems(orderId) {
 }
 
 async function checkOwner(orderId, userId) {
-    console.log('Checking ownership for orderId:', orderId, 'and userId:', userId);
+    log('Checking ownership for orderId:', orderId, 'and userId:', userId);
     const query = 'SELECT id FROM \`order\` WHERE id = ? AND user_id = ?';
     const order = await selectQuery(query, [orderId, userId]);
-    console.log(order.length)
+    log(order.length)
     return order.length > 0;
 }
 
@@ -55,7 +56,7 @@ async function getOrderDetails(orderId) {
     WHERE \`order\`.id = ?`;
 
     let orderDetails = await selectQuery(orderDetailsQuery, orderId);
-    console.log(orderDetails, 'query')
+    log(orderDetails, 'query')
     orderDetails = dateUtils.humanizeData(orderDetails);
     return orderDetails[0];
 }
@@ -174,7 +175,7 @@ async function deleteOrder(orderId) {
 
 async function getUserOrders(userId, limit = 10, offset = 0, sent = false, isOwner = false) {
     let query = ''
-    console.log(isOwner, 'isOwner in db')
+    log(isOwner, 'isOwner in db')
     if (isOwner) {
         query = `
         SELECT * FROM \`order\` 
@@ -183,17 +184,17 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, isOwn
 
     `;
         try {
-            console.log(isOwner, 'isOwner')
+            log(isOwner, 'isOwner')
             const rows = await selectQuery(query, [isOwner, limit, offset]);
             const result = dateUtils.humanizeData(rows);
-            console.log(result, 'result orders')
+            log(result, 'result orders')
             if (result.length == 0) { return false }
             return result;
 
         }
         catch (err) {
             await connection.end();
-            console.error(err);
+            log(err);
             return false;
         }
 
@@ -226,7 +227,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, isOwn
     }
     catch (err) {
         await connection.end();
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -255,7 +256,7 @@ async function countUserOrders(userId, sent = false) {
 
         return count[0].count;
     } catch (err) {
-        console.error(err);
+        log(err);
         return 0;
     }
 }
@@ -272,13 +273,13 @@ async function insertSendAddress(address) {
                 address['country'],
                 address['phone'],
                 address['email']])
-        console.log(response)
+        log(response)
         return response[0]?.insertId;
 
     }
 
     catch (err) {
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -318,12 +319,12 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
                 employeeId
             ]
         )
-        console.log(response)
+        log(response)
         return response[0].insertId;
     }
 
     catch (err) {
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -349,7 +350,7 @@ async function changeOrderStatus(orderId, status) {
     }
 
     catch (err) {
-        console.error(err);
+        log(err);
         return false;
     }
 }

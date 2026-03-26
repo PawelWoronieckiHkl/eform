@@ -2,11 +2,13 @@ const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('./core')
 const dateUtils = require("../utils/humanize_date.js");
 const e = require("express");
 const bcrypt = require('bcryptjs');
+const { log } = require('../utils/logging');
 
 
 async function checkIfStatusExists(record) {
     let query = `SELECT id from position_statuses WHERE user_ident = ? and order_idx = ? and order_pos = ?`
     const result = await selectQuery(query, [record.USERIDENT, record.ORDERNO, record.ORDERPOS]);
+
     return result;
 }
 
@@ -29,6 +31,7 @@ async function insertStatus(record) {
 
 
 async function getUserStatuses(userIdent, orderIdx) {
+
     const query = `SELECT * FROM position_statuses WHERE user_ident = ? AND order_idx = ?`;
     const result = await selectQuery(query, [userIdent, orderIdx]);
     return result;
@@ -36,6 +39,7 @@ async function getUserStatuses(userIdent, orderIdx) {
 
 
 async function updateStatus(record) {
+
     const query = `UPDATE position_statuses SET
     status = ?,
     shipping_date = ?,
@@ -55,6 +59,7 @@ async function updateStatus(record) {
 async function syncOrderFromStatuses(userIdent, orderIdx) {
     const query = `
         UPDATE \`order\` o
+        JOIN \`user\` u ON o.user_id = u.id AND u.ident = ?
         SET
             o.delivery_date = (
                 SELECT DATE(MAX(ps.shipping_date))
@@ -70,20 +75,22 @@ async function syncOrderFromStatuses(userIdent, orderIdx) {
                 LIMIT 1
             ),
             o.spedition_numbers = (
-                SELECT JSON_ARRAYAGG(DISTINCT ps.parcel_code)
-                FROM position_statuses ps
-                WHERE ps.user_ident = ? AND ps.order_idx = ?
-                  AND ps.parcel_code IS NOT NULL
-                  AND ps.parcel_code != ''
+                SELECT JSON_ARRAYAGG(parcel_code)
+                FROM (
+                    SELECT DISTINCT ps.parcel_code
+                    FROM position_statuses ps
+                    WHERE ps.user_ident = ? AND ps.order_idx = ?
+                      AND ps.parcel_code IS NOT NULL
+                      AND ps.parcel_code != ''
+                ) AS distinct_codes
             )
-        WHERE o.order_idx = ?
-          AND o.user_id = (SELECT id FROM \`user\` WHERE ident = ?)`;
+        WHERE o.order_idx = ?`;
     const result = await updateQuery(query, [
+        userIdent,
         userIdent, orderIdx,
         userIdent, orderIdx,
         userIdent, orderIdx,
-        orderIdx,
-        userIdent
+        orderIdx
     ]);
 
     return result;

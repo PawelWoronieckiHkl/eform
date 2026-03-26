@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
+const { log } = require('../utils/logging');
 
 
 function getFileMeta(filePath) {
@@ -11,7 +12,7 @@ function getFileMeta(filePath) {
       mtime: stats.mtime.getTime(),
     };
   } catch (err) {
-    console.error('Błąd odczytu metadanych:', err);
+    log('Błąd odczytu metadanych:', err);
     return null;
   }
 }
@@ -22,7 +23,7 @@ function getPreviousMeta(versionFile) {
     const content = fs.readFileSync(versionFile, 'utf-8');
     return JSON.parse(content);
   } catch (err) {
-    console.error('Błąd odczytu .version.txt:', err);
+    log('Błąd odczytu .version.txt:', err);
     return null;
   }
 }
@@ -30,16 +31,16 @@ function getPreviousMeta(versionFile) {
 function onFileChanged(dir) {
 
   exec(`excelToJson -i ${dir}/jezyki.xlsx -o ${dir}`, (error, stdout, stderr) => {
-    console.log(stdout)
+    log(stdout)
     if (error) {
-      console.error(`Błąd excelToJson: ${error.message}`);
+      log(`Błąd excelToJson: ${error.message}`);
       return;
     }
     if (stderr) {
-      console.log(stdout)
-      console.error(`excelToJson stderr: ${stderr}`);
+      log(stdout)
+      log(`excelToJson stderr: ${stderr}`);
     }
-    console.log(`excelToJson stdout: ${stdout}`);
+    log(`excelToJson stdout: ${stdout}`);
   });
 }
 
@@ -47,13 +48,13 @@ function jsonToExcel(dir) {
   
   exec(`jsonToExcel -i ${dir} -o ${dir}/jezyki.xlsx`, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Błąd jsonToExcel: ${error.message}`);
+      log(`Błąd jsonToExcel: ${error.message}`);
       return;
     }
     if (stderr) {
-      console.error(`jsonToExcel stderr: ${stderr}`);
+      log(`jsonToExcel stderr: ${stderr}`);
     }
-    console.log(`jsonToExcel stdout: ${stdout}`);
+    log(`jsonToExcel stdout: ${stdout}`);
   });
 }
 
@@ -76,9 +77,9 @@ function checkTranslateLegacy(dir) {
     onFileChanged(dir);
 
     fs.writeFileSync(versionFile, JSON.stringify(currentMeta), 'utf-8');
-    console.log('Zmieniono plik, zaktualizowano .version.txt');
+    log('Zmieniono plik, zaktualizowano .version.txt');
   } else {
-    console.log('Brak zmian w pliku.');
+    log('Brak zmian w pliku.');
    
   }
 }

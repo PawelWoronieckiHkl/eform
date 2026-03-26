@@ -6,12 +6,26 @@ if (!fs.existsSync(logsDir)) {
     fs.mkdirSync(logsDir, { recursive: true });
 }
 
-function showLog(message) {
+function formatLogArguments(...args) {
+    return args.map(arg => {
+        if (typeof arg === 'object' && arg !== null) {
+            try {
+                return JSON.stringify(arg, null, 2);
+            } catch (err) {
+                return String(arg);
+            }
+        }
+        return String(arg);
+    }).join(' ');
+}
+
+function showLog(...args) {
+    const message = formatLogArguments(...args);
     console.log(`[${new Date().toISOString()}] ${message}`);
 }
 
-function saveLogToFile(message) {
-
+function saveLogToFile(...args) {
+    const message = formatLogArguments(...args);
     const timestamp = new Date();
     const logMessage = `[${timestamp.toISOString()}] ${message}\n`;
     const logday = timestamp.toISOString().split('T')[0]; 
@@ -24,9 +38,9 @@ function saveLogToFile(message) {
     });
 }
 
-function log(message) {
-    showLog(message);
-    saveLogToFile(message);
+function log(...args) {
+    showLog(...args);
+    saveLogToFile(...args);
 }
 
 module.exports = {

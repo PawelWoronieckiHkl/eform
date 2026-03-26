@@ -3,6 +3,7 @@ const nunjucks = require('nunjucks');
 const path = require('path');
 const fs = require('fs');
 const confLang = require('./conf');
+const { log } = require('../../utils/logging');
 
 
 const transporter = nodemailer.createTransport({
@@ -51,7 +52,7 @@ function sendMail(to, lang, pdfBuffer, attachmentsBuffer=[], templateVars = {}, 
       cid: 'logo_cid' // musi odpowiadać CID w szablonie
     });
   } else {
-    console.warn('Plik logo nie istnieje:', templateVars.logoPath);
+    log('Plik logo nie istnieje:', templateVars.logoPath);
   }
 
   // Dodaj dodatkowe załączniki z attachmentsBuffer
@@ -82,11 +83,11 @@ function sendMail(to, lang, pdfBuffer, attachmentsBuffer=[], templateVars = {}, 
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log('Błąd wysyłki:', error);
+      log('Błąd wysyłki:', error);
     } else {
-      console.log('Stylizowany e-mail wysłany:', info.response, to);
+      log('Stylizowany e-mail wysłany:', info.response, to);
       if (bcc) {
-        console.log('BCC (UDW):', bcc);
+        log('BCC (UDW):', bcc);
       }
     }
   });

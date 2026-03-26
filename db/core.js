@@ -2,6 +2,7 @@ const mysql = require("mysql2/promise.js");
 const dateUtils = require("../utils/humanize_date.js");
 const e = require("express");
 const bcrypt = require('bcryptjs');
+const { log } = require('../utils/logging');
 
 async function connetToDb() {
     const connection = await mysql.createConnection({
@@ -35,7 +36,7 @@ async function selectQuery(query, data = false) {
         }
     } catch (err) {
         await connection.end();
-        console.error(err);
+        log('selectQuery error: ' + err);
         return false;
     }
 }
@@ -51,7 +52,7 @@ async function insertQuery(query, data) {
 
     catch (err) {
         await connection.end();
-        console.error(err);
+        log('insertQuery error: ' + err);
         return false;
     }
 }
@@ -66,7 +67,7 @@ async function updateQuery(query, data) {
 
     catch (err) {
         await connection.end();
-        console.error(err);
+        log('updateQuery error: ' + err);
         return false;
     }
 }
@@ -84,7 +85,7 @@ async function deleteQuery(query, data) {
         else { return false };
     }
     catch (err) {
-        console.log(err)
+        log('deleteQuery error: ' + err);
     };
 }
 

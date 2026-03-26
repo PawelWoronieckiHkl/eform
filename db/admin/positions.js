@@ -1,10 +1,11 @@
 const e = require('express');
 const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('../core')
+const { log } = require('../../utils/logging');
 
 
 async function insertNewForm(formData) {
     const insertFormQuery = 'INSERT INTO order_item(order_id, name, commision, json_parameters, json_parameters_desc, amount, list_price, discount_percentage, discount, unit_price, total_price,comment,ver,asortment_group_number,lang,department,group_name) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)'
-    console.log('siema')
+    log('siema')
     const fields = [
         formData.order,
         formData.name,
@@ -24,7 +25,7 @@ async function insertNewForm(formData) {
         formData.department,
         formData.group
     ];
-    console.log(fields)
+    log(fields)
     const response = await insertQuery(insertFormQuery, fields);
 
     return response;
@@ -77,7 +78,7 @@ async function deletePosition(positionId) {
 
 
 async function getAppVersion(group, nodeVer) {
-    console.log(nodeVer, "VERSION NODE @@@@@@@@@@@@@@@@")
+    log(nodeVer, "VERSION NODE @@@@@@@@@@@@@@@@")
     const nodes = {
         'dev': 'version_dev',
         'archive': 'version_archive',
@@ -89,7 +90,7 @@ async function getAppVersion(group, nodeVer) {
     const table = nodes[nodeVer] || 'version_string';
     const query = `SELECT ${table} as version_string FROM app_version WHERE asort_group LIKE ?`;
     const [rows, fields] = await connection.query(query, group)
-    console.log(rows, group)
+    log(rows, group)
     try {
 
         if (rows.length == 0) {
@@ -100,7 +101,7 @@ async function getAppVersion(group, nodeVer) {
             const getVer = `SELECT ${table} as version_string FROM app_version WHERE id LIKE ?`;
             const [ver, fields] = await connection.query(getVer, response[0].insertId)
             await connection.end();
-            console.log(ver[0].version_string, "WERSJA")
+            log(ver[0].version_string, "WERSJA")
             return ver[0].version_string;
         }
         await connection.end();
@@ -108,14 +109,14 @@ async function getAppVersion(group, nodeVer) {
     }
     catch (err) {
         await connection.end();
-        console.error(err);
+        log(err);
         return false;
     }
 }
 
 
 async function updateAppVersion(version, groupNr, nodeVer) {
-    console.log(nodeVer, "VERSION NODE @@@@@@@@@@@@@@@@")
+    log(nodeVer, "VERSION NODE @@@@@@@@@@@@@@@@")
     const nodes = {
         'dev': 'version_dev',
         'archive': 'version_archive',
@@ -142,7 +143,7 @@ async function updateAppVersion(version, groupNr, nodeVer) {
     }
     catch (err) {
         await connection.end();
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -166,13 +167,13 @@ async function checkFavoriteExists(userId, productValue, groupNumber) {
       AND group_number = ${groupNumber}
   `;
     const result = await selectQuery(sql, [userId, productValue, groupNumber]);
-    console.log(result)
+    log(result)
     if (result) {
-        console.log('Favorite exists');
+        log('Favorite exists');
         return true
     }
     else {
-        console.log('Favorite does not exist');
+        log('Favorite does not exist');
         return false
     }
 
@@ -207,7 +208,7 @@ async function duplicateSendAddress(id) {
     const response = await selectQuery(selectQueryStr, id);
     if (response.length > 0) {
         const { id, ...data } = response[0];
-        console.log(data, 'DATA TO DUPLICATE')
+        log(data, 'DATA TO DUPLICATE')
         const newId = await insertQuery(`INSERT INTO send_address (
   street,
   city,

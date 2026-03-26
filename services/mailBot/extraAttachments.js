@@ -2,6 +2,7 @@ const { fileExists,
     readFileBinary } = require('../../utils/fileManager');
 const path = require('path');
 const sharp = require('sharp');
+const { log } = require('../../utils/logging');
 
 async function addTextOverlayToImage(imageBuffer, dimensions) {
     if (!dimensions) {
@@ -12,7 +13,8 @@ async function addTextOverlayToImage(imageBuffer, dimensions) {
     for (const [key, value] of Object.entries(dimensions)) {
         for (const [subKey, subValue] of Object.entries(value)) {
             textLines.push(`${subKey}: ${subValue}`);
-        }}
+        }
+    }
 
     if (textLines.length === 0) {
         return imageBuffer;
@@ -20,7 +22,7 @@ async function addTextOverlayToImage(imageBuffer, dimensions) {
 
 
     const text = textLines.join('\n');
-    console.log (text, 'TEXT LINES IN ADD TEXT OVERLAY FUNCTION');
+    log(text + ' TEXT LINES IN ADD TEXT OVERLAY FUNCTION');
 
     const svgText = `
         <svg width="400" height="150">
@@ -29,7 +31,7 @@ async function addTextOverlayToImage(imageBuffer, dimensions) {
                 ${text.split('\n').map((line, i) => `<tspan x="20" dy="${i === 0 ? 0 : 35}">${line}</tspan>`).join('')}
             </text>
         </svg>
-    `;
+        `;
 
     try {
         const modifiedImage = await sharp(imageBuffer)
@@ -43,7 +45,7 @@ async function addTextOverlayToImage(imageBuffer, dimensions) {
 
         return modifiedImage;
     } catch (error) {
-        console.error('Błąd przy nakładaniu tekstu na obraz:', error);
+        log('Błąd przy nakładaniu tekstu na obraz:', error);
         return imageBuffer;
     }
 }

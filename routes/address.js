@@ -11,6 +11,7 @@ const { dataDir, localesDir } = require('../config');
 const path = require("path");
 const { updateClients } = require('../services/dbUserSync');
 const hashUser = require('../utils/hashUser').hashUser;
+const { log } = require('../utils/logging');
 
 
 router.post("/add-delivery-address", requireLogin, async (req, res) => {
@@ -36,7 +37,7 @@ router.post("/add-delivery-address", requireLogin, async (req, res) => {
         }
 
         const insertResult = await db.insertDeliveryAddress(payload, userId);
-        console.log('Insert Result:', insertResult);
+        log('Insert Result:', insertResult);
         return res.status(200).json({
             success: true,
             message: 'Adres dostawy został zapisany',
@@ -47,7 +48,7 @@ router.post("/add-delivery-address", requireLogin, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error adding delivery address:', error);
+        log('Error adding delivery address:', error);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas zapisu adresu dostawy'
@@ -66,7 +67,7 @@ router.get('/list', requireLogin, async (req, res) => {
             addresses
         });
     } catch (error) {
-        console.error('Error fetching user addresses:', error);
+        log('Error fetching user addresses:', error);
         return res.status(500).json({
             success: false,
             message: 'Blad podczas pobierania listy adresow'
@@ -85,7 +86,7 @@ router.get('/mail-list', requireLogin, async (req, res) => {
             emails
         });
     } catch (error) {
-        console.error('Error fetching user mail addresses:', error);
+        log('Error fetching user mail addresses:', error);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas pobierania listy adresów email'
@@ -124,7 +125,7 @@ router.post("/add-mail-address", requireLogin, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error adding mail address:', error);
+        log('Error adding mail address:', error);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas zapisu adresu email'
@@ -148,7 +149,7 @@ router.get('/:id', requireLogin, async (req, res) => {
             });
         }
     } catch (err) {
-        console.error('Error fetching address:', err);
+        log('Error fetching address:', err);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas pobierania adresu'
@@ -172,7 +173,7 @@ router.get('/mail/:id', requireLogin, async (req, res) => {
             });
         }
     } catch (err) {
-        console.error('Error fetching mail:', err);
+        log('Error fetching mail:', err);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas pobierania adresu email'
@@ -205,7 +206,7 @@ router.put('/:id', requireLogin, async (req, res) => {
             message: 'Adres dostawy został zaktualizowany'
         });
     } catch (error) {
-        console.error('Error updating delivery address:', error);
+        log('Error updating delivery address:', error);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas aktualizacji adresu dostawy'
@@ -232,7 +233,7 @@ router.put('/mail/:id', requireLogin, async (req, res) => {
             message: 'Adres email został zaktualizowany'
         });
     } catch (error) {
-        console.error('Error updating mail address:', error);
+        log('Error updating mail address:', error);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas aktualizacji adresu email'
@@ -248,7 +249,7 @@ router.delete('/:id', requireLogin, async (req, res) => {
             message: 'Adres dostawy został usunięty'
         });
     } catch (error) {
-        console.error('Error deleting delivery address:', error);
+        log('Error deleting delivery address:', error);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas usuwania adresu dostawy'
@@ -264,7 +265,7 @@ router.delete('/mail/:id', requireLogin, async (req, res) => {
             message: 'Adres email został usunięty'
         });
     } catch (error) {
-        console.error('Error deleting mail address:', error);
+        log('Error deleting mail address:', error);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas usuwania adresu email'

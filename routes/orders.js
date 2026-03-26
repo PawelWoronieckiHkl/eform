@@ -14,6 +14,7 @@ const { buildOrderItemStructure } = require('../services/itemBuilder.js');
 const { getPriceAfterDiscount } = require('../services/getDiscount.js');
 const { SyncProdStatus, setParcelHref, parseSpeditionNumbers } = require('../services/prodStatus.js');
 const { getExtraAttachments } = require('../services/mailBot/extraAttachments');
+const { log } = require('../utils/logging');
 
 
 router.use(async (req, res, next) => {
@@ -25,7 +26,7 @@ router.use(async (req, res, next) => {
         try {
             res.locals.users = await db.getUsersByOwner(req);
         } catch (error) {
-            console.error('Error loading users for owner:', error);
+            log('Error loading users for owner:', error);
             res.locals.users = [];
         }
     }
@@ -64,7 +65,7 @@ router.get('/search', requireLogin, async (req, res) => {
             page
         });
     } catch (err) {
-        console.error('Search error:', err);
+        log('Search error:', err);
         return res.status(500).json({ orders: [], totalOrders: 0, totalPages: 0, page: 1 });
     }
 });
@@ -74,7 +75,7 @@ router.get('/edit/:orderId', requireLogin, async (req, res) => {
     const addr = await db.getUserAddresses(currentUser.userId);
     const emails = await db.getUserMails(currentUser.userId);
     const orderData = await db.getOrderDetails(req.params.orderId);
-    console.log('siemanko@@@@ ', orderData)
+    log('siemanko@@@@ ', orderData)
     res.render('edit_order.njk', {
         orderData: orderData,
         addr: addr,
@@ -120,7 +121,7 @@ router.get("/userOrders", requireLogin, requireOwner, async (req, res) => {
             selectedUserIdent: userIdent
         });
     } catch (error) {
-        console.error('Error fetching user orders:', error);
+        log('Error fetching user orders:', error);
         return res.status(500).json({
             success: false,
             message: "Internal server error"
@@ -330,7 +331,7 @@ router.get("/add-order", requireLogin, async (req, res) => {
     const currentUser = ownerService.getCurrentUser(req);
     const addr = await db.getUserAddresses(currentUser.userId);
     const emails = await db.getUserMails(currentUser.userId);
-    console.log(addr, 'USER ADDRESSES IN ADD ORDER VIEW');
+    log(addr, 'USER ADDRESSES IN ADD ORDER VIEW');
 
     res.render("new-order.njk", { addr: addr, emails: emails });
 });
@@ -383,7 +384,7 @@ router.get('/order/:orderId/discount-info', requireLogin, checkOrderOwnership, a
             data: discountInfo
         });
     } catch (error) {
-        console.error('Error fetching discount info:', error);
+        log('Error fetching discount info:', error);
         return res.status(500).json({
             success: false,
             message: 'Error fetching discount info'
@@ -403,7 +404,7 @@ router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, async (
         const totalPrice = await db.getTotal(order.orderDetails.id);
         res.json({ success: true, data: { sendData, totalPrice, cleanOrderItems, total } });
     } catch (error) {
-        console.error('Error fetching order details:', error);
+        log('Error fetching order details:', error);
         res.status(500).json({ success: false, message: 'Error fetching order details' });
     }
 });
@@ -427,7 +428,7 @@ router.post('/order/:orderId/set-discount', requireLogin, checkOrderOwnership, a
             });
         }
     } catch (error) {
-        console.error('Error saving discount:', error);
+        log('Error saving discount:', error);
         return res.status(500).json({
             success: false,
             message: 'Wewnętrzny błąd serwera podczas zapisywania rabatu'
@@ -467,7 +468,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
             } else {
             }
         } catch (error) {
-            console.error('Błąd przy odczycie logo:', error);
+            log('Błąd przy odczycie logo:', error);
         }
 
         const nunjucks = require('nunjucks');
@@ -548,7 +549,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         res.send(pdfBuffer);
 
     } catch (error) {
-        console.error('Błąd generowania PDF:', error);
+        log('Błąd generowania PDF:', error);
         res.status(500).json({
             success: false,
             message: "Błąd podczas generowania PDF: " + error.message
@@ -588,7 +589,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             const mail = await db.getUserMail(currentUser?.pin)
             const orderIdx = await db.getUserOrderId(req.params.orderId)
             let confirmationEmail;
-            console.log(orderDetails?.contact_info_id, 'ORDER DETAILS CONTACT INFO ID @@@@@@@@@@@@@@@@@')
+            log(orderDetails?.contact_info_id, 'ORDER DETAILS CONTACT INFO ID @@@@@@@@@@@@@@@@@')
             if (orderDetails?.contact_info_id) {
                 const contactInfo = await db.getMailById(orderDetails.contact_info_id);
                 confirmationEmail = contactInfo?.email || mail.user_email;
@@ -635,7 +636,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: "/orders/history" });
     }
     catch (err) {
-        console.error(err);
+        log(err);
     }
 });
 
@@ -691,7 +692,7 @@ router.post('/lock', requireLogin, async (req, res) => {
         return res.json({ status: 'success', refresh: true })
     }
     catch (err) {
-        console.error(err);
+        log(err);
     }
 });
 
@@ -720,7 +721,7 @@ router.post('/save-order', requireLogin, async (req, res) => {
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: `/orders/order/${id}` });
     }
     catch (err) {
-        console.error(err);
+        log(err);
     }
 });
 
@@ -741,7 +742,7 @@ router.put('/update-order/:orderId', requireLogin, checkOrderOwnership, async (r
         return res.json({ response: response, redirect: `/orders/order/${orderId}` });
     }
     catch (err) {
-        console.error(err);
+        log(err);
     }
 })
 
@@ -778,7 +779,7 @@ router.patch('/:orderId/comment/update', requireLogin, async (req, res) => {
             data: { orderId: +orderId, comment }
         });
     } catch (err) {
-        console.error('Błąd przy aktualizacji komentarza:', err);
+        log('Błąd przy aktualizacji komentarza:', err);
         return res.status(500).json({ success: false, error: 'Wewnętrzny błąd serwera.' });
     }
 });
@@ -789,7 +790,7 @@ router.get('/clear-context', requireLogin, requireOwner, async (req, res) => {
         ownerService.clearContextUser(req);
         res.redirect('/orders');
     } catch (err) {
-        console.error('Error clearing context user:', err);
+        log('Error clearing context user:', err);
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
 });

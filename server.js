@@ -18,6 +18,8 @@ const cookieParser = require('cookie-parser');
 const i18n = require('i18n');
 const nunjucksSetup = require('./nunjucks-setup');
 const { default: I18NexFsBackend } = require("i18next-fs-backend");
+const { log } = require('./utils/logging');
+
 
 i18n.configure({
 	locales: availabeLanguages,
@@ -50,10 +52,10 @@ const env = nunjucksSetup.configure(app);
 
 app.set('view engine', 'njk');
 
-console.log('defaultLanguage =', i18n.getLocale());
+log('defaultLanguage =', i18n.getLocale());
 
 if (process.env.PRODUCTION) {
-	console.log('tu')
+	log('tu')
 	app.use(session({
 		secret: process.env.SESSION_SECRET,
 		resave: false,
@@ -70,7 +72,7 @@ if (process.env.PRODUCTION) {
 }
 
 else if (process.env.TEST_INTERNET) {
-	console.log('tu 2')
+	log('tu 2')
 	app.use(session({
 		secret: process.env.SESSION_SECRET,
 		resave: false,
@@ -87,7 +89,7 @@ else if (process.env.TEST_INTERNET) {
 }
 
 else {
-	console.log('tu3')
+	log('tu3')
 	app.use(session({
 
 		secret: process.env.SESSION_SECRET,
@@ -109,7 +111,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use('/data', express.static(dataDir));
 app.use('/photos', express.static(photoPath));
 
-console.log('→ dataDir =', dataDir);
+log('→ dataDir =', dataDir);
 
 
 
@@ -138,7 +140,7 @@ app.all('*', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-	console.error(err);
+	log(err);
 	const status = err.status || 500;
 	const message = err.message || "Serwer error.";
 	const attemptedPath = req.originalUrl;
@@ -151,7 +153,7 @@ app.use((err, req, res, next) => {
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
-	console.log(`Server działa na porcie ${PORT}`)
+	log(`Server działa na porcie ${PORT}`)
 );
 
 module.exports = {

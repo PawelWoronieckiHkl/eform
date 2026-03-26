@@ -1,6 +1,7 @@
 const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('../core')
 const bcrypt = require('bcryptjs');
 const dateUtils = require("../../utils/humanize_date.js");
+const { log } = require('../../utils/logging');
 
 async function getUsersByOwner(req) {
     if (!req.session.user?.isOwner) {
@@ -21,7 +22,7 @@ async function getUsersByOwner(req) {
 
         return users;
     } catch (error) {
-        console.error("Error fetching users by owner:", error);
+        log("Error fetching users by owner:", error);
         throw error;
     }
 }
@@ -41,7 +42,7 @@ async function getUserIdByIdent(ident) {
 
         return user[0]?.id;
     } catch (error) {
-        console.error("Error fetching users by owner:", error);
+        log("Error fetching users by owner:", error);
         throw error;
     }
 }
@@ -58,7 +59,7 @@ async function getUserByIdent(ident) {
         const user = await selectQuery(query, [ident]);
         return user[0] || null;
     } catch (error) {
-        console.error("Error fetching user by ident:", error);
+        log("Error fetching user by ident:", error);
         throw error;
     }
 }

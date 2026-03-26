@@ -3,6 +3,7 @@ const { i18n } = require('./server');
 let env = null;
 const { defaultLanguage } = require('./config');
 const productionTimes = require('./public/config/production_times.json');
+const { log } = require('./utils/logging');
 module.exports = {
   configure: (app) => {
     if (!env) {
@@ -17,7 +18,7 @@ module.exports = {
         const key = arguments[0];
         const ctx = this.getVariables();
         const lang = ctx && ctx.lang ? ctx.lang : defaultLanguage;
-        console.log(lang)
+        log(lang)
         return i18n.__(key, { locale: lang });
       });
     }

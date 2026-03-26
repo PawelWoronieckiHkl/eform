@@ -1,13 +1,14 @@
 const e = require('express');
 const { selectQuery, insertQuery, updateQuery, deleteQuery, connetToDb } = require('./core');
 const { get } = require('lodash');
+const { log } = require('../utils/logging');
 const connection = connetToDb()
 
 
 async function insertNewForm(formData) {
     const orderpos = await getPosCounter(formData.order) + 1;
     formData.orderpos = orderpos;
-    console.log(orderpos, formData.orderpos, "ORDER POS IN INSERT NEW FORM @@@@@@@@@@@@")
+    log(orderpos, formData.orderpos, "ORDER POS IN INSERT NEW FORM @@@@@@@@@@@@")
     const insertFormQuery = 'INSERT INTO order_item(order_id, name, commision, json_parameters, json_parameters_desc, amount, list_price, discount_percentage, discount, unit_price, total_price,comment,ver,asortment_group_number,lang,department,group_name,parameters_short,orderpos) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 
     const fields = [
@@ -80,7 +81,7 @@ async function reindexOrderPositions(orderId) {
         await updateQuery(query, [i + 1, positions[i].id]);
     }
 
-    console.log(`✅ Przenumerowano ${positions.length} pozycji dla zamówienia ${orderId}`);
+    log(`✅ Przenumerowano ${positions.length} pozycji dla zamówienia ${orderId}`);
     return positions.length;
 }
 
@@ -100,14 +101,14 @@ async function updateOrderPrice(orderId, newPrice) {
     join eform.\`order\` o on oi.order_id = o.id where o.id =?;`;
 
     const currentPrices = await selectQuery(getItemPrices, orderId);
-    console.log(currentPrices, "CURRENT PRICE @@@@@@@@@@@@")
+    log(currentPrices, "CURRENT PRICE @@@@@@@@@@@@")
     if (currentPrices.length == 0) {
         throw new Error(`Order with ID ${orderId} not found.`);
     }
 
     for (let price of Object.entries(currentPrices)) {
         price = price[1];
-        console.log(price, price.unit_price, price.total_price, "PRICE ITEM @@@@@@@@@@@@")
+        log(price, price.unit_price, price.total_price, "PRICE ITEM @@@@@@@@@@@@")
         total += parseFloat(price.unit_price);
         total_hidden += parseFloat(price?.total_price ?? 0);
     }
@@ -161,7 +162,7 @@ async function updatePosition(positionData, total) {
         parseInt(positionData.id)
     ]
     const response = await updateQuery(query, values);
-    console.log(response)
+    log(response)
     return response
 }
 
@@ -174,7 +175,7 @@ async function deletePosition(positionId) {
 
 
 async function getAppVersion(group, nodeVer) {
-    console.log(nodeVer, "VERSION NODE @@@@@@@@@@@@@@@@")
+    log(nodeVer, "VERSION NODE @@@@@@@@@@@@@@@@")
     const nodes = {
         'dev': 'version_dev',
         'archive': 'version_archive',
@@ -186,7 +187,7 @@ async function getAppVersion(group, nodeVer) {
     const table = nodes[nodeVer] || 'version_string';
     const query = `SELECT ${table} as version_string FROM app_version WHERE asort_group LIKE ?`;
     const [rows, fields] = await connection.query(query, group)
-    console.log(rows, group)
+    log(rows, group)
     try {
 
         if (rows.length == 0) {
@@ -197,7 +198,7 @@ async function getAppVersion(group, nodeVer) {
             const getVer = `SELECT ${table} as version_string FROM app_version WHERE id LIKE ?`;
             const [ver, fields] = await connection.query(getVer, response[0].insertId)
             await connection.end();
-            console.log(ver[0].version_string, "WERSJA")
+            log(ver[0].version_string, "WERSJA")
             return ver[0].version_string;
         }
         await connection.end();
@@ -205,14 +206,14 @@ async function getAppVersion(group, nodeVer) {
     }
     catch (err) {
         await connection.end();
-        console.error(err);
+        log(err);
         return false;
     }
 }
 
 
 async function updateAppVersion(version, groupNr, nodeVer) {
-    console.log(nodeVer, "VERSION NODE @@@@@@@@@@@@@@@@")
+    log(nodeVer, "VERSION NODE @@@@@@@@@@@@@@@@")
     const nodes = {
         'dev': 'version_dev',
         'archive': 'version_archive',
@@ -239,7 +240,7 @@ async function updateAppVersion(version, groupNr, nodeVer) {
     }
     catch (err) {
         await connection.end();
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -263,13 +264,13 @@ async function checkFavoriteExists(userId, productValue, groupNumber) {
       AND group_number = ${groupNumber}
   `;
     const result = await selectQuery(sql, [userId, productValue, groupNumber]);
-    console.log(result)
+    log(result)
     if (result) {
-        console.log('Favorite exists');
+        log('Favorite exists');
         return true
     }
     else {
-        console.log('Favorite does not exist');
+        log('Favorite does not exist');
         return false
     }
 
@@ -309,7 +310,7 @@ async function duplicateSendAddress(id) {
     const response = await selectQuery(selectQueryStr, id);
     if (response.length > 0) {
         const { id, ...data } = response[0];
-        console.log(data, 'DATA TO DUPLICATE')
+        log(data, 'DATA TO DUPLICATE')
         const newId = await insertQuery(`INSERT INTO send_address (
   street,
   city,
@@ -359,7 +360,7 @@ async function movePositionUp(positionId) {
 
         return { success: true, message: 'Position moved up' };
     } catch (error) {
-        console.error('Error moving position up:', error);
+        log('Error moving position up:', error);
         return { success: false, message: 'Database error' };
     }
 }
@@ -370,7 +371,7 @@ async function setPositionIdx(positionId, newIdx) {
         await updateQuery('UPDATE order_item SET orderpos = ? WHERE id = ?', [newIdx, positionId]);
         return { success: true, message: 'Position index updated' };
     } catch (error) {
-        console.error('Error updating position index:', error);
+        log('Error updating position index:', error);
         return { success: false, message: 'Database error' };
     }
 }
@@ -399,7 +400,7 @@ async function movePositionDown(positionId) {
 
         return { success: true, message: 'Position moved down' };
     } catch (error) {
-        console.error('Error moving position down:', error);
+        log('Error moving position down:', error);
         return { success: false, message: 'Database error' };
     }
 }

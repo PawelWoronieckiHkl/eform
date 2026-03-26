@@ -2,6 +2,7 @@ const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('./core')
 const dateUtils = require("../utils/humanize_date.js");
 const bcrypt = require('bcryptjs');
 const { result } = require('lodash');
+const { log } = require('../utils/logging');
 
 
 async function getOrderWithItems(orderId) {
@@ -213,7 +214,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
 
         }
         catch (err) {
-            console.error(err);
+            log(err);
             return false;
         }
     }
@@ -255,7 +256,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
         return result;
     }
     catch (err) {
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -306,7 +307,7 @@ async function countUserOrders(userId, sent = false, organization = false, emplo
         }
         return count[0].count;
     } catch (err) {
-        console.error(err);
+        log(err);
         return 0;
     }
 }
@@ -329,7 +330,7 @@ async function insertSendAddress(address) {
     }
 
     catch (err) {
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -374,7 +375,7 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
     }
 
     catch (err) {
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -400,7 +401,7 @@ async function changeOrderStatus(orderId, status) {
     }
 
     catch (err) {
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -415,7 +416,7 @@ async function updateOrderPriceOnSend(orderId, prices) {
     }
 
     catch (err) {
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -438,7 +439,7 @@ async function saveDiscount(orderId, discountPercentage, discountValue) {
             discountValue: response[0]?.client_discount_value
         };
     } catch (err) {
-        console.error(err);
+        log(err);
         return false;
     }
 }
@@ -491,7 +492,7 @@ async function searchUserOrders(userId, phrase, limit = 40, offset = 0, sent = f
         if (!rows) return [];
         return dateUtils.humanizeData(rows);
     } catch (err) {
-        console.error(err);
+        log(err);
         return [];
     }
 }
@@ -510,7 +511,7 @@ async function countSearchUserOrders(userId, phrase, sent = false, employeeId = 
         const result = await selectQuery(sql, params);
         return result ? result[0].count : 0;
     } catch (err) {
-        console.error(err);
+        log(err);
         return 0;
     }
 }

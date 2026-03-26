@@ -12,6 +12,7 @@ const path = require("path");
 const { updateClients } = require('../services/dbUserSync');
 const { get } = require('lodash');
 const hashUser = require('../utils/hashUser').hashUser;
+const { log } = require('../utils/logging');
 
 
 
@@ -24,7 +25,7 @@ router.use(async (req, res, next) => {
         try {
             res.locals.users = await db.getUsersByOwner(req);
         } catch (error) {
-            console.error('Error loading users for owner:', error);
+            log('Error loading users for owner:', error);
             res.locals.users = [];
         }
     }
@@ -54,7 +55,7 @@ router.post("/accept-rodo", async (req, res, next) => {
         } else {
             req.session.destroy((err) => {
                 if (err) {
-                    console.error("Error destroying session:", err);
+                    log("Error destroying session:", err);
                     return res.status(500).json({ message: "Error accepting RODO" });
                 }
                 return res.status(200).json({ message: "RODO not accepted" });
@@ -62,7 +63,7 @@ router.post("/accept-rodo", async (req, res, next) => {
             return res.status(400).json({ message: "RODO not accepted" });
         }
     } catch (err) {
-        console.error(err);
+        log(err);
         return next(err);
     }
 });
@@ -133,7 +134,7 @@ router.post('/update-user', requireLogin, async (req, res) => {
 
         return res.redirect('/');
     } catch (err) {
-        console.error('Error updating user:', err);
+        log('Error updating user:', err);
         return res.status(500).render('edit_user.njk', {
             user: await db.getUserData(req.session.user.pin),
             error: 'Błąd podczas aktualizacji danych użytkownika'
@@ -293,7 +294,7 @@ router.get('/employee-panel', requireLogin, async (req, res) => {
 
         return res.render("user/user_panel.njk", { employees });
     } catch (err) {
-        console.error('Error loading employee panel:', err);
+        log('Error loading employee panel:', err);
         return res.status(500).render('error.njk', { message: 'Błąd podczas ładowania panelu pracowników' });
     }
 });
@@ -311,7 +312,7 @@ router.get('/employees', requireLogin, async (req, res) => {
             employees
         });
     } catch (err) {
-        console.error('Error fetching employees:', err);
+        log('Error fetching employees:', err);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas pobierania pracowników'
@@ -364,7 +365,7 @@ router.post('/employee/add', requireLogin, async (req, res) => {
             redirect: '/user/employee-panel'
         });
     } catch (err) {
-        console.error('Error adding employee:', err);
+        log('Error adding employee:', err);
         return res.status(500).json({
             success: false,
             message: err.message || 'Błąd podczas dodawania pracownika'
@@ -419,7 +420,7 @@ router.post('/employee/edit/:id', requireLogin, async (req, res) => {
             message: 'Pracownik został zaktualizowany'
         });
     } catch (err) {
-        console.error('Error updating employee:', err);
+        log('Error updating employee:', err);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas aktualizacji pracownika'
@@ -454,7 +455,7 @@ router.delete('/employee/:id', requireLogin, async (req, res) => {
             message: 'Pracownik został usunięty'
         });
     } catch (err) {
-        console.error('Error deleting employee:', err);
+        log('Error deleting employee:', err);
         return res.status(500).json({
             success: false,
             message: 'Błąd podczas usuwania pracownika'
@@ -487,7 +488,7 @@ router.get('/employee/:id/orders', requireLogin, async (req, res) => {
             ordersCount
         });
     } catch (err) {
-        console.error('Error loading employee orders:', err);
+        log('Error loading employee orders:', err);
         return res.status(500).render('error.njk', { message: 'Błąd podczas ładowania zamówień' });
     }
 });

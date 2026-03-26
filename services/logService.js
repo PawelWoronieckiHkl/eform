@@ -1,5 +1,6 @@
 const { insertQuery } = require('../db/core.js');
 const { getDbTimestamp } = require('../utils/humanize_date.js');
+const { log } = require('../utils/logging');
 
 async function logUserLogin(userPin, userIdent) {
     try {
@@ -20,15 +21,15 @@ async function logUserLogin(userPin, userIdent) {
         const result = await insertQuery(query, data);
 
         if (result) {
-            console.log(`[LogService] Zapisano historię logowania dla użytkownika: ${userPin} (${userIdent || 'brak ident'}) o ${timestamp}`);
+            log(`[LogService] Zapisano historię logowania dla użytkownika: ${userPin} (${userIdent || 'brak ident'}) o ${timestamp}`);
             return true;
         } else {
-            console.error(`[LogService] Błąd podczas zapisywania historii logowania dla: ${userPin}`);
+            log(`[LogService] Błąd podczas zapisywania historii logowania dla: ${userPin}`);
             return false;
         }
 
     } catch (error) {
-        console.error(`[LogService] Błąd podczas zapisywania historii logowania:`, error.message);
+        log(`[LogService] Błąd podczas zapisywania historii logowania:`, error.message);
         return false;
     }
 }
@@ -56,7 +57,7 @@ async function getUserLoginHistory(userPin, limit = 10) {
         return result || [];
 
     } catch (error) {
-        console.error(`[LogService] Błąd podczas pobierania historii logowania:`, error.message);
+        log(`[LogService] Błąd podczas pobierania historii logowania:`, error.message);
         return false;
     }
 }
@@ -84,7 +85,7 @@ async function getUserLoginHistoryByIdent(userIdent, limit = 10) {
         return result || [];
 
     } catch (error) {
-        console.error(`[LogService] Błąd podczas pobierania historii logowania po user_ident:`, error.message);
+        log(`[LogService] Błąd podczas pobierania historii logowania po user_ident:`, error.message);
         return false;
     }
 }
@@ -107,7 +108,7 @@ async function getRecentLogins(limit = 50) {
         return result || [];
 
     } catch (error) {
-        console.error(`[LogService] Błąd podczas pobierania ostatnich logowań:`, error.message);
+        log(`[LogService] Błąd podczas pobierania ostatnich logowań:`, error.message);
         return false;
     }
 }

@@ -1,4 +1,5 @@
 const { getUserByIdent } = require('../db/owner');
+const { log } = require('../utils/logging');
 
 
 async function setContextUserByIdent(req, userIdent) {
@@ -13,7 +14,7 @@ async function setContextUserByIdent(req, userIdent) {
         const userData = await getUserByIdent(userIdent);
 
         if (!userData) {
-            console.warn(`[OwnerService] Nie znaleziono użytkownika o ident: ${userIdent}`);
+            log(`[OwnerService] Nie znaleziono użytkownika o ident: ${userIdent}`);
             return null;
         }
 
@@ -34,7 +35,7 @@ async function setContextUserByIdent(req, userIdent) {
         return contextUser;
 
     } catch (error) {
-        console.error(`[OwnerService] Błąd podczas ustawiania kontekstu użytkownika dla ident ${userIdent}:`, error.message);
+        log(`[OwnerService] Błąd podczas ustawiania kontekstu użytkownika dla ident ${userIdent}:`, error.message);
         return null;
     }
 }
@@ -46,7 +47,7 @@ function getContextUser(req) {
         }
         return req.session.context_user || null;
     } catch (error) {
-        console.error(`[OwnerService] Błąd podczas pobierania kontekstu użytkownika:`, error.message);
+        log(`[OwnerService] Błąd podczas pobierania kontekstu użytkownika:`, error.message);
         return null;
     }
 }
@@ -61,7 +62,7 @@ function clearContextUser(req) {
 
         return true;
     } catch (error) {
-        console.error(`[OwnerService] Błąd podczas czyszczenia kontekstu użytkownika:`, error.message);
+        log(`[OwnerService] Błąd podczas czyszczenia kontekstu użytkownika:`, error.message);
         return false;
     }
 }
@@ -78,7 +79,7 @@ function getCurrentUser(req) {
 
         return req.session.user || null;
     } catch (error) {
-        console.error(`[OwnerService] Błąd podczas pobierania aktualnego użytkownika:`, error.message);
+        // log(`[OwnerService] Błąd podczas pobierania aktualnego użytkownika:`, error.message);
         return req.session.user || null;
     }
 }

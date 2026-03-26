@@ -2,6 +2,7 @@ const { usersPath } = require('../config.js');
 const path = require('path');
 const fs = require('fs').promises;
 const db = require("../db/db_helper.js");
+const { log } = require('../utils/logging');
 
 
 class SyncProdStatus {
@@ -70,9 +71,11 @@ class SyncProdStatus {
             }
 
             if (rowObj.ORGANIZATIONIDENT === this.orgIdent && rowObj.USERIDENT === this.userIdent) {
+                log('Znaleziono pasujący rekord:', rowObj);
                 rows.push(rowObj);
             }
         }
+
         this.statusesData = rows;
         await this.checkIfStatusExistInDb();
         return this.statusesData;
@@ -82,18 +85,18 @@ class SyncProdStatus {
         if (!this.statusesData || this.statusesData.length === 0) {
             return;
         }
-        
         for (const record of this.statusesData) {
             const exists = await db.checkIfStatusExists(record);
             if (exists && exists.length > 0) {
-                await db.updateStatus(record);
+                let result = await db.updateStatus(record);
+
             } else {
-                await db.insertStatus(record);
+                let result = await db.insertStatus(record);
+
             }
         }
 
         const uniqueOrders = [...new Set(this.statusesData.map(r => r.ORDERNO))];
-        
         for (const orderIdx of uniqueOrders) {
             await db.syncOrderFromStatuses(this.userIdent, orderIdx);
         }
@@ -124,6 +127,7 @@ function setParcelHref(statuses) {
             }
         }
     }
+
     return statuses;
 }
 
@@ -168,7 +172,7 @@ function parseSpeditionNumbers(speditionNumbersJson) {
             };
         }).filter(item => item !== null);
     } catch (error) {
-        console.error('Error parsing spedition numbers:', error);
+        // log('Error parsing spedition numbers: ' + error);
         return [];
     }
 }

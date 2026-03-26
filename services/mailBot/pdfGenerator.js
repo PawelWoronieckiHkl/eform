@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const confLang = require('./conf');
 const { localesDir, availabeLanguages, defaultLanguage } = require('../../config');
+const { log } = require('../../utils/logging');
 
 async function generateExcel(orderData) {
   const workbook = new ExcelJS.Workbook();
@@ -21,7 +22,7 @@ async function generateExcel(orderData) {
 }
 
 async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData, orderIdx) {
-  console.log('zaczynam', logoPath)
+  log('zaczynam', logoPath)
   const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
   const logoDataUri = `data:image/png;base64,${logoBase64}`;
   // 1. Konfiguracja i18n
@@ -37,7 +38,7 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
 
   env.addGlobal('__', __);
   const data = await sendData
-  console.log('sendDAta', data)
+  log('sendDAta', data)
   const html = env.render('order-pdf.njk', {
     orderDetails: orderData,
     cleanOrderItems: cleanOrderItems,
@@ -80,7 +81,7 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
       timeout: 30000
     });
   } catch (error) {
-    console.error('Błąd podczas wstrzykiwania treści:', error);
+    log('Błąd podczas wstrzykiwania treści:', error);
     await browser.close();
     throw error;
   }

@@ -13,23 +13,24 @@ const verManager = require('../services/versionManager.js')
 const { dataDir, localesDir, availabeLanguages } = require('../config');
 const { readWord } = require('../utils/readWord.js');
 const e = require('express');
+const { log } = require('../utils/logging');
 
 
 router.use(async (req, res, next) => {
-  console.log('siema z index.js');
+  // log('siema z index.js');
 
-  console.log('isOwner:', req.session?.user?.isOwner); 
+  // log('isOwner:', req.session?.user?.isOwner);
   res.locals.owner = req.session?.user?.isOwner || false;
   res.locals.admin = req.session?.user?.isAdmin || false;
   res.locals.isEmployee = req.session?.user?.isEmployee || false;
 
   if (req.session?.user?.isOwner) {
     try {
-      console.log ('Ładowanie użytkowników dla właściciela...');
+      // log('Ładowanie użytkowników dla właściciela...');
       res.locals.users = await db.getUsersByOwner(req);
-      console.log('Użytkownicy załadowani:', res.locals.users);
+      // log('Użytkownicy załadowani:', res.locals.users);
     } catch (error) {
-      console.error('Error loading users for owner:', error);
+      log('Error loading users for owner:', error);
       res.locals.users = [];
     }
   }
@@ -49,7 +50,7 @@ router.get('/translations', (req, res) => {
       const translations = JSON.parse(data);
       res.json(translations);
     } catch (parseError) {
-      console.error('Błąd parsowania JSON:', parseError);
+      log('Błąd parsowania JSON:', parseError);
       res.status(500).json({ error: 'Invalid translation JSON' });
     }
   });
@@ -99,7 +100,7 @@ router.get("/", requireLogin, async (req, res) => {
     organizations = await db.getAllOrganizations();
     organizations = customOrgSorting(organizations);
   }
-  
+
   return res.render("home.njk", {
     user: user,
     orders: orders,
@@ -144,7 +145,7 @@ router.get("/terms", requireLogin, async (req, res) => {
     const html = await readWord('rodo', `${orgIdent ?? "HKL"}_regulations_${process.env.userLang || 'pl'}`);
     res.render("terms.njk", { contentHtml: html });
   } catch (err) {
-    console.error(err);
+    log(err);
 
     const html = await readWord('rodo', `HKL_regulations_${process.env.userLang || 'pl'}`);
     res.render("terms.njk", { contentHtml: html });
@@ -160,7 +161,7 @@ router.get("/privacy", requireLogin, async (req, res) => {
     const html = await readWord('rodo', `${orgIdent.toUpperCase() ?? "HKL"}_privacy_${process.env.userLang || 'pl'}`);
     res.render("privacy.njk", { contentHtml: html });
   } catch (err) {
-    console.error(err);
+    log(err);
     const html = await readWord('rodo', `HKL_privacy_${process.env.userLang || 'pl'}`);
     res.render("privacy.njk", { contentHtml: html });
   }
@@ -187,7 +188,7 @@ router.get('/config-num', requireLogin, async (req, res) => {
 router.get('/context-user', requireLogin, async (req, res) => {
   try {
     const contextUser = ownerService.getContextUser(req);
-    console.log('Context user:', contextUser);
+    // log('Context user:', contextUser);
     if (!contextUser) {
       return res.status(200).json({
         success: false,
@@ -202,7 +203,7 @@ router.get('/context-user', requireLogin, async (req, res) => {
       ident: contextUser.ident
     });
   } catch (error) {
-    console.error('Error checking context user:', error);
+    log('Error checking context user:', error);
     return res.status(500).json({
       success: false,
       message: 'Internal server error'
@@ -220,7 +221,7 @@ router.get('/set-organization/:id', requireLogin, async (req, res) => {
     const redirectPath = '/';
     res.redirect(redirectPath);
   } catch (error) {
-    console.error('Error setting organization:', error);
+    log('Error setting organization:', error);
     res.status(500).redirect('/');
   }
 });
@@ -260,7 +261,7 @@ router.post('/set-last-user', requireLogin, async (req, res) => {
       redirectUrl: userPath
     });
   } catch (error) {
-    console.error('Error setting last user:', error);
+    log('Error setting last user:', error);
     return res.status(500).json({
       success: false,
       message: 'Internal server error'
@@ -279,7 +280,7 @@ router.get('/get-org-ident', requireLogin, async (req, res) => {
       organization: organization
     });
   } catch (error) {
-    console.error('Error getting organization ident:', error);
+    log('Error getting organization ident:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
@@ -305,7 +306,7 @@ router.get('/employee-status', requireLogin, async (req, res) => {
 
     });
   } catch (error) {
-    console.error('Error getting employee status:', error);
+    log('Error getting employee status:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });

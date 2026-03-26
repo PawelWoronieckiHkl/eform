@@ -1,12 +1,13 @@
 const { selectQuery, insertQuery, updateQuery, deleteQuery } = require('./core')
 const bcrypt = require('bcryptjs');
 const dateUtils = require("../utils/humanize_date.js");
+const { log } = require('../utils/logging');
 
 async function getUsersByOwner(req) {
     if (!req.session.user?.isOwner) {
         throw new Error("User is not an owner or session is invalid.");
     }
-    console.log(req.session.user, 'session user in getUsersByOwner');
+    // log(req.session.user, 'session user in getUsersByOwner');
     let organizationId ;
     if (req.session.user.isAdmin) {
         organizationId = req.session.user.organization;
@@ -25,7 +26,7 @@ async function getUsersByOwner(req) {
         const users = await selectQuery(query, [organizationId]);
         return users;
     } catch (error) {
-        console.error("Error fetching users by owner:", error);
+        log("Error fetching users by owner:", error);
         throw error;
     }
 }
@@ -41,7 +42,7 @@ async function getUserIdByIdent(ident) {
         const user = await selectQuery(query, [ident]);
         return user[0]?.id;
     } catch (error) {
-        console.error("Error fetching users by owner:", error);
+        log("Error fetching users by owner:", error);
         throw error;
     }
 }
@@ -56,10 +57,10 @@ async function getUserByIdent(ident) {
     `;
     try {
         const user = await selectQuery(query, [ident]);
-        console.log(user, 'user by ident query result');
+        log(user, 'user by ident query result');
         return user[0] || null;
     } catch (error) {
-        console.error("Error fetching user by ident:", error);
+        log("Error fetching user by ident:", error);
         throw error;
     }
 }
