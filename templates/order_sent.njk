@@ -23,7 +23,7 @@
                             {% block btns_head %}{% endblock %}
                             {% block pos_btns %}{% endblock %}
                             {% block extra_rows %}
-                            {% set statusIdx = globalIndex - 1 %}
+                                {% set statusIdx = globalIndex - 1 %}
                                 {% if statuses[statusIdx] %}
                                     <tr class="status-row" id='status-row-{{ statuses[statusIdx].order_pos }}'>
                                         <td class="status-cell" colspan="100%">
@@ -94,8 +94,7 @@
                                     </tr>
                                 {% endif %}
                             {% endblock %}
-                            {% block new_pos_btn %}
-                            {% endblock %}
+                            {% block new_pos_btn %}{% endblock %}
                             {% block send_order_btn %}{% endblock %}
                             {% block order_space %}
                                 <div class="floating-history-order">
@@ -112,3 +111,4 @@
                                     </script>
                                 {% endblock %}
                                 {% block edit_order_btn %}{% endblock %}
+                                {% block estimatedProdDate %}{% endblock estimatedProdDate %}

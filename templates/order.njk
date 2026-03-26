@@ -211,20 +211,22 @@
                                                                                                                 {% endfor %}
                                                                                                             </tr>
                                                                                                             {% set itemProdDays = productionTimes[rowObj.item.department] %}
-                                                                                                            <tr class="prod-time-row">
-                                                                                                                <td class="prod-time-row-cell" colspan="1">
-                                                                                                                    <span class="prod-time-label">{{ __('order.production_time_label') }}</span>
-                                                                                                                    {% if itemProdDays %}
-                                                                                                                        <span class="prod-days-item">{{ itemProdDays }}
-                                                                                                                            {{ __('termin.days') }}</span>
-                                                                                                                        <span class="prod-days-max">/ {{ __('order.commission_time_prefix') }}
-                                                                                                                            {{ maxProdDays }}
-                                                                                                                            {{ __('termin.days') }}</span>
-                                                                                                                    {% else %}
-                                                                                                                        <span class="text-muted">-</span>
-                                                                                                                    {% endif %}
-                                                                                                                </td>
-                                                                                                            </tr>
+                                                                                                            {% block estimatedProdDate %}
+                                                                                                                <tr class="prod-time-row">
+                                                                                                                    <td class="prod-time-row-cell" colspan="1">
+                                                                                                                        <span class="prod-time-label">{{ __('order.production_time_label') }}</span>
+                                                                                                                        {% if itemProdDays %}
+                                                                                                                            <span class="prod-days-item">{{ itemProdDays }}
+                                                                                                                                {{ __('termin.days') }}</span>
+                                                                                                                            <span class="prod-days-max">/ {{ __('order.commission_time_prefix') }}
+                                                                                                                                {{ maxProdDays }}
+                                                                                                                                {{ __('termin.days') }}</span>
+                                                                                                                        {% else %}
+                                                                                                                            <span class="text-muted">-</span>
+                                                                                                                        {% endif %}
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            {% endblock estimatedProdDate %}
                                                                                                             {% block extra_rows %}{% endblock %}
                                                                                                             {% set globalIndex = globalIndex + 1 %}
                                                                                                         {% endfor %}
