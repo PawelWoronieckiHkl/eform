@@ -101,6 +101,7 @@
 
     <div class="order-details">
         <h2 class='header-3'>{{ __('order.send_data') }}</h2>
+        {% if sendData.name %}<div class="order-details-line">{{ __('order.address_name') }}: {{sendData.name}}</div>{% endif %}
         <div class="order-details-line">{{ __('new-order.street') }}:
             {{sendData.address}}</div>
         <div class="order-details-line">{{ __('new-order.city') }}:

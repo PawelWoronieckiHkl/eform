@@ -742,6 +742,7 @@ class ExcelJSGenerator {
 
             currentRow = shipHeaderRow + 1;
             const shipData = [
+                ...(sendData.name ? [[t('order.address_name'), sendData.name]] : []),
                 [t('base.street'), sendData.address],
                 [t('base.city_country'), `${sendData.zip} ${sendData.city}`],
                 [t('edit_order.country_placeholder'), sendData.country],

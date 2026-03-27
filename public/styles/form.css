@@ -12,7 +12,7 @@
 	position: fixed;
 	z-index: 121;
 	left: calc(43% + 230px);
-	top: 28vh;
+	top: 16rem;
 	transform: translate(-50%, -50%);
 	min-width: 400px;
 	max-width: 650px;
@@ -21,6 +21,10 @@
 	backdrop-filter: blur(10px);
 	animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+@media (max-width: 1000px) {
+
+}
+
 .last-config-info .collapsed {
 	left: 40%;
 }

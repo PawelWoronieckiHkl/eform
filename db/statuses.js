@@ -82,6 +82,7 @@ async function syncOrderFromStatuses(userIdent, orderIdx) {
                     WHERE ps.user_ident = ? AND ps.order_idx = ?
                       AND ps.parcel_code IS NOT NULL
                       AND ps.parcel_code != ''
+                      AND ps.parcel_code != '-'
                 ) AS distinct_codes
             )
         WHERE o.order_idx = ?`;

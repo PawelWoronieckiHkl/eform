@@ -280,6 +280,7 @@
     </div>
     <div class="order-details">
       <h3 class='header-3'>{{ __('order.send_data') }}</h3>
+      {% if sendData.name %}<div class="order-details-line">{{ __('order.address_name') }}: {{ sendData.name }}</div>{% endif %}
       <div class="order-details-line">{{ __('new-order.street') }}: {{ sendData.address }}</div>
       <div class="order-details-line">{{ __('new-order.city') }}: {{ sendData.zip }}
         {{ sendData.city }}</div>
