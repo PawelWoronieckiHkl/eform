@@ -771,3 +771,26 @@ To https://github.com/PawelWrHkl/eform.git
    279ffd1..70c6ee3  main -> main
 === 2026-03-26 14:37:09 - Koniec (Exit: 0) ===
 === 2026-03-27 10:35:01 - Start ===
+[main 574aa2b] Automatic commit 2026-03-27 10:35
+ 13 files changed, 269 insertions(+), 236 deletions(-)
+ rewrite public/img/logout.png (99%)
+ rewrite templates/orders_history.njk (91%)
+ rewrite templates/orders_history_owner.njk (90%)
+ create mode 100755 update_all.sh
+fatal: could not read Username for 'https://github.com': Nie ma takiego urządzenia ani adresu
+=== 2026-03-27 10:35:01 - Koniec (Exit: 0) ===
+=== 2026-03-27 12:00:01 - Start ===
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+=== 2026-03-27 12:00:01 - Koniec (Exit: 0) ===
+=== 2026-03-28 10:35:01 - Start ===
