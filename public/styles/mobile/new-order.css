@@ -108,6 +108,19 @@
         line-height: 1.5 !important;
     }
 
+    #address-checkbox-container {
+        margin: 0 0 0px 0 !important;
+    }
+
+    #address-checkbox-container .form-check-input {
+        width: 1.2rem !important;
+        height: 1.2rem !important;
+        min-width: 1.2rem !important;
+        border: 1px solid #6c757d !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
     .mobile-rm-p {
         padding: 0 !important;
     }

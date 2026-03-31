@@ -3,20 +3,20 @@ import {
 } from "./formTools.js";
 export function loadScript(scriptFile, values, displayValues, groupNumber, allOptionsByParameter, param, callback) {
 
-    
-    
+
+
     const scriptPath = scriptFile;
     const script = document.createElement('script');
-    
+
     script.crossOrigin = 'anonymous';
     script.src = scriptPath;
-    
+
     const scriptInput = prepareValuesForScript(values, displayValues, allOptionsByParameter);
 
-    
+
     let finished = false;
 
-    
+
     const handleGlobalError = (event) => {
         if (event.filename && event.filename.includes(scriptPath) && !finished) {
             console.error('Globalny błąd skryptu:', event.message || event.error);
@@ -30,7 +30,7 @@ export function loadScript(scriptFile, values, displayValues, groupNumber, allOp
 
     script.onload = () => {
 
-        if (finished) return; 
+        if (finished) return;
         try {
             if (typeof f === 'function') {
                 const result = f(scriptInput);
@@ -71,6 +71,9 @@ function prepareValuesForScript(values, displayValues, allOptionsByParameter) {
     for (let [paramName, value] of Object.entries(values)) {
         values = setDescription(values, value, allOptionsByParameter, paramName, 'scriptLoader');
 
+        if (!values['uid'] && window.uid) {
+            values['uid'] = window.uid;
+        }
     }
 
     return JSON.stringify(values, null, 2);
@@ -104,7 +107,7 @@ function errorShield(scriptPath, param) {
 }
 
 function roundPrices(pricesObject) {
-    
+
     if (!pricesObject || typeof pricesObject !== 'object') {
         return pricesObject;
     }
@@ -112,11 +115,11 @@ function roundPrices(pricesObject) {
     const rounded = {};
     for (const [key, value] of Object.entries(pricesObject)) {
         if (!isNaN(value) && value !== null && value !== '') {
-            
+
             const floatValue = parseFloat(value);
             rounded[key] = Math.round(floatValue * 100) / 100;
         } else {
-            
+
             rounded[key] = value;
         }
     }

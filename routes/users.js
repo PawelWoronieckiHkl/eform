@@ -499,10 +499,30 @@ router.get('/employee-panel', requireLogin, async (req, res) => {
 
 
 router.get('/uid', requireLogin, async (req, res) => {
-    const contextUser = ownerService.getCurrentUser(req);
-    const ident = await db.getUserIdent(contextUser.pin)
-    const uid = hashUser(ident);
-    return res.json({ success: true, uid: uid });
+    try {
+        const contextUser = ownerService.getCurrentUser(req);
+        console.log('🔍 [/uid] contextUser:', contextUser);
+
+        if (!contextUser || !contextUser.pin) {
+            console.error('❌ [/uid] No contextUser or pin');
+            return res.json({ success: false, message: 'Użytkownik nie zalogowany' });
+        }
+
+        const ident = await db.getUserIdent(contextUser.pin);
+        console.log('🔍 [/uid] ident:', ident);
+
+        if (!ident) {
+            console.error('❌ [/uid] ident is empty for pin:', contextUser.pin);
+            return res.json({ success: false, message: 'Nie znaleziono identyfikatora użytkownika' });
+        }
+
+        const uid = hashUser(ident);
+        console.log('✅ [/uid] uid generated:', uid);
+        return res.json({ success: true, uid: uid });
+    } catch (error) {
+        console.error('❌ [/uid] Error:', error);
+        return res.json({ success: false, message: error.message });
+    }
 });
 
 module.exports = router;

@@ -54,13 +54,16 @@ let loginBox = document.querySelector('.login-box');
 if (version >= 2020) {
     console.log("✅ ES2020+: Optional chaining supported - nowoczesna przeglądarka");
     if (jsWarnContainer) {
+        jsWarnContainer.classList.add('d-none');
         jsWarnContainer.style.display = 'none';
     }
     if (loginBox) {
+
         loginBox.style.display = 'block';
     }
 } else {
     if (jsWarnContainer) {
+        jsWarnContainer.classList.remove('d-none');
         jsWarnContainer.style.display = 'block';
     }
     if (loginBox) {

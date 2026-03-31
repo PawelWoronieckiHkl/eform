@@ -168,6 +168,7 @@ dialog::backdrop {
 	position: absolute;
 	top: 8px;
 	left: 8px;
+	margin: 0;
 	z-index: 999;
 
 }
@@ -431,11 +432,13 @@ dialog::backdrop {
 .extra-info-cta:hover {
 	background-color: #0b5ed7 !important;
 }
+
 .param-info-cupon {
-    background-color: #fd6f44ce;/* lub inny kolor */
-    color: #fffefece;
-    border-radius: 25px;
-	border:#fd6f44ce solid 1px;
+	background-color: #fd6f44ce;
+	/* lub inny kolor */
+	color: #fffefece;
+	border-radius: 25px;
+	border: #fd6f44ce solid 1px;
 	padding: 4px 12px;
 	font-size: 0.75rem;
 	font-weight: 600;
@@ -446,8 +449,8 @@ dialog::backdrop {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	height:10%;
-	min-height:fit-content;
+	height: 10%;
+	min-height: fit-content;
 
 	min-width: 18px;
 	color: #ffffff;
@@ -457,6 +460,7 @@ dialog::backdrop {
 	transition: all 0.2s ease;
 	user-select: none;
 }
+
 @media (max-width: 560px) {
 	.extra-info-panel {
 		flex-direction: column;

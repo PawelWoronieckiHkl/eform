@@ -12,10 +12,10 @@ function humanizeData(dbResponse) {
         try {
 
             const createdDate = new Date(dbResponse[itemIdx].created_date);
-            dbResponse[itemIdx].created_date = createdDate.toLocaleString('pl-PL');
+            dbResponse[itemIdx].created_date = createdDate.toLocaleDateString('pl-PL');
 
             const sentDate = new Date(dbResponse[itemIdx].sent_date)
-            dbResponse[itemIdx].sent_date = sentDate.toLocaleString('pl-PL');
+            dbResponse[itemIdx].sent_date = sentDate.toLocaleDateString('pl-PL');
 
             if (dbResponse[itemIdx].delivery_date) {
                 const deliveryDate = new Date(dbResponse[itemIdx].delivery_date);
@@ -45,7 +45,7 @@ function formatLoginTime(dbTimestamp) {
     }
 }
 
-function convertToSQLDate(inputDate, includeTime = true) {
+function convertToSQLDate(inputDate, includeTime = false) {
     if (!inputDate) {
         return null;
     }

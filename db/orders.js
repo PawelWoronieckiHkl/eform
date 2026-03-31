@@ -158,7 +158,7 @@ left join contact_info ci on ci.id = o.contact_info_id
 join organization org on org.id = o.organization_id
 where o.id = ?`;
     } else {
-        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, o.contact_info_id, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, o.commision as name, u.street, u.zip, u.city, u.country, u.phone, COALESCE(ci.email, u.email) as email
+        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, o.contact_info_id, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, u.client_name as name, u.street, u.zip, u.city, u.country, u.phone, COALESCE(ci.email, u.email) as email
 FROM \`order\` o
 join \`user\` u on u.id = o.user_id
 left join contact_info ci on ci.id = o.contact_info_id

@@ -1,6 +1,6 @@
 import { showToast } from "./components/toast.js";
 import { createInfoDialog } from "./components/htmlManipulator.js";
-import { confirmPrompt } from "./components/confirmPrompt.js";
+// import { confirmPrompt } from "./components/confirmPrompt.js";
 import { initSearchTool } from "./components/searchingTool.js";
 import { validate } from './base.js'
 
@@ -10,14 +10,17 @@ const addrFlag = { value: false };
 async function confirmMissingAddress() {
 	const addrId = document.getElementById('address-select')?.value;
 	if (!addrId && !otherAddrFlag.value) {
-		return await confirmPrompt({
-			title: t('new_order.no_address_title') || 'Brak adresu',
-			message: t('new_order.no_address_message') || 'Nie wybrałeś żadnego adresu, zostanie pobrany adres do faktur',
-			confirmLabel: t('orders.accept') || 'OK',
-			cancelLabel: t('orders.abort') || 'Anuluj',
-			icon: 'bi bi-exclamation-triangle'
-		});
-	}
+	return 	showToast('warning', t('new_order.no_address_message') || 'Nie wybrałeś żadnego adresu, zostanie pobrany adres do faktur');}
+	// await confirmPrompt({
+	// title: t('new_order.no_address_title') || 'Brak adresu',
+	// message: t('new_order.no_address_message') || 'Nie wybrałeś żadnego adresu, zostanie pobrany adres do faktur',
+	// confirmLabel: t('orders.accept') || 'OK',
+	// cancelLabel: t('orders.abort') || 'Anuluj',
+	// icon: 'bi bi-exclamation-triangle'
+	// });
+	// }
+
+	await new Promise(resolve => setTimeout(resolve, 2000));
 	return true;
 }
 async function prepareRestData() {
@@ -241,6 +244,23 @@ function toggleAddressDropdown(addrCheckId, addrClass) {
 	return addrFlag
 }
 
+function setAddressSelectorsEnabled(enabled) {
+	const addressSelect = document.getElementById('address-select');
+	const mailSelect = document.getElementById('mail-select');
+	const addressContainer = document.getElementById('address-dropdown-container');
+	const mailContainer = document.getElementById('mail-dropdown-container');
+
+	if (addressSelect) {
+		addressSelect.disabled = !enabled;
+		addressContainer?.classList.toggle('opacity-50', !enabled);
+	}
+
+	if (mailSelect) {
+		mailSelect.disabled = !enabled;
+		mailContainer?.classList.toggle('opacity-50', !enabled);
+	}
+}
+
 
 
 
@@ -275,21 +295,55 @@ else if (newOrderButton) {
 	});
 }
 
-document.getElementById('show-addresses-checkbox')?.addEventListener('change', () => { addrFlag.value = toggleAddressDropdown('show-addresses-checkbox', '.new-addr') });
+function manageMutualCheckboxes(activeCheckboxId) {
+	const showAddressesCheckbox = document.getElementById('show-addresses-checkbox');
+	const showSendAddressCheckbox = document.getElementById('show-send-address-checkbox');
+
+	if (activeCheckboxId === 'show-addresses-checkbox' && showAddressesCheckbox?.checked) {
+		if (showSendAddressCheckbox) {
+			showSendAddressCheckbox.checked = false;
+			// Trigger change event to update UI
+			showSendAddressCheckbox.dispatchEvent(new Event('change'));
+		}
+	} else if (activeCheckboxId === 'show-send-address-checkbox' && showSendAddressCheckbox?.checked) {
+		if (showAddressesCheckbox) {
+			showAddressesCheckbox.checked = false;
+			// Trigger change event to update UI
+			showAddressesCheckbox.dispatchEvent(new Event('change'));
+		}
+	}
+}
+
+document.getElementById('show-addresses-checkbox')?.addEventListener('change', () => {
+	manageMutualCheckboxes('show-addresses-checkbox');
+	addrFlag.value = toggleAddressDropdown('show-addresses-checkbox', '.new-addr');
+	setAddressSelectorsEnabled(addrFlag.value);
+});
+
+const showAddressesCheckbox = document.getElementById('show-addresses-checkbox');
+if (showAddressesCheckbox) {
+	setAddressSelectorsEnabled(showAddressesCheckbox.checked);
+}
 
 
 document.getElementById('show-send-address-checkbox')?.addEventListener('change', () => {
+	manageMutualCheckboxes('show-send-address-checkbox');
 	otherAddrFlag.value = toggleAddressDropdown('show-send-address-checkbox', '.new-send-addr');
 	const addressSelect = document.getElementById('address-select');
+	const mailSelect = document.getElementById('mail-select');
 	const addressContainer = document.getElementById('address-dropdown-container');
 	if (addressSelect) {
 		if (otherAddrFlag.value) {
 			addressSelect.value = '';
+			mailSelect.value = '';
 			addressSelect.disabled = true;
+			mailSelect.disabled = true;
 			addressSelect.dispatchEvent(new Event('change'));
+			mailSelect.dispatchEvent(new Event('change'));
 			addressContainer?.classList.add('opacity-50');
 		} else {
 			addressSelect.disabled = false;
+			mailSelect.disabled = false;
 			addressContainer?.classList.remove('opacity-50');
 		}
 	}

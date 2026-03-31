@@ -57,28 +57,6 @@ function inList3(params) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function contains(params) {
 
     if (!params || params.length < 2) return false;
@@ -112,7 +90,7 @@ parser.setFunction("FLOOR", function (params) {
     if ((number > 0 && significance < 0) || (number < 0 && significance > 0)) {
         return null;
     }
-    
+
     return Math.floor(number / significance) * significance;
 });
 
@@ -280,7 +258,7 @@ parser.setFunction("USTAW", function (params) {
             result = false;
     }
 
-    
+
     if (validatorModel[field] && Object.keys(validatorModel[field]).length === 0) {
         delete validatorModel[field];
     }
@@ -328,7 +306,7 @@ function evaluateFormula(expression, context, type, param = null) {
             if (obj[key] && typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
                 if (key === 'WYMIAROWANIE_SLOPOW') {
                     for (let subKey in obj[key]) {
-                        if (subKey !== 'TYP') { 
+                        if (subKey !== 'TYP') {
                             result[subKey] = obj[key][subKey];
                         }
                     }
@@ -356,13 +334,25 @@ function evaluateFormula(expression, context, type, param = null) {
         }
     }
 
+    // GUARANTEE uid is always present in context
+    if (!context['uid'] && window.uid) {
+        context['uid'] = window.uid;
+    }
+
     window.formulaContext = context;
+
+    if (context['uid'] && !upperCaseContext['uid']) {
+        upperCaseContext['uid'] = context['uid'];
+    }
+
 
     for (let key in upperCaseContext) {
         if (upperCaseContext.hasOwnProperty(key)) {
             parser.setVariable(key, upperCaseContext[key]);
+
         }
     }
+
 
     expression = expression.replace(/^=/, '');
     expression = expression.toUpperCase();

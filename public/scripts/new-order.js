@@ -1,7 +1,9 @@
 import { openAddAddressModal, sendAddressData } from './createNewAddress.js';
 import { get, del } from './components/api_connector.js';
-
+import { createInfoIcon } from './components/info.js';
 const i18n = (key) => (typeof t === 'function' ? t(key) : key);
+
+
 
 function toggleBtns(select, btnIds) {
     const edit = document.getElementById('update-order');
@@ -156,5 +158,22 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleBtns(addressSelect, ['edit-delivery-address-btn', 'delete-delivery-address-btn']);
     const mailSelect = document.getElementById('mail-select');
     toggleBtns(mailSelect, ['edit-mail-btn', 'delete-mail-btn']);
+
+    const addressLabel = document.getElementById('address-checkbox-container');
+    if (addressLabel) {
+        createInfoIcon({
+            info: t('new_order.address_info'),
+            parent: addressLabel,
+            defaultLabel: t('new_order.address_info')
+        });
+    }
+    const differentAddressInfo = document.getElementById('send-address-checkbox-container');
+    if (differentAddressInfo) {
+        createInfoIcon({
+            info: t('new_order.different_address_info'),
+            parent: differentAddressInfo,
+            defaultLabel: t('new_order.different_address_info')
+        });
+    }
 });
 
