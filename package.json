@@ -50,5 +50,8 @@
 		"smb-enumerate-files": "^1.0.4",
 		"smb2": "^0.2.11",
 		"util": "^0.12.5"
+	},
+	"devDependencies": {
+		"prettier": "^3.8.1"
 	}
 }
