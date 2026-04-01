@@ -88,7 +88,8 @@
 		"cancel": "Anuluj",
 		"confirm": "Potwierdź",
 		"error_word": "Błąd",
-		"redirecting_word": "Przenoszenie…"
+		"redirecting_word": "Przenoszenie…",
+		"total_items": "Łączna ilość pozycji"
 	},
 	"orders": {
 		"title": "Twoje Zamówienia",

@@ -49,7 +49,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
             parent: labelWrapper,
             rootFilePath: '/photos/files/',
             defaultLabel: t('Dodatkowe informacje'),
-            infoStyle:'i',
+            infoStyle: 'i',
             downloadLabel: t('Pobierz')
         });
     }
@@ -120,6 +120,8 @@ export function createInputField(param, options, groupNumber, filters, allOption
             }
             let option = new Option(optionText || row.VALUE, row.VALUE);
             option.id = `${row.ROW_NUM}-${param.NAME}`;
+            option.dataset.alias = row.ALIAS || '';
+            option.dataset.aliasDescription = row.ALIAS_DESCRIPTION || '';
             if (!isEnabled(row.ENABLE, values)) {
                 option.style.display = 'none'
             }
@@ -280,7 +282,7 @@ export function fillFields(displayValues, inputs, values) {
     for (let input of Object.values(inputs)) {
         const tag = input.tagName
         const labelData = displayValues.get(input.name)
-
+        console.log('Filling field:', input.name, 'with value from displayValues:', labelData);
         if (values[input.name] == "<NONE>") {
             let description = input?.name + '___DESCRIPTION' || '';
 
@@ -305,12 +307,25 @@ export function fillFields(displayValues, inputs, values) {
                 break;
             case "INPUT":
                 if (input.type !== 'file') {
-                    input.value = labelData?.option_value ?? fillCalculated(values, input);
+                    input.value = labelData?.option_value || labelData?.option_description || fillCalculated(values, input);
                 }
                 break;
-            case "SELECT":
-                input.value = labelData?.option_value ?? fillCalculated(values, input);
+            case "SELECT": {
+                const targetValue = labelData?.option_value || labelData?.option_description;
+                if (targetValue) {
+                    const matchingOption = Array.from(input.options).find(o => o.value === targetValue)
+                        || Array.from(input.options).find(o => o.dataset.alias === targetValue);
+                    if (matchingOption) {
+                        matchingOption.selected = true;
+                    } else {
+                        input.value = targetValue;
+                    }
+                } else {
+                    const calculated = fillCalculated(values, input);
+                    if (calculated !== undefined) input.value = calculated;
+                }
                 break;
+            }
         }
 
     }

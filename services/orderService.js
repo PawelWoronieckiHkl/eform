@@ -32,10 +32,10 @@ async function jsonTextBackToMap(orderItems) {
     for (const [key, param] of jsonParameters.entries()) {
 
       const display = param && param.param_description ? param.param_description : key;
-      const headerKey = display + "||" + key; 
+      const headerKey = display + "||" + key;
       const rowStr = (param && param.row !== undefined) ? String(param.row) : '1';
       if (rowStr === '0') {
-        continue; 
+        continue;
       }
       const isRow2 = rowStr === '2';
 
@@ -79,7 +79,7 @@ async function jsonTextBackToMap(orderItems) {
       const headerKey = display + "||" + key;
       const rowStr = (param && param.row !== undefined) ? String(param.row) : '1';
       if (rowStr === '0') {
-        continue; 
+        continue;
       }
       let value = "-";
       if (param) {
@@ -133,6 +133,34 @@ async function jsonTextBackToMap(orderItems) {
 
     }));
   }
+  // Check if any price is not numeric
+  let anyNonNumeric = false;
+  for (const table of cleanOrderItems) {
+    for (const rowObj of table.rows) {
+      const row2 = rowObj.row.row2 || {};
+      for (const priceKey in row2) {
+        const priceVal = row2[priceKey];
+        // Accept numbers or numeric strings
+        if (typeof priceVal === 'number') continue;
+        if (typeof priceVal === 'string') {
+          // Remove currency, spaces, etc.
+          const cleaned = priceVal.replace(/[^0-9.,-]/g, '').replace(',', '.');
+          if (cleaned === '' || isNaN(Number(cleaned))) {
+            anyNonNumeric = true;
+            break;
+          }
+        } else {
+          anyNonNumeric = true;
+          break;
+        }
+      }
+      if (anyNonNumeric) break;
+    }
+    if (anyNonNumeric) break;
+  }
+  if (anyNonNumeric) {
+    total.visible = 'Według cennika';
+  }
   return { cleanOrderItems, total };
 }
 
@@ -172,7 +200,7 @@ function removeEmptyColumns(table) {
     const mappedRows = rows.map(r => {
       const row1 = {};
       const row2 = {};
-      
+
       const sortedHeaderKeys1 = headerKeys1.slice().sort((a, b) => {
         const cellA = r.row[a] || { row1: "-" };
         const cellB = r.row[b] || { row1: "-" };
@@ -182,7 +210,7 @@ function removeEmptyColumns(table) {
         const isFormulaB = typeof valB === 'string' && valB.includes('(');
         return isFormulaA === isFormulaB ? 0 : (isFormulaA ? 1 : -1);
       });
-      
+
       const sortedHeaderKeys2 = headerKeys2.slice().sort((a, b) => {
         const cellA = r.row[a] || { row2: "-" };
         const cellB = r.row[b] || { row2: "-" };
@@ -192,28 +220,28 @@ function removeEmptyColumns(table) {
         const isFormulaB = typeof valB === 'string' && valB.includes('(');
         return isFormulaA === isFormulaB ? 0 : (isFormulaA ? 1 : -1);
       });
-      
-      
+
+
       for (let i = 0; i < sortedHeaderKeys1.length; i++) {
         const headerKey = sortedHeaderKeys1[i];
         const headerIdx = headerKeys1.indexOf(headerKey);
         const display = headers1[headerIdx];
         const cell = r.row[headerKey] || { row1: "-" };
         const value = cell.row1;
-        
+
         if (row1[display] !== undefined && typeof value === 'string' && value.includes('(')) {
           continue;
         }
         row1[display] = value;
       }
-      
+
       for (let i = 0; i < sortedHeaderKeys2.length; i++) {
         const headerKey = sortedHeaderKeys2[i];
         const headerIdx = headerKeys2.indexOf(headerKey);
         const display = headers2[headerIdx];
         const cell = r.row[headerKey] || { row2: "-" };
         const value = cell.row2;
-        
+
         if (row2[display] !== undefined && typeof value === 'string' && value.includes('(')) {
           continue;
         }
@@ -249,7 +277,7 @@ function removeEmptyColumns(table) {
       const isFormulaB = typeof valB === 'string' && valB.includes('(');
       return isFormulaA === isFormulaB ? 0 : (isFormulaA ? 1 : -1);
     });
-    
+
     const sortedNewHeaderKeys2 = newHeaderKeys2.slice().sort((a, b) => {
       const cellA = rowObj.row[a] || { row2: "-" };
       const cellB = rowObj.row[b] || { row2: "-" };
@@ -259,7 +287,7 @@ function removeEmptyColumns(table) {
       const isFormulaB = typeof valB === 'string' && valB.includes('(');
       return isFormulaA === isFormulaB ? 0 : (isFormulaA ? 1 : -1);
     });
-    
+
     for (let i = 0; i < sortedNewHeaderKeys1.length; i++) {
       const headerKey = sortedNewHeaderKeys1[i];
       const headerIdx = newHeaderKeys1.indexOf(headerKey);
@@ -272,14 +300,14 @@ function removeEmptyColumns(table) {
       }
       filteredRow.row1[display] = value;
     }
-    
+
     for (let i = 0; i < sortedNewHeaderKeys2.length; i++) {
       const headerKey = sortedNewHeaderKeys2[i];
       const headerIdx = newHeaderKeys2.indexOf(headerKey);
       const display = newHeaders2[headerIdx];
       const cell = rowObj.row[headerKey] || { row2: "-" };
       const value = cell.row2;
-      
+
       if (filteredRow.row2[display] !== undefined && typeof value === 'string' && value.includes('(')) {
         continue;
       }

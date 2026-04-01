@@ -13,20 +13,20 @@ import { calculateFromScript, calculateFromFormula, checkIfPriceIsCorrect } from
 
 export function resetDependences([params, display], name, inputs, values, allOptionsByParameter) {
     logFunctionName('resetDependences');
-    
+
     let param = params.find((obj) => obj.NAME === name);
     if (param && param.DEPENDENCES && typeof param.DEPENDENCES === "string") {
 
-        
+
         let paramsToCheck = param.DEPENDENCES.split(",");
-        let paramsToReset = [...paramsToCheck]; 
+        let paramsToReset = [...paramsToCheck];
 
         for (let depParam of paramsToCheck) {
             let valueToReset = values[depParam];
 
             let x = searchForParameter(valueToReset, allOptionsByParameter, depParam);
 
-            
+
             if (x && isEnabled(x.ENABLE, values)) {
                 paramsToReset = paramsToReset.filter(p => p !== depParam);
             }
@@ -63,17 +63,17 @@ export function resetSelectValues([parameters, display], inputs, values, skipCal
     for (let idx = 0; idx < parameters.length; idx++) {
         let paramName = parameters[idx];
         const param = params.find(obj => obj.NAME === paramName);
-        
 
-        
+
+
         if (inputs[paramName] && inputs[paramName].tagName == 'INPUT') {
             let isCalculated = param && ((
                 (param.FORMULA && param.FORMULA !== '<NULL>') ||
                 (param.SOURCE && param.SOURCE !== '<NULL>' && param.SOURCE !== param.NAME)));
 
             if (isCalculated && skipCalculated) {
-                
-                continue; 
+
+                continue;
             }
         }
 
@@ -116,7 +116,7 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
     logFunctionName('buildValuesToDisplay');
 
 
-    
+
     let currentValue = displayValues?.get(paramName) || {};
 
     if (currentValue == {} && !calculated) {
@@ -129,18 +129,18 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
     }
 
     else if (Object.keys(currentValue).length <= 1 && calculated) {
-        
+
         let param = params.find(p => p.NAME === paramName);
         let locked;
-        
-        
-        
+
+
+
         if (window.lockedParams && window.lockedParams.includes(paramName)) {
             locked = true;
         } else {
             locked = false;
         }
-        
+
         displayValues.set(paramName, {
             param_description: param?.DESCRIPTION || '',
             locked: locked,
@@ -159,23 +159,23 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
     if (value === '<NONE>') {
 
         let currentValue = displayValues.get(paramName) || {};
-        
+
         for (let key in currentValue) {
             currentValue['locked'] = false;
             currentValue['option_value'] = '';
             currentValue['option_description'] = '';
             currentValue['row'] = '';
         }
-        
+
         currentValue['option_value'] = '';
         currentValue['option_description'] = '';
         displayValues.set(paramName, currentValue);
-        
-        
+
+
         return;
     }
 
-    
+
     if (value && typeof value === 'object' && !Array.isArray(value)) {
         const valueParts = [];
         const descParts = [];
@@ -197,21 +197,21 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
             valueParts.push(fieldVal);
 
 
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
 
 
@@ -252,7 +252,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
     const allowedOptions = {};
     const allowedParameters = {};
     for (const paramName in inputs) {
-        
+
         if (inputs[paramName].tagName == 'BUTTON') {
             btns.push(inputs[paramName])
         }
@@ -260,7 +260,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
         allowedOptions[paramName] = new Set();
         allowedParameters[paramName] = [];
     }
-    
+
     for (const paramName in allOptionsByParameter) {
 
         const paramArray = allOptionsByParameter[paramName];
@@ -278,15 +278,15 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
                     paramName
                 );
                 let expression = param
-                
+
             }
 
             catch (error) {
-                
+
 
                 showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`)
             }
-            
+
             if (isEnabled && param.VALUE != '-') {
                 if (param.ROW_NUM) {
                     const idAndValue = `${param.ROW_NUM}-${paramName}`;
@@ -306,7 +306,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
         const allowed = allowedOptions[paramName];
 
         if (currentSelect.tagName === 'BUTTON' & !(param.SOURCE == param.NAME)) {
-            
+
             const newBtn = currentSelect.cloneNode(true);
             currentSelect.parentNode.replaceChild(newBtn, currentSelect);
 
@@ -314,7 +314,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
                 createDialog(param, allowedParameters[paramName], tempGroupNumber, filters[paramName], attrVals);
             });
 
-            
+
             inputs[paramName] = newBtn;
         }
 
@@ -336,6 +336,7 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
 export async function updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value) {
 
     logFunctionName('updateFieldStates')
+    const disabledParams = new Set();
     for (let key in inputs) {
         let param;
         for (let i = 0; i < params.length; i++) {
@@ -354,7 +355,7 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
                 "param",
                 param.NAME
             );
-            
+
             if (param.SOURCE != "<NULL>" && param.NAME != param.SOURCE && !shouldEnable) {
                 if (!window.skipCountParams.includes(param.NAME)) {
                     window.skipCountParams.push(param.NAME);
@@ -365,15 +366,21 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
                 window.skipCountParams = window.skipCountParams.filter(name => name !== param.NAME);
 
             }
-            
-            if (shouldEnable == 'password' || param.FORMROW == '0') { shouldEnable = false }
-            
+
+            if (shouldEnable == 'password') {
+                shouldEnable = false;
+                // password: ukryte w formularzu, ale nadal liczone
+            } else if (!shouldEnable) {
+                disabledParams.add(param.NAME);
+            }
+            if (param.FORMROW == '0') { shouldEnable = false; }
+
         }
         catch (error) {
             showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`)
         }
         let paramDiv = inputs[key].parentNode;
-        
+
         if (shouldEnable) {
             paramDiv.style.display = 'grid';
             window.enabledParams[param.NAME] = true;
@@ -397,7 +404,7 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
         if (!param) continue;
 
         const hasSource = param.SOURCE != "<NULL>" && param.NAME != param.SOURCE;
-        const hasFormula = param.FORMULA != "<NULL>" && !(window.skipCountParams.includes(param.NAME));
+        const hasFormula = param.FORMULA != "<NULL>" && !(window.skipCountParams.includes(param.NAME)) && !disabledParams.has(param.NAME);
 
         if (hasSource && hasFormula) {
 
@@ -407,11 +414,11 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
             scriptOperations.push({ param, key, hasFormula: false });
         } else if (hasFormula) {
             window.calculatedParams.add(param.NAME);
-            
+
             formulaOperations.push({ param, key });
         }
     }
-    
+
     return new Promise((resolveAll) => {
         let scriptIndex = 0;
 
@@ -526,7 +533,7 @@ export function setWar(values, params, inputs) {
         else {
 
             if (currentInput) {
-                
+
                 if (currentInput.tagName === 'INPUT' || currentInput.tagName === 'TEXTAREA' || currentInput.tagName === 'SELECT') {
                     currentInput.value = value;
                 } else {
@@ -562,7 +569,7 @@ export function checkRelated(params, values) {
 
     let parameters = Object.values(params);
 
-    
+
     for (let idx = 0; idx < parameters.length; idx++) {
         let param = parameters[idx];
         let relatedValue = param.RELATED;
@@ -584,7 +591,7 @@ export function checkRelated(params, values) {
 }
 
 export function resetAllDOM() {
-    
+
     for (const [category, models] of Object.entries(window.inputsDefaults)) {
 
         for (const [modelName, modelConfig] of Object.entries(models)) {

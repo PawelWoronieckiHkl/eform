@@ -9,18 +9,7 @@ const addrFlag = { value: false };
 
 async function confirmMissingAddress() {
 	const addrId = document.getElementById('address-select')?.value;
-	if (!addrId && !otherAddrFlag.value) {
-	return 	showToast('warning', t('new_order.no_address_message') || 'Nie wybrałeś żadnego adresu, zostanie pobrany adres do faktur');}
-	// await confirmPrompt({
-	// title: t('new_order.no_address_title') || 'Brak adresu',
-	// message: t('new_order.no_address_message') || 'Nie wybrałeś żadnego adresu, zostanie pobrany adres do faktur',
-	// confirmLabel: t('orders.accept') || 'OK',
-	// cancelLabel: t('orders.abort') || 'Anuluj',
-	// icon: 'bi bi-exclamation-triangle'
-	// });
-	// }
 
-	await new Promise(resolve => setTimeout(resolve, 2000));
 	return true;
 }
 async function prepareRestData() {

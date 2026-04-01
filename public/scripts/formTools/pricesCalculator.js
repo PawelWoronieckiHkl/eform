@@ -140,7 +140,7 @@ export function calculateFromFormula(param, values, inputs, displayValues, group
             param.FORMULA,
             values,
             "formula");
-
+        console.log('Wynik formuły:', result, 'dla parametru', param.NAME, 'z formułą', param.FORMULA);
         if (result === false || result === null || result < 0) {
 
             if (inputs[param.NAME]) {

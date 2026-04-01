@@ -97,7 +97,7 @@ body {
 
 .price {
     background-color: #f5f5f5 !important;
-    font-size:8px !important;
+    font-size: 8px !important;
     padding: 2px 4px 10px !important;
 }
 
@@ -118,23 +118,36 @@ body {
     max-width: 40% !important;
     box-sizing: border-box !important;
 }
+
 .client-details {
-    display:flex !important;
-    gap:270px !important
+    display: flex !important;
+    gap: 270px !important
 }
+
 .order-details-line {
     margin: 4px 0 !important;
     font-size: 16px !important;
 }
+
 #total-container {
     margin-right: 30px !important;
 }
+
 .header-3 {
     font-size: 20px !important;
     font-weight: bold !important;
     margin-bottom: 10px !important;
 }
 
+
+.print-total-items {
+    font-size: 12px !important;
+    font-weight: bold !important;
+    text-align: right !important;
+    margin-top: 10px !important;
+    margin-bottom: 20px !important;
+    padding: 6px 10px !important;
+}
 
 #total-container {
     width: 100% !important;
@@ -147,7 +160,7 @@ body {
     text-align: right !important;
     margin: 5px 0 !important;
     margin-top: 15px !important;
-    margin-right: 120px !important;
+    padding: 6px 10px !important;
 }
 
 #table tbody tr:nth-child(even) {
@@ -171,7 +184,8 @@ a {
         margin: 0 !important;
         padding: 0 !important;
     }
-    .client-details{
-        break-inside: avoid !important ;
+
+    .client-details {
+        break-inside: avoid !important;
     }
 }

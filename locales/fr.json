@@ -88,7 +88,8 @@
     "cancel": "Annuler",
     "confirm": "Confirmer",
     "error_word": "Erreur",
-    "redirecting_word": "Redirection…"
+    "redirecting_word": "Redirection…",
+    "total_items": "Nombre total de positions"
   },
   "orders": {
     "title": "Vos commandes",

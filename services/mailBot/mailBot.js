@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-function sendMail(to, lang, pdfBuffer, attachmentsBuffer=[], templateVars = {}, bcc = null) {
+function sendMail(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null) {
   const i18n = confLang(lang)
 
   const __ = (key) => i18n.__(key, { locale: lang });
@@ -76,9 +76,9 @@ function sendMail(to, lang, pdfBuffer, attachmentsBuffer=[], templateVars = {}, 
     attachments // dodajemy załączniki
   };
 
-  // Dodaj BCC (UDW) jeśli został podany
-  if (bcc) {
-    mailOptions.bcc = bcc;
+  // Dodaj CC jeśli został podany
+  if (cc) {
+    mailOptions.cc = cc;
   }
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -86,8 +86,8 @@ function sendMail(to, lang, pdfBuffer, attachmentsBuffer=[], templateVars = {}, 
       log('Błąd wysyłki:', error);
     } else {
       log('Stylizowany e-mail wysłany:', info.response, to);
-      if (bcc) {
-        log('BCC (UDW):', bcc);
+      if (cc) {
+        log('CC:', cc);
       }
     }
   });

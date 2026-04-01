@@ -88,7 +88,8 @@
     "cancel": "Annuleren",
     "confirm": "Bevestigen",
     "error_word": "Fout",
-    "redirecting_word": "Bezig met doorsturen…"
+    "redirecting_word": "Bezig met doorsturen…",
+    "total_items": "Totaal aantal posities"
   },
   "orders": {
     "title": "Uw bestellingen",
