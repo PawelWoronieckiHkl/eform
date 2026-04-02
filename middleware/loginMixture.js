@@ -91,17 +91,12 @@ async function checkOrderOwnership(req, res, next) {
 
 async function isOwner(owner) {
   try {
-    if (owner) {
+    if (!owner || !owner.orgIdent || !owner.userIdent) {
       log("Missing identifiers: ident or ownerIdent");
-    }
-    log(owner, 'in isOwner function');
-    if (owner.orgIdent.toUpperCase() == owner.userIdent.toUpperCase()) {
-
-      return true;
-    } else {
-
       return false;
     }
+    log(JSON.stringify(owner), 'in isOwner function');
+    return owner.orgIdent.toUpperCase() === owner.userIdent.toUpperCase();
   } catch (error) {
     log("Error in isOwner function:", error);
     return false;

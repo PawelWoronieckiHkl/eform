@@ -43,30 +43,30 @@ async function updateClients() {
 
 
   // if (false) {
-    // log('Rozpoczynam aktualizację haseł...');
-    // let updated = 0;
-    // let skipped = 0;
-// 
-    // for (const client of diff.fileClients) {
-      // if (client.password) {
-        // const user = dbClientsObj.find(dbClient => dbClient.ident === client.ident);
-        // if (user) {
-          // try {
-            // await db.updatePlain(user.ident, client.password);
-            // updated++;
-            // log(`[${updated}] Zaktualizowano hasło dla użytkownika ${client.ident}`);
-          // } catch (err) {
-            // log(`Błąd przy aktualizacji hasła dla ${client.ident}:`, err.message);
-          // }
-        // } else {
-          // skipped++;
-        // }
-      // } else {
-        // skipped++;
-      // }
-    // }
-// 
-    // log(`Zakończono aktualizację haseł. Zaktualizowano: ${updated}, Pominięto: ${skipped}`);
+  // log('Rozpoczynam aktualizację haseł...');
+  // let updated = 0;
+  // let skipped = 0;
+  // 
+  // for (const client of diff.fileClients) {
+  // if (client.password) {
+  // const user = dbClientsObj.find(dbClient => dbClient.ident === client.ident);
+  // if (user) {
+  // try {
+  // await db.updatePlain(user.ident, client.password);
+  // updated++;
+  // log(`[${updated}] Zaktualizowano hasło dla użytkownika ${client.ident}`);
+  // } catch (err) {
+  // log(`Błąd przy aktualizacji hasła dla ${client.ident}:`, err.message);
+  // }
+  // } else {
+  // skipped++;
+  // }
+  // } else {
+  // skipped++;
+  // }
+  // }
+  // 
+  // log(`Zakończono aktualizację haseł. Zaktualizowano: ${updated}, Pominięto: ${skipped}`);
   // }
 }
 
@@ -99,7 +99,7 @@ function compareClients(fileClients, dbClients) {
   });
 
   const toUpdate = [];
-  const fieldsToCheck = ['name', 'address', 'city', 'zip', 'taxid', 'phone','kraj'];
+  const fieldsToCheck = ['name', 'address', 'city', 'zip', 'taxid', 'phone', 'kraj', 'password'];
 
   for (const fileClient of fileClients) {
     const pin = (fileClient.pin || '').toUpperCase();
@@ -167,9 +167,7 @@ function parseClients(inputArray) {
 async function insertClients(clientsObj) {
   for (const client of clientsObj) {
     try {
-      if (process.env.NODE_ENV != 'prod') {
-        result = await db.insertUserIntousrtble(client.ident, client.pin, client.password);
-      }
+      await db.insertUserIntousrtble(client.ident, client.pin, client.password);
       const newUserId = await db.addUser(client);
     } catch (err) {
       log(`Błąd przy dodawaniu ${client.ident}:`, err.message);
@@ -186,6 +184,7 @@ async function updateExistingClients(clientsToUpdate) {
     taxid: 'tax_id',
     phone: 'phone',
     kraj: 'country',
+    password: 'password',
   };
 
   let updated = 0;
@@ -215,6 +214,11 @@ async function updateExistingClients(clientsToUpdate) {
       const sql = `UPDATE eform.\`user\` SET ${updateFields.join(', ')} WHERE pin = ?`;
 
       await db.updateQuery(sql, updateValues);
+
+      if (changes.password) {
+        await db.updatePasswordInUsrtblpsswd(ident, changes.password);
+      }
+
       updated++;
     } catch (err) {
       failed++;
@@ -272,7 +276,7 @@ async function fixEncodingInDatabase() {
     for (const field of fieldsToCheck) {
       if (user[field]) {
         let fixedValue = user[field];
-        const originalValue = fixedValue; 
+        const originalValue = fixedValue;
 
         if (fixedValue.includes('�')) {
 
@@ -299,7 +303,7 @@ async function fixEncodingInDatabase() {
                 if (['h', 'r', 's', 'l', 'n'].includes(before)) {
                   chars[idx] = 'ü';
                 } else if (before === 'h' && after === 'h') {
-                  chars[idx] = 'ö'; 
+                  chars[idx] = 'ö';
                 } else if (['b', 'k', 't', 'd', 'g'].includes(before)) {
                   chars[idx] = 'ö';
                 } else {

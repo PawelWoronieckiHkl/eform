@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { requireLogin, isOwner } = require('../middleware/loginMixture');
+const { requireLogin, requireOwner } = require('../middleware/loginMixture');
 const authService = require('../services/authService')
 const ownerService = require('../services/owner.js');
 const logService = require('../services/logService.js');
@@ -40,6 +40,18 @@ router.get("/login", (req, res) => {
     }
     updateClients()
     res.render("login.njk");
+});
+
+router.get("/org-pwd", requireLogin, requireOwner, async (req, res, next) => {
+    try {
+        const orgId = req.session.user.orgId;
+        const isAdmin = req.session.user.isAdmin || false;
+        const users = await db.getUsersFromUsrtblpsswd(orgId, isAdmin);
+        res.render("owner/pwds.njk", { users });
+    } catch (err) {
+        log('Error loading passwords page:', err);
+        next(err);
+    }
 });
 
 

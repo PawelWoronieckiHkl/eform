@@ -315,7 +315,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
         } else {
             return res.render("order_sent.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, owner: req.session.user.isOwner, statuses: statuses
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, owner: req.session.user.isOwner, statuses: statuses
 
                 }
             );

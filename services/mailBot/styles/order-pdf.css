@@ -146,7 +146,7 @@ body {
     text-align: right !important;
     margin-top: 10px !important;
     margin-bottom: 20px !important;
-    padding: 6px 10px !important;
+    padding: 6px 10% 6px 10px !important;
 }
 
 #total-container {
@@ -160,7 +160,7 @@ body {
     text-align: right !important;
     margin: 5px 0 !important;
     margin-top: 15px !important;
-    padding: 6px 10px !important;
+    padding: 6px 10% 6px 10px !important;
 }
 
 #table tbody tr:nth-child(even) {

@@ -162,8 +162,9 @@
                     {% if owner and not admin %}
                         <div id='userSelectContainer'>
                             <label for='userSelect' id='userSelectLabel' class="mt-5">{{ __('orders.users_list') }}</label>
-                            <div class="dropdown-container">
-                                <input type="text" id="userSelect" class="dropdown-input w-100" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
+                            <div class="dropdown-container w-100 d-flex">
+
+                                <input type="text" id="userSelect" class="dropdown-input" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
                                 <div id="userDropdown" class="dropdown-menu custom-dropdown">
                                     <div class="dropdown-item context-button">
                                         <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
@@ -176,7 +177,10 @@
                                         {% endfor %}
                                     {% endif %}
                                 </div>
+                                <a href="/user/org-pwd" id='pwd-list' class="admin-btn custom-nav-link has-tooltip " data-tooltip="{{ __('base.logout') }}" style="text-decoration: none;">
+                                <img src="/img/key-chain.png" class='nav-icon' alt="passwords-ico"></a>
                             </div>
+
                         </div>
                     {% endif %}
                 {% endblock %}
@@ -188,6 +192,7 @@
                     </ul>
                 </div>
             </ul>
+            
         </div>
         <div id='config-div'>
             <p id='config-number-info'></p>
@@ -254,7 +259,10 @@
                 <span class="nav-text">Admin panel</span>
             </a>
         </button>
+            <a href="/user/org-pwd" id='pwd-list-admin' class="admin-btn custom-nav-link has-tooltip " data-tooltip="{{ __('base.logout') }}" style="text-decoration: none;">
+           <img src="/img/key-chain.png" class='nav-icon' alt="passwords-ico"></a>
     </div>
+
 {% endif %}
 {# END ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 {% block content %}{% endblock %}

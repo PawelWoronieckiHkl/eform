@@ -892,3 +892,10 @@ To add an exception for this directory, call:
 	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
 === 2026-04-01 12:00:01 - Koniec (Exit: 0) ===
 === 2026-04-01 12:33:42 - Start ===
+[main 6ec8f98] Automatic commit 2026-04-01 12:33
+ 6 files changed, 62 insertions(+), 5 deletions(-)
+ create mode 100644 .prettierrc
+To https://github.com/PawelWrHkl/eform.git
+   70c6ee3..6ec8f98  main -> main
+=== 2026-04-01 12:33:47 - Koniec (Exit: 0) ===
+=== 2026-04-02 10:35:01 - Start ===

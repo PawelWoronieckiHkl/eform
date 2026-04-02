@@ -59,8 +59,32 @@ async function getPolicyState(pin) {
 
 
 async function insertUserIntousrtble(ident, pin, password) {
-    const query = `INSERT INTO eform.usrtblpsswd (ident, pin, password) VALUES (?, ?, ?)`;
+    const query = `INSERT INTO eform.usrtblpsswd (ident, pin, password) VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE pin = VALUES(pin), password = VALUES(password)`;
     let result = await insertQuery(query, [ident, pin, password]);
+    return result;
+}
+
+async function getUsersFromUsrtblpsswd(orgId, isAdmin = false) {
+    if (isAdmin) {
+        const query = `SELECT up.ident, u.pin, up.password
+            FROM eform.usrtblpsswd up
+            JOIN eform.\`user\` u ON u.ident = up.ident
+            ORDER BY up.ident`;
+        return await selectQuery(query);
+    }
+    const query = `SELECT up.ident, u.pin, up.password
+        FROM eform.usrtblpsswd up
+        JOIN eform.\`user\` u ON u.ident = up.ident
+        WHERE u.organization_id = ?
+        ORDER BY up.ident`;
+    return await selectQuery(query, [orgId]);
+}
+
+async function updatePasswordInUsrtblpsswd(ident, password) {
+    const query = `INSERT INTO eform.usrtblpsswd (ident, password) VALUES (?, ?)
+        ON DUPLICATE KEY UPDATE password = VALUES(password)`;
+    let result = await insertQuery(query, [ident, password]);
     return result;
 }
 
@@ -488,5 +512,7 @@ module.exports = {
     logEmployeeLogin,
     getOrgInfo,
     insertUserIntousrtble,
-    getUserRole
+    updatePasswordInUsrtblpsswd,
+    getUserRole,
+    getUsersFromUsrtblpsswd
 }

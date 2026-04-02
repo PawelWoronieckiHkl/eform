@@ -1,0 +1,75 @@
+{% extends "base.njk" %}
+{% block title %}{{ __('pwds.title') or 'Hasła klientów' }}{% endblock title %}
+{% block key_nav %}
+window.location.href='/'
+{% endblock %}
+{% block back_link %}
+<button class="modern-back-btn" onclick="window.location.href='/'">
+    {% endblock %}
+    {% block content %}
+    <div class="content col-9 center-content">
+        <div class="container my-5 mobile-rm-card">
+            <h2 class="text-center mb-4 fw-bold">{{ __('pwds.title') or 'Hasła klientów' }}</h2>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="input-group" style="max-width: 350px;">
+                    <input type="text" id="pwd-search" class="form-control"
+                        placeholder="{{ __('form.search_input_placeholder') or 'Szukaj klienta...' }}"
+                        autocomplete="off">
+                </div>
+                <span id="pwd-count" class="text-muted"></span>
+            </div>
+
+            {% if users and users.length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered" id="pwd-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>{{ __('base.user') or 'Klient' }}</th>
+                            <th>Pin</th>
+                            <th>{{ __('login.password_label') or 'Hasło' }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pwd-tbody">
+                        {% for user in users %}
+                        <tr class="pwd-row">
+                            <td>{{ loop.index }}</td>
+                            <td class="pwd-ident">{{ user.ident }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="pwd-pin">{{ user.pin }}</span>
+                                    <button type="button" class="btn btn-sm btn-outline-dark copy-btn" data-copy="pin">
+                                        {{ __('pwds.copy') or 'Kopiuj' }}
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="pwd-value" data-revealed="false">••••••••</span>
+                                    <input type="hidden" class="pwd-hidden" value="{{ user.password }}">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary pwd-toggle-btn">
+                                        {{ __('pwds.show') or 'Pokaż' }}
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-dark copy-btn"
+                                        data-copy="password">
+                                        {{ __('pwds.copy') or 'Kopiuj' }}
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info text-center" role="alert">
+                {{ __('pwds.no_data') or 'Brak danych do wyświetlenia.' }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}
+    {% block scripts %}
+    <script src="/scripts/pwds.js"></script>
+    {% endblock scripts %}
