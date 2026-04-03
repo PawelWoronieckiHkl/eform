@@ -82,25 +82,25 @@ function prepareValuesForScript(values, displayValues, allOptionsByParameter) {
 function errorShield(scriptPath, param) {
     const badValues = ['undefined', 'NaN', 'Infinity', '-Infinity', null, undefined, ''];
     if (scriptPath.includes("DOPLATA_RABAT")) {
-        return { 'DOPLATA-RABAT': 'Według cennika' };
+        return { 'DOPLATA-RABAT': t('order.according_to_price') };
     }
     if (scriptPath.includes("DOPLATA-")) {
-        return { 'DOPLATA': 'Według cennika' };
+        return { 'DOPLATA': t('order.according_to_price') };
     }
     if (scriptPath.includes('DOPLATA_EL')) {
-        return { 'DOPLATA_EL': 'Według cennika' };
+        return { 'DOPLATA_EL': t('order.according_to_price') };
     }
     if (scriptPath.includes("CENA_RABAT")) {
-        return { 'CENA_RABAT': 'Według cennika' };
+        return { 'CENA_RABAT': t('order.according_to_price') };
     }
     if (scriptPath.includes("DOPLATA_EL_RABAT")) {
-        return { 'DOPLATA_EL_RABAT': 'Według cennika' };
+        return { 'DOPLATA_EL_RABAT': t('order.according_to_price') };
     }
     if (scriptPath.includes("CENA-")) {
-        return { 'CENA': 'Według cennika' };
+        return { 'CENA': t('order.according_to_price') };
     }
     else {
-        return { [param.NAME]: 'Według cennika' };
+        return { [param.NAME]: t('order.according_to_price') };
 
     }
 

@@ -29,6 +29,7 @@ window.location.href='/'
                             <th>{{ __('base.user') or 'Klient' }}</th>
                             <th>Pin</th>
                             <th>{{ __('login.password_label') or 'Hasło' }}</th>
+                            <th>{{ __('pwds.send') or 'Wyślij' }}</th>
                         </tr>
                     </thead>
                     <tbody id="pwd-tbody">
@@ -56,6 +57,16 @@ window.location.href='/'
                                         {{ __('pwds.copy') or 'Kopiuj' }}
                                     </button>
                                 </div>
+                            </td>
+                            <td>
+                                {% if user.email %}
+                                <a href="mailto:{{ user.email }}?subject={{ __('pwds.mail_subject') | urlencode }}&body={{ __('pwds.mail_body_intro') | urlencode }}%0A%0A{{ __('pwds.mail_body_pin') | urlencode }}%3A%20{{ user.pin }}%0A{{ __('pwds.mail_body_password') | urlencode }}%3A%20{{ user.password }}%0A%0A{{ __('pwds.mail_body_regards') | urlencode }}"
+                                    class="btn btn-sm btn-outline-secondary send-mail-btn">
+                                    {{ __('pwds.send_to_client') }}
+                                </a>
+                                {% else %}
+                                <span class="text-muted">{{ __('pwds.no_email') or 'Brak email' }}</span>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}

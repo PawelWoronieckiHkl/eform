@@ -203,6 +203,13 @@ router.get('/no-permission', requireLogin, async (req, res) => {
     return res.render('no-permission.njk');
 });
 
+router.get('/session-check', (req, res) => {
+    if (req.session && req.session.user) {
+        return res.status(200).json({ ok: true });
+    }
+    return res.status(401).json({ ok: false });
+});
+
 
 router.get('/rodo', requireLogin, async (req, res) => {
     const currentUser = ownerService.getCurrentUser(req);

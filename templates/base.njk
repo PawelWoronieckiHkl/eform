@@ -162,25 +162,26 @@
                     {% if owner and not admin %}
                         <div id='userSelectContainer'>
                             <label for='userSelect' id='userSelectLabel' class="mt-5">{{ __('orders.users_list') }}</label>
-                            <div class="dropdown-container w-100 d-flex">
-
-                                <input type="text" id="userSelect" class="dropdown-input" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
-                                <div id="userDropdown" class="dropdown-menu custom-dropdown">
-                                    <div class="dropdown-item context-button">
-                                        <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
-                                            <span class="nav-text">{{ __('base.turn_off_context') }}</span>
-                                        </a>
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="dropdown-container flex-grow-1">
+                                    <input type="text" id="userSelect" class="dropdown-input w-100" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
+                                    <div id="userDropdown" class="dropdown-menu custom-dropdown">
+                                        <div class="dropdown-item context-button">
+                                            <a href="/orders/clear-context" id='context-dropdown-item' class='context-button'>
+                                                <span class="nav-text">{{ __('base.turn_off_context') }}</span>
+                                            </a>
+                                        </div>
+                                        {% if users %}
+                                            {% for user in users %}
+                                                <div class="dropdown-item pt-5 pb-5" data-value="{{ user.ident }}">{{ user.ident }}</div>
+                                            {% endfor %}
+                                        {% endif %}
                                     </div>
-                                    {% if users %}
-                                        {% for user in users %}
-                                            <div class="dropdown-item pt-5 pb-5" data-value="{{ user.ident }}">{{ user.ident }}</div>
-                                        {% endfor %}
-                                    {% endif %}
                                 </div>
-                                <a href="/user/org-pwd" id='pwd-list' class="admin-btn custom-nav-link has-tooltip " data-tooltip="{{ __('base.logout') }}" style="text-decoration: none;">
-                                <img src="/img/key-chain.png" class='nav-icon' alt="passwords-ico"></a>
+                                <a href="/user/org-pwd" id='pwd-org-btn'class="custom-nav-link has-tooltip" data-tooltip="Hasła">
+                                    <img src="/img/key-chain.png" class='nav-icon' alt="passwords">
+                                </a>
                             </div>
-
                         </div>
                     {% endif %}
                 {% endblock %}
@@ -192,7 +193,6 @@
                     </ul>
                 </div>
             </ul>
-            
         </div>
         <div id='config-div'>
             <p id='config-number-info'></p>
@@ -201,16 +201,11 @@
 {% endblock %}
 <header class="languages">
     <div class="language-switcher">
-        <a href="/change-language?lang=pl" {% if locale=='pl' %} class="active" data-tooltip="{{ __('base.base.polish_tooltip') }}" {% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28">
-        </a>
-        <a href="/change-language?lang=en" {% if locale=='en' %} class="active" data-tooltip="{{ __('base.base.english_tooltip') }}" {% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30" height="28">
-        </a>
-        <a href="/change-language?lang=de" {% if locale=='de' %} class="active" data-tooltip="{{ __('base.german_tooltip') }}" {% endif %}><img src="/img/germany.png" alt="Germany flag" width="30" height="28">
-        </a>
-        <a href="/change-language?lang=nl" {% if locale=='nl' %} class="active" data-tooltip="{{ __('base.netherlands_tooltip') }}" {% endif %}><img src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28">
-        </a>
-        <a href="/change-language?lang=fr" {% if locale=='fr' %} class="active" data-tooltip="{{ __('base.french_tooltip') }}" {% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28">
-        </a>
+        <a href="/change-language?lang=pl" {% if locale=='pl' %} class="active" data-tooltip="{{ __('base.base.polish_tooltip') }}" {% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28"> </a>
+        <a href="/change-language?lang=en" {% if locale=='en' %} class="active" data-tooltip="{{ __('base.base.english_tooltip') }}" {% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30" height="28"> </a>
+        <a href="/change-language?lang=de" {% if locale=='de' %} class="active" data-tooltip="{{ __('base.german_tooltip') }}" {% endif %}><img src="/img/germany.png" alt="Germany flag" width="30" height="28"> </a>
+        <a href="/change-language?lang=nl" {% if locale=='nl' %} class="active" data-tooltip="{{ __('base.netherlands_tooltip') }}" {% endif %}><img src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28"> </a>
+        <a href="/change-language?lang=fr" {% if locale=='fr' %} class="active" data-tooltip="{{ __('base.french_tooltip') }}" {% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28"> </a>
     </div>
 </header>
 <main>
@@ -259,10 +254,12 @@
                 <span class="nav-text">Admin panel</span>
             </a>
         </button>
-            <a href="/user/org-pwd" id='pwd-list-admin' class="admin-btn custom-nav-link has-tooltip " data-tooltip="{{ __('base.logout') }}" style="text-decoration: none;">
-           <img src="/img/key-chain.png" class='nav-icon' alt="passwords-ico"></a>
+        <button id='pwd-admin-btn' class='admin-btn'>
+            <a href="/user/org-pwd"  class="custom-nav-link has-tooltip" data-tooltip="Hasła">
+                <img src="/img/key-chain.png" class='nav-icon' alt="passwords">
+            </a>
+        </button>
     </div>
-
 {% endif %}
 {# END ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 {% block content %}{% endblock %}
@@ -283,7 +280,20 @@
     <a href="/terms">{{ __('site.terms') }}</a>
     <a href="/contact">{{ __('site.contact') }}</a>
 </div>
-<div class="footer-copy"></div></footer>{% endblock %}<script
+<div class="footer-copy">
+</div>
+</footer>{% endblock %}
+<div id="connection-lost-overlay" class="d-none">
+    <div class="connection-lost-box">
+<div class="connection-lost-icon">⚠️</div>
+<h3 class="connection-lost-title">Utracono połączenie</h3>
+<p class="connection-lost-text">Serwer jest niedostępny. Ponowne połączenie...</p>
+<div class="connection-lost-actions">
+    <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <button class="btn connection-lost-refresh" id="connection-lost-refresh">Odśwież</button>
+</div></div></div><script
     src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/8.3.2/intro.min.js"
     integrity="sha512-5ykRz1AkSpATwLO5fFqJb7Y5kprfzu/q9PbRVSOspLcn2Tm7m6vZIAyoUA4a5GFNRIlxM43kHXmYEphfz3eOWA=="
     crossorigin="anonymous"
@@ -292,5 +302,5 @@
     integrity="sha512-qOOdnUM5GtxFYZtMURfJthJ+1PphZz6uCofz6oBnCxCyP3Oc+ieRzc8sb7c+YL1vrenZNwu/C0EaqBaVvbiRhw=="
     crossorigin="anonymous"
     referrerpolicy="no-referrer"></script>{#
-                        <script type='module' src="/scripts/intro/main.js"></script> #}<script type='module' src='/scripts/base.js'></script><script type="module" src="/scripts/getEnv.js"></script><script src="/scripts/navActiveState.js"></script><script type="module" src="/scripts/owner/owner.js"></script><script>window.loadTranslations(document.documentElement.lang || 'en');
+            <script type='module' src="/scripts/intro/main.js"></script> #}<script type='module' src='/scripts/base.js'></script><script type="module" src="/scripts/getEnv.js"></script><script src="/scripts/navActiveState.js"></script><script type="module" src="/scripts/owner/owner.js"></script><script>window.loadTranslations(document.documentElement.lang || 'en');
     window.loadLangs()</script>{% block scripts %}{% endblock scripts %}</body></html>

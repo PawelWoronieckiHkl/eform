@@ -5,6 +5,7 @@ const logService = require('../services/logService.js');
 const { formatLoginTime } = require('../utils/humanize_date.js');
 const db = require("../db/db_helper.js");
 const { log } = require('../utils/logging');
+const sessionService = require('../services/sessionService');
 
 router.use(async (req, res, next) => {
     if (req.session.user?.isOwner) {
@@ -134,6 +135,16 @@ router.get('/logs', requireLogin, requireAdmin, (req, res) => {
         title: 'Logi Systemowe',
         message: 'Ta funkcja zostanie wkrótce dodana.'
     });
+});
+
+router.get('/active-sessions', requireLogin, requireAdmin, async (req, res) => {
+    try {
+        const sessions = await sessionService.getActiveSessions();
+        res.json({ success: true, count: sessions.length, users: sessions });
+    } catch (error) {
+        log('Error fetching active sessions:', error);
+        res.status(500).json({ success: false, message: 'Błąd podczas pobierania sesji' });
+    }
 });
 
 module.exports = router;

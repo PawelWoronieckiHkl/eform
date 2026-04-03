@@ -67,13 +67,13 @@ async function insertUserIntousrtble(ident, pin, password) {
 
 async function getUsersFromUsrtblpsswd(orgId, isAdmin = false) {
     if (isAdmin) {
-        const query = `SELECT up.ident, u.pin, up.password
+        const query = `SELECT up.ident, u.pin, up.password,u.email
             FROM eform.usrtblpsswd up
             JOIN eform.\`user\` u ON u.ident = up.ident
             ORDER BY up.ident`;
         return await selectQuery(query);
     }
-    const query = `SELECT up.ident, u.pin, up.password
+    const query = `SELECT up.ident, u.pin, up.password, u.email
         FROM eform.usrtblpsswd up
         JOIN eform.\`user\` u ON u.ident = up.ident
         WHERE u.organization_id = ?

@@ -95,10 +95,98 @@
                                             </a>
                                         </div>
                                     </div>
+                                    <!-- Aktywne sesje -->
+                                    <div class="card admin-card">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title">
+                                                <i class="bi bi-people me-2"></i>
+                                                Aktywne Sesje
+                                            </h5>
+                                            <p class="card-text">Sprawdź kto jest aktualnie zalogowany</p>
+                                            <button id="btn-active-sessions" class="btn btn-info mt-auto text-white">
+                                                <i class="bi bi-arrow-repeat me-1"></i>
+                                                Sprawdź
+                                            </button>
+                                            <div id="sessions-result" class="mt-3 d-none">
+                                                <span id="sessions-count" class="badge bg-success fs-6 mb-2"></span>
+                                                <ul id="sessions-list" class="list-group list-group-flush"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             {% endblock content %}
-            {% block scripts %}{% endblock scripts %}
+            {% block scripts %}
+                <script>
+                    document.getElementById('btn-active-sessions').addEventListener('click', async function () {
+                        const btn = this;
+                        const resultDiv = document.getElementById('sessions-result');
+                        const countBadge = document.getElementById('sessions-count');
+                        const list = document.getElementById('sessions-list');
+
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Ładowanie...';
+
+                        try {
+                            const resp = await fetch('/admin/active-sessions');
+                            const data = await resp.json();
+
+                            if (data.success) {
+                                countBadge.textContent = 'Aktywne sesje: ' + data.count;
+                                list.innerHTML = '';
+
+                                if (data.users.length === 0) {
+                                    list.innerHTML = '<li class="list-group-item text-muted">Brak aktywnych sesji</li>';
+                                } else {
+                                    data.users.forEach(function (u) {
+                                        const li = document.createElement('li');
+                                        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+                                        let identText = (u.ident || 'Nieznany') + ' (' + u.role;
+                                        if (u.contextUser) {
+                                            identText += ' → klient: ' + u.contextUser;
+                                        }
+                                        identText += ')';
+                                        const ident = document.createTextNode(identText);
+                                        li.appendChild(ident);
+
+                                        const badges = document.createElement('span');
+                                        if (u.isAdmin) {
+                                            const b = document.createElement('span');
+                                            b.className = 'badge bg-danger me-1';
+                                            b.textContent = 'Admin';
+                                            badges.appendChild(b);
+                                        }
+                                        if (u.isOwner) {
+                                            const b = document.createElement('span');
+                                            b.className = 'badge bg-warning text-dark me-1';
+                                            b.textContent = 'Owner';
+                                            badges.appendChild(b);
+                                        }
+                                        if (u.contextUser) {
+                                            const b = document.createElement('span');
+                                            b.className = 'badge bg-info text-white me-1';
+                                            b.textContent = u.contextUser;
+                                            badges.appendChild(b);
+                                        }
+                                        li.appendChild(badges);
+                                        list.appendChild(li);
+                                    });
+                                }
+
+                                resultDiv.classList.remove('d-none');
+                            } else {
+                                toastr.error('Nie udało się pobrać sesji');
+                            }
+                        } catch (e) {
+                            toastr.error('Błąd połączenia z serwerem');
+                        }
+
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i> Odśwież';
+                    });
+                </script>
+            {% endblock scripts %}

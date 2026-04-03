@@ -300,7 +300,7 @@
                                   {% if totalPrice.visible != '0.00' %}
                                     {{ __('order.total') }}: {{ totalPrice.visible }}&#8364;</span>
                                 {% else %}
-                                  Według cennika</span>
+                                  {{ __('order.according_to_price') }}</span>
                               {% endif %}
                             </div>
                             <div class="total-price d-flex justify-content-end align-items-center col-12">
@@ -308,7 +308,7 @@
                                 {% if totalPrice.hidden != '0.00' %}
                                   {{ __('order.total_hidden') }}: {{ totalPrice.hidden }}&#8364;</span>
                               {% else %}
-                                Według cennika</span>
+                                {{ __('order.according_to_price') }}</span>
                             {% endif %}
                           {% endif %}
                         </div>

@@ -19,6 +19,9 @@ const i18n = require('i18n');
 const nunjucksSetup = require('./nunjucks-setup');
 const { default: I18NexFsBackend } = require("i18next-fs-backend");
 const { log } = require('./utils/logging');
+const sessionService = require('./services/sessionService');
+const sessionStore = new session.MemoryStore();
+sessionService.setStore(sessionStore);
 
 
 i18n.configure({
@@ -57,6 +60,7 @@ log('defaultLanguage =', i18n.getLocale());
 if (process.env.PRODUCTION) {
 	log('tu')
 	app.use(session({
+		store: sessionStore,
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
@@ -74,6 +78,7 @@ if (process.env.PRODUCTION) {
 else if (process.env.TEST_INTERNET) {
 	log('tu 2')
 	app.use(session({
+		store: sessionStore,
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
@@ -91,7 +96,7 @@ else if (process.env.TEST_INTERNET) {
 else {
 	log('tu3')
 	app.use(session({
-
+		store: sessionStore,
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,

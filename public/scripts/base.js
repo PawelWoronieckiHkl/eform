@@ -1,6 +1,6 @@
 import { createElement } from "./components/htmlManipulator.js";
 import { getEnvVersion } from "./getEnv.js";
-import {get} from "./components/api_connector.js";
+import { get } from "./components/api_connector.js";
 
 async function getLogo() {
     try {
@@ -57,7 +57,7 @@ export function validate(validateClass) {
     inputs.forEach(field => {
         const value = typeof field.value === 'string' ? field.value.trim() : '';
 
-        
+
         let errorMsg = field.nextElementSibling;
         if (!errorMsg || !errorMsg.classList.contains('input-error-msg')) {
             errorMsg = null;
@@ -68,7 +68,7 @@ export function validate(validateClass) {
             allValid = false;
 
             if (!errorMsg) {
-                
+
                 errorMsg = document.createElement('div');
                 errorMsg.className = 'input-error-msg';
                 errorMsg.textContent = t('form.field_cant_be_empty');
@@ -98,7 +98,7 @@ export async function getUserName() {
         throw new Error('Błąd pobierania nazwy użytkownika: ' + data.message);
     }
 
-    
+
     let contextInfo = '';
     try {
         const contextBtns = document.querySelectorAll('.context-button');
@@ -129,7 +129,7 @@ export async function getUserName() {
     }
 
     setTimeout(() => {
-        
+
         document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${data.name}
         </br> <p class='pt-2'>Mail: </br> ${data.email}</p>  ${contextInfo}`;
         getEmp();
@@ -142,7 +142,7 @@ function setContextUserSelected(ident) {
     if (dropdownInput && ident) {
         dropdownInput.value = ident;
     }
-    else{
+    else {
         dropdownInput.value = '';
     }
 }
@@ -159,7 +159,7 @@ async function getConfigNum() {
 
 
 
-    
+
 
     document.getElementById('config-number-info').innerHTML =
 
@@ -180,7 +180,7 @@ function getEmp() {
             .then(response => response.json())
 
             .then(data => {
-                
+
                 if (data.success && !data.isEmployee) {
                     empBtn.classList.remove('d-none');
                     empBtn.href = data?.path ?? '/';
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const desktopNav = document.querySelector('.desktop-nav');
 
     if (navToggleBtn && desktopNav) {
-        
+
         const isCollapsed = localStorage.getItem('nav-collapsed') === 'true';
         if (isCollapsed) {
             document.documentElement.classList.add('nav-collapsed');
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function handleLogout(event) {
         event.preventDefault();
 
-        
+
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '/user/logout';
@@ -301,7 +301,7 @@ function getLocalStorageUsers() {
         .then(data => {
             if (data.success) {
                 console.log('Pomyślnie ustawiono organizację i kontekst użytkownika');
-                
+
                 if (data.redirectUrl) {
                     window.location.href = data.redirectUrl;
                 }
@@ -313,5 +313,36 @@ function getLocalStorageUsers() {
             console.error('Błąd podczas ustawiania użytkownika:', err);
         });
 }
+
+// Session heartbeat
+(function () {
+    if (window.location.pathname === '/user/login') return;
+
+    var overlay = document.getElementById('connection-lost-overlay');
+    var refreshBtn = document.getElementById('connection-lost-refresh');
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', function () {
+            window.location.reload();
+        });
+    }
+
+    function showOverlay() {
+        if (overlay) overlay.classList.remove('d-none');
+    }
+
+    function hideOverlay() {
+        if (overlay) overlay.classList.add('d-none');
+    }
+
+    setInterval(function () {
+        fetch('/user/session-check', { credentials: 'include' })
+            .then(function (r) {
+                if (r.status === 401) { window.location.href = '/user/login'; }
+                else { hideOverlay(); }
+            })
+            .catch(function () { showOverlay(); });
+    }, 15000);
+})();
 
 
