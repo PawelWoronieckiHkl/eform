@@ -15,6 +15,8 @@ const { getPriceAfterDiscount } = require('../services/getDiscount.js');
 const { SyncProdStatus, setParcelHref, parseSpeditionNumbers } = require('../services/prodStatus.js');
 const { getExtraAttachments } = require('../services/mailBot/extraAttachments');
 const { log } = require('../utils/logging');
+const { availabeLanguages } = require('../config');
+const { translateOrderItems } = require('../services/translationDict/itemTranslator');
 
 
 router.use(async (req, res, next) => {
@@ -353,7 +355,9 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 cleanOrderItems,
                 total,
                 isEmployee: req.session.user?.isEmployee || false,
-                totalPrice: totalPrice
+                totalPrice: totalPrice,
+                availableLanguages: availabeLanguages,
+                admin: req.session.user?.isAdmin || false
             });
             req.session.user.showPricesOnce = false;
             return;
@@ -366,7 +370,9 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 discount: clientDiscount,
                 total,
                 isEmployee: req.session.user?.isEmployee || false,
-                totalPrice: totalPrice
+                totalPrice: totalPrice,
+                availableLanguages: availabeLanguages,
+                admin: req.session.user?.isAdmin || false
             });
             return;
         }
@@ -454,56 +460,68 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         const sender = new OrderSender.OrderSender(req, order.orderDetails, order.orderItems);
         await sender.init();
         const sendData = sender.getData();
-        const totalPrice = await db.getTotal(order.orderDetails.id)
-        const currentUser = ownerService.getCurrentUser(req);
-        const photoFile = await db.getUserLogo(currentUser?.pin);
-        const logoPath = path.join(__dirname, '../img/', photoFile);
+        const totalPrice = await db.getTotal(order.orderDetails.id);
+        const shouldShowPrices = req.session.user?.showPrices || req.session.user?.showPricesOnce || req.params.showPrices === 'true';
 
+        // Admin language override for translated PDF
+        const isAdmin = req.session.user?.isAdmin;
+        const targetLang = (isAdmin && req.query.lang && availabeLanguages.includes(req.query.lang))
+            ? req.query.lang
+            : null;
+        const lang = targetLang || req.getLocale();
 
-        let logoDataUri = null;
-        try {
-            if (fs.existsSync(logoPath)) {
-                const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
-                logoDataUri = `data:image/png;base64,${logoBase64}`;
-            } else {
-            }
-        } catch (error) {
-            log('Błąd przy odczycie logo:', error);
+        // Translate order items if admin requested a different language
+        if (targetLang) {
+            cleanOrderItems = await translateOrderItems(orderItems, cleanOrderItems, targetLang);
         }
 
-        const nunjucks = require('nunjucks');
+        // Uzupełnij sendData o sformatowane totale z etykietami językowymi
         const confLang = require('../services/mailBot/conf');
-        const lang = req.getLocale();
         const i18n = confLang(lang);
         const __ = (key) => i18n.__(key, { locale: lang });
 
-        const env = nunjucks.configure('templates', {
-            autoescape: true,
-            trimBlocks: true,
-            lstripBlocks: true
-        });
-        env.addGlobal('__', __);
+        if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
+            sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
+        }
+        if (shouldShowPrices && totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
+            sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
+        } else if (shouldShowPrices && totalPrice.visible && Number(totalPrice.visible) !== 0) {
+            sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
+        }
 
-        const shouldShowPrices = req.session.user?.showPrices || req.session.user?.showPricesOnce || req.params.showPrices === 'true';
+        const currentUser = ownerService.getCurrentUser(req);
+        const photoFile = await db.getUserLogo(currentUser?.pin);
+        const logoPath = path.join(__dirname, '../img/', photoFile);
         const isShort = req.params.short === 'true';
 
-        let html;
+        let pdfBuffer;
+
         if (!isShort) {
-            html = env.render('order_to_print.njk', {
-                orderDetails,
-                orderItems,
-                heads,
-                cleanOrderItems,
-                total,
-                photoFile,
-                logoPath: logoDataUri,
-                prices: shouldShowPrices,
-                totalPrice: totalPrice,
-                sendData: sendData
+            // Ujednolicona logika PDF — ten sam template (order-pdf.njk) co w sendMail
+            const orderIdx = await db.getUserOrderId(req.params.orderId);
+            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx);
+        } else {
+            // Short PDF — osobny template order_to_print_short.njk
+            let logoDataUri = null;
+            try {
+                if (fs.existsSync(logoPath)) {
+                    const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
+                    logoDataUri = `data:image/png;base64,${logoBase64}`;
+                }
+            } catch (error) {
+                log('Błąd przy odczycie logo:', error);
+            }
+
+            const nunjucks = require('nunjucks');
+
+            const env = nunjucks.configure('templates', {
+                autoescape: true,
+                trimBlocks: true,
+                lstripBlocks: true
             });
-        }
-        else {
-            html = env.render('order_to_print_short.njk', {
+            env.addGlobal('__', __);
+
+            const html = env.render('order_to_print_short.njk', {
                 orderDetails,
                 orderItems,
                 heads,
@@ -514,33 +532,31 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
                 prices: shouldShowPrices,
                 sendData: sendData,
                 totalPrice: totalPrice,
-
             });
+
+            const { chromium } = require('playwright');
+            const browser = await chromium.launch({
+                headless: true,
+                args: ['--no-sandbox', '--disable-dev-shm-usage']
+            });
+
+            const context = await browser.newContext();
+            const page = await context.newPage();
+
+            await page.setContent(html, {
+                waitUntil: 'networkidle',
+                timeout: 30000
+            });
+
+            pdfBuffer = await page.pdf({
+                format: 'A3',
+                landscape: true,
+                printBackground: true,
+                margin: { top: '10mm', right: '10mm', bottom: '10mm', left: '10mm' }
+            });
+
+            await browser.close();
         }
-
-
-        const { chromium } = require('playwright');
-        const browser = await chromium.launch({
-            headless: true,
-            args: ['--no-sandbox', '--disable-dev-shm-usage']
-        });
-
-        const context = await browser.newContext();
-        const page = await context.newPage();
-
-        await page.setContent(html, {
-            waitUntil: 'networkidle',
-            timeout: 30000
-        });
-
-        const pdfBuffer = await page.pdf({
-            format: 'A3',
-            landscape: true,
-            printBackground: true,
-            margin: { top: '10mm', right: '10mm', bottom: '10mm', left: '10mm' }
-        });
-
-        await browser.close();
 
         const fileName = `zamowienie_${orderDetails.id}.pdf`;
         res.setHeader('Content-Type', 'application/pdf');

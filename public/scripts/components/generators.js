@@ -470,7 +470,7 @@ export async function generateExcel() {
   await generator.generate();
 }
 
-export async function generatePdf(isShort = false) {
+export async function generatePdf(isShort = false, lang = null) {
   const comment = document.getElementById('comment');
   const commision = document.getElementById('commission-name') || document.getElementById('commission-name-mobile');
 
@@ -495,7 +495,10 @@ export async function generatePdf(isShort = false) {
     }
     console.log('Has prices access:', hasPricesAccess, 'isShort:', isShort);
 
-    const downloadUrl = `/orders/orderpdf/${orderId}/${hasPricesAccess ? 'true' : 'false'}/${isShort ? 'true' : 'false'}`;
+    let downloadUrl = `/orders/orderpdf/${orderId}/${hasPricesAccess ? 'true' : 'false'}/${isShort ? 'true' : 'false'}`;
+    if (lang) {
+      downloadUrl += `?lang=${encodeURIComponent(lang)}`;
+    }
     console.log('Generating PDF from URL:', downloadUrl);
     const response = await fetch(downloadUrl);
     console.log(response)
@@ -516,7 +519,8 @@ export async function generatePdf(isShort = false) {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `zamowienie_${orderId}.pdf`;
+    const pdfFileName = window.t ? window.t('order.pdf_filename') : 'zamowienie';
+    link.download = `${pdfFileName}_${orderId}.pdf`;
     link.style.display = 'none';
     document.body.appendChild(link);
     link.click();

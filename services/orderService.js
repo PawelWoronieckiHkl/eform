@@ -253,6 +253,8 @@ function removeEmptyColumns(table) {
     return {
       headers1,
       headers2,
+      headerKeys1,
+      headerKeys2,
       rows: mappedRows,
       locked: table.locked
     };
@@ -319,6 +321,8 @@ function removeEmptyColumns(table) {
   return {
     headers1: newHeaders1,
     headers2: newHeaders2,
+    headerKeys1: newHeaderKeys1,
+    headerKeys2: newHeaderKeys2,
     rows: newRows,
     locked: table.locked
   };

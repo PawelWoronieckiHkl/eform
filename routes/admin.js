@@ -147,4 +147,47 @@ router.get('/active-sessions', requireLogin, requireAdmin, async (req, res) => {
     }
 });
 
+// --- Translation Dictionary ---
+const translationDict = require('../services/translationDict');
+
+router.post('/translations/sync', requireLogin, requireAdmin, async (req, res) => {
+    try {
+        const result = await translationDict.syncAll();
+        res.json({ success: true, ...result });
+    } catch (error) {
+        log('Error syncing translation dictionary:', error);
+        res.status(500).json({ success: false, message: 'Błąd synchronizacji słownika tłumaczeń' });
+    }
+});
+
+router.post('/translations/sync/:groupNumber', requireLogin, requireAdmin, async (req, res) => {
+    try {
+        const result = await translationDict.syncGroup(req.params.groupNumber);
+        res.json({ success: true, ...result });
+    } catch (error) {
+        log('Error syncing translation group:', error);
+        res.status(500).json({ success: false, message: 'Błąd synchronizacji grupy' });
+    }
+});
+
+router.get('/translations/status', requireLogin, requireAdmin, async (req, res) => {
+    try {
+        const status = await translationDict.getSyncStatus();
+        res.json({ success: true, data: status });
+    } catch (error) {
+        log('Error fetching translation status:', error);
+        res.status(500).json({ success: false, message: 'Błąd pobierania statusu tłumaczeń' });
+    }
+});
+
+router.get('/translations/:groupNumber/:lang', requireLogin, requireAdmin, async (req, res) => {
+    try {
+        const data = await translationDict.getGroupTranslations(req.params.groupNumber, req.params.lang);
+        res.json({ success: true, data });
+    } catch (error) {
+        log('Error fetching translations:', error);
+        res.status(500).json({ success: false, message: 'Błąd pobierania tłumaczeń' });
+    }
+});
+
 module.exports = router;

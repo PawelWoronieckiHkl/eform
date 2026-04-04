@@ -273,6 +273,14 @@ shortPrintBtns.forEach(btn => {
   btn.addEventListener('click', () => generatePdf(true))
 })
 
+document.querySelectorAll('.translate-pdf-lang').forEach(item => {
+  item.addEventListener('click', (e) => {
+    e.preventDefault();
+    const lang = e.currentTarget.dataset.lang;
+    generatePdf(false, lang);
+  });
+})
+
 window.addEventListener('scroll', function () {
   const navbar = document.getElementById('order-nav');
   const scrollTrigger = 120;
