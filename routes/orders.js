@@ -309,7 +309,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render("order_sent_prices.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, statuses: statuses
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages
                 }
             );
             req.session.user.showPricesOnce = false;
@@ -317,8 +317,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
         } else {
             return res.render("order_sent.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, owner: req.session.user.isOwner, statuses: statuses
-
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, owner: req.session.user.isOwner, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages
                 }
             );
         }
