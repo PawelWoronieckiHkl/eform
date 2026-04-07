@@ -330,6 +330,18 @@
         opacity: 0.6 !important;
         transform: none !important;
     }
+    [class*="-select-area"] button.invalid-input,
+    [class*="-select-area"] .btn.invalid-input {
+        border: 3px solid red !important;
+        box-shadow: 0 0 8px rgba(255, 0, 0, 0.5) !important;
+        background: linear-gradient(135deg, #8b3a3a 0%, #6b2020 100%) !important;
+    }
+    [class*="-select-area"] button.flash-error,
+    [class*="-select-area"] .btn.flash-error {
+        animation: flashError 2s ease !important;
+        border: 3px solid red !important;
+        box-shadow: 0 0 8px rgba(255, 0, 0, 0.5) !important;
+    }
     input[type="number"] {
         margin-left: 15px !important;
     }

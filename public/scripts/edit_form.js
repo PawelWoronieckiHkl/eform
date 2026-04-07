@@ -237,16 +237,21 @@ export async function validateForm(inputs, values) {
 }
 
 function highlightInvalidFields(flags) {
-    
+    let firstInvalid = null;
     for (let { key } of flags) {
         let elem = document.getElementById(key);
         if (elem) {
             elem.classList.add("invalid-input",)
             elem.classList.add('flash-error');
+            if (!firstInvalid) firstInvalid = elem;
             setTimeout(() => {
                 elem.classList.remove('flash-error');
             }, 2000);
         }
+    }
+    if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstInvalid.focus({ preventScroll: true });
     }
 }
 

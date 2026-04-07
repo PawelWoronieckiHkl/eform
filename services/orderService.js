@@ -159,7 +159,7 @@ async function jsonTextBackToMap(orderItems) {
     if (anyNonNumeric) break;
   }
   if (anyNonNumeric) {
-    total.visible = t('order.according_to_price');
+    total.visible = 'according_to_price';
   }
   return { cleanOrderItems, total };
 }

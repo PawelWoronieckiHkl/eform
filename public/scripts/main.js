@@ -233,12 +233,12 @@ function setupShowButton(inputs, values, valuesToDisplay, orderId, comment, vers
 
 	showButton.onclick = async function () {
 		setTimeout(async () => {
-			showToast('success', `${t('form.saved_form_success')}`);
 			if (!await validateForm(inputs, values)) {
 
 				showToast('error', t("form.incorrect_data"));
 				return;
 			}
+			showToast('success', `${t('form.saved_form_success')}`);
 			if (!sentState && window.finishFlag == true) {
 				recalculateLastChangedField();
 				setTimeout(async () => {
@@ -290,15 +290,21 @@ export async function validateForm(inputs, values) {
 
 function highlightInvalidFields(flags) {
 	console.log('highlightInvalidFields')
+	let firstInvalid = null;
 	for (let { key } of flags) {
 		let elem = document.getElementById(key);
 		if (elem) {
 			elem.classList.add("invalid-input",)
 			elem.classList.add('flash-error');
+			if (!firstInvalid) firstInvalid = elem;
 			setTimeout(() => {
 				elem.classList.remove('flash-error');
 			}, 2000);
 		}
+	}
+	if (firstInvalid) {
+		firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		firstInvalid.focus({ preventScroll: true });
 	}
 }
 
