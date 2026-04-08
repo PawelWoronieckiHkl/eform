@@ -309,7 +309,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render("order_sent_prices.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, prices: true, totalPrice: totalPrice, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages
                 }
             );
             req.session.user.showPricesOnce = false;
@@ -353,6 +353,7 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 heads,
                 cleanOrderItems,
                 total,
+                prices: true,
                 isEmployee: req.session.user?.isEmployee || false,
                 totalPrice: totalPrice,
                 availableLanguages: availabeLanguages,
@@ -460,7 +461,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         await sender.init();
         const sendData = sender.getData();
         const totalPrice = await db.getTotal(order.orderDetails.id);
-        const shouldShowPrices = req.session.user?.showPrices || req.session.user?.showPricesOnce || req.params.showPrices === 'true';
+        const shouldShowPrices = req.params.showPrices === 'true';
 
         // Admin language override for translated PDF
         const isAdmin = req.session.user?.isAdmin;
@@ -498,7 +499,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         if (!isShort) {
             // Ujednolicona logika PDF — ten sam template (order-pdf.njk) co w sendMail
             const orderIdx = await db.getUserOrderId(req.params.orderId);
-            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx);
+            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, shouldShowPrices);
         } else {
             // Short PDF — osobny template order_to_print_short.njk
             let logoDataUri = null;

@@ -519,8 +519,9 @@ export async function generatePdf(isShort = false, lang = null) {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    const pdfFileName = window.t ? window.t('order.pdf_filename') : 'zamowienie';
-    link.download = `${pdfFileName}_${orderId}.pdf`;
+    const langSuffix = lang ? `_${lang.toUpperCase()}` : '';
+    const pdfFileName = `${t('history_order.title')}_${orderId}${langSuffix}`;
+    link.download = `${pdfFileName}.pdf`;
     link.style.display = 'none';
     document.body.appendChild(link);
     link.click();

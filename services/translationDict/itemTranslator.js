@@ -111,6 +111,20 @@ async function translateOrderItems(orderItems, cleanOrderItems, targetLang) {
           rowObj.row.row2, displayToParam2, remap2, rowDict
         );
       }
+
+      // Translate lockedParams so template checks still match translated headers
+      if (rowObj.item.lockedParams) {
+        rowObj.item.lockedParams = rowObj.item.lockedParams.map(
+          name => remap1[name] || remap2[name] || name
+        );
+      }
+    }
+
+    // Translate table.locked to match translated header names
+    if (table.locked) {
+      table.locked = table.locked.map(
+        name => remap1[name] || remap2[name] || name
+      );
     }
   }
 

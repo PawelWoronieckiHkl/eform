@@ -85,15 +85,11 @@
                                                                         <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                                         <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_short_pdf_tooltip') }}" id='short-print-button'>
                                                                             <img src="/img/pdf-short.png" alt="pdf icon" class='icon'></button>
-                                                                            <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'>
-                                                                                <img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
-                                                                                <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip') }}">
-                                                                                    <img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
-                                                                                {% if admin and availableLanguages %}
-                                                                                    <div class="dropdown">
-                                                                                        <button class="btn has-tooltip dropdown-toggle" data-tooltip="PDF &#x1F310;" data-bs-toggle="dropdown" id='translate-pdf-btn' style="position: relative;">
-                                                                                            <img src="/img/pdf.png" alt="pdf icon" class='icon'>
-                                                                                            <span style="font-size: 0.6rem; position: absolute; bottom: 0; right: 0;">&#x1F310;</span>
+                                                                             {% if admin and availableLanguages %}
+                                                                                    <div class="dropdown has-tooltip" data-tooltip="{{ __('order.translate_pdf') }}">
+                                                                                            <button class="btn dropdown-toggle" id='translate-pdf-btn' data-bs-toggle="dropdown">
+                                                                                            <img src="/img/pdf-translate.png" alt="pdf icon" class='icon'>
+                                                                                           
                                                                                         </button>
                                                                                         <ul class="dropdown-menu dropdown-menu-end">
                                                                                             {% for lang in availableLanguages %}
@@ -102,6 +98,11 @@
                                                                                         </ul>
                                                                                     </div>
                                                                                 {% endif %}
+                                                                            <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'>
+                                                                                <img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
+                                                                                <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip') }}">
+                                                                                    <img src="/img/excel-file.png" alt="excel-file-image" class='icon'></button>
+                                                                               
                                                                                 </div>
                                                                             </div>
                                                                         </div>

@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await showDiscountModal();
     });
   } else {
-    console.error('Element z id "discount-btn" nie został znaleziony.');
+    console.log('Element z id "discount-btn" nie został znaleziony (widok bez rabatów).');
   }
 
   const positions = document.querySelectorAll('.order-idx');

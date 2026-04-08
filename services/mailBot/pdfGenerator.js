@@ -21,7 +21,7 @@ async function generateExcel(orderData) {
   return buffer;
 }
 
-async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData, orderIdx) {
+async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData, orderIdx, prices = true) {
   log('zaczynam', logoPath)
   const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
   const logoDataUri = `data:image/png;base64,${logoBase64}`;
@@ -44,7 +44,8 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
     cleanOrderItems: cleanOrderItems,
     logoPath: logoDataUri,
     sendData: data,
-    orderNr: orderIdx
+    orderNr: orderIdx,
+    prices: prices
   });
   let browser;
   if (process.env.NODE_ENV == 'live-dev') {
