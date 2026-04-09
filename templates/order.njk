@@ -131,16 +131,6 @@
                                                                         <div class="order-table-container" style="overflow-x: auto;">
                                                                             {% block table %}
                                                                                 {% set globalIndex = 1 %}
-                                                                                {# Pre-compute max production days across all items in this order #}
-                                                                                {% set maxProdDays = 0 %}
-                                                                                {% for table in cleanOrderItems %}
-                                                                                    {% for rowObj in table.rows %}
-                                                                                        {% set _d = productionTimes[rowObj.item.department] %}
-                                                                                        {% if _d and _d > maxProdDays %}
-                                                                                            {% set maxProdDays = _d %}
-                                                                                        {% endif %}
-                                                                                    {% endfor %}
-                                                                                {% endfor %}
                                                                                 {% for table in cleanOrderItems %}
                                                                                     <div class="table-scroll mb-5">
                                                                                         {% block table_style %}
@@ -224,7 +214,7 @@
                                                                                                                     {% endif %}
                                                                                                                 {% endfor %}
                                                                                                             </tr>
-                                                                                                            {% set itemProdDays = productionTimes[rowObj.item.department] %}
+                                                                                                            {% set itemProdDays = itemProductionDays[rowObj.item.id] %}
                                                                                                             {% block estimatedProdDate %}
                                                                                                                 <tr class="prod-time-row">
                                                                                                                     <td colspan="100%">
@@ -265,7 +255,7 @@
                                                                                                                     <br>
                                                                                                                         {{ rowObj.item.department or '-' }}
                                                                                                                     </div>
-                                                                                                                    {% set itemProdDays = productionTimes[rowObj.item.department] %}
+                                                                                                                    {% set itemProdDays = itemProductionDays[rowObj.item.id] %}
                                                                                                                     {% if itemProdDays %}
                                                                                                                         <div class="mobile-item-detail">
                                                                                                                             <strong>{{ __('order.production_time_short_label') }}</strong>

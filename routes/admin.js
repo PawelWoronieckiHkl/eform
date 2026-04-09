@@ -147,13 +147,27 @@ router.get('/active-sessions', requireLogin, requireAdmin, async (req, res) => {
     }
 });
 
-// --- Translation Dictionary ---
+// --- Translation Dictionary & Group Sync ---
 const translationDict = require('../services/translationDict');
+const { syncGroupsFromExcel } = require('../services/groupSync');
 
 router.post('/translations/sync', requireLogin, requireAdmin, async (req, res) => {
     try {
-        const result = await translationDict.syncAll();
-        res.json({ success: true, ...result });
+        const [translationResult, groupSyncResult] = await Promise.allSettled([
+            translationDict.syncAll(),
+            syncGroupsFromExcel()
+        ]);
+
+        const result = translationResult.status === 'fulfilled' ? translationResult.value : {};
+        const groupSync = groupSyncResult.status === 'fulfilled'
+            ? { groupSyncSuccess: true }
+            : { groupSyncSuccess: false, groupSyncError: groupSyncResult.reason?.message };
+
+        if (translationResult.status === 'rejected') {
+            throw translationResult.reason;
+        }
+
+        res.json({ success: true, ...result, ...groupSync });
     } catch (error) {
         log('Error syncing translation dictionary:', error);
         res.status(500).json({ success: false, message: 'Błąd synchronizacji słownika tłumaczeń' });

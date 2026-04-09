@@ -120,13 +120,14 @@
                                                 <i class="bi bi-translate me-2"></i>
                                                 Słownik Tłumaczeń
                                             </h5>
-                                            <p class="card-text">Synchronizuj tłumaczenia parametrów i wartości ze wszystkich grup produktowych</p>
+                                            <p class="card-text">Synchronizuj tłumaczenia parametrów i wartości ze wszystkich grup produktowych oraz strukturę działów/grup z Exceli konfiguracyjnych</p>
                                             <button id="btn-sync-translations" class="btn btn-warning mt-auto">
                                                 <i class="bi bi-arrow-repeat me-1"></i>
                                                 Synchronizuj
                                             </button>
                                             <div id="translations-result" class="mt-3 d-none">
                                                 <div id="translations-progress" class="mb-2"></div>
+                                                <div id="group-sync-status" class="mb-2"></div>
                                                 <div id="translations-summary"></div>
                                             </div>
                                         </div>
@@ -213,12 +214,14 @@
                         const resultDiv = document.getElementById('translations-result');
                         const progressDiv = document.getElementById('translations-progress');
                         const summaryDiv = document.getElementById('translations-summary');
+                        const groupSyncDiv = document.getElementById('group-sync-status');
 
                         btn.disabled = true;
                         btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Synchronizacja...';
                         resultDiv.classList.remove('d-none');
                         progressDiv.innerHTML = '<div class="spinner-border spinner-border-sm text-warning me-2" role="status"></div> Trwa skanowanie katalogów...';
                         summaryDiv.innerHTML = '';
+                        groupSyncDiv.innerHTML = '';
 
                         try {
                             const resp = await fetch('/admin/translations/sync', { method: 'POST' });
@@ -226,6 +229,13 @@
 
                             if (data.success) {
                                 progressDiv.innerHTML = '';
+
+                                if (data.groupSyncSuccess) {
+                                    groupSyncDiv.innerHTML = '<span class="badge bg-info fs-6"><i class="bi bi-check-circle me-1"></i>Działy i grupy zsynchronizowane</span>';
+                                } else if (data.groupSyncSuccess === false) {
+                                    groupSyncDiv.innerHTML = '<span class="badge bg-warning fs-6"><i class="bi bi-exclamation-triangle me-1"></i>Sync grup: ' + (data.groupSyncError || 'błąd') + '</span>';
+                                }
+
                                 let html = '<span class="badge bg-success fs-6 mb-2">Zsynchronizowano: ' + data.totalEntries + ' wpisów</span>';
                                 html += '<ul class="list-group list-group-flush mt-2">';
 

@@ -2,7 +2,6 @@ const nunjucks = require('nunjucks');
 const { i18n } = require('./server');
 let env = null;
 const { defaultLanguage } = require('./config');
-const productionTimes = require('./public/config/production_times.json');
 const { log } = require('./utils/logging');
 module.exports = {
   configure: (app) => {
@@ -12,7 +11,6 @@ module.exports = {
         express: app,
         noCache: true
       });
-      env.addGlobal('productionTimes', productionTimes);
       env.addGlobal('__', function () {
 
         const key = arguments[0];

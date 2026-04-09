@@ -17,6 +17,7 @@ const { getExtraAttachments } = require('../services/mailBot/extraAttachments');
 const { log } = require('../utils/logging');
 const { availabeLanguages } = require('../config');
 const { translateOrderItems } = require('../services/translationDict/itemTranslator');
+const { buildItemProductionDays } = require('../services/productionDays');
 
 
 router.use(async (req, res, next) => {
@@ -300,16 +301,19 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
     const currentUser = ownerService.getCurrentUser(req);
     let statuses = await db.getUserStatuses(currentUser.ident, orderDetails.order_idx);
     statuses = setParcelHref(statuses);
+    const productionTimes = currentUser?.orgId ? await db.getGroupDeliveryTimes(currentUser.orgId) : {};
 
     if (orderItems) {
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
         const totalPrice = await db.getTotal(orderDetails.id)
+        await db.syncTotalPriceIfMissing(orderDetails.id, totalPrice);
+        const { itemProductionDays, maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
 
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render("order_sent_prices.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, prices: true, totalPrice: totalPrice, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, prices: true, totalPrice: totalPrice, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays
                 }
             );
             req.session.user.showPricesOnce = false;
@@ -317,7 +321,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
         } else {
             return res.render("order_sent.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, owner: req.session.user.isOwner, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, owner: req.session.user.isOwner, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays
                 }
             );
         }
@@ -341,10 +345,14 @@ router.get("/add-order", requireLogin, async (req, res) => {
 router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwnership, async (req, res) => {
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
     const clientDiscount = await getPriceAfterDiscount(req.params.orderId);
+    const currentUser = ownerService.getCurrentUser(req);
+    const productionTimes = currentUser?.orgId ? await db.getGroupDeliveryTimes(currentUser.orgId) : {};
     if (orderItems) {
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
         const totalPrice = await db.getTotal(orderDetails.id)
+        await db.syncTotalPriceIfMissing(orderDetails.id, totalPrice);
+        const { itemProductionDays, maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
 
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render('order_prices.njk', {
@@ -357,7 +365,9 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 isEmployee: req.session.user?.isEmployee || false,
                 totalPrice: totalPrice,
                 availableLanguages: availabeLanguages,
-                admin: req.session.user?.isAdmin || false
+                admin: req.session.user?.isAdmin || false,
+                itemProductionDays,
+                maxProdDays
             });
             req.session.user.showPricesOnce = false;
             return;
@@ -372,7 +382,9 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 isEmployee: req.session.user?.isEmployee || false,
                 totalPrice: totalPrice,
                 availableLanguages: availabeLanguages,
-                admin: req.session.user?.isAdmin || false
+                admin: req.session.user?.isAdmin || false,
+                itemProductionDays,
+                maxProdDays
             });
             return;
         }
@@ -408,6 +420,7 @@ router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, async (
         await sender.init();
         const sendData = sender.getData();
         const totalPrice = await db.getTotal(order.orderDetails.id);
+        await db.syncTotalPriceIfMissing(order.orderDetails.id, totalPrice);
         res.json({ success: true, data: { sendData, totalPrice, cleanOrderItems, total } });
     } catch (error) {
         log('Error fetching order details:', error);
@@ -461,6 +474,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         await sender.init();
         const sendData = sender.getData();
         const totalPrice = await db.getTotal(order.orderDetails.id);
+        await db.syncTotalPriceIfMissing(order.orderDetails.id, totalPrice);
         const shouldShowPrices = req.params.showPrices === 'true';
 
         // Admin language override for translated PDF

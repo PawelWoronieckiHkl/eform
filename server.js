@@ -157,9 +157,9 @@ app.use((err, req, res, next) => {
 	});
 });
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () =>
-	log(`Server działa na porcie ${PORT}`)
-);
+app.listen(PORT, () => {
+	log(`Server działa na porcie ${PORT}`);
+});
 
 module.exports = {
 	app,

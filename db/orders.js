@@ -429,6 +429,29 @@ async function getTotal(orderId) {
     };
 }
 
+async function syncTotalPriceIfMissing(orderId, computedTotal) {
+    const visible = parseFloat(computedTotal?.visible) || 0;
+    const hidden = parseFloat(computedTotal?.hidden) || 0;
+    if (visible === 0 && hidden === 0) return;
+
+    const checkQuery = `SELECT total_price, total_price_hidden FROM \`order\` WHERE id = ?`;
+    const current = await selectQuery(checkQuery, orderId);
+    if (!current || current.length === 0) return;
+
+    const dbVisible = parseFloat(current[0]?.total_price) || 0;
+    const dbHidden = parseFloat(current[0]?.total_price_hidden) || 0;
+
+    if (dbVisible === 0 && dbHidden === 0) {
+        const updateQ = `UPDATE \`order\` SET total_price = ?, total_price_hidden = ? WHERE id = ?`;
+        try {
+            await updateQuery(updateQ, [visible, hidden, orderId]);
+            log(`Synced total_price for order ${orderId}: visible=${visible}, hidden=${hidden}`);
+        } catch (err) {
+            log('Error syncing total_price:', err);
+        }
+    }
+}
+
 async function saveDiscount(orderId, discountPercentage, discountValue) {
     const query = `UPDATE \`order\` SET client_discount_percentage = ?, client_discount_value = ? WHERE id = ?`;
     try {
@@ -535,6 +558,7 @@ module.exports = {
     checkOwner,
     updateOrderPriceOnSend,
     getTotal,
+    syncTotalPriceIfMissing,
     saveDiscount,
     getDiscount,
     getOrderNo
