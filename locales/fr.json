@@ -89,7 +89,10 @@
     "confirm": "Confirmer",
     "error_word": "Erreur",
     "redirecting_word": "Redirection…",
-    "total_items": "Nombre total de positions"
+    "total_items": "Nombre total de positions",
+    "total": "Total",
+    "total_hidden": "Total",
+    "according_to_price": "Selon la liste de prix"
   },
   "orders": {
     "title": "Vos commandes",

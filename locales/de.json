@@ -89,7 +89,10 @@
     "confirm": "Bestätigen",
     "error_word": "Fehler",
     "redirecting_word": "Weiterleitung…",
-    "total_items": "Gesamtanzahl der Positionen"
+    "total_items": "Gesamtanzahl der Positionen",
+    "total": "Gesamtbetrag",
+    "total_hidden": "Gesamtbetrag",
+    "according_to_price": "Laut Preisliste"
   },
   "orders": {
     "title": "Ihre Bestellungen",

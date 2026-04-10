@@ -307,7 +307,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
         const totalPrice = await db.getTotal(orderDetails.id)
-        await db.syncTotalPriceIfMissing(orderDetails.id, totalPrice);
+        await db.syncTotalPriceIfMissing(orderDetails.id, totalPrice, req.__('order.total'), req.__('order.total_hidden'));
         const { itemProductionDays, maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
 
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
@@ -351,7 +351,7 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
         const heads = Object.keys(orderItems[0].json_parameters);
         let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
         const totalPrice = await db.getTotal(orderDetails.id)
-        await db.syncTotalPriceIfMissing(orderDetails.id, totalPrice);
+        await db.syncTotalPriceIfMissing(orderDetails.id, totalPrice, req.__('order.total'), req.__('order.total_hidden'));
         const { itemProductionDays, maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
 
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
@@ -420,7 +420,7 @@ router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, async (
         await sender.init();
         const sendData = sender.getData();
         const totalPrice = await db.getTotal(order.orderDetails.id);
-        await db.syncTotalPriceIfMissing(order.orderDetails.id, totalPrice);
+        await db.syncTotalPriceIfMissing(order.orderDetails.id, totalPrice, req.__('order.total'), req.__('order.total_hidden'));
         res.json({ success: true, data: { sendData, totalPrice, cleanOrderItems, total } });
     } catch (error) {
         log('Error fetching order details:', error);
@@ -474,7 +474,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         await sender.init();
         const sendData = sender.getData();
         const totalPrice = await db.getTotal(order.orderDetails.id);
-        await db.syncTotalPriceIfMissing(order.orderDetails.id, totalPrice);
+        await db.syncTotalPriceIfMissing(order.orderDetails.id, totalPrice, req.__('order.total'), req.__('order.total_hidden'));
         const shouldShowPrices = req.params.showPrices === 'true';
 
         // Admin language override for translated PDF

@@ -292,28 +292,19 @@
                                     if (neworderbtn) {
                                         neworderbtn.classList.add('active');
                                     }
+                                    var langToCountry = { pl: 'pl', de: 'de', en: 'gb', nl: 'nl', fr: 'fr' };
+                                    var currentCountry = langToCountry['{{ locale }}'] || 'pl';
+                                    var preferredList = [currentCountry].concat(["pl","de","gb","nl","fr"].filter(function(c){ return c !== currentCountry; }));
                                     $(function () {
                                         $("#country").countrySelect({
-                                            preferredCountries: [
-                                                "pl",
-                                                "de",
-                                                "gb",
-                                                'nl',
-                                                'fr'
-                                            ],
-                                            defaultCountry: "pl"
+                                            preferredCountries: preferredList,
+                                            defaultCountry: currentCountry
                                         });
                                     });
                                     $(function () {
                                         $("#sendCountry").countrySelect({
-                                            preferredCountries: [
-                                                "pl",
-                                                "de",
-                                                "gb",
-                                                'nl',
-                                                'fr'
-                                            ],
-                                            defaultCountry: "pl"
+                                            preferredCountries: preferredList,
+                                            defaultCountry: currentCountry
                                         });
                                     });
                                 </script>

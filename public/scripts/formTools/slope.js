@@ -16,6 +16,7 @@ import { updateFieldStates } from "./updateFieldsAndValues.js";
 
 import { showToast } from "../components/toast.js";
 import { createElement, isEnabled } from "../components/htmlManipulator.js";
+import { createInfoIcon } from "../components/info.js";
 
 
 
@@ -30,6 +31,7 @@ export class SourceWindow {
         this.allOptionsByParameter = null;
         this.sourceValues = {};
         this.sourceDisplayValues = new Map(); 
+        this.sourceValidators = {};
     }
 
     async init(catalog, param) {
@@ -46,6 +48,8 @@ export class SourceWindow {
         const photoFile = this.getPhotoPath(this.catalog);
         this.renderModal(photoFile);
         this.attachEvents();
+        this.runSlopeProcedures();
+        this.validateAllSlopeInputs();
     }
 
     async loadData() {
@@ -341,12 +345,24 @@ export class SourceWindow {
             }
             if (param.DESCRIPTION) {
                 const col = createElement('div', { class: ['col-12', 'col-md-6'] }, row);
-                createElement('label', { text: param.DESCRIPTION, for: param.NAME, class: ['form-label'] }, col);
+                const labelWrapper = createElement('div', { class: ['field-label-row'] }, col);
+                createElement('label', { text: param.DESCRIPTION, for: param.NAME, class: ['form-label'] }, labelWrapper);
+                createInfoIcon({
+                    info: param?.INFO,
+                    parent: labelWrapper,
+                    rootFilePath: '/photos/files/',
+                    defaultLabel: t('Dodatkowe informacje'),
+                    infoStyle: 'i',
+                    downloadLabel: t('Pobierz')
+                });
                 let input = createElement('input', { class: ['form-control', 'source-input'], type: 'number', id: param.NAME, name: param.NAME, value: param?.VALUE || '' }, col);
                 if (param.NAME == 'TYP') {
                     input.type = 'text'
                     input.value = this.TYP;
-                    input.disabled = true; 
+                    input.disabled = true;
+                    this.sourceValues['TYP'] = this.TYP;
+                } else if (this.sourceValues[param.NAME] !== undefined && this.sourceValues[param.NAME] !== '') {
+                    input.value = this.sourceValues[param.NAME];
                 }
                 
 
@@ -427,6 +443,134 @@ export class SourceWindow {
     }
 
 
+    runSlopeProcedures() {
+        const savedValidators = window.inputsValidators;
+        const savedDefaults = window.inputsDefaults;
+        const savedActualParam = window.actualParam;
+        const savedActualValue = window.actualValue;
+        const savedFormulaContext = window.formulaContext;
+        const savedConstValues = window.constValues;
+
+        window.inputsValidators = {};
+        window.inputsDefaults = {};
+
+        for (const param of this.data.params) {
+            const paramName = param.NAME;
+            const currentValue = this.sourceValues[paramName];
+
+            if (currentValue === undefined || currentValue === null || currentValue === '') continue;
+
+            const options = this.allOptionsByParameter[paramName];
+            if (!options || !Array.isArray(options)) continue;
+
+            const selectedOption = options.find(opt => String(opt.VALUE) === String(currentValue));
+            if (!selectedOption || !selectedOption.PROC) continue;
+
+            window.actualParam = paramName;
+            window.actualValue = String(currentValue);
+
+            if (!window.inputsValidators[paramName]) {
+                window.inputsValidators[paramName] = {};
+            }
+            if (!window.inputsValidators[paramName][window.actualValue]) {
+                window.inputsValidators[paramName][window.actualValue] = {};
+            }
+
+            try {
+                window.FormulaHandler.evaluateFormula(
+                    selectedOption.PROC,
+                    { ...this.sourceValues },
+                    "PROCEDURE"
+                );
+            } catch (error) {
+                console.error(`Slope PROC error for ${paramName}/${currentValue}:`, error);
+            }
+        }
+
+        this.sourceValidators = JSON.parse(JSON.stringify(window.inputsValidators));
+
+        window.inputsValidators = savedValidators;
+        window.inputsDefaults = savedDefaults;
+        window.actualParam = savedActualParam;
+        window.actualValue = savedActualValue;
+        window.formulaContext = savedFormulaContext;
+        window.constValues = savedConstValues;
+    }
+
+    findSlopeValidatorsForInput(paramName) {
+        const result = [];
+        const valueStrings = Object.values(this.sourceValues).map(v => String(v));
+
+        for (const [param, models] of Object.entries(this.sourceValidators)) {
+            for (const [model, validators] of Object.entries(models)) {
+                if (valueStrings.includes(model) && Object.keys(validators).length !== 0) {
+                    result.push(validators);
+                }
+            }
+        }
+        return result;
+    }
+
+    validateSlopeInput(paramName) {
+        const input = document.getElementById(paramName);
+        if (!input || input.type !== 'number' || input.disabled) return true;
+
+        const validatorList = this.findSlopeValidatorsForInput(paramName);
+
+        const labelId = `${paramName}-slope-label`;
+        const existingLabel = document.getElementById(labelId);
+        if (existingLabel) existingLabel.remove();
+
+        input.classList.remove('invalid-input');
+
+        let min = 0;
+        let max = Infinity;
+        let hasValidators = false;
+
+        validatorList.forEach(validator => {
+            const vMin = validator[paramName]?.MIN;
+            const vMax = validator[paramName]?.MAX;
+            if (vMin !== undefined) { min = Math.max(min, vMin); hasValidators = true; }
+            if (vMax !== undefined) { max = Math.min(max, vMax); hasValidators = true; }
+        });
+
+        if (!hasValidators) return true;
+
+        input.setAttribute('min', min);
+        if (max < Infinity) input.setAttribute('max', max);
+
+        const label = document.createElement('label');
+        label.id = labelId;
+        label.setAttribute('for', paramName);
+        label.textContent = `min: ${min} - max: ${max !== Infinity ? max : '∞'}`;
+
+        const value = parseFloat(input.value);
+
+        if (input.value !== '' && !isNaN(value) && (value < min || value > max)) {
+            input.classList.add('invalid-input');
+            label.classList.add('invalid-label');
+            input.parentNode.appendChild(label);
+            return false;
+        } else {
+            label.classList.add('slope-range-label');
+            input.parentNode.appendChild(label);
+            return true;
+        }
+    }
+
+    validateAllSlopeInputs() {
+        let allValid = true;
+        const inputs = this.getInputsFromDOM();
+
+        for (const paramName in inputs) {
+            if (inputs[paramName].disabled) continue;
+            if (!this.validateSlopeInput(paramName)) {
+                allValid = false;
+            }
+        }
+        return allValid;
+    }
+
     close() {
         if (this.modal) {
             this.modal.remove();
@@ -458,10 +602,15 @@ export class SourceWindow {
                 this.sourceValues[paramName] = input.value;
             }
 
-
+            this.runSlopeProcedures();
+            this.validateAllSlopeInputs();
         }
     }
     processForm() {
+        if (!this.validateAllSlopeInputs()) {
+            showToast(t('form.validation_error') || 'Sprawdź poprawność wartości', 'error');
+            return;
+        }
         let inputs = document.querySelectorAll('.source-input');
         inputs.forEach(input => {
             console.log(this.sourceValues, "SPRAWDZAMOCOCHODZI1")

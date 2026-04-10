@@ -89,7 +89,10 @@
 		"delete_confirm": "Are you sure you want to delete?",
 		"cancel": "Cancel",
 		"confirm": "Confirm",
-		"total_items": "Total number of items"
+		"total_items": "Total number of items",
+		"total": "Total",
+		"total_hidden": "Total",
+		"according_to_price": "According to price list"
 	},
 	"orders": {
 		"title": "Your Orders",

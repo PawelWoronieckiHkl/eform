@@ -23,16 +23,22 @@ if (rodoBtn) {
 }
 
 const ordersToggle = document.getElementById('orders-toggle');
-console.log(ordersToggle.checked, 'sprawdzam skrypt');
 const ordersSection = document.getElementById('last-orders-section');
 
-
-ordersToggle.addEventListener('change', function () {
-  if (this.checked) {
+if (ordersToggle && ordersSection) {
+  const saved = localStorage.getItem('show-orders');
+  if (saved === 'true') {
+    ordersToggle.checked = true;
     ordersSection.classList.remove('d-none');
-    localStorage.setItem('show-orders', 'true');
-  } else {
-    ordersSection.classList.add('d-none');
-    localStorage.setItem('show-orders', 'false');
   }
-});
+
+  ordersToggle.addEventListener('change', function () {
+    if (this.checked) {
+      ordersSection.classList.remove('d-none');
+      localStorage.setItem('show-orders', 'true');
+    } else {
+      ordersSection.classList.add('d-none');
+      localStorage.setItem('show-orders', 'false');
+    }
+  });
+}

@@ -220,7 +220,7 @@
     <div class='admin-section'>
         <div id='org-dropdown-container'>
             <button class="admin-btn" type="button" id="organizationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="nav-text">{{ __('base.organization') }}</span>
+                <span class="nav-text">{% if selectedOrgIdent %}{{ selectedOrgIdent }}{% else %}{{ __('base.organization') }}{% endif %}</span>
             </button>
             <ul class="dropdown-menu">
                 {% for org in organizations %}

@@ -429,23 +429,29 @@ async function getTotal(orderId) {
     };
 }
 
-async function syncTotalPriceIfMissing(orderId, computedTotal) {
-    const visible = parseFloat(computedTotal?.visible) || 0;
-    const hidden = parseFloat(computedTotal?.hidden) || 0;
-    if (visible === 0 && hidden === 0) return;
+async function syncTotalPriceIfMissing(orderId, computedTotal, totalLabel, totalHiddenLabel) {
+    const visibleNum = parseFloat(computedTotal?.visible) || 0;
+    const hiddenNum = parseFloat(computedTotal?.hidden) || 0;
+    if (visibleNum === 0 && hiddenNum === 0) return;
 
     const checkQuery = `SELECT total_price, total_price_hidden FROM \`order\` WHERE id = ?`;
     const current = await selectQuery(checkQuery, orderId);
     if (!current || current.length === 0) return;
 
-    const dbVisible = parseFloat(current[0]?.total_price) || 0;
-    const dbHidden = parseFloat(current[0]?.total_price_hidden) || 0;
+    const dbVisible = current[0]?.total_price;
+    const dbHidden = current[0]?.total_price_hidden;
+    const isEmpty = (val) => val === null || val === undefined || val === '' || val === '0' || val === '0.00';
 
-    if (dbVisible === 0 && dbHidden === 0) {
+    const needUpdateVisible = isEmpty(dbVisible) && visibleNum !== 0;
+    const needUpdateHidden = isEmpty(dbHidden) && hiddenNum !== 0;
+
+    if (needUpdateVisible || needUpdateHidden) {
+        const newVisible = needUpdateVisible ? `${totalLabel}: ${computedTotal.visible}€` : dbVisible;
+        const newHidden = needUpdateHidden ? `${totalHiddenLabel}: ${computedTotal.hidden}€` : dbHidden;
         const updateQ = `UPDATE \`order\` SET total_price = ?, total_price_hidden = ? WHERE id = ?`;
         try {
-            await updateQuery(updateQ, [visible, hidden, orderId]);
-            log(`Synced total_price for order ${orderId}: visible=${visible}, hidden=${hidden}`);
+            await updateQuery(updateQ, [newVisible, newHidden, orderId]);
+            log(`Synced total_price for order ${orderId}: visible=${newVisible}, hidden=${newHidden}`);
         } catch (err) {
             log('Error syncing total_price:', err);
         }

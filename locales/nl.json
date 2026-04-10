@@ -89,7 +89,10 @@
     "confirm": "Bevestigen",
     "error_word": "Fout",
     "redirecting_word": "Bezig met doorsturen…",
-    "total_items": "Totaal aantal posities"
+    "total_items": "Totaal aantal posities",
+    "total": "Totaal",
+    "total_hidden": "Totaal",
+    "according_to_price": "Volgens prijslijst"
   },
   "orders": {
     "title": "Uw bestellingen",

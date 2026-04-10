@@ -35,6 +35,11 @@ function addOrganizationsForAdmin(req, res, next) {
         const organizations = Array.isArray(orgs) ? orgs : [];
         renderOptions.organizations = customOrgSorting(organizations);
         renderOptions.admin = true;
+        const selectedOrgId = req.session.user?.organization;
+        if (selectedOrgId) {
+          const selectedOrg = organizations.find(o => o.id === selectedOrgId || o.id === parseInt(selectedOrgId, 10));
+          renderOptions.selectedOrgIdent = selectedOrg?.ident?.toUpperCase() || null;
+        }
         originalRender(view, renderOptions, renderCallback);
       })
       .catch((error) => {

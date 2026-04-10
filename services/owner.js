@@ -59,6 +59,7 @@ function clearContextUser(req) {
         }
         const previousContext = req.session.context_user;
         delete req.session.context_user;
+        delete req.session.user.organization;
 
         return true;
     } catch (error) {

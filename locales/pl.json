@@ -89,7 +89,10 @@
 		"confirm": "Potwierdź",
 		"error_word": "Błąd",
 		"redirecting_word": "Przenoszenie…",
-		"total_items": "Łączna ilość pozycji"
+		"total_items": "Łączna ilość pozycji",
+		"total": "Razem",
+		"total_hidden": "Razem",
+		"according_to_price": "Według cennika"
 	},
 	"orders": {
 		"title": "Twoje Zamówienia",
