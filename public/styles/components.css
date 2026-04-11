@@ -1,8 +1,8 @@
 .update-info {
 	float: right;
 	margin-right: 3%;
-	color: red;
-	font-size: 13px;
+	color: var(--color-error);
+	font-size: var(--text-sm);
 }
 #buttons-space {
 	display: grid;
@@ -10,9 +10,9 @@
 }
 .form-button {
 	margin-top: 10px;
-	border: #4d4646 solid 1px;
-	border-radius: 10px;
-	font-weight: 550;
+	border: 1px solid var(--border-default);
+	border-radius: var(--radius-md);
+	font-weight: 600;
 	width: 300px;
 }
 #save-btn {
@@ -33,7 +33,7 @@
 	z-index: 150;
 	width: 90px;
 	height: 90px;
-	border: 4px solid black;
+	border: 4px solid var(--brand-primary);
 	border-radius: 50%;
 	border-top-color: transparent;
 	border-bottom-color: transparent;
@@ -45,9 +45,9 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(128, 128, 128, 0.5); 
-  backdrop-filter: blur(4px); 
-  -webkit-backdrop-filter: blur(4px); 
+  background: var(--bg-overlay); 
+  backdrop-filter: blur(var(--blur-md)); 
+  -webkit-backdrop-filter: blur(var(--blur-md)); 
   display: none;
   z-index: 148; 
 }

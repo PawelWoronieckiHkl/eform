@@ -5,30 +5,34 @@
     transform: translate(-50%, -50%);
     margin: 0;
     border: none;
-    border-radius: 8px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-xl), var(--shadow-glow);
     padding: 0;
     min-width: 320px;
     max-width: min(90vw, 460px);
     z-index: 10000;
-    background: #fff;
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--blur-xl));
+    -webkit-backdrop-filter: blur(var(--blur-xl));
+    animation: scaleIn 0.3s var(--ease-out-expo) both;
 }
 
 #confirm-prompt-dialog::backdrop {
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(2px);
+    background: var(--bg-overlay);
+    backdrop-filter: blur(var(--blur-md));
+    animation: fadeIn 0.2s ease both;
 }
 
 .confirm-prompt__icon {
     font-size: 2rem;
-    color: #e5a100;
+    color: var(--color-warning);
 }
 
 .confirm-prompt__title {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .confirm-prompt__message {
-    color: #555;
+    color: var(--text-secondary);
     font-size: 0.95rem;
 }

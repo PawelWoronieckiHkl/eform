@@ -1,9 +1,17 @@
 .position-container {
-    border: 2px solid rgb(228, 228, 228);
-    border-radius: 13px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
     padding: 10px;
     margin: 20px 10px 25px 10px;
-    box-shadow: 2px 2px rgb(224, 224, 224);
+    box-shadow: var(--shadow-card);
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--blur-sm));
+    transition: all var(--transition-base);
+    animation: fadeInUp 0.4s var(--ease-out-expo) both;
+}
+
+.position-container:hover {
+    box-shadow: var(--shadow-card-hover);
 }
 @media (prefers-reduced-motion: reduce) {
     * {
@@ -48,13 +56,15 @@
     table-layout: auto;
     border-collapse: separate;
     border-spacing: 0;
-    border: 1px solid rgba(153, 153, 153, 0.308);
-    border-radius: 10px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
     overflow: visible;
-    box-shadow: 2px 2px 2px rgba(131, 131, 131, 0.432);
+    box-shadow: var(--shadow-card);
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--blur-sm));
 }
 .action-btn {
-    background: #ffffff !important;
+    background: var(--bg-surface) !important;
     border: none !important;
     padding: 6px !important;
     border-radius: 6px !important;
@@ -62,7 +72,7 @@
     scale: 140%;
 }
 .action-btn:hover {
-    background: #b4b4b4 !important;
+    background: var(--bg-active) !important;
     cursor: pointer;
 }
 .floating-order {
@@ -92,12 +102,12 @@
     }
 }
 .price {
-    --bs-table-bg-type: #f8f9fa !important;
+    --bs-table-bg-type: var(--bg-surface-sunken) !important;
 }
 .price-label {
-    background: #eaf4fd;
-    color: #5a5a5a;
-    border-radius: 6px;
+    background: var(--color-info-bg);
+    color: var(--text-secondary);
+    border-radius: var(--radius-full);
     padding: 2px 8px;
     margin-right: 6px;
     font-size: 0.96em;
@@ -105,22 +115,22 @@
     display: inline-block;
 }
 thead tr {
-    --bs-table-bg-type: #f8f9fa !important;
+    --bs-table-bg-type: var(--bg-surface-sunken) !important;
 }
 tr {
-    --bs-table-bg-type: #d6d6d577;
+    --bs-table-bg-type: var(--bg-surface) !important;
 }
 .status-row {
-    --bs-table-bg-type: #ffffff !important;
+    --bs-table-bg-type: var(--bg-surface-solid) !important;
 }
 .order-table.table-striped>tbody>tr.status-row>* {
-    --bs-table-bg-type: #ffffff !important;
-    --bs-table-bg: #ffffff !important;
-    background-color: #ffffff !important;
+    --bs-table-bg-type: var(--bg-surface-solid) !important;
+    --bs-table-bg: var(--bg-surface-solid) !important;
+    background-color: var(--bg-surface-solid) !important;
 }
 .status-row td {
     margin: 0 !important;
-    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%) !important;
+    background: var(--bg-surface-sunken) !important;
 }
 .status-cell {
     text-align: left;
@@ -135,21 +145,27 @@ tr {
     gap: 16px;
     max-width: 78vw;
     padding-bottom: 12px !important;
-    box-shadow: rgb(199, 199, 199) 0px 2px 0px !important;
 }
 .status-card {
-    background: #ffffff;
-    border: 1px solid #e2e2e2;
-    border-radius: 10px;
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--blur-sm));
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
     padding: 2px 5px;
     padding-bottom: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
     min-height: 24px;
+    transition: all var(--transition-fast);
+}
+
+.status-card:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
 }
 .status-card-main {
-    border-left: 4px solid #c2c2c2;
+    border-left: 4px solid var(--text-tertiary);
 }
 .status-card-header {
     display: flex;
@@ -160,23 +176,23 @@ tr {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #b4b7b9;
+    background: var(--text-tertiary);
 }
 .status-card-label {
     font-size: 0.7rem;
     text-transform: uppercase;
-    color: #9aa0a6;
+    color: var(--text-tertiary);
     font-weight: 700;
     letter-spacing: 0.4px;
 }
 .status-card-value {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #1f1f1f;
+    color: var(--text-primary);
 }
 .status-card-code {
     font-family: 'Courier New', monospace;
-    color: #000000;
+    color: var(--text-primary);
     letter-spacing: 0.4px;
 }
 .status-card-main[data-status="pending"] .status-indicator {
@@ -196,7 +212,7 @@ tr {
     padding: 12px 20px;
     max-width: 1000px;
     margin-left: auto;
-    color: #004085;
+    color: var(--brand-primary);
     font-weight: 600;
     font-size: 1.1rem;
     gap: 30px;

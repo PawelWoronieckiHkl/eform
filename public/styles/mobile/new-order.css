@@ -1,16 +1,16 @@
 @media (max-width: 935px) {
     body {
-        background-color: white !important;
+        background-color: var(--bg-surface) !important;
         min-height: 100vh !important;
     }
 
     main {
-        background-color: white !important;
+        background-color: var(--bg-surface) !important;
         min-height: calc(100vh - 140px) !important;
     }
 
     .content {
-        background-color: white !important;
+        background-color: var(--bg-surface) !important;
         padding: 15px !important;
         margin: 0 !important;
     }
@@ -18,7 +18,7 @@
     .card.shadow-lg {
         border: none !important;
         box-shadow: none !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
         margin: 0 !important;
         padding: 0 !important;
     }
@@ -31,7 +31,7 @@
         display: flex !important;
         flex-direction: column !important;
         gap: 15px !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
     }
 
     .mb-3 {
@@ -41,7 +41,7 @@
     .form-control {
         border-radius: 8px !important;
         padding: 12px !important;
-        border: 1px solid #ddd !important;
+        border: 1px solid var(--border-default) !important;
         font-size: 16px !important;
         width: 100% !important;
     }
@@ -49,14 +49,14 @@
     .form-select {
         border-radius: 8px !important;
         padding: 12px !important;
-        border: 1px solid #ddd !important;
+        border: 1px solid var(--border-default) !important;
         font-size: 16px !important;
         width: 100% !important;
     }
 
     .form-label {
         font-weight: 600 !important;
-        color: #333 !important;
+        color: var(--text-primary) !important;
         margin-bottom: 8px !important;
     }
 
@@ -139,7 +139,7 @@
         padding: 12px !important;
         font-size: 16px !important;
         border-radius: 8px !important;
-        border: 1px solid #ddd !important;
+        border: 1px solid var(--border-default) !important;
     }
 
     textarea {

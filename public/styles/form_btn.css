@@ -3,15 +3,15 @@
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   position: relative;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #9ea7af 0%, #727a81 100%);
-  color: white;
+  border-radius: var(--radius-md);
+  background: var(--brand-gradient);
+  color: var(--text-on-brand);
   padding: 14px 25px;
   font-weight: 600;
   font-size: 14px;
   letter-spacing: 0.5px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(73, 80, 87, 0.3);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md), var(--shadow-glow);
   border: none;
   width: 80% !important;
   display: inline-flex;
@@ -25,7 +25,7 @@
   top: 0;
   left: -100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(161, 148, 148, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s ease;
 }
 .button:hover::before {
@@ -33,16 +33,16 @@
 }
 .button:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(73, 80, 87, 0.4);
-  background: linear-gradient(135deg, #61686e 0%, #4f5458 100%);
+  box-shadow: var(--shadow-lg), var(--shadow-glow-lg);
+  filter: brightness(1.1);
 }
 .button:active {
   transform: translateY(-1px) scale(0.98);
-  box-shadow: 0 3px 10px rgba(73, 80, 87, 0.35);
+  box-shadow: var(--shadow-sm), var(--shadow-glow);
 }
 .button::after {
   display: none;
 }
 .button.invalid-input{
-   background: linear-gradient(135deg, #f05a5a 0%, #727a81 100%);
+   background: linear-gradient(135deg, var(--color-error) 0%, var(--text-tertiary) 100%);
 }

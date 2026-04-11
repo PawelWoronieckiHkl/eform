@@ -1,36 +1,36 @@
 .employee-panel-header {
-    border-bottom: 2px solid #e0e0e0;
+    border-bottom: 2px solid var(--border-default);
     padding-bottom: 1rem;
 }
 .employee-panel-header h2 {
-    color: #333;
+    color: var(--text-primary);
     font-weight: 600;
 }
 .employee-panel-header h2 i {
-    color: #6c757d;
+    color: var(--text-tertiary);
 }
 .employees-container {
-    background: white;
-    border-radius: 8px;
+    background: var(--bg-surface);
+    border-radius: var(--radius-md);
     padding: 1.5rem;
 }
 .employee-table {
     margin-bottom: 0;
 }
 .employee-table thead {
-    background-color: #f8f9fa;
+    background-color: var(--bg-surface-sunken);
 }
 .employee-table thead th {
     font-weight: 600;
-    color: #495057;
-    border-bottom: 2px solid #dee2e6;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border-default);
     padding: 0.75rem;
 }
 .employee-table tbody tr {
     transition: background-color 0.2s ease;
 }
 .employee-table tbody tr:hover {
-    background-color: #f8f9fa;
+    background-color: var(--bg-hover);
 }
 .employee-table tbody td {
     padding: 0.75rem;
@@ -109,7 +109,7 @@
 }
 .dialog-content p {
     margin-bottom: 1.5rem;
-    color: #666;
+    color: var(--text-secondary);
     font-size: 1.1rem;
 }
 .dialog-buttons {

@@ -3,7 +3,7 @@
     body {
         height: 100% !important;
         min-height: 100vh !important;
-        background-color: white !important;
+        background-color: var(--bg-body) !important;
         margin: 0 !important;
         padding: 0 !important;
     }
@@ -13,7 +13,7 @@
     }
     main {
         flex: 1 !important;
-        background-color: white !important;
+        background-color: var(--bg-body) !important;
         padding-top: 70px !important;
         padding-bottom: 70px !important;
         padding-left: 15px !important;
@@ -106,11 +106,11 @@
         transform: translate(-50%, -50%) !important;
         margin: 0 !important;
         border-radius: 16px !important;
-        border: 2px solid #ddd !important;
+        border: 2px solid var(--border-default) !important;
         padding: 0 !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        box-shadow: var(--shadow-xl) !important;
         overflow: visible !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
         z-index: 10001 !important;
         box-sizing: border-box !important;
         -webkit-transform: translate(-50%, -50%) !important;
@@ -119,7 +119,7 @@
         padding: 16px !important;
         margin: 0 !important;
         text-align: center !important;
-        border-bottom: 1px solid #eee !important;
+        border-bottom: 1px solid var(--border-default) !important;
     }
     #delete-dialog p {
         padding: 20px !important;
@@ -130,7 +130,7 @@
         display: flex !important;
         gap: 10px !important;
         padding: 16px !important;
-        border-top: 1px solid #eee !important;
+        border-top: 1px solid var(--border-default) !important;
     }
     #delete-dialog .confirmation-buttons button {
         flex: 1 !important;
@@ -197,7 +197,7 @@
         max-width: 100% !important;
     }
     .mobile-bg-white {
-        background: white !important;
+        background: var(--bg-surface) !important;
     }
     .col-9 {
         width: 100% !important;
@@ -237,19 +237,19 @@
     }
     .mobile-table-stack tr {
         display: block !important;
-        border: 1px solid #ddd !important;
+        border: 1px solid var(--border-default) !important;
         margin-bottom: 10px !important;
         border-radius: 8px !important;
         padding: 10px !important;
-        background: white !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        background: var(--bg-surface) !important;
+        box-shadow: var(--shadow-xs) !important;
     }
     .mobile-table-stack td {
         display: block !important;
         text-align: right !important;
         border: none !important;
         padding: 5px 0 !important;
-        border-bottom: 1px solid #eee !important;
+        border-bottom: 1px solid var(--border-default) !important;
     }
     .mobile-table-stack td:last-child {
         border-bottom: none !important;
@@ -260,7 +260,7 @@
         float: left !important;
         text-transform: uppercase !important;
         font-size: 0.8em !important;
-        color: #666 !important;
+        color: var(--text-secondary) !important;
     }
     .mobile-btn-stack {
         display: flex !important;

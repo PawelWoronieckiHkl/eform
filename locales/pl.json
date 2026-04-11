@@ -137,7 +137,8 @@
 		"status_zero": "Niedostępne",
 		"status_safe": "Dostępne",
 		"status_low": "Niski stan",
-		"status_critical": "Stan krytyczny"
+		"status_critical": "Stan krytyczny",
+		"validation_error": "Sprawdź poprawność wartości"
 	},
 	"mail": {
 		"order_confirm": "mail.order_confirm",

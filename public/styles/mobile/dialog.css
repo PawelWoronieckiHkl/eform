@@ -18,7 +18,7 @@
         box-shadow: none !important;
         transform: none !important;
         overflow-y: auto !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
         z-index: 9999 !important;
         inset: 0 !important;
         box-sizing: border-box !important;
@@ -29,7 +29,7 @@
     }
     dialog:not(#delete-dialog)[open] {
         display: flex !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
         width: 100vw !important;
         height: 100vh !important;
         left: 0 !important;
@@ -40,7 +40,7 @@
     }
     #dialog-container {
         padding: 0 !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
         width: 100% !important;
         height: 100% !important;
         box-sizing: border-box !important;
@@ -58,10 +58,10 @@
     .color-dialog-btn {
         display: block !important;
         width: 100% !important;
-        background-color: white !important;
-        color: #333 !important;
+        background-color: var(--bg-surface) !important;
+        color: var(--text-primary) !important;
         font-weight: 600 !important;
-        border: 2px solid #e0e0e0 !important;
+        border: 2px solid var(--border-default) !important;
         border-radius: 12px !important;
         padding: 15px !important;
         transition: background-color 0.3s, border-color 0.3s !important;
@@ -72,18 +72,18 @@
         margin-bottom: 10px !important;
     }
     .color-dialog-btn:hover {
-        background-color: #f8f9fa !important;
-        border-color: #007bff !important;
-        color: #007bff !important;
+        background-color: var(--bg-active) !important;
+        border-color: var(--brand-primary) !important;
+        color: var(--brand-primary) !important;
     }
     .diag-image {
         width: 100% !important;
         height: 200px !important;
         border-radius: 12px !important;
         object-fit: contain !important;
-        background-color: #f8f9fa !important;
+        background-color: var(--bg-surface-sunken) !important;
         padding: 10px !important;
-        border: 2px solid #e0e0e0 !important;
+        border: 2px solid var(--border-default) !important;
         transition: transform 0.3s ease !important;
         box-shadow: none !important;
     }
@@ -101,7 +101,7 @@
         text-decoration: none !important;
         font-size: 0.9rem !important;
         font-weight: 600 !important;
-        color: #333 !important;
+        color: var(--text-primary) !important;
         margin-top: 10px !important;
         text-align: center !important;
         padding: 0 10px !important;
@@ -112,8 +112,8 @@
         flex-direction: column !important;
         gap: 15px !important;
         padding: 20px !important;
-        background: white !important;
-        border-top: 1px solid #e0e0e0 !important;
+        background: var(--bg-surface) !important;
+        border-top: 1px solid var(--border-default) !important;
         position: sticky !important;
         bottom: 0 !important;
         margin-top: auto !important;
@@ -124,12 +124,12 @@
         width: 100% !important;
     }
     .btn-success {
-        background: #28a745 !important;
-        color: white !important;
+        background: var(--color-success) !important;
+        color: var(--text-on-brand) !important;
     }
     .btn-secondary {
-        background: #6c757d !important;
-        color: white !important;
+        background: var(--bg-surface-sunken) !important;
+        color: var(--text-primary) !important;
     }
     .btn:hover {
         opacity: 0.9 !important;
@@ -149,8 +149,8 @@
         position: absolute !important;
         top: 15px !important;
         right: 15px !important;
-        background: #ff4444 !important;
-        color: white !important;
+        background: var(--color-error) !important;
+        color: var(--text-on-brand) !important;
         border: none !important;
         border-radius: 50% !important;
         width: 60px !important;
@@ -161,15 +161,15 @@
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+        box-shadow: var(--shadow-md) !important;
         touch-action: manipulation !important;
     }
     .close-dialog-btn:hover {
-        background: #ff6666 !important;
+        filter: brightness(1.15) !important;
         transform: scale(1.1) !important;
     }
     .close-dialog-btn:active {
-        background: #cc0000 !important;
+        filter: brightness(0.85) !important;
         transform: scale(0.95) !important;
     }
     dialog button[type="button"]:contains("✖"),
@@ -179,8 +179,8 @@
         position: absolute !important;
         top: 15px !important;
         right: 15px !important;
-        background: #ff4444 !important;
-        color: white !important;
+        background: var(--color-error) !important;
+        color: var(--text-on-brand) !important;
         border: none !important;
         border-radius: 50% !important;
         width: 60px !important;
@@ -191,26 +191,26 @@
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+        box-shadow: var(--shadow-md) !important;
         touch-action: manipulation !important;
     }
     #additional-info {
         padding: 20px !important;
         width: 100% !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
     }
     .button-wrapper {
         margin: 0 !important;
     }
     .filter-controls {
-        background: white !important;
-        border: 2px solid #e0e0e0 !important;
+        background: var(--bg-surface) !important;
+        border: 2px solid var(--border-default) !important;
         border-radius: 12px !important;
         margin: 15px !important;
         padding: 0 !important;
         overflow: hidden !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: var(--shadow-sm) !important;
     }
     .filter-controls.collapsed {
         max-height: 60px !important;
@@ -219,9 +219,9 @@
         max-height: 400px !important;
     }
     .filter-controls-header {
-        background: #f8f9fa !important;
+        background: var(--bg-surface-sunken) !important;
         padding: 15px 20px !important;
-        border-bottom: 1px solid #e0e0e0 !important;
+        border-bottom: 1px solid var(--border-default) !important;
         cursor: pointer !important;
         display: flex !important;
         justify-content: space-between !important;
@@ -229,16 +229,16 @@
         user-select: none !important;
     }
     .filter-controls-header:hover {
-        background: #e9ecef !important;
+        background: var(--bg-active) !important;
     }
     .filter-controls-title {
         font-weight: 600 !important;
-        color: #333 !important;
+        color: var(--text-primary) !important;
         font-size: 1.1rem !important;
     }
     .filter-controls-toggle {
         font-size: 1.2rem !important;
-        color: #666 !important;
+        color: var(--text-secondary) !important;
         transition: transform 0.3s ease !important;
     }
     .filter-controls.expanded .filter-controls-toggle {

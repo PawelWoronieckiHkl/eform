@@ -1,22 +1,22 @@
 @media (max-width: 767.98px) {
     :root {
-        --bg: white;
-        --surface: white;
-        --muted: #e6e7e8;
-        --primary: #007bff;
-        --text: #333;
-        --muted-text: #666;
+        --bg: var(--bg-body);
+        --surface: var(--bg-surface);
+        --muted: var(--border-default);
+        --primary: var(--brand-primary);
+        --text: var(--text-primary);
+        --muted-text: var(--text-secondary);
         --radius: 8px;
-        --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        --card-shadow: var(--shadow-xs);
         --gap: 15px;
     }
     html,
     body {
         height: 100% !important;
         min-height: 100vh !important;
-        background: white !important;
-        color: #333 !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        background: var(--bg-body) !important;
+        color: var(--text-primary) !important;
+        font-family: var(--font-sans);
         font-size: 16px !important;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -57,9 +57,10 @@
         transform: translateY(1px);
     }
     .btn-primary {
-        background: linear-gradient(180deg, #ededed, #e0e0e0);
+        background: var(--bg-glass);
+        backdrop-filter: blur(var(--blur-sm));
         color: var(--text);
-        box-shadow: 0 6px 12px rgba(20, 20, 20, 0.06);
+        box-shadow: var(--shadow-sm);
     }
     input[type="text"],
     input[type="password"],
@@ -70,7 +71,7 @@
         padding: 12px 14px;
         border-radius: 10px;
         border: 1px solid var(--muted);
-        background: #fff;
+        background: var(--bg-input);
         box-sizing: border-box;
         font-size: 1rem;
         color: var(--text);

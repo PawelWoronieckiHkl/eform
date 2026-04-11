@@ -7,7 +7,7 @@
 .dropdown-item {
     padding: 8px 12px;
     cursor: pointer;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-default);
     font-size: 12px;
     word-wrap: break-word;
     white-space: nowrap;
@@ -15,10 +15,10 @@
     text-overflow: ellipsis;
 }
 .dropdown-item:hover {
-    background-color: #f8f9fa;
+    background-color: var(--bg-active);
 }
 .dropdown-item.highlighted {
-    background-color: #e9ecef;
+    background-color: var(--bg-active);
 }
 .dropdown-item:last-child {
     border-bottom: none;

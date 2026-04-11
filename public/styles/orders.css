@@ -1,12 +1,14 @@
 .table {
   border-collapse: separate;
   border-spacing: 0;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   overflow: visible;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  background: white;
+  box-shadow: var(--shadow-card);
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(var(--blur-sm));
   table-layout: auto;
   padding-right: 7vb !important;
+  animation: fadeInUp 0.4s var(--ease-out-expo) both;
 }
 
 /* Dropdown w tabeli zawsze na wierzchu */
@@ -17,28 +19,28 @@
 .table .dropdown-menu {
   z-index: 10000 !important;
   position: absolute !important;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--border-default);
   border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   padding: 6px;
   min-width: 220px;
   margin-top: 4px;
-  background: #ffffff;
+  background: var(--bg-surface);
 }
 
 .table .dropdown-menu .dropdown-item {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
   padding: 10px 12px;
   border-radius: 6px;
   transition: all 0.15s ease;
-  color: #495057;
+  color: var(--text-secondary);
   margin-bottom: 2px;
 }
 
 .table .dropdown-menu .dropdown-item:hover {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  color: #212529;
+  background: var(--bg-active);
+  color: var(--text-primary);
 }
 
 .table .dropdown-menu .dropdown-item:last-child {
@@ -54,39 +56,39 @@
 
 /* Nowoczesny przycisk dropdown */
 .table .dropdown-toggle {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
   font-weight: 500;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 1px solid #dee2e6;
-  color: #495057;
+  background: var(--bg-surface-sunken);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
   border-radius: 8px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-xs);
   letter-spacing: 0.2px;
 }
 
 .table .dropdown-toggle:hover {
-  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-  border-color: #ced4da;
-  color: #212529;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: var(--bg-active);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
 }
 
 .table .dropdown-toggle:active,
 .table .dropdown-toggle.show {
-  background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%);
-  border-color: #adb5bd;
-  color: #212529;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) inset;
+  background: var(--bg-active);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
   transform: translateY(0);
 }
 
 .table .dropdown-toggle:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.15);
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.15);
 }
 
 /* Wyłącz transform gdy dropdown otwarty */
@@ -123,24 +125,24 @@
 }
 
 .table thead {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: var(--bg-surface-sunken);
 }
 
 .table thead th {
   padding: 16px 12px;
   font-weight: 600;
   font-size: 14px;
-  color: #495057;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: none;
-  border-bottom: 2px solid #dee2e6;
+  border-bottom: 2px solid var(--border-default);
   white-space: nowrap;
 }
 
 .table tbody tr {
   transition: all 0.2s ease;
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--border-default);
 }
 
 .table tbody td,
@@ -152,13 +154,13 @@
 
 .order-row {
   cursor: pointer !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: all 0.35s var(--ease-out-expo) !important;
 }
 
 .order-row:hover {
-  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%) !important;
+  background: var(--bg-hover) !important;
   transform: translateX(4px);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: inset 3px 0 0 var(--brand-primary);
 }
 
 .order-row:hover td,
@@ -174,12 +176,12 @@
 
 .table th[scope="row"] {
   font-weight: 600;
-  color: #495057;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
 .table td {
-  color: #6c757d;
+  color: var(--text-tertiary);
 }
 
 .gold {
@@ -194,26 +196,28 @@
 
 .pagination .page-item .page-link {
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-full);
   padding: 10px 16px;
-  color: #6c757d;
+  color: var(--text-tertiary);
   font-weight: 500;
-  transition: all 0.2s ease;
-  background: #f8f9fa;
+  transition: all 0.3s var(--ease-out-expo);
+  background: var(--bg-surface-sunken);
   min-width: 42px;
   text-align: center;
 }
 
 .pagination .page-item .page-link:hover {
-  background: #e9ecef;
-  color: #495057;
-  transform: translateY(-1px);
+  background: var(--bg-hover);
+  color: var(--brand-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .pagination .page-item.page-active .page-link {
-  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  background: var(--brand-gradient);
   color: white;
-  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+  box-shadow: var(--shadow-sm), 0 4px 12px var(--brand-primary-glow);
+  font-weight: 700;
 }
 
 .pagination .page-nav-btn {
@@ -235,7 +239,7 @@
 .pagination .page-item.disabled .page-link {
   pointer-events: none;
   opacity: 0.5;
-  background: #f8f9fa;
+  background: var(--bg-surface-sunken);
 }
 
 .pagination .page-item.disabled .page-nav-btn:hover {
@@ -246,13 +250,13 @@
   background: transparent;
   pointer-events: none;
   font-weight: 600;
-  color: #adb5bd;
+  color: var(--text-tertiary);
 }
 
 .pagination-info {
   text-align: center;
   margin-top: 12px;
-  color: #6c757d;
+  color: var(--text-tertiary);
   font-size: 14px;
 }
 
@@ -306,17 +310,17 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid #d9dee3;
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 8px 12px;
-  background: #fff;
+  background: var(--bg-surface);
 }
 
 .orders-search__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #1f2328;
+  color: var(--text-primary);
 }
 
 .orders-search__icon svg {
@@ -334,15 +338,15 @@
   outline: none;
   width: 100%;
   background: transparent;
-  color: #495057;
+  color: var(--text-secondary);
 }
 
 .orders-search__input::placeholder {
-  color: #98a2ad;
+  color: var(--text-tertiary);
 }
 
 .orders-search__status {
-  color: #6c757d;
+  color: var(--text-tertiary);
   font-size: 12px;
 }
 

@@ -1,9 +1,9 @@
 @media (max-width: 767.98px) {
     body {
-        background-color: white !important;
+        background-color: var(--bg-surface) !important;
     }
     .content {
-        background-color: white !important;
+        background-color: var(--bg-surface) !important;
         padding: 15px !important;
         margin: 0 !important;
         width: 100% !important;
@@ -15,10 +15,10 @@
     }
     .position-sent {
         padding: 0 !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
     }
     .position-card {
-        background: white !important;
+        background: var(--bg-surface) !important;
         padding: 15px !important;
         border-radius: 10px !important;
         border: 1px solid #e0e0e0 !important;
@@ -34,8 +34,8 @@
         font-size: 1.2rem !important;
         margin-bottom: 20px !important;
         padding: 15px !important;
-        background: white !important;
-        border-bottom: 1px solid #eee !important;
+        background: var(--bg-surface) !important;
+        border-bottom: 1px solid var(--border-default) !important;
     }
     .form-control,
     .form-select {

@@ -133,6 +133,7 @@
     "check_option": "Sélectionner une option",
     "search_input_placeholder": "Rechercher par nom...",
     "empty_select_warning": "Aucune option sélectionnée.",
-    "all_word": "Tous"
+    "all_word": "Tous",
+    "validation_error": "Vérifiez l'exactitude des valeurs"
   }
 }

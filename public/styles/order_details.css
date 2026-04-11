@@ -1,9 +1,13 @@
 .position-container {
-    border: 1px solid rgb(228, 228, 228);
-    border-radius: 13px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
     padding: 10px;
     margin: 20px 10px 25px 10px;
-    box-shadow: 2px 2px rgb(224, 224, 224);
+    box-shadow: var(--shadow-card);
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--blur-sm));
+    transition: all var(--transition-base);
+    animation: fadeInUp 0.4s var(--ease-out-expo) both;
 }
 
 .content {
@@ -30,14 +34,16 @@ html.nav-collapsed .content {
     position: fixed;
     justify-content: space-between;
     margin-top: 60px;
-    transition: left 0.3s ease, width 0.3s ease, max-width 0.3s ease;
+    transition: left 0.4s var(--ease-out-expo), width 0.4s var(--ease-out-expo);
     display: flex !important;
     flex-direction: column !important;
     align-items: stretch !important;
     white-space: nowrap;
     overflow: visible;
-    background: white !important;
-    border-bottom: 2px solid #e9ecef !important;
+    background: var(--bg-glass-strong) !important;
+    backdrop-filter: blur(var(--blur-lg));
+    -webkit-backdrop-filter: blur(var(--blur-lg));
+    border-bottom: 1px solid var(--border-default) !important;
     padding: 15px 20px !important;
     min-height: 80px !important;
     height: auto !important;
@@ -128,20 +134,21 @@ html.nav-collapsed #order-nav {
 .navbar-scrolled {
     margin-top: 0 !important;
     top: 0;
-    background: #fff;
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--blur-lg));
     min-height: 300px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-md);
     padding-bottom: 120px;
 }
 
 .btn-link {
     text-decoration: none;
-    color: green;
+    color: var(--color-success);
 }
 
 .btn-link:hover {
     text-decoration: none;
-    color: rgb(255, 255, 255);
+    color: var(--text-inverse);
 }
 
 #new-order-button {
@@ -178,26 +185,28 @@ html.nav-collapsed #order-nav {
     table-layout: auto;
     border-collapse: separate;
     border-spacing: 0;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    background: white;
-    border: 1px solid #dee2e6;
+    box-shadow: var(--shadow-card);
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--blur-sm));
+    border: 1px solid var(--border-default);
+    animation: fadeInUp 0.4s var(--ease-out-expo) both;
 }
 
 .order-table thead {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: var(--bg-surface-sunken);
 }
 
 .order-table thead th {
     padding: 16px 12px;
     font-weight: 900;
     font-size: 14px;
-    color: #495057;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-right: 1px solid #dee2e6;
-    border-bottom: 2px solid #dee2e6;
+    border-right: 1px solid var(--border-default);
+    border-bottom: 2px solid var(--border-default);
     white-space: nowrap;
     text-align: center;
     vertical-align: middle;
@@ -208,15 +217,15 @@ html.nav-collapsed #order-nav {
 }
 
 .order-table tbody tr {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-bottom: 1px solid #f1f3f5;
+    transition: all var(--transition-base);
+    border-bottom: 1px solid var(--border-default);
     cursor: pointer;
 }
 
 .order-table tbody tr:not(#price-row):not(.prod-time-row):hover {
-    background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+    background: var(--bg-hover);
     transform: translateX(4px);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: inset 3px 0 0 var(--brand-primary);
 }
 
 .order-table tbody tr:not(#price-row):not(.prod-time-row):hover td,
@@ -225,9 +234,9 @@ html.nav-collapsed #order-nav {
 }
 
 .order-table tbody tr:not(#price-row):not(.prod-time-row):hover+#price-row {
-    background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+    background: var(--bg-hover);
     transform: translateX(4px);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: inset 3px 0 0 var(--brand-primary);
 }
 
 .order-table tbody tr:not(#price-row):not(.prod-time-row):hover+#price-row td {
@@ -241,8 +250,8 @@ html.nav-collapsed #order-nav {
     text-align: center;
     vertical-align: middle;
     padding: 14px 12px;
-    border-right: 1px solid #e9ecef;
-    border-bottom: 1px solid #f1f3f5;
+    border-right: 1px solid var(--border-default);
+    border-bottom: 1px solid var(--border-default);
 }
 
 .order-table th:last-child,
@@ -256,11 +265,11 @@ html.nav-collapsed #order-nav {
 
 .order-table th[scope="row"] {
     font-weight: 600;
-    color: #495057;
+    color: var(--text-secondary);
 }
 
 .order-table td {
-    color: black;
+    color: var(--text-primary);
     font-weight: 480;
 }
 
@@ -284,11 +293,11 @@ html.nav-collapsed #order-nav {
 
 .prod-days-item {
     font-weight: 600;
-    color: #0d6efd;
+    color: var(--brand-primary);
 }
 
 .prod-days-max {
-    color: #6c757d;
+    color: var(--text-tertiary);
     font-size: 0.82em;
     margin-left: 3px;
 }
@@ -300,10 +309,11 @@ html.nav-collapsed #order-nav {
 
 
 .prod-time-row-cell {
-    background: linear-gradient(90deg, #f3f8ff 0%, #eef7f2 100%);
-    border: 1px solid #dbe8ff;
-    border-left: 4px solid #4f8ef7;
-    border-radius: 8px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur-sm));
+    border: 1px solid var(--border-default);
+    border-left: 4px solid var(--brand-primary);
+    border-radius: var(--radius-sm);
     padding: 10px 12px;
     font-size: 16px;
     text-align: left;
@@ -311,26 +321,26 @@ html.nav-collapsed #order-nav {
 }
 
 .prod-time-label {
-    color: #405166;
+    color: var(--text-secondary);
     font-weight: 700;
     margin-right: 8px;
 }
 
 #price-row {
-    background: #f8f9fa;
+    background: var(--bg-surface-sunken);
     font-size: 13px;
     cursor: default;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--transition-base);
 }
 
 #price-row:hover {
-    background: #f8f9fa !important;
+    background: var(--bg-surface-sunken) !important;
     transform: none !important;
     box-shadow: none !important;
 }
 
 .price-label {
-    color: #6c757d;
+    color: var(--text-tertiary);
     font-weight: 500;
 }
 
@@ -380,7 +390,7 @@ html.nav-collapsed #order-nav {
 }
 
 #edit-icon {
-    color: rgb(0, 0, 0);
+    color: var(--text-primary);
     font-size: 20px;
     cursor: pointer;
     width: 25px;
@@ -388,7 +398,7 @@ html.nav-collapsed #order-nav {
 }
 
 #comment-input {
-    border: 1px solid rgb(228, 228, 228) !important;
+    border: 1px solid var(--border-default) !important;
 }
 
 #generate-excel-btn.has-tooltip:hover::after {
@@ -423,9 +433,9 @@ html.nav-collapsed #order-nav {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    border: 1px solid #ddd !important;
-    background: white !important;
-    border-radius: 6px !important;
+    border: 1px solid var(--border-default) !important;
+    background: var(--bg-surface) !important;
+    border-radius: var(--radius-sm) !important;
 }
 
 .duplicate-btn {
@@ -441,33 +451,33 @@ html.nav-collapsed #order-nav {
 }
 
 .price {
-    background: #f8f9fa;
+    background: var(--bg-surface-sunken);
     font-weight: bold;
-    color: #3d3d3d;
-    border-top: 2px solid #dedede;
-    box-shadow: 0 2px 8px rgba(42, 122, 226, 0.08);
+    color: var(--text-primary);
+    border-top: 2px solid var(--border-default);
+    box-shadow: var(--shadow-xs);
     font-size: 1rem;
     padding: 10px 16px;
     text-align: left;
     letter-spacing: 1px;
-    border: 0px solid #0e0e0e !important;
+    border: 0px solid transparent !important;
     border-radius: 0px !important;
 }
 
 .price strong,
 .price b {
-    color: #0f0f0f;
+    color: var(--text-primary);
 }
 
 #price-row {
-    border: 1px solid #00000018 !important;
+    border: 1px solid var(--border-default) !important;
 }
 
 .price-label {
-    background: #eaf4fd;
-    color: #5a5a5a;
-    border-radius: 4px;
-    box-shadow: #71a9e6 0px 2px 6px -1px;
+    background: var(--color-info-bg);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 6px -1px var(--brand-primary-glow);
     padding: 2px 8px;
     margin-right: 6px;
     font-size: 0.96em;
@@ -493,17 +503,16 @@ html.nav-collapsed #order-nav {
 }
 
 .total-price .total {
-    color: #5c5656;
-    background: #eaf4fd;
+    color: var(--text-secondary);
+    background: var(--color-info-bg);
     padding: 12px 20px;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
     font-size: 1.1rem;
     min-width: 200px;
     text-align: center;
-    box-shadow: none;
+    box-shadow: 0 3px 5px var(--brand-primary-glow);
     transition: none;
-    box-shadow: 0 3px 5px rgba(113, 169, 230, 0.7);
 }
 
 .content .container .text-center.py-5 {
@@ -597,8 +606,8 @@ html.nav-collapsed #order-nav {
     align-items: center !important;
     justify-content: center !important;
     border-radius: 2px !important;
-    border: 1px solid #dee2e6 !important;
-    background-color: white !important;
+    border: 1px solid var(--border-default) !important;
+    background-color: var(--bg-surface) !important;
     padding: 0 !important;
     font-size: 10px !important;
     line-height: 1 !important;
@@ -611,22 +620,22 @@ html.nav-collapsed #order-nav {
 .position-controls button.btn svg {
     width: 20px !important;
     height: 20px !important;
-    fill: #000 !important;
+    fill: var(--text-primary) !important;
 }
 
 .position-controls .btn:hover,
 .position-controls button.btn:hover {
-    background-color: #f8f9fa !important;
-    border-color: #adb5bd !important;
+    background-color: var(--bg-hover) !important;
+    border-color: var(--brand-primary) !important;
 }
 
 .position-controls .btn:hover svg,
 .position-controls button.btn:hover svg {
-    fill: #000 !important;
+    fill: var(--brand-primary) !important;
 }
 
 .position-controls .btn:hover svg {
-    fill: #000;
+    fill: var(--brand-primary);
 }
 
 .table td.d-flex {

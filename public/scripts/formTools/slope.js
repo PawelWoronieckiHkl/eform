@@ -16,7 +16,6 @@ import { updateFieldStates } from "./updateFieldsAndValues.js";
 
 import { showToast } from "../components/toast.js";
 import { createElement, isEnabled } from "../components/htmlManipulator.js";
-import { createInfoIcon } from "../components/info.js";
 
 
 
@@ -330,6 +329,15 @@ export class SourceWindow {
             }
         }, body);
 
+        const typParam = this.data.params.find(p => p.NAME === 'TYP');
+        const typInfo = typParam?.INFO;
+        if (typInfo && typInfo !== '<NULL>' && typInfo.trim() !== '') {
+            const infoBar = createElement('div', { class: ['slope-info-bar'] }, body);
+            createElement('span', { class: ['slope-info-icon'], text: 'i' }, infoBar);
+            const normalizedInfo = typInfo.replace(/\\n/g, '\n').replace(/\n/g, '<br>');
+            createElement('span', { html: normalizedInfo }, infoBar);
+        }
+
         
         const form = createElement('form', { id: 'slope-form', class: ['slope-form'] }, body);
 
@@ -345,16 +353,7 @@ export class SourceWindow {
             }
             if (param.DESCRIPTION) {
                 const col = createElement('div', { class: ['col-12', 'col-md-6'] }, row);
-                const labelWrapper = createElement('div', { class: ['field-label-row'] }, col);
-                createElement('label', { text: param.DESCRIPTION, for: param.NAME, class: ['form-label'] }, labelWrapper);
-                createInfoIcon({
-                    info: param?.INFO,
-                    parent: labelWrapper,
-                    rootFilePath: '/photos/files/',
-                    defaultLabel: t('Dodatkowe informacje'),
-                    infoStyle: 'i',
-                    downloadLabel: t('Pobierz')
-                });
+                createElement('label', { text: param.DESCRIPTION, for: param.NAME, class: ['form-label'] }, col);
                 let input = createElement('input', { class: ['form-control', 'source-input'], type: 'number', id: param.NAME, name: param.NAME, value: param?.VALUE || '' }, col);
                 if (param.NAME == 'TYP') {
                     input.type = 'text'

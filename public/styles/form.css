@@ -19,9 +19,13 @@
 	min-width: 400px;
 	max-width: 650px;
 	padding: 60px 40px;
-	border-radius: 5px;
-	backdrop-filter: blur(10px);
-	animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	border-radius: var(--radius-2xl);
+	background: var(--bg-glass-strong);
+	backdrop-filter: blur(var(--blur-xl));
+	-webkit-backdrop-filter: blur(var(--blur-xl));
+	border: 1px solid var(--border-default);
+	box-shadow: var(--shadow-xl), var(--shadow-glow);
+	animation: scaleIn 0.3s var(--ease-out-expo) both;
 }
 
 @media (max-width: 1000px) {}
@@ -46,26 +50,22 @@
 	width: 80%;
 	padding: 14px 24px;
 	font-size: 16px;
-	font-weight: 600;
+	font-weight: 700;
 	color: white;
-	background: linear-gradient(135deg, #cfd0d1a9 0%, #7d88928c 100%);
+	background: var(--brand-gradient);
+	background-size: 200% 200%;
 	border: none;
-	border-radius: 10px;
+	border-radius: var(--radius-md);
 	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	box-shadow:
-		0 4px 12px rgba(73, 80, 87, 0.25),
-		inset 0 1px 0 rgba(255, 255, 255, 0.1);
-	letter-spacing: 0.02em;
-	text-transform: none;
+	transition: all 0.3s var(--ease-out-expo);
+	box-shadow: var(--shadow-sm), 0 4px 16px var(--brand-primary-glow);
+	letter-spacing: 0.03em;
 }
 
 #last-config-confirm:hover {
-	background: linear-gradient(135deg, #7b8894 0%, #565e66 100%);
+	animation: gradient-shift 3s ease infinite;
 	transform: translateY(-2px);
-	box-shadow:
-		0 6px 20px rgba(73, 80, 87, 0.35),
-		inset 0 1px 0 rgba(255, 255, 255, 0.15);
+	box-shadow: var(--shadow-lg), 0 6px 24px var(--brand-primary-glow);
 }
 
 input[type="text"],
@@ -73,16 +73,16 @@ input[type="number"] {
 	width: 90%;
 	padding: 7px 12px;
 	font-size: 14px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	background-color: #f9f9f9;
-	color: #333;
+	border: 1px solid var(--border-default);
+	border-radius: var(--radius-sm);
+	background-color: var(--bg-input);
+	color: var(--text-primary);
 	transition: border-color 0.3s;
 }
 
 input[type="text"]:focus,
 input[type="number"]:focus {
-	border-color: #999;
+	border-color: var(--border-focus);
 	outline: none;
 }
 
@@ -107,9 +107,9 @@ input[type="number"]:focus {
 }
 
 [class*="-select-area"] label {
-	font-family: "Roboto", "semi-bold", sans-serif !important;
+	font-family: var(--font-sans) !important;
 	font-size: 1.1rem !important;
-	color: #333 !important;
+	color: var(--text-primary) !important;
 	margin-bottom: 8px !important;
 	padding: 0 5px !important;
 }
@@ -261,17 +261,17 @@ input[type="number"]:focus {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-color: #f8f9fa;
-	color: #6c757d;
-	border: 1px solid #dee2e6;
-	border-radius: 8px;
+	background-color: var(--bg-surface-sunken);
+	color: var(--text-tertiary);
+	border: 1px solid var(--border-default);
+	border-radius: var(--radius-md);
 	padding: 8px 12px;
 	font-size: 14px;
 	font-weight: 500;
 	text-decoration: none;
 	cursor: pointer;
 	transition: all 0.3s ease;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	box-shadow: var(--shadow-xs);
 	z-index: 10;
 }
 
@@ -289,18 +289,18 @@ input[type="number"]:focus {
 }
 
 #show-comment-button:hover {
-	background-color: #e9ecef;
-	color: #495057;
-	border-color: #adb5bd;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	background-color: var(--bg-active);
+	color: var(--text-secondary);
+	border-color: var(--border-strong);
+	box-shadow: var(--shadow-sm);
 	transform: translateY(-1px);
 }
 
 #show-comment-button:active {
-	background-color: #dee2e6;
-	color: #343a40;
+	background-color: var(--bg-active);
+	color: var(--text-primary);
 	transform: translateY(0);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	box-shadow: var(--shadow-xs);
 }
 
 .comment-space .item-comment {
@@ -319,34 +319,33 @@ input[type="number"]:focus {
 }
 
 .invalid-input {
-	border: 1px solid red !important;
-	border-bottom: 2px solid red !important;
-	color: red;
-	box-shadow: 0 0 3px red;
+	border: 1px solid var(--color-error) !important;
+	border-bottom: 2px solid var(--color-error) !important;
+	color: var(--color-error);
+	box-shadow: 0 0 0 3px var(--color-error-glow);
 }
 
 .invalid-input::after {
 	content: attr(data-error-message);
 	display: block;
-	color: red;
+	color: var(--color-error);
 	font-size: 12px;
 	margin-top: 4px;
-	border: 4px solid red !important;
-	box-shadow: 0 0 3px red;
-	color: red !important;
+	border: none !important;
+	box-shadow: none;
 }
 
 .warning-warranty-input {
-	border: 1px solid rgb(252, 194, 86) !important;
-	border-bottom: 2px solid rgb(252, 194, 86) !important;
-	color: rgb(252, 194, 86);
-	box-shadow: 0 0 3px rgb(252, 194, 86);
+	border: 1px solid var(--color-warning) !important;
+	border-bottom: 2px solid var(--color-warning) !important;
+	color: var(--color-warning);
+	box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
 }
 
 .warning-warranty-label {
 	content: attr(data-error-message);
 	display: block;
-	color: rgb(252, 194, 86);
+	color: var(--color-warning);
 	font-size: 12px;
 	margin-top: 4px;
 	color: rgb(252, 194, 86) !important;
@@ -419,8 +418,8 @@ input[type="number"]:focus {
 	gap: 10px;
 	margin-bottom: 15px;
 	padding: 10px;
-	background-color: #f5f5f5;
-	border-radius: 4px;
+	background-color: var(--bg-surface-sunken);
+	border-radius: var(--radius-sm);
 	margin-left: 5%;
 	width: 95% !important;
 }
@@ -465,11 +464,11 @@ input[type="number"]:focus {
 .tiny-link-btn {
 	padding: 8px 16px;
 	font-size: 16px;
-	background-color: #f5f6f8;
-	color: #4a4a4a;
+	background-color: var(--bg-surface-sunken);
+	color: var(--text-secondary);
 	border-radius: 24px;
-	border: 1px solid #d1d3d6;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+	border: 1px solid var(--border-default);
+	box-shadow: var(--shadow-xs);
 	cursor: pointer;
 	line-height: 1.4;
 	text-decoration: none;
@@ -487,17 +486,17 @@ input[type="number"]:focus {
 
 .link-btn:hover,
 .tiny-link-btn:hover {
-	background-color: #e1e3e6;
-	border-color: #b9bbbe;
-	color: #222222;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	background-color: var(--bg-active);
+	border-color: var(--border-strong);
+	color: var(--text-primary);
+	box-shadow: var(--shadow-sm);
 }
 
 .link-btn:active,
 .tiny-link-btn:active {
-	background-color: #c8cad1;
-	border-color: #a0a2aa;
-	color: #111111;
+	background-color: var(--bg-active);
+	border-color: var(--border-strong);
+	color: var(--text-primary);
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
@@ -516,24 +515,24 @@ input[type="number"]:focus {
 	padding: 12px 16px;
 	font-size: 15px;
 	font-weight: 500;
-	border: 1px solid #dee2e6;
-	border-radius: 8px !important;
-	background-color: #ffffff;
-	color: #495057;
+	border: 1px solid var(--border-default);
+	border-radius: var(--radius-md) !important;
+	background-color: var(--bg-surface);
+	color: var(--text-secondary);
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+	box-shadow: var(--shadow-xs) !important;
 }
 
 .input-form:hover {
-	border-color: #adb5bd;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+	border-color: var(--border-strong);
+	box-shadow: var(--shadow-sm) !important;
 }
 
 .input-form:focus {
-	border-color: #495057;
+	border-color: var(--border-focus);
 	outline: none !important;
-	background-color: #f8f9fa;
-	box-shadow: 0 2px 8px rgba(73, 80, 87, 0.15) !important;
+	background-color: var(--bg-input);
+	box-shadow: 0 2px 8px rgba(100, 116, 139, 0.15) !important;
 	transform: translateY(-1px) !important;
 }
 
@@ -591,10 +590,10 @@ input[type="number"]:focus {
 }
 
 .attachment-label {
-	font-family: "Roboto", "semi-bold", sans-serif !important;
+	font-family: var(--font-sans) !important;
 	font-size: 1.1rem !important;
 	font-weight: 600 !important;
-	color: #333 !important;
+	color: var(--text-primary) !important;
 	margin-bottom: 8px !important;
 	padding: 0 5px !important;
 }
@@ -616,15 +615,15 @@ input[type="number"]:focus {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 8px;
+	border-radius: var(--radius-md);
 	transition: all 0.3s ease;
-	color: #495057;
+	color: var(--text-secondary);
 }
 
 .file-upload-icon:hover {
-	background-color: #f0f0f0;
+	background-color: var(--bg-active);
 	transform: scale(1.1);
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	box-shadow: var(--shadow-sm);
 }
 
 .file-upload-icon:active {

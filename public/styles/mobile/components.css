@@ -4,7 +4,7 @@
         align-items: center;
         justify-content: center;
         background: #f8f9fa !important;
-        color: #333 !important;
+        color: var(--text-primary) !important;
         padding: 8px12px !important;
         border-radius: 20px !important;
         font-weight: 600;
@@ -17,7 +17,7 @@
         align-items: center !important;
         gap: 15px !important;
         padding: 20px !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
         border-radius: 0 !important;
         border: none !important;
         border-bottom: 1pxsolid#e0e0e0 !important;
@@ -40,7 +40,7 @@
         border: 2pxsolid#e0e0e0 !important;
         border-radius: 10px !important;
         font-size: 1.1rem !important;
-        background: white !important;
+        background: var(--bg-surface) !important;
         box-shadow: none !important;
         margin-bottom: 15px !important;
         height: max-content !important;
@@ -58,7 +58,7 @@
         margin-bottom: 10px !important;
     }
     .btn-outline-secondary {
-        background: white !important;
+        background: var(--bg-surface) !important;
         color: #6c757d !important;
         border: 2pxsolid#6c757d !important;
     }
@@ -91,7 +91,7 @@
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
-        background: white !important;
+        background: var(--bg-body) !important;
     }
     .asortment-container {
         width: 100% !important;
@@ -121,7 +121,7 @@
     }
     label {
         font-weight: 600 !important;
-        color: #333 !important;
+        color: var(--text-primary) !important;
         margin-bottom: 8px !important;
         font-size: 1rem !important;
     }
@@ -138,6 +138,6 @@
         text-align: center !important;
         margin-bottom: 20px !important;
         font-size: 1.3rem !important;
-        color: #333 !important;
+        color: var(--text-primary) !important;
     }
 }

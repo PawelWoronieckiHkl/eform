@@ -10,10 +10,10 @@
     border-radius: 4px;
 }
 .position-controls .btn:hover {
-    background-color: #f8f9fa;
+    background-color: var(--bg-hover);
 }
 .mobile-position-controls {
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--border-default);
     padding-top: 10px;
     margin-top: 10px;
     display: none;

@@ -1,7 +1,11 @@
 .card {
-    border: none;
-    border-radius: 12px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
     overflow: hidden;
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--blur-sm));
+    box-shadow: var(--shadow-card);
+    animation: fadeInUp 0.4s var(--ease-out-expo) both;
 }
 .card-header {
     padding: 1.5rem;
@@ -22,30 +26,30 @@
     margin-left: 10px !important;
     font-weight: 600;
     text-align: start !important;
-    color: #495057;
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
 .form-label.required::after {
     content: " *";
-    color: #dc3545;
+    color: var(--color-error);
 }
 .form-control {
     border-radius: 8px;
-    border: 1px solid #ced4da;
+    border: 1px solid var(--border-default);
     transition: all 0.2s ease;
 }
 .form-control:focus {
-    border-color: #6c757d;
-    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+    border-color: var(--brand-primary);
+    box-shadow: var(--border-glow);
 }
 .form-control.is-invalid {
-    border-color: #dc3545;
+    border-color: var(--color-error);
 }
 #toggle-password{
     padding: 4px !important;
 }
 .form-control.is-valid {
-    border-color: #6c757d;
+    border-color: var(--color-success);
 }
 .input-group {
     border-radius: 8px;
@@ -78,28 +82,29 @@
     transform: translateY(0);
 }
 .btn-primary {
-    background-color: #343a40;
-    border-color: #343a40;
+    background: var(--brand-gradient) !important;
+    border: none !important;
 }
 .btn-primary:hover {
-    background-color: #23272b;
-    border-color: #1d2124;
+    box-shadow: var(--shadow-lg), 0 4px 20px var(--brand-primary-glow) !important;
 }
 .btn-dark {
-    background-color: #343a40;
-    border-color: #343a40;
+    background: var(--bg-surface-solid);
+    border: 1.5px solid var(--border-default);
+    color: var(--text-primary);
 }
 .btn-dark:hover {
-    background-color: #23272b;
-    border-color: #1d2124;
+    background: var(--bg-hover);
+    border-color: var(--brand-primary);
 }
 .btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
+    background: var(--bg-surface-solid);
+    border: 1.5px solid var(--border-default);
+    color: var(--text-secondary);
 }
 .btn-secondary:hover {
-    background-color: #545b62;
-    border-color: #545b62;
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
 }
 #submit-btn:disabled {
     cursor: not-allowed;

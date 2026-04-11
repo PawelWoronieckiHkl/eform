@@ -13,7 +13,7 @@
 	}
 	.image-background {
 		flex: 1 !important;
-		background-color: white !important;
+		background-color: var(--bg-surface) !important;
 	}
 	.login-box {
 		padding-top: 60%;

@@ -5,26 +5,48 @@
   margin-top: 1.5rem;
 }
 .order-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-  padding: 0.6rem 0.6rem;
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(var(--blur-sm));
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 0.8rem 1rem;
   cursor: pointer;
-  transition: box-shadow 0.2s, transform 0.2s;
-  border-left: 5px solid #4caf50;
+  transition: all 0.35s var(--ease-out-expo);
+  border: 1px solid var(--border-default);
+  border-left: 4px solid var(--color-success);
+  position: relative;
+  overflow: hidden;
+}
+.order-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.03));
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+  opacity: 0;
 }
 .history-order-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-  padding: 0.6rem 0.6rem;
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(var(--blur-sm));
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 0.8rem 1rem;
   cursor: pointer;
-  transition: box-shadow 0.2s, transform 0.2s;
-  border-left: 5px solid #424242;
+  transition: all 0.35s var(--ease-out-expo);
+  border: 1px solid var(--border-default);
+  border-left: 4px solid var(--text-tertiary);
 }
 .order-card:hover {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.13);
-  transform: translateY(-2px) scale(1.01);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px) scale(1.01);
+  border-color: var(--color-success-border);
+}
+.order-card:hover::after {
+  opacity: 1;
 }
 .order-card-row {
   display: flex;
@@ -35,22 +57,35 @@
 }
 .order-id {
   font-size: 1.3rem;
-  font-weight: 700;
-  color: #388e3c;
+  font-weight: 800;
+  color: var(--color-success);
+  letter-spacing: -0.01em;
 }
 .history-order-id {
   font-size: 1.3rem;
-  font-weight: 700;
-  color: #b3b3b3;
+  font-weight: 800;
+  color: var(--text-tertiary);
 }
 .order-label {
-  background: #e8f5e9;
-  padding: 0.4rem 0.9rem;
-  border-radius: 6px;
-  font-size: 1rem;
+  background: var(--color-success-bg);
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
 }
 .history-order-card {
-  border-left: 5px solid #9e9e9e;
+  border-left: 4px solid var(--text-tertiary);
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(var(--blur-sm));
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  transition: all 0.35s var(--ease-out-expo);
+  border: 1px solid var(--border-default);
+  border-left: 4px solid var(--text-tertiary);
 }
 .order-info {
   flex: 1 1 180px;
@@ -58,7 +93,7 @@
   flex-direction: column;
   gap: 0.2rem;
   font-size: 1rem;
-  color: #333;
+  color: var(--text-secondary);
 }
 .order-actions {
   display: flex;
@@ -107,19 +142,20 @@
 }
 .history-order-id {
   font-size: 1.3rem;
-  font-weight: 700;
-  color: #757575;
+  font-weight: 800;
+  color: var(--text-tertiary);
 }
 .history-order-label {
-  background: #f5f5f5;
-  padding: 0.4rem 0.9rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  color: #757575;
+  background: var(--bg-surface-sunken);
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 600;
 }
 .history-order-card:hover {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.13);
-  transform: translateY(-2px) scale(1.01);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px) scale(1.01);
 }
 .extra-info-parrent {
   height: 60vh;
@@ -134,21 +170,27 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--bg-overlay);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 110;
+  animation: fadeIn 0.2s var(--ease-out-expo) both;
 }
 .modal-content {
-  background: #fff;
-  border-radius: 8px;
-  padding: 2rem 2.5rem;
-  max-width: 400px;
+  background: var(--bg-glass-strong);
+  backdrop-filter: blur(var(--blur-xl));
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-2xl);
+  padding: 2.5rem 3rem;
+  max-width: 440px;
   width: 90%;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-xl), var(--shadow-glow);
   text-align: center;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-sans);
+  animation: scaleIn 0.3s var(--ease-out-expo) both;
 }
 .modal-content h2 {
   margin-top: 0;
@@ -158,7 +200,7 @@
 .modal-content p {
   margin: 1rem 0 2rem 0;
   font-size: 1rem;
-  color: #444;
+  color: var(--text-primary);
 }
 .modal-buttons .btn {
   display: inline-block;
@@ -196,18 +238,18 @@
   gap: 12px;
   cursor: pointer;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 500;
   transition: color 0.3s ease;
 }
 .custom-checkbox-indicator {
   width: 24px;
   height: 24px;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  background: #fff;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.3s var(--ease-out-expo);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -223,22 +265,23 @@
   transition: opacity 0.2s ease;
 }
 .custom-checkbox:checked+.custom-checkbox-label .custom-checkbox-indicator {
-  background: #4caf50;
-  border-color: #4caf50;
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
   transform: scale(1.1);
+  box-shadow: 0 0 0 3px var(--brand-primary-glow);
 }
 .custom-checkbox:checked+.custom-checkbox-label .custom-checkbox-indicator::after {
   opacity: 1;
 }
 .custom-checkbox:checked+.custom-checkbox-label {
-  color: #4caf50;
+  color: var(--brand-primary);
 }
 .custom-checkbox-wrapper:hover .custom-checkbox-indicator {
-  border-color: #4caf50;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px var(--brand-primary-glow);
 }
 .custom-checkbox:focus+.custom-checkbox-label .custom-checkbox-indicator {
-  outline: 2px solid #4caf50;
+  outline: 2px solid var(--brand-primary);
   outline-offset: 2px;
 }
 .custom-checkbox-wrapper{

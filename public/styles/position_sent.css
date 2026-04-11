@@ -6,10 +6,10 @@
             margin-bottom: 2rem;
         }
         .param-card-with-image {
-            background: #fff;
+            background: var(--bg-surface);
             border-radius: 12px;
-            background:rgba(207, 207, 207, 0.29);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            background: var(--bg-surface-sunken);
+            box-shadow: var(--shadow-sm);
             padding: 0.6rem;
             text-align: center;
         }
@@ -17,7 +17,7 @@
             width: 100%;
             height: 200px;
             margin-bottom: 1rem;
-            background: #f5f5f5;
+            background: var(--bg-surface-sunken);
             border-radius: 6px;
             display: flex;
             align-items: center;
@@ -31,22 +31,22 @@
         .param-title {
             font-weight: 500;
             font-size: 0.95rem;
-            color: #2c3e50;
+            color: var(--text-primary);
             margin-bottom: 0.3rem;
         }
         .param-value {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-primary);
         }
         .param-unit {
             font-size: 0.85rem;
-            color: #666;
+            color: var(--text-secondary);
             margin-left: 0.3rem;
         }
         .param-desc {
             font-size: 0.85rem;
-            color: #777;
+            color: var(--text-tertiary);
             margin-top: 0.2rem;
         }
         .order-header {
@@ -54,32 +54,32 @@
             font-weight: 600;
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid var(--border-default);
         }
         .params-table {
             width: 24%;
             border-collapse: collapse;
             margin: 4rem 0 2rem 10px;
-            background: #f8f9fa;
+            background: var(--bg-surface-sunken);
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow-xs);
         }
         .params-table th, .params-table td {
             padding: 0.6rem 1.1rem;
             text-align: left;
         }
         .params-table th {
-            background: #f0f0f0;
-            color: #555;
+            background: var(--bg-active);
+            color: var(--text-secondary);
             font-size: 0.98rem;
             font-weight: 500;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border-default);
         }
         .params-table td {
             font-size: 0.97rem;
-            color: #333;
-            border-bottom: 1px solid #ececec;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-default);
         }
         .params-table tr:last-child td {
             border-bottom: none;

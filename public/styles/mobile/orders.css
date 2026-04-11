@@ -1,12 +1,12 @@
 @media (max-width: 767.98px) {
     body {
-        background-color: white !important;
+        background-color: var(--bg-body) !important;
     }
 
     .content {
         margin-left: 0 !important;
         width: 100% !important;
-        background: white !important;
+        background: var(--bg-body) !important;
     }
 
     .container {
@@ -56,11 +56,11 @@
     }
 
     .mobile-order-card {
-        background: white !important;
-        border: 1px solid #e0e0e0 !important;
+        background: var(--bg-surface) !important;
+        border: 1px solid var(--border-default) !important;
         border-radius: 10px !important;
         padding: 15px !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: var(--shadow-sm) !important;
         margin-bottom: 10px !important;
     }
 
@@ -69,19 +69,19 @@
         justify-content: space-between !important;
         align-items: center !important;
         margin-bottom: 10px !important;
-        border-bottom: 1px solid #f0f0f0 !important;
+        border-bottom: 1px solid var(--border-default) !important;
         padding-bottom: 8px !important;
     }
 
     .mobile-order-number {
         font-weight: bold !important;
         font-size: 1.1rem !important;
-        color: #434547 !important;
+        color: var(--text-primary) !important;
     }
 
     .mobile-order-date {
         font-size: 0.85rem !important;
-        color: #666 !important;
+        color: var(--text-secondary) !important;
     }
 
     .mobile-order-commission {

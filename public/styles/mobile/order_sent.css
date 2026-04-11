@@ -1,14 +1,14 @@
 @media (max-width: 767.98px) {
     body {
-        background-color: white !important;
+        background-color: var(--bg-surface) !important;
     }
     .content {
-        background-color: white !important;
+        background-color: var(--bg-surface) !important;
         padding: 15px !important;
         width: 100% !important;
     }
     .sent-card {
-        background: white !important;
+        background: var(--bg-surface) !important;
         padding: 20px !important;
         border-radius: 10px !important;
         border: 1px solid #e0e0e0 !important;

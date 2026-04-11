@@ -133,6 +133,7 @@
     "check_option": "Selecteer optie",
     "search_input_placeholder": "Zoek op naam...",
     "empty_select_warning": "Geen optie geselecteerd.",
-    "all_word": "Alle"
+    "all_word": "Alle",
+    "validation_error": "Controleer de juistheid van de waarden"
   }
 }

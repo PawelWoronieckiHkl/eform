@@ -4,20 +4,27 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--bg-overlay);
+    backdrop-filter: blur(var(--blur-md));
+    -webkit-backdrop-filter: blur(var(--blur-md));
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 100;
-    font-family: Arial, sans-serif;
+    font-family: var(--font-sans);
+    animation: fadeIn 0.2s var(--ease-out-expo) both;
 }
 .slope-dialog {
-    background: #fff;
-    border-radius: 10px;
-    padding: 32px 28px;
-    box-shadow: 0 5px 32px rgba(0, 0, 0, 0.13);
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--blur-xl));
+    -webkit-backdrop-filter: blur(var(--blur-xl));
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-2xl);
+    padding: 36px 32px;
+    box-shadow: var(--shadow-xl), var(--shadow-glow);
     min-width: 340px;
     position: relative;
+    animation: scaleIn 0.3s var(--ease-out-expo) both;
 }
 .slope-dialog h3 {
     text-align: center;
@@ -67,19 +74,25 @@
     font-size: 1rem;
 }
 .slope-form-buttons button.cancel-btn {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
+    background-color: var(--bg-surface-sunken);
+    border: 1px solid var(--border-default);
 }
 .slope-form-buttons button.submit-btn {
-    background-color: #007bff;
+    background: var(--brand-gradient);
+    background-size: 200% 200%;
     border: none;
     color: #fff;
+    box-shadow: var(--shadow-sm), 0 2px 8px var(--brand-primary-glow);
+    font-weight: 700;
 }
 .slope-form-buttons button.cancel-btn:hover {
-    background-color: #ddd;
+    background-color: var(--bg-hover);
+    border-color: var(--brand-primary);
 }
 .slope-form-buttons button.submit-btn:hover {
-    background-color: #0056b3;
+    animation: gradient-shift 3s ease infinite;
+    box-shadow: var(--shadow-md), 0 4px 16px var(--brand-primary-glow);
+    transform: translateY(-1px);
 }
 .modal-content {
     max-width: 50vw;
@@ -89,7 +102,7 @@
 .slope-range-label {
     display: block;
     font-size: 11px;
-    color: #6c757d;
+    color: var(--text-tertiary);
     margin-top: 2px;
 }
 
@@ -98,4 +111,35 @@
     font-size: 11px;
     color: red;
     margin-top: 2px;
+}
+
+.slope-info-bar {
+    background-color: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    margin: 12px auto;
+    width: 80%;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.slope-info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #5a9bd5;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    font-style: italic;
+    flex-shrink: 0;
+    margin-top: 1px;
 }
