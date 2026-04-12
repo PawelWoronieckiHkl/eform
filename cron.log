@@ -1069,3 +1069,26 @@ To add an exception for this directory, call:
 	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
 === 2026-04-10 12:00:01 - Koniec (Exit: 0) ===
 === 2026-04-11 10:35:01 - Start ===
+[main a6a5e23] Automatic commit 2026-04-11 10:35
+ 49 files changed, 2349 insertions(+), 1110 deletions(-)
+ create mode 100644 public/scripts/themeToggle.js
+ rewrite public/styles/login.css (78%)
+ rewrite public/styles/main.css (73%)
+ create mode 100644 public/styles/theme.css
+fatal: could not read Username for 'https://github.com': Nie ma takiego urządzenia ani adresu
+=== 2026-04-11 10:35:01 - Koniec (Exit: 0) ===
+=== 2026-04-11 12:00:01 - Start ===
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+=== 2026-04-11 12:00:01 - Koniec (Exit: 0) ===
+=== 2026-04-12 10:35:01 - Start ===
