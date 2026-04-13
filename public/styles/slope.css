@@ -81,7 +81,7 @@
     background: var(--brand-gradient);
     background-size: 200% 200%;
     border: none;
-    color: #fff;
+    color: var(--text-on-brand);
     box-shadow: var(--shadow-sm), 0 2px 8px var(--brand-primary-glow);
     font-weight: 700;
 }
@@ -109,11 +109,7 @@
 .slope-form .invalid-label {
     display: block;
     font-size: 11px;
-    color: red;
-    margin-top: 2px;
-}
-
-.slope-info-bar {
+    color: var(--color-error);
     background-color: var(--bg-surface);
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
@@ -135,8 +131,8 @@
     min-width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: #5a9bd5;
-    color: #fff;
+    background-color: var(--brand-primary);
+    color: var(--text-on-brand);
     font-weight: 700;
     font-size: 13px;
     font-style: italic;

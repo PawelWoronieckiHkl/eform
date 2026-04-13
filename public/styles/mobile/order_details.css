@@ -527,17 +527,17 @@
             left: 0 !important;
             right: 0 !important;
             height: 4px !important;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+            background: var(--brand-gradient) !important;
         }
         .text-center.py-5 h3 {
             font-size: 1.4rem !important;
-            color: #495057 !important;
+            color: var(--text-secondary) !important;
             margin-bottom: 15px !important;
             font-weight: 600 !important;
         }
         .text-center.py-5 p {
             font-size: 1rem !important;
-            color: #6c757d !important;
+            color: var(--text-tertiary) !important;
             margin-bottom: 0 !important;
             line-height: 1.5 !important;
         }

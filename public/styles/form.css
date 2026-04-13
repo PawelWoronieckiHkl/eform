@@ -13,8 +13,8 @@
 .last-config-info {
 	position: fixed;
 	z-index: 121;
-	left: calc(43% + 230px);
-	top: 16rem;
+	left: 45%;
+	top: 40%;
 	transform: translate(-50%, -50%);
 	min-width: 400px;
 	max-width: 650px;
@@ -26,6 +26,9 @@
 	border: 1px solid var(--border-default);
 	box-shadow: var(--shadow-xl), var(--shadow-glow);
 	animation: scaleIn 0.3s var(--ease-out-expo) both;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 @media (max-width: 1000px) {}
@@ -135,9 +138,9 @@ input[type="number"]:focus {
 	height: 15px;
 	min-width: 15px;
 	border-radius: 50%;
-	border: 1px solid #e67700;
-	background-color: #ff922b;
-	color: #ffffff;
+	border: 1px solid var(--brand-accent);
+	background-color: var(--brand-accent);
+	color: var(--text-on-brand);
 	font-size: 9px;
 	font-weight: 700;
 	line-height: 1;
@@ -159,8 +162,8 @@ input[type="number"]:focus {
 	max-width: 320px;
 	padding: 8px 10px;
 	border-radius: 8px;
-	background: #343a40;
-	color: #ffffff;
+	background: var(--text-primary);
+	color: var(--text-inverse);
 	font-size: 12px;
 	font-weight: 500;
 	line-height: 1.4;
@@ -181,7 +184,7 @@ input[type="number"]:focus {
 	transform: translateX(-50%);
 	border-left: 6px solid transparent;
 	border-right: 6px solid transparent;
-	border-top: 6px solid #343a40;
+	border-top: 6px solid var(--text-primary);
 	opacity: 0;
 	visibility: hidden;
 	transition: opacity 0.2s ease, visibility 0.2s ease;
@@ -211,9 +214,9 @@ input[type="number"]:focus {
 	height: 24px;
 	padding: 0 10px;
 	border-radius: 999px;
-	border: 1px solid #e67700;
-	background: #fff4e6;
-	color: #e67700;
+	border: 1px solid var(--brand-accent);
+	background: var(--color-info-bg);
+	color: var(--brand-accent);
 	font-size: 12px;
 	font-weight: 600;
 	line-height: 1;
@@ -234,8 +237,8 @@ input[type="number"]:focus {
 
 .param-info-download-btn:hover,
 .param-info-download-btn:focus {
-	background: #e67700;
-	color: #ffffff;
+	background: var(--brand-accent);
+	color: var(--text-on-brand);
 	outline: none;
 }
 
@@ -502,7 +505,7 @@ input[type="number"]:focus {
 
 .link-btn:focus,
 .tiny-link-btn:focus {
-	outline: 2px solid #a0a4a8;
+	outline: 2px solid var(--border-strong);
 	outline-offset: 2px;
 }
 
@@ -537,51 +540,52 @@ input[type="number"]:focus {
 }
 
 #buttons-space #show-button {
-	background: linear-gradient(135deg, #50dd43 0%, #385f3aa9 100%);
-	color: white;
+	background: var(--brand-gradient);
+	color: var(--text-on-brand);
 	border: none;
 	font-size: 1.1rem;
 	width: 100% !important;
 	font-weight: 600;
 	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	transition: all var(--transition-base);
+	box-shadow: var(--shadow-sm), var(--shadow-glow);
 	padding: 6px !important;
 }
 
 #buttons-space #show-button:hover {
-	background: linear-gradient(135deg, #50dd43 0%, #444 100%);
+	filter: brightness(1.1);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+	box-shadow: var(--shadow-md), var(--shadow-glow-lg);
 }
 
 #buttons-space #show-button:active {
 	transform: translateY(0);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	box-shadow: var(--shadow-sm), var(--shadow-glow);
 }
 
 #buttons-space #reset-button {
-	background: linear-gradient(135deg, #555 0%, #444 100%);
-	color: white;
+	background: var(--bg-surface-sunken);
+	color: var(--text-primary);
 	width: 100% !important;
-	border: none;
+	border: 1px solid var(--border-default);
 	padding: 6px !important;
 	font-size: 1.1rem;
 	font-weight: 600;
 	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	transition: all var(--transition-base);
+	box-shadow: var(--shadow-sm);
 }
 
 #buttons-space #reset-button:hover {
-	background: linear-gradient(135deg, #444 0%, #333 100%);
+	background: var(--bg-hover);
+	border-color: var(--brand-primary);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+	box-shadow: var(--shadow-md);
 }
 
 #buttons-space #reset-button:active {
 	transform: translateY(0);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	box-shadow: var(--shadow-sm);
 }
 
 #buttons-space {
@@ -637,7 +641,7 @@ input[type="number"]:focus {
 	cursor: pointer;
 	padding: 2px 8px;
 	margin-left: 30% !important;
-	color: #dc3545;
+	color: var(--color-error);
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -652,7 +656,7 @@ input[type="number"]:focus {
 }
 
 .file-remove-btn:hover {
-	background-color: #f8d7da;
+	background-color: var(--color-error-bg);
 	transform: scale(1.15);
 }
 

@@ -6,9 +6,21 @@
   box-shadow: var(--shadow-card);
   background: var(--bg-glass-strong);
   backdrop-filter: blur(var(--blur-sm));
-  table-layout: auto;
-  padding-right: 7vb !important;
+  table-layout: fixed;
+  width: 100%;
+  max-width: 100%;
   animation: fadeInUp 0.4s var(--ease-out-expo) both;
+}
+
+.table td,
+.table th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.content > .container {
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 /* Dropdown w tabeli zawsze na wierzchu */

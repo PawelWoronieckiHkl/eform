@@ -3,8 +3,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: #f8f9fa !important;
-        color: var(--text-primary) !important;
+        background: var(--bg-surface-sunken) !important;
         padding: 8px12px !important;
         border-radius: 20px !important;
         font-weight: 600;
@@ -29,7 +28,7 @@
         width: 50px !important;
         height: 50px !important;
         border-radius: 10px !important;
-        background: #f8f9fa !important;
+        background: var(--bg-surface-sunken) !important;
         border: none !important;
         box-shadow: none !important;
     }
@@ -47,7 +46,7 @@
     }
     .form-control:focus,
     .form-select:focus {
-        border-color: #007bff !important;
+        border-color: var(--brand-primary) !important;
     }
     .btn {
         width: 100% !important;
@@ -59,7 +58,7 @@
     }
     .btn-outline-secondary {
         background: var(--bg-surface) !important;
-        color: #6c757d !important;
+        color: var(--text-secondary) !important;
         border: 2pxsolid#6c757d !important;
     }
     .form-button {

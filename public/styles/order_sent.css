@@ -21,11 +21,11 @@
     }
 }
 .status-card:focus-within {
-    outline: 2px solid #1e88e5;
+    outline: 2px solid var(--brand-primary);
     outline-offset: 2px;
 }
 .status-card:focus-visible {
-    outline: 2px solid #bdbdbd;
+    outline: 2px solid var(--border-strong);
     outline-offset: 2px;
 }
 .table-scroll {
@@ -42,10 +42,10 @@
     text-decoration: none !important;
 }
 #parcel-link-card:hover {
-    background-color: #e8e8e8 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-    border-color: #d0d0d0 !important;
-    transition: all 0.2s ease !important;
+    background-color: var(--bg-hover) !important;
+    box-shadow: var(--shadow-md) !important;
+    border-color: var(--brand-primary) !important;
+    transition: all var(--transition-base) !important;
 } */
 .order-table-container {
     overflow-y: visible !important;
@@ -196,16 +196,16 @@ tr {
     letter-spacing: 0.4px;
 }
 .status-card-main[data-status="pending"] .status-indicator {
-    background: #f9a825;
+    background: var(--color-warning);
 }
 .status-card-main[data-status="in_transit"] .status-indicator {
-    background: #1e88e5;
+    background: var(--brand-primary);
 }
 .status-card-main[data-status="delivered"] .status-indicator {
-    background: #43a047;
+    background: var(--color-success);
 }
 .status-card-main[data-status="cancelled"] .status-indicator {
-    background: #e53935;
+    background: var(--color-error);
 }
 .total-price {
     margin-top: 20px;
@@ -235,8 +235,8 @@ tr {
     z-index: 9999 !important;
     left: 50%;
     transform: translateX(-50%) scale(0.95);
-    background: #a7a7a7;
-    color: #fff;
+    background: var(--text-primary);
+    color: var(--text-inverse);
     padding: 1px 5px;
     margin-left: 70px;
     border-radius: 8px;

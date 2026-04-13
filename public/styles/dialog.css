@@ -1,20 +1,25 @@
 dialog {
-	position: fixed;
-	top: 50%;
-	left: 51%;
-	transform: translate(-50%, -50%);
+	margin: auto;
 	border: none;
 	border-radius: var(--radius-2xl);
 	box-shadow: var(--shadow-xl), var(--shadow-glow);
-	padding: 3%;
+	padding: 2% 3%;
 	align-items: center !important;
-	max-height: fit-content !important;
+	height: 95vh !important;
+	max-height: 95vh !important;
+	max-width: 90vw;
 	z-index: 100 !important;
 	background: var(--bg-glass-strong);
 	backdrop-filter: blur(var(--blur-xl));
 	-webkit-backdrop-filter: blur(var(--blur-xl));
 	color: var(--text-primary);
 	animation: scaleIn 0.3s var(--ease-out-expo) both;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+dialog[open] {
+	display: flex;
 }
 
 dialog::backdrop {
@@ -89,11 +94,13 @@ dialog::backdrop {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 1rem;
-	padding-top: 4vh;
+	padding-top: 2vh;
 	padding-left: 3vw;
 	padding-right: 3vw;
 	justify-content: center;
-	max-height: 66vh !important;
+	flex: 1 1 0;
+	min-height: 0;
+	max-height: none !important;
 }
 
 .diag-image {
@@ -170,6 +177,20 @@ dialog::backdrop {
 	z-index: 1;
 }
 
+.image-wrapper img {
+	border-radius: var(--radius-md);
+}
+
+[data-theme="dark"] .image-box {
+	background-color: var(--bg-surface-raised);
+}
+
+[data-theme="dark"] .image-wrapper img {
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: var(--radius-md);
+	padding: 4px;
+}
+
 .image-box-top {
 	position: relative;
 	width: 100%;
@@ -218,6 +239,14 @@ dialog::backdrop {
 	width: 80% !important;
 }
 
+#color-dialog #dialog-container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+	overflow: hidden;
+}
+
 p {
 	margin-bottom: 0;
 }
@@ -242,14 +271,38 @@ p {
 	}
 
 	.filter-controls-content {
-		display: block !important;
+		display: flex !important;
+		flex-wrap: wrap;
+		gap: 6px;
 		padding: 0 !important;
 	}
 
 	.filter-controls {
-		margin-top: 2% !important;
+		margin-top: 4px !important;
 		max-height: none !important;
+		padding: 6px 8px !important;
+		border-color: var(--border-default) !important;
+		border-radius: var(--radius-sm, 4px);
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 6px;
 	}
+}
+
+.filter-group {
+	margin: 0 !important;
+}
+
+.filter-controls .btn,
+.filter-controls .dropdown-toggle {
+	padding: 3px 10px !important;
+	font-size: 0.8rem !important;
+	font-weight: 500 !important;
+	border-radius: var(--radius-sm, 4px) !important;
+	min-height: auto !important;
+	min-width: auto !important;
+	line-height: 1.4 !important;
 }
 
 .sorting-controls {
@@ -262,8 +315,14 @@ p {
 	margin-bottom: 1rem;
 	box-shadow: none;
 	min-width: 0;
-	max-width: 200px;
+	max-width: none;
 	float: right;
+}
+
+.clear-favorites-btn {
+	white-space: nowrap !important;
+	padding: 4px 12px !important;
+	font-size: 0.85rem !important;
 }
 
 .sorting-label {
@@ -329,19 +388,14 @@ p {
 
 @media (max-height: 850px) {
 	.options-scrollable {
-		max-height: 60vh !important;
+		max-height: none !important;
 	}
 }
 
 @media (max-height: 720px) {
 	.options-scrollable {
-		max-height: 50vh !important;
+		max-height: none !important;
 	}
-}
-
-dialog::backdrop {
-	background: rgba(0, 0, 0, 0.5);
-	backdrop-filter: blur(2px);
 }
 
 .bottom {
@@ -464,8 +518,7 @@ dialog::backdrop {
 	min-height: fit-content;
 
 	min-width: 18px;
-	color: #ffffff;
-	font-size: 11px;
+	color: var(--text-on-brand);
 	font-weight: 700;
 	line-height: 1;
 	transition: all 0.2s ease;
@@ -506,31 +559,31 @@ dialog::backdrop {
 }
 
 .stock-zero {
-	background-color: #d9534f;
+	background-color: var(--color-error);
 }
 
 .stock-critical {
-	background-color: #fd7e14;
+	background-color: var(--color-warning);
 }
 
 .stock-safe {
-	background-color: #28a745;
+	background-color: var(--color-success);
 }
 
 .stock-low {
-	background-color: #fd7e14;
+	background-color: var(--color-warning);
 }
 
 .stock-unknown {
-	background-color: #6c757d;
+	background-color: var(--text-tertiary);
 }
 
 .stock-coupon {
-	background-color: #0d6efd;
+	background-color: var(--brand-primary);
 }
 
 .unavailable {
-	background-color: #cccaca;
+	background-color: var(--border-strong);
 }
 
 .obsolete {
@@ -561,7 +614,7 @@ dialog::backdrop {
 	top: 8px;
 	left: 8px;
 	color: white;
-	background-color: #e60202;
+	background-color: var(--color-error);
 	font-weight: bold;
 	font-size: 16px;
 	width: 24px;

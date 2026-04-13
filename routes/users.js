@@ -47,7 +47,11 @@ router.get("/org-pwd", requireLogin, requireOwner, async (req, res, next) => {
         const orgId = req.session.user.orgId;
         const isAdmin = req.session.user.isAdmin || false;
         const users = await db.getUsersFromUsrtblpsswd(orgId, isAdmin);
-        res.render("owner/pwds.njk", { users });
+
+        const orgInfo = await db.getOrgInfo(orgId);
+        const orgIdent = orgInfo ? orgInfo.ident.toLowerCase() : 'default';
+
+        res.render("owner/pwds.njk", { users, orgIdent });
     } catch (err) {
         log('Error loading passwords page:', err);
         next(err);

@@ -47,10 +47,11 @@ html.nav-collapsed .content {
     padding: 15px 20px !important;
     min-height: 80px !important;
     height: auto !important;
-    margin-left: 7px !important;
-    width: calc(100% - 340px);
-    max-width: calc(100% - 340px);
-    min-width: calc(100% - 340px);
+    left: 10px;
+    margin-left: 0 !important;
+    width: calc(100% - 50px);
+    max-width: calc(100% - 50px);
+    min-width: calc(100% - 50px);
     z-index: 100;
 }
 
@@ -67,16 +68,16 @@ html.nav-collapsed .content {
 }
 
 html.nav-collapsed #order-nav {
-    left: 80px;
-    width: calc(100% - 222px);
-    max-width: calc(100% - 222px);
+    left: 10px;
+    width: calc(100% - 50px);
+    max-width: calc(100% - 50px);
 }
 
 .desktop-nav.collapsed~.languages~main #order-nav,
 .desktop-nav.collapsed+.languages+main #order-nav {
-    left: 80px;
-    width: calc(100% - 120px);
-    max-width: calc(100% - 120px);
+    left: 10px;
+    width: calc(100% - 50px);
+    max-width: calc(100% - 50px);
     transition: all 0.3s ease !important;
 }
 
@@ -84,7 +85,12 @@ html.nav-collapsed #order-nav {
     margin-right: 3% !important;
     margin-bottom: 2% !important;
     float: right;
-    scale: 115% !important;
+    scale: 1 !important;
+}
+
+.custom-order-btn p {
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .bg-discount {
@@ -152,7 +158,7 @@ html.nav-collapsed #order-nav {
 }
 
 #new-order-button {
-    margin-left: 3% !important;
+    margin-left: 0 !important;
 }
 
 #new-order-button:hover {
@@ -160,10 +166,13 @@ html.nav-collapsed #order-nav {
 }
 
 .custom-order-btn {
-    width: 10vw !important;
-    height: 4vh !important;
-    font-size: large !important;
-    font-weight: bold !important;
+    min-width: fit-content !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 10px 20px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
 }
 
 .icon {

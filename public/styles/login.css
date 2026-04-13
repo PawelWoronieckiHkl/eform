@@ -97,27 +97,25 @@ label {
 	top: 0;
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(
-		135deg,
-		rgba(99, 102, 241, 0.15) 0%,
-		rgba(6, 182, 212, 0.1) 50%,
-		rgba(139, 92, 246, 0.15) 100%
-	);
+	background: linear-gradient(135deg,
+			rgba(94, 110, 130, 0.15) 0%,
+			rgba(107, 157, 173, 0.1) 50%,
+			rgba(124, 143, 163, 0.15) 100%);
 	z-index: 2;
 	backdrop-filter: blur(2px);
 }
 
-[data-theme="dark"] .image-background::after {
-	background: linear-gradient(
-		135deg,
-		rgba(10, 10, 15, 0.7) 0%,
-		rgba(99, 102, 241, 0.1) 50%,
-		rgba(10, 10, 15, 0.7) 100%
-	);
-	backdrop-filter: blur(3px);
+[data-theme="dark"] .image-background::before {
+	background: url('../img/hkl-login-image_dark.png') center center / cover no-repeat;
+	filter: none;
 }
 
-.image-background > * {
+[data-theme="dark"] .image-background::after {
+	background: none;
+	backdrop-filter: none;
+}
+
+.image-background>* {
 	position: relative;
 	z-index: 3;
 }
@@ -127,4 +125,27 @@ label {
 	top: 16px;
 	right: 16px;
 	z-index: 10;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.theme-toggle-login {
+	position: absolute !important;
+	right: 5px !important;
+	top: 5px !important;
+	transform: none !important;
+	width: 50px !important;
+	height: 50px !important;
+	font-size: 20px !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	z-index: 10;
+	background: rgba(255, 255, 255, 0.15) !important;
+	border: 1px solid rgba(255, 255, 255, 0.3) !important;
+	border-radius: 50% !important;
+	box-shadow: none !important;
+	color: var(--text-secondary) !important;
+	overflow: visible !important;
+	z-index: 999 !important;
 }

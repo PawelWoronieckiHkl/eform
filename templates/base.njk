@@ -250,16 +250,12 @@
         </div>
         <button id='last-user-btn' class='admin-btn custom-nav-link has-tooltip'>
             Ostatni klient</button>
-        <button class='admin-btn'>
-            <a href="/admin" id='admin-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="Admin Panel">
-                <span class="nav-text">Admin panel</span>
-            </a>
-        </button>
-        <button id='pwd-admin-btn' class='admin-btn'>
-            <a href="/user/org-pwd"  class="custom-nav-link has-tooltip" data-tooltip="Hasła">
-                <img src="/img/key-chain.png" class='nav-icon' alt="passwords">
-            </a>
-        </button>
+        <a href="/admin" id='admin-nav-btn' class="admin-btn custom-nav-link has-tooltip" data-tooltip="Admin Panel">
+            <span class="nav-text">Admin panel</span>
+        </a>
+        <a href="/user/org-pwd" id='pwd-admin-btn' class="admin-btn custom-nav-link has-tooltip" data-tooltip="Hasła">
+            <img src="/img/key-chain.png" class='nav-icon' alt="passwords">
+        </a>
     </div>
 {% endif %}
 {# END ADMIN SECTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
@@ -276,12 +272,18 @@
         </div>
     </dialog>
 </div></body></main>{% block footer %}<footer class="site-footer">
+<div class="footer-accent"></div>
+<div class="footer-inner">
 <div class="footer-links">
     <a href="/privacy">{{ __('site.privacy') }}</a>
+    <span class="footer-dot"></span>
     <a href="/terms">{{ __('site.terms') }}</a>
+    <span class="footer-dot"></span>
     <a href="/contact">{{ __('site.contact') }}</a>
 </div>
 <div class="footer-copy">
+    <span class="footer-brand">eforM</span> &copy; <script>document.write(new Date().getFullYear())</script>
+</div>
 </div>
 </footer>{% endblock %}
 <div id="connection-lost-overlay" class="d-none">
