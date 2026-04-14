@@ -135,5 +135,32 @@
     "empty_select_warning": "Aucune option sélectionnée.",
     "all_word": "Tous",
     "validation_error": "Vérifiez l'exactitude des valeurs"
+  },
+  "employee": {
+    "panel_title": "Gestion des employés",
+    "add_employee": "Ajouter un employé",
+    "name": "Prénom",
+    "surname": "Nom",
+    "login": "Identifiant",
+    "login_hint": "L'identifiant sera utilisé pour la connexion",
+    "phone": "Téléphone",
+    "phone_hint": "Facultatif",
+    "password_hint": "Minimum 6 caractères",
+    "last_login": "Dernière connexion",
+    "actions": "Actions",
+    "view_orders": "Voir les commandes",
+    "delete": "Supprimer l'employé",
+    "edit": "Modifier l'employé",
+    "no_employees": "Aucun employé à afficher",
+    "add_first": "Ajouter le premier employé",
+    "employee_details": "Détails de l'employé",
+    "personal_data": "Données personnelles",
+    "change_password": "Changer le mot de passe",
+    "want_change_password": "Je veux changer le mot de passe",
+    "new_password": "Nouveau mot de passe",
+    "confirm_password": "Confirmer le mot de passe",
+    "no_orders": "Cet employé n'a pas encore de commandes",
+    "orders_count": "Nombre de commandes",
+    "never": "Jamais"
   }
 }

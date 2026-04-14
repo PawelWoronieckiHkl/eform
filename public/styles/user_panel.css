@@ -42,22 +42,50 @@
     gap: 0.5rem;
     align-items: center;
 }
-.manage-worker-container .btn{
-    min-width: 55% !important;
-    max-width: 55% !important;
-    width: 55% !important;
-    padding-left: 1% !important;
-}
-.action-buttons .btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
+.manage-worker-container .action-btn {
     white-space: nowrap;
 }
-.view-orders-btn{
-    width: 68% !important;
+.action-buttons .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.w-30 {
-    width: 70% !important;
+.action-btn-view-orders {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
+    color: var(--text-on-brand);
+    box-shadow: var(--shadow-sm), 0 2px 8px var(--brand-primary-glow);
+}
+.action-btn-view-orders:hover {
+    box-shadow: var(--shadow-md), 0 4px 16px var(--brand-primary-glow);
+    transform: translateY(-2px);
+    color: var(--text-on-brand);
+}
+.action-btn-add {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, #4d5d70 100%);
+    color: var(--text-on-brand);
+    box-shadow: var(--shadow-sm), 0 2px 8px var(--brand-primary-glow);
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.action-btn-add:hover {
+    box-shadow: var(--shadow-md), 0 4px 16px var(--brand-primary-glow);
+    transform: translateY(-2px);
+    color: var(--text-on-brand);
 }
 .view-orders-btn {
     transition: all 0.2s ease;
@@ -67,11 +95,22 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 .delete-employee-btn {
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .delete-employee-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    box-shadow: var(--shadow-md), 0 4px 16px var(--color-error-glow);
+}
+.edit-employee-btn {
+    background: var(--bg-surface-sunken);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-xs);
+}
+.edit-employee-btn:hover {
+    background: var(--bg-active);
+    color: var(--brand-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 .btn-dark {
     background-color: var(--bg-surface-sunken);
@@ -128,10 +167,9 @@
     .action-buttons {
         gap: 0.25rem;
     }
-    .action-buttons .btn {
+    .action-buttons .action-btn {
         padding: 0.4rem 0.75rem;
         font-size: 0.75rem;
-        max-width: 150px;
     }
     .dialog-content {
         padding: 1.5rem;

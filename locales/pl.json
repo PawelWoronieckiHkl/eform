@@ -147,5 +147,32 @@
 		"see_order": "mail.see_order",
 		"footer_1": "mail.footer_1",
 		"footer_2": "mail.footer_2"
+	},
+	"employee": {
+		"panel_title": "Zarządzanie Pracownikami",
+		"add_employee": "Dodaj Pracownika",
+		"name": "Imię",
+		"surname": "Nazwisko",
+		"login": "Login",
+		"login_hint": "Login będzie używany do logowania",
+		"phone": "Telefon",
+		"phone_hint": "Opcjonalne",
+		"password_hint": "Minimum 6 znaków",
+		"last_login": "Ostatnie logowanie",
+		"actions": "Akcje",
+		"view_orders": "Zobacz zamówienia",
+		"delete": "Usuń pracownika",
+		"edit": "Edytuj pracownika",
+		"no_employees": "Brak pracowników do wyświetlenia",
+		"add_first": "Dodaj pierwszego pracownika",
+		"employee_details": "Dane Pracownika",
+		"personal_data": "Dane osobowe",
+		"change_password": "Zmiana hasła",
+		"want_change_password": "Chcę zmienić hasło",
+		"new_password": "Nowe hasło",
+		"confirm_password": "Potwierdź hasło",
+		"no_orders": "Ten pracownik nie ma jeszcze żadnych zamówień",
+		"orders_count": "Liczba zamówień",
+		"never": "Nigdy"
 	}
 }

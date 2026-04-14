@@ -19,7 +19,6 @@
               <div class="container my-5 w-100 mobile-rm-card">
                 <div class="orders-topbar mb-4">
                   <div class="orders-topbar-left">
-                    {% block all_orders_btn %}{% endblock %}
                     {% if orders %}
                       <div id="orders-search-mount" class="orders-search-mount mt-4 ms-3" {% block search_data %} data-sent="false" {% endblock %} {% if isEmployee %} data-is-employee="true" {% endif %}></div>
                     {% endif %}
@@ -39,6 +38,7 @@
                       {% endblock %}
                     </div>
                   </div>
+                  {% block all_orders_btn %}{% endblock %}
                   {% block orders %}
                     {% if orders %}
                       <!-- Desktop table version -->

@@ -107,12 +107,16 @@ label {
 
 [data-theme="dark"] .image-background::before {
 	background: url('../img/hkl-login-image_dark.png') center center / cover no-repeat;
-	filter: none;
+	backdrop-filter: blur(1px);
 }
 
 [data-theme="dark"] .image-background::after {
-	background: none;
-	backdrop-filter: none;
+
+	backdrop-filter: blur(2px);
+		background: linear-gradient(135deg,
+			rgba(94, 110, 130, 0.15) 0%,
+			rgba(107, 157, 173, 0.1) 50%,
+			rgba(124, 143, 163, 0.15) 100%);
 }
 
 .image-background>* {

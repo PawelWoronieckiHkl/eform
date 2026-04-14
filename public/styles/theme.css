@@ -137,8 +137,8 @@
     --bg-surface-raised: rgba(52, 57, 80, 0.95);
     --bg-surface-sunken: #282c48;
     --bg-nav: rgba(36, 40, 60, 0.95);
-    --bg-input: rgba(50, 54, 76, 0.7);
-    --bg-input-focus: rgba(60, 66, 90, 0.85);
+    --bg-input: rgba(62, 68, 95, 0.85);
+    --bg-input-focus: rgba(75, 82, 110, 0.9);
     --bg-hover: rgba(94, 110, 130, 0.15);
     --bg-active: rgba(94, 110, 130, 0.22);
     --bg-overlay: rgba(10, 12, 22, 0.75);
@@ -167,9 +167,10 @@
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 6px 16px rgba(0, 0, 0, 0.2);
     --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.3), 0 16px 40px rgba(0, 0, 0, 0.25);
 
-    --color-success-bg: rgba(16, 185, 129, 0.1);
-    --color-success-border: rgba(16, 185, 129, 0.3);
-    --color-success-glow: rgba(16, 185, 129, 0.25);
+    --color-success: #e07a91;
+    --color-success-bg: rgba(224, 122, 145, 0.1);
+    --color-success-border: rgba(224, 122, 145, 0.3);
+    --color-success-glow: rgba(224, 122, 145, 0.25);
     --color-warning-bg: rgba(245, 158, 11, 0.1);
     --color-warning-border: rgba(245, 158, 11, 0.3);
     --color-error-bg: rgba(239, 68, 68, 0.1);
@@ -473,6 +474,28 @@ button.btn-primary:hover {
 
 .btn-danger:hover {
     box-shadow: var(--shadow-lg), 0 4px 20px var(--color-error-glow) !important;
+}
+
+/* ── Show All Orders Button ── */
+.action-btn-show-all {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.4rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
+    color: var(--text-on-brand);
+    box-shadow: var(--shadow-sm), 0 2px 8px var(--brand-primary-glow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+.action-btn-show-all:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), 0 4px 16px var(--brand-primary-glow);
+    color: var(--text-on-brand);
 }
 
 /* ============================================
@@ -1080,15 +1103,23 @@ dialog::backdrop {
    DARK MODE IMAGE ADJUSTMENTS
    ============================================ */
 [data-theme="dark"] .nav-icon {
-    filter: invert(0.85);
+    filter: invert(0.95) brightness(1.2);
 }
 
 [data-theme="dark"] .icon {
-    filter: invert(0.85);
+    filter: invert(0.95) brightness(1.2);
 }
 
 [data-theme="dark"] img.logo {
     filter: brightness(0.9);
+}
+
+.nav-text-new-order {
+    color: #1a1a1a;
+}
+
+[data-theme="dark"] .nav-text-new-order {
+    color: #e8f5e9;
 }
 
 /* ============================================
@@ -1158,6 +1189,12 @@ dialog,
     background-color: var(--bg-input-focus) !important;
     border-color: var(--brand-primary) !important;
     box-shadow: var(--border-glow), var(--shadow-sm) !important;
+}
+
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] .form-select::placeholder {
+    color: var(--text-tertiary) !important;
+    opacity: 1;
 }
 
 [data-theme="dark"] .modal-content {

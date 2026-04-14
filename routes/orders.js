@@ -421,7 +421,10 @@ router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, async (
         const sendData = sender.getData();
         const totalPrice = await db.getTotal(order.orderDetails.id);
         await db.syncTotalPriceIfMissing(order.orderDetails.id, totalPrice, req.__('order.total'), req.__('order.total_hidden'));
-        res.json({ success: true, data: { sendData, totalPrice, cleanOrderItems, total } });
+        const currentUser = ownerService.getCurrentUser(req);
+        const productionTimes = currentUser?.orgId ? await db.getGroupDeliveryTimes(currentUser.orgId) : {};
+        const { maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
+        res.json({ success: true, data: { sendData, totalPrice, cleanOrderItems, total, maxProdDays } });
     } catch (error) {
         log('Error fetching order details:', error);
         res.status(500).json({ success: false, message: 'Error fetching order details' });
@@ -504,6 +507,8 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         }
 
         const currentUser = ownerService.getCurrentUser(req);
+        const productionTimes = currentUser?.orgId ? await db.getGroupDeliveryTimes(currentUser.orgId) : {};
+        const { maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
         const photoFile = await db.getUserLogo(currentUser?.pin);
         const logoPath = path.join(__dirname, '../img/', photoFile);
         const isShort = req.params.short === 'true';
@@ -513,7 +518,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         if (!isShort) {
             // Ujednolicona logika PDF — ten sam template (order-pdf.njk) co w sendMail
             const orderIdx = await db.getUserOrderId(req.params.orderId);
-            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, shouldShowPrices);
+            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, shouldShowPrices, maxProdDays);
         } else {
             // Short PDF — osobny template order_to_print_short.njk
             let logoDataUri = null;
@@ -546,6 +551,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
                 prices: shouldShowPrices,
                 sendData: sendData,
                 totalPrice: totalPrice,
+                maxProdDays,
             });
 
             const { chromium } = require('playwright');
@@ -614,6 +620,8 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             const logoPath = path.join(__dirname, '../img/', photoFile)
             const heads = Object.keys(orderItems[0].json_parameters);
             let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
+            const productionTimes = currentUser?.orgId ? await db.getGroupDeliveryTimes(currentUser.orgId) : {};
+            const { maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
             const attachments = await getExtraAttachments(sender.slopePaths);
             const lang = req.getLocale();
             const mail = await db.getUserMail(currentUser?.pin)
@@ -633,7 +641,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             // UDW (BCC) - pozostałe adresy
             let bccList = [confirmationEmail, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'].filter(Boolean).flat();
             
-            const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx)
+            const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays)
             const orgData = await db.getOrgInfo(req.session.user.organization)
 
             if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev') {

@@ -70,7 +70,7 @@ class SyncProdStatus {
                 rowObj[headers[j]] = values[j] ?? '';
             }
 
-            if (rowObj.ORGANIZATIONIDENT === this.orgIdent && rowObj.USERIDENT === this.userIdent) {
+            if (rowObj.ORGANIZATIONIDENT?.toUpperCase() === this.orgIdent?.toUpperCase() && rowObj.USERIDENT?.toUpperCase() === this.userIdent?.toUpperCase()) {
                 log('Znaleziono pasujący rekord:', rowObj);
                 rows.push(rowObj);
             }

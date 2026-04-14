@@ -18,8 +18,8 @@
                             {{ __('employee.panel_title') or 'Zarządzanie Pracownikami' }}
                         </h2>
                         <div class="d-flex justify-content-end mb-3">
-                            <a href="/user/employee/add" class="btn btn-dark">
-                                <i class="fas fa-user-plus"></i>
+                            <a href="/user/employee/add" class="action-btn action-btn-add">
+                                <i class="fas fa-user-plus me-2"></i>
                                 {{ __('employee.add_employee') or 'Dodaj Pracownika' }}
                             </a>
                         </div>
@@ -47,20 +47,20 @@
                                                 <td>{{ employee.surname }}</td>
                                                 <td>{{ employee.login }}</td>
                                                 <td>{{ employee.phone or '-' }}</td>
-                                                <td>{{ employee.last_login or 'Nigdy' }}</td>
+                                                <td>{{ employee.last_login or __('employee.never') or 'Nigdy' }}</td>
                                                 <td class="text-center">
                                                     <div class="action-buttons">
-                                                        <a href="/user/employee/{{ employee.id }}/orders" class="btn btn-secondary view-orders-btn mb-2">
+                                                        <a href="/user/employee/{{ employee.id }}/orders" class="action-btn action-btn-view-orders">
                                                             <i class="fas fa-shopping-cart me-2"></i>
                                                             {{ __('employee.view_orders') or 'Zobacz zamówienia' }}
                                                         </a>
                                                         <div class='manage-worker-container d-flex justify-content-center gap-2'>
-                                                            <button class="btn btn-danger delete-employee-btn w-30" data-id="{{ employee.id }}" data-name="{{ employee.name }} {{ employee.surname }}">
+                                                            <button class="action-btn action-btn-delete delete-employee-btn" data-id="{{ employee.id }}" data-name="{{ employee.name }} {{ employee.surname }}">
                                                                 <i class="fas fa-trash me-2"></i>
                                                                 {{ __('employee.delete') or 'Usuń pracownika' }}
                                                             </button>
-                                                            <a href="/user/employee/edit/{{ employee.id }}" class="btn btn-secondary edit-employee-btn w-30" data-id="{{ employee.id }}" data-name="{{ employee.name }} {{ employee.surname }}">
-                                                                <i class="fas fa-trash me-2"></i>
+                                                            <a href="/user/employee/edit/{{ employee.id }}" class="action-btn action-btn-edit edit-employee-btn" data-id="{{ employee.id }}" data-name="{{ employee.name }} {{ employee.surname }}">
+                                                                <i class="fas fa-edit me-2"></i>
                                                                 {{ __('employee.edit') or 'Edytuj pracownika' }}
                                                             </a>
                                                         </div>
@@ -75,9 +75,9 @@
                             <div class="alert" role="alert">
                                 <i class="fas fa-info-circle"></i>
                                 <p class="mb-2">{{ __('employee.no_employees') or 'Brak pracowników do wyświetlenia' }}</p>
-                                <a href="/user/employee/add" class="btn btn-dark">
-                                    <i class="fas fa-user-plus"></i>
-                                    {{ __('employee.add_first') or 'Dodaj pierwszego pracownika' }}
+                                <a href="/user/employee/add" class="action-btn action-btn-add">
+                                <i class="fas fa-user-plus me-2"></i>
+                                {{ __('employee.add_first') or 'Dodaj pierwszego pracownika' }}
                                 </a>
                             </div>
                         {% endif %}

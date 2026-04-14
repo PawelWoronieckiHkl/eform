@@ -1,3 +1,8 @@
+#showAllOrders-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
 .table {
   border-collapse: separate;
   border-spacing: 0;
@@ -18,9 +23,31 @@
   text-overflow: ellipsis;
 }
 
+.table td.buttons {
+  overflow: visible;
+}
+
 .content > .container {
-  overflow-x: auto;
+  overflow: visible;
   max-width: 100%;
+}
+
+.table .has-tooltip {
+  position: relative;
+  z-index: 10;
+}
+
+.table .has-tooltip:hover {
+  z-index: 99999;
+  overflow: visible;
+}
+
+.table .has-tooltip::after {
+  z-index: 99999 !important;
+}
+
+.table .has-tooltip::before {
+  z-index: 99999 !important;
 }
 
 /* Dropdown w tabeli zawsze na wierzchu */
@@ -173,6 +200,12 @@
   background: var(--bg-hover) !important;
   transform: translateX(4px);
   box-shadow: inset 3px 0 0 var(--brand-primary);
+}
+
+.order-row:has(.has-tooltip:hover) {
+  transform: none !important;
+  z-index: 99999;
+  position: relative;
 }
 
 .order-row:hover td,

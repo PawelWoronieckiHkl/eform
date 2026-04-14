@@ -15,6 +15,7 @@ const { fileExists } = require('../utils/fileManager');
 const { ordersManager } = require('../utils/saveOrdersOutput.js');
 const { file } = require('pdfkit');
 const { log } = require('../utils/logging');
+const { recalcAndSaveMaxProdDays } = require('../services/productionDays');
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
@@ -58,6 +59,7 @@ router.post('/save', requireLogin, upload.any(), async (req, res) => {
     const files = req.files || [];
     const result = await db.insertNewForm(formData);
     await db.reindexOrderPositions(formData.order);
+    await recalcAndSaveMaxProdDays(formData.order);
 
     if (files.length > 0) {
       const orderpos = await db.getOrderpos(result[0].insertId);
@@ -89,10 +91,15 @@ router.patch('/edit/save', requireLogin, upload.any(), async (req, res) => {
     const files = req.files || [];
     const result = await db.updatePosition(formData, total);
 
+    const positionForRecalc = await db.getPosition(formData.id);
+    if (positionForRecalc) {
+      await recalcAndSaveMaxProdDays(positionForRecalc.order_id);
+    }
+
     if (files.length > 0) {
       const orderpos = await db.getOrderpos(formData.id);
       const saver = new ordersManager();
-      const position = await db.getPosition(formData.id);
+      const position = positionForRecalc;
       const orderNo = await db.getOrderNo(position.order_id);
       saver.setOutputPath(req, position.order_id, orderNo, orderpos);
       await saver.updateAttachments(files, formData.id);
@@ -121,6 +128,7 @@ router.delete('/:positionId/delete', requireLogin, async (req, res) => {
 
     if (response) {
       await db.reindexOrderPositions(orderId);
+      await recalcAndSaveMaxProdDays(orderId);
       return res.status(200).json({
         success: true,
         message: 'position.delete_msg'
@@ -243,6 +251,7 @@ router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
 
   if (result) {
     await db.reindexOrderPositions(orderId);
+    await recalcAndSaveMaxProdDays(orderId);
     const newPositionId = result[0].insertId;
     return res.status(200).json({ redirect: `/position/${newPositionId}/edit` })
   }

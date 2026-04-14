@@ -141,7 +141,7 @@
     #preview-image {
         width: 100% !important;
         height: auto !important;
-        max-height: 100vh !important;
+        max-height: none !important;
         object-fit: contain !important;
         border-radius: 0 !important;
     }

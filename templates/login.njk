@@ -24,11 +24,11 @@
   <body class="image-background ">
     <header class="languages">
       <div class="language-switcher">
-        <a href="/change-language?lang=pl" {% if locale == 'pl' %} class="active" data-tooltip="{{ __('base.base.polish_tooltip') }}" {% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28"> </a>
-        <a href="/change-language?lang=en" {% if locale == 'en' %} class="active" data-tooltip="{{ __('base.base.english_tooltip') }}" {% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30" height="28"> </a>
-        <a href="/change-language?lang=de" {% if locale == 'de' %} class="active" data-tooltip="{{ __('base.german_tooltip') }}" {% endif %}><img src="/img/germany.png" alt="Germany flag" width="30" height="28"> </a>
-        <a href="/change-language?lang=nl" {% if locale == 'nl' %} class="active" data-tooltip="{{ __('base.netherlands_tooltip') }}" {% endif %}><img src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28"> </a>
-        <a href="/change-language?lang=fr" {% if locale == 'fr' %} class="active" data-tooltip="{{ __('base.french_tooltip') }}" {% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28"> </a>
+        <a href="/change-language?lang=pl" {% if locale == 'pl' %} class="active" data-tooltip="{{ __('base.base.polish_tooltip') }}" {% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28"></a>
+        <a href="/change-language?lang=en" {% if locale == 'en' %} class="active" data-tooltip="{{ __('base.base.english_tooltip') }}" {% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30" height="28"></a>
+        <a href="/change-language?lang=de" {% if locale == 'de' %} class="active" data-tooltip="{{ __('base.german_tooltip') }}" {% endif %}><img src="/img/germany.png" alt="Germany flag" width="30" height="28"></a>
+        <a href="/change-language?lang=nl" {% if locale == 'nl' %} class="active" data-tooltip="{{ __('base.netherlands_tooltip') }}" {% endif %}><img src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28"></a>
+        <a href="/change-language?lang=fr" {% if locale == 'fr' %} class="active" data-tooltip="{{ __('base.french_tooltip') }}" {% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28"></a>
       </div>
     </header>
     <form action="/user/auth/login" method="POST">
@@ -47,7 +47,7 @@
           <input type="password" name="password" placeholder="{{ __('login.password_placeholder') }}">
         </div>
         {% if message %}
-          <p class="alert alert-danger mt-4 p-2 w-75 ms-5">{{ message }}
+          <p class="alert alert-danger mt-4 p-2 w-100 ms-0 ">{{ __(message) }}
           </p>
         {% endif %}
         <button class="btn btn-secondary" type="submit">{{ __('login.login_button') }}</button>

@@ -84,6 +84,11 @@
           </tbody>
         </table>
       {% endfor %}
+      {% if maxProdDays %}
+        <div class="print-total-items">
+          {{ __('order.production_time_label') }} {{ maxProdDays }} {{ __('termin.days') }}
+        </div>
+      {% endif %}
       <div class="print-total-items">
         {{ __('order.total_items') }}: {{ globalIndex - 1 }}
       </div>

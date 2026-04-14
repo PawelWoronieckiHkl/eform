@@ -59,6 +59,14 @@
                 </table>
               {% endfor %}
             </div>
+            {% if maxProdDays %}
+              <div style="margin-top: 20px; font-weight: bold;">
+                {{ __('order.production_time_label') }} {{ maxProdDays }} {{ __('termin.days') }}
+              </div>
+            {% endif %}
+            <div style="margin-top: 5px; font-weight: bold;">
+              {{ __('order.total_items') }}: {{ globalIndex - 1 }}
+            </div>
             {% block scripts %}
               <script type='module' src='/scripts/base.js'></script>
             {% endblock %}

@@ -141,7 +141,7 @@
                 {% endblock %}
                 <a href="/orders/add-order" id='new-order-nav-btn' class="custom-nav-link nav-link-primary has-tooltip" data-tooltip="{{ __('base.new_order') }}">
                     <img src="/img/new-order.png" class='nav-icon' alt="new-order-icon">
-                    <span class="nav-text fw-bold text-black">{{ __('base.new_order') }}</span>
+                    <span class="nav-text fw-bold nav-text-new-order">{{ __('base.new_order') }}</span>
                 </a>
                 <a href="/orders" id='orders-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="{{ __('base.your_orders') }}">
                     <img src="/img/orders.png" class='nav-icon' alt="orders-ico">
@@ -202,11 +202,11 @@
 {% endblock %}
 <header class="languages">
     <div class="language-switcher">
-        <a href="/change-language?lang=pl" {% if locale=='pl' %} class="active" data-tooltip="{{ __('base.base.polish_tooltip') }}" {% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28"> </a>
-        <a href="/change-language?lang=en" {% if locale=='en' %} class="active" data-tooltip="{{ __('base.base.english_tooltip') }}" {% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30" height="28"> </a>
-        <a href="/change-language?lang=de" {% if locale=='de' %} class="active" data-tooltip="{{ __('base.german_tooltip') }}" {% endif %}><img src="/img/germany.png" alt="Germany flag" width="30" height="28"> </a>
-        <a href="/change-language?lang=nl" {% if locale=='nl' %} class="active" data-tooltip="{{ __('base.netherlands_tooltip') }}" {% endif %}><img src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28"> </a>
-        <a href="/change-language?lang=fr" {% if locale=='fr' %} class="active" data-tooltip="{{ __('base.french_tooltip') }}" {% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28"> </a>
+        <a href="/change-language?lang=pl" {% if locale=='pl' %} class="active" data-tooltip="{{ __('base.base.polish_tooltip') }}" {% endif %}><img src="/img/poland.png" alt="Poland flag" width="30" height="28"></a>
+        <a href="/change-language?lang=en" {% if locale=='en' %} class="active" data-tooltip="{{ __('base.base.english_tooltip') }}" {% endif %}><img src="/img/united-kingdom.png" alt="UK flag" width="30" height="28"></a>
+        <a href="/change-language?lang=de" {% if locale=='de' %} class="active" data-tooltip="{{ __('base.german_tooltip') }}" {% endif %}><img src="/img/germany.png" alt="Germany flag" width="30" height="28"></a>
+        <a href="/change-language?lang=nl" {% if locale=='nl' %} class="active" data-tooltip="{{ __('base.netherlands_tooltip') }}" {% endif %}><img src="/img/netherlands.png" alt="Netherlands flag" width="30" height="28"></a>
+        <a href="/change-language?lang=fr" {% if locale=='fr' %} class="active" data-tooltip="{{ __('base.french_tooltip') }}" {% endif %}><img src="/img/france.png" alt="France flag" width="30" height="28"></a>
     </div>
 </header>
 <main>

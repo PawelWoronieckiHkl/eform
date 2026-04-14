@@ -140,5 +140,32 @@
 		"status_critical": "Critical stock",
 		"validation_error": "Check the correctness of the values",
 		"reset_filters": "Reset filters"
+	},
+	"employee": {
+		"panel_title": "Employee Management",
+		"add_employee": "Add Employee",
+		"name": "First Name",
+		"surname": "Last Name",
+		"login": "Login",
+		"login_hint": "Login will be used for signing in",
+		"phone": "Phone",
+		"phone_hint": "Optional",
+		"password_hint": "Minimum 6 characters",
+		"last_login": "Last Login",
+		"actions": "Actions",
+		"view_orders": "View Orders",
+		"delete": "Delete Employee",
+		"edit": "Edit Employee",
+		"no_employees": "No employees to display",
+		"add_first": "Add First Employee",
+		"employee_details": "Employee Details",
+		"personal_data": "Personal Data",
+		"change_password": "Change Password",
+		"want_change_password": "I want to change the password",
+		"new_password": "New Password",
+		"confirm_password": "Confirm Password",
+		"no_orders": "This employee has no orders yet",
+		"orders_count": "Orders Count",
+		"never": "Never"
 	}
 }

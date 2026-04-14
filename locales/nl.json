@@ -135,5 +135,32 @@
     "empty_select_warning": "Geen optie geselecteerd.",
     "all_word": "Alle",
     "validation_error": "Controleer de juistheid van de waarden"
+  },
+  "employee": {
+    "panel_title": "Medewerkersbeheer",
+    "add_employee": "Medewerker toevoegen",
+    "name": "Voornaam",
+    "surname": "Achternaam",
+    "login": "Login",
+    "login_hint": "Login wordt gebruikt om in te loggen",
+    "phone": "Telefoon",
+    "phone_hint": "Optioneel",
+    "password_hint": "Minimaal 6 tekens",
+    "last_login": "Laatste login",
+    "actions": "Acties",
+    "view_orders": "Bestellingen bekijken",
+    "delete": "Medewerker verwijderen",
+    "edit": "Medewerker bewerken",
+    "no_employees": "Geen medewerkers om weer te geven",
+    "add_first": "Eerste medewerker toevoegen",
+    "employee_details": "Medewerkergegevens",
+    "personal_data": "Persoonlijke gegevens",
+    "change_password": "Wachtwoord wijzigen",
+    "want_change_password": "Ik wil het wachtwoord wijzigen",
+    "new_password": "Nieuw wachtwoord",
+    "confirm_password": "Wachtwoord bevestigen",
+    "no_orders": "Deze medewerker heeft nog geen bestellingen",
+    "orders_count": "Aantal bestellingen",
+    "never": "Nooit"
   }
 }

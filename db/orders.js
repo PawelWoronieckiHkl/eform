@@ -545,6 +545,17 @@ async function countSearchUserOrders(userId, phrase, sent = false, employeeId = 
     }
 }
 
+async function updateMaxProdDays(orderId, maxProdDays) {
+    const query = `UPDATE \`order\` SET max_prod_days = ? WHERE id = ?`;
+    try {
+        const response = await updateQuery(query, [maxProdDays, orderId]);
+        return response;
+    } catch (err) {
+        log(err);
+        return false;
+    }
+}
+
 module.exports = {
     getOrderWithItems,
     getOrderDetails,
@@ -567,6 +578,7 @@ module.exports = {
     syncTotalPriceIfMissing,
     saveDiscount,
     getDiscount,
-    getOrderNo
+    getOrderNo,
+    updateMaxProdDays
 }
 

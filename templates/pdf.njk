@@ -71,6 +71,14 @@
             </tbody>
         </table>
     {% endfor %}
+    {% if maxProdDays %}
+        <div style="margin-top: 20px; font-weight: bold;">
+            {{ __('order.production_time_label') }} {{ maxProdDays }} {{ __('termin.days') }}
+        </div>
+    {% endif %}
+    <div style="margin-top: 5px; font-weight: bold;">
+        {{ __('order.total_items') }}: {{ globalIndex - 1 }}
+    </div>
     <button onclick="eksportujDoExcel()">Eksportuj do Excel</button>
 {% else %}
     <div class="text-center py-5">

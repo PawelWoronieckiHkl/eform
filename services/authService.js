@@ -17,7 +17,7 @@ async function handleAuthLogin(req, res, next, pin, password) {
             let owner = await db.getOwner(pin);
 
             if (!owner) {
-                return res.render("login.njk", { message: "Dane nieprawidłowe" });
+                return res.render("login.njk", { message: "login.incorrect_data" });
             }
 
             const userId = await db.getUserId(pin)
@@ -51,13 +51,13 @@ async function handleAuthLogin(req, res, next, pin, password) {
             const user = await db.getUserByEmployye(pin);
 
             if (!user) {
-                return res.render("login.njk", { message: "Dane nieprawidłowe" });
+                return res.render("login.njk", { message: "login.incorrect_data" });
             }
 
             const organization = await db.getOwner(user.pin);
 
             if (!organization) {
-                return res.render("login.njk", { message: "Dane nieprawidłowe" });
+                return res.render("login.njk", { message: "login.incorrect_data" });
             }
             req.session.user = { pin: user.pin, password: user.password, showPrices: false, organization: organization.orgId, userId: user.id };
             req.session.user.isOwner = false;
@@ -69,7 +69,7 @@ async function handleAuthLogin(req, res, next, pin, password) {
             req.session.mustAcceptRODO = false;
             return res.redirect("/");
         } else {
-            return res.render("login.njk", { message: "Dane nieprawidłowe" });
+            return res.render("login.njk", { message: "login.incorrect_data" });
         }
     } catch (err) {
         return next(err);

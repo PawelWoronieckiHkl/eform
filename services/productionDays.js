@@ -1,4 +1,6 @@
 const ELECTRIC_EXTRA_DAYS = 5;
+const db = require('../db/db_helper');
+const orderService = require('./orderService');
 
 function isElectric(jsonParams) {
     if (!jsonParams) return false;
@@ -45,4 +47,24 @@ function buildItemProductionDays(cleanOrderItems, productionTimes) {
     return { itemProductionDays: map, maxProdDays };
 }
 
-module.exports = { computeItemProductionDays, buildItemProductionDays, ELECTRIC_EXTRA_DAYS };
+module.exports = { computeItemProductionDays, buildItemProductionDays, ELECTRIC_EXTRA_DAYS, recalcAndSaveMaxProdDays };
+
+async function recalcAndSaveMaxProdDays(orderId) {
+    try {
+        const { orderDetails, orderItems } = await db.getOrderWithItems(orderId);
+        if (!orderItems || orderItems.length === 0) {
+            await db.updateMaxProdDays(orderId, 0);
+            return 0;
+        }
+        const details = Array.isArray(orderDetails) ? orderDetails[0] : orderDetails;
+        const orgId = details?.organization_id;
+        const productionTimes = orgId ? await db.getGroupDeliveryTimes(orgId) : {};
+        const { cleanOrderItems } = await orderService.jsonTextBackToMap(orderItems);
+        const { maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
+        await db.updateMaxProdDays(orderId, maxProdDays);
+        return maxProdDays;
+    } catch (err) {
+        console.error('recalcAndSaveMaxProdDays error:', err);
+        return 0;
+    }
+}
