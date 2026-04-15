@@ -1,13 +1,21 @@
+/**
+ * Intro.js step definitions — multilingual via window.t().
+ * Tour flow: Home → New Order → Orders → History → (end)
+ */
+
+const t = (key) => window.t ? window.t(key) : key;
+
+// ─── z-index helpers per page ───────────────────────────────────────────────
+
 export function getDivToChangeIndex(pathname) {
-    const divToChangeMapping = {
+    const mapping = {
         '/': {
             container: document.querySelector('.desktop-nav'),
             elements: ['new-order-nav-btn', 'orders-nav-btn', 'orders-history-nav-btn', 'employee-panel-nav-btn']
-
         },
         '/orders/add-order': {
             container: document.getElementById('new-order-card'),
-            elements: ['commission-input', 'new-order-card', 'address-checkbox-container', 'send-address-checkbox-container', 'name', 'email', 'phone', 'street', 'city']
+            elements: ['commission-input', 'new-order-card', 'address-checkbox-container', 'send-address-checkbox-container']
         },
         '/orders': {
             container: document.querySelector('.order-row'),
@@ -18,374 +26,342 @@ export function getDivToChangeIndex(pathname) {
             elements: ['container', 'order-row', 'copy-order-btn']
         },
         '/user/employee-panel': {
-
+            container: document.querySelector('.employees-container'),
+            elements: ['employees-container']
         }
     };
 
-    
-    const orderDetailPattern = /^\/orders\/order\/\d+$/;
-    if (orderDetailPattern.test(pathname)) {
+    if (/^\/orders\/order\/\d+$/.test(pathname)) {
         return {
             container: document.getElementById('order-nav'),
             elements: ['order-nav', 'new-order-button', 'edit-order-button', 'short-print-button', 'print-button', 'generate-excel-btn']
         };
     }
 
-    return divToChangeMapping[pathname] || { container: null, elements: [] };
+    return mapping[pathname] || { container: null, elements: [] };
 }
+
+// ─── redirections between pages (tour continuation) ─────────────────────────
+
 export function getRedirectionAfterIntro(pathname) {
-    const redirectionMapping = {
+    const map = {
         '/': '/orders/add-order',
-        '/orders/add-order': false,
-        '/orders': '/orders/history',
+        '/orders': '/orders/history'
     };
 
-    if (redirectionMapping.hasOwnProperty(pathname) && redirectionMapping[pathname]) {
-        window.location.href = redirectionMapping[pathname];
+    if (map[pathname]) {
+        window.location.href = map[pathname];
     }
 }
+
+// ─── overlay for special cases ──────────────────────────────────────────────
+
+export function createOverlayDiv() {
+    let div = document.getElementById('intro-overlay-div');
+    if (!div) {
+        div = document.createElement('div');
+        div.id = 'intro-overlay-div';
+        Object.assign(div.style, {
+            position: 'fixed', top: '0', left: '0',
+            width: '100%', height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: '198'
+        });
+        document.body.appendChild(div);
+    }
+    return div;
+}
+
+// ─── step definitions per page ──────────────────────────────────────────────
+
 export function getStepsForPage(pathname) {
+
     const stepsConfig = {
-        '/': [ 
+        // ── Home (/): navbar orientation ────────────────────────────────────
+        '/': [
             {
-                intro: "Witamy w aplikacji eForm! Przejdziemy szybką wycieczkę, żeby pomóc Ci zacząć.",
+                intro: t('intro.home_welcome'),
                 position: 'floating',
                 tooltipClass: 'introjs-center-tooltip'
             },
             {
                 element: '#new-order-nav-btn',
-                intro: t('order.cancel'),
+                intro: t('intro.home_new_order'),
                 position: 'bottom-right-aligned'
             },
             {
                 element: '#orders-nav-btn',
-                intro: "Wyświetl wszystkie swoje istniejące zamówienia. Możesz je edytować, duplikować lub przeglądać poprzednie zgłoszenia.",
+                intro: t('intro.home_orders'),
                 position: 'bottom-right-aligned'
             },
             {
                 element: '#orders-history-nav-btn',
-                intro: "Sprawdź historię swoich zamówień i śledź poprzednie zgłoszenia.",
+                intro: t('intro.home_history'),
                 position: 'bottom-right-aligned'
             },
             {
                 element: '#employee-panel-nav-btn',
-                intro: "Sprawdź historię swoich zamówień i śledź poprzednie zgłoszenia.",
+                intro: t('intro.home_employee'),
                 position: 'bottom-right-aligned'
             },
             {
                 element: '#new-order-nav-btn',
-                intro: "Przejdziemy teraz do widoku nowego zamówienia.",
+                intro: t('intro.home_go_to_new_order'),
                 position: 'floating',
                 tooltipClass: 'introjs-left-tooltip'
             }
-
         ],
+
+        // ── New Order (/orders/add-order) ───────────────────────────────────
         '/orders/add-order': [
             {
-                intro: "Utwórz tutaj nowe zamówienie. Wypełnij wszystkie wymagane pola.",
+                intro: t('intro.new_order_welcome'),
                 position: 'floating',
                 tooltipClass: 'introjs-center-tooltip'
             },
             {
                 element: '#new-order-card',
-                intro: "To jest formularz zamówienia. Wypełnij wszystkie sekcje, aby utworzyć zamówienie.",
+                intro: t('intro.new_order_form'),
                 position: 'bottom',
                 tooltipClass: 'introjs-under-tooltip'
             },
             {
                 element: '#commission-input',
-                intro: "Tutaj wpisujemy nazwę zlecenia lub numer referencyjny dla zamówienia.",
+                intro: t('intro.new_order_commission'),
                 position: 'bottom',
                 tooltipClass: 'introjs-under-tooltip'
             },
             {
                 element: '#address-checkbox-container',
-                intro: "Tą opcję zaznacz, jeżeli zamówienie jest dla klienta zewnętrznego",
+                intro: t('intro.new_order_address'),
                 position: 'bottom',
                 tooltipClass: 'introjs-under-tooltip'
             },
             {
                 element: '#send-address-checkbox-container',
-                intro: "Ta opcja potrzebna jest, jeżeli zamówienie ma być wyłane do klienta.",
+                intro: t('intro.new_order_send_address'),
                 position: 'bottom',
                 tooltipClass: 'introjs-under-tooltip'
             },
             {
-                intro: "Uzupełnij teraz niezbędne pola. Po kliknięciu 'utwórz zamówienie przejdziemy dalej",
-                position: 'bottom',
-                tooltipClass: 'introjs-under-tooltip'
+                intro: t('intro.new_order_fill'),
+                position: 'floating',
+                tooltipClass: 'introjs-center-tooltip'
             }
         ],
-        '/orders': [ 
+
+        // ── Orders list (/orders) ───────────────────────────────────────────
+        '/orders': [
             {
-                intro: "To jest Twoja strona zamówień. Tutaj możesz zarządzać wszystkimi swoimi zamówieniami.",
+                intro: t('intro.orders_welcome'),
                 position: 'floating',
                 tooltipClass: 'introjs-center-tooltip'
             },
             {
                 element: '.container',
-                intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
+                intro: t('intro.orders_list'),
                 position: 'top'
-            }
-            , {
+            },
+            {
                 element: '.order-row',
-                intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
-                position: 'introjs-center-tooltip'
-            }, {
+                intro: t('intro.orders_row'),
+                position: 'bottom'
+            },
+            {
                 element: '#delete-order-btn',
-                intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
+                intro: t('intro.orders_delete'),
                 position: 'bottom-right-aligned'
             },
             {
                 element: '#edit-order-btn',
-                intro: "Tutaj wyświetlane są wszystkie Twoje zamówienia.",
+                intro: t('intro.orders_edit'),
                 position: 'bottom-right-aligned'
             },
             {
                 element: '#send-order',
-                intro: "",
+                intro: t('intro.orders_send'),
                 position: 'bottom-right-aligned'
             },
             {
                 element: '#orders-history-nav-btn',
-                intro: "Teraz przejdziemy do historii zamówień.",
+                intro: t('intro.orders_go_to_history'),
                 position: 'bottom-right-aligned'
             }
         ],
 
-        '/orders/history': [ 
+        // ── Orders history (/orders/history) ────────────────────────────────
+        '/orders/history': [
             {
-                intro: "Wyświetl tutaj pełną historię swoich zamówień.",
+                intro: t('intro.history_welcome'),
                 position: 'floating',
                 tooltipClass: 'introjs-center-tooltip'
             },
-                        {                
+            {
                 element: '.container',
-                intro: "Widok wysłanych zamówień podobny jest do naszych ofert. Różnica polega na tym, że nie możemy ich edytować ani usuwać.",
-                position: 'bottom-right-aligned'
-            },
-            {                
-                element: '.order-row',
-                intro: "W konkretnym zamówieniu możemy zobaczyć szczegóły takie jak data utworzenia zamówiania, czy data złożenia zamówienia przez klienta.",
-                position: 'bottom-right-aligned'
-            },
-                        {                
-                element: '.copy-order-btn',
-                intro: "Tu mamy pozy",
-                position: 'bottom-right-aligned'
-            },
-        ],
-        '/user/employee-panel': [ 
-            {
-                intro: "Witamy w panelu pracownika! Tutaj możesz zarządzać swoimi zadaniami i zamówieniami.",
-                position: 'floating',
-                tooltipClass: 'introjs-center-tooltip'
-            },
-            {
-                element: '.employee-panel-container',
-                intro: "To jest główny obszar panelu pracownika, gdzie możesz przeglądać i zarządzać swoimi zadaniami.",
+                intro: t('intro.history_list'),
                 position: 'top'
             },
             {
-                element: '#employee-orders-nav-btn',
-                intro: "Kliknij tutaj, aby zobaczyć zamówienia przypisane do Ciebie.",
-                position: 'bottom-right-aligned'
+                element: '.order-row',
+                intro: t('intro.history_row'),
+                position: 'bottom'
             },
             {
-                element: '#employee-tasks-nav-btn',
-                intro: "Kliknij tutaj, aby zobaczyć zadania przypisane do Ciebie.",
+                element: '.copy-order-btn',
+                intro: t('intro.history_copy'),
+                position: 'bottom-right-aligned'
+            }
+        ],
+
+        // ── Employee panel (/user/employee-panel) ───────────────────────────
+        '/user/employee-panel': [
+            {
+                intro: t('intro.employee_welcome'),
+                position: 'floating',
+                tooltipClass: 'introjs-center-tooltip'
+            },
+            {
+                element: '.employees-container',
+                intro: t('intro.employee_list'),
+                position: 'top'
+            },
+            {
+                element: '.action-btn-add',
+                intro: t('intro.employee_add'),
                 position: 'bottom-right-aligned'
             }
         ]
     };
 
-    const orderDetailPattern = /^\/orders\/order\/\d+$/;
-    if (orderDetailPattern.test(pathname)) {
-        const isAnyPostion = document.querySelector('.order-table') !== null || undefined;
-        if (isAnyPostion) {
+    // ── Order detail (/orders/order/:id) ────────────────────────────────────
+    if (/^\/orders\/order\/\d+$/.test(pathname)) {
+        const hasPositions = document.querySelector('.order-table') !== null;
+
+        if (hasPositions) {
             return [
                 {
-                    intro: "To jest strona szczegółów zamówienia. Tutaj możesz przeglądać i edytować swoje konkretne zamówienie.",
+                    intro: t('intro.order_detail_welcome'),
                     position: 'floating',
                     tooltipClass: 'introjs-center-tooltip'
                 },
                 {
                     element: '#order-nav',
-                    intro: "Ta sekcja służy do obsługi zamówienia.",
-                    position: 'bottom-right-aligned'
+                    intro: t('intro.order_detail_nav'),
+                    position: 'bottom'
                 },
                 {
                     element: '#new-order-button',
-                    intro: "Możesz dodawać tu nowe pozycje do zamówienia.",
-                    position: 'introjs-under-tooltip'
+                    intro: t('intro.order_detail_new_pos'),
+                    position: 'bottom'
                 },
                 {
                     element: '#edit-order-button',
-                    intro: "Edytować dane zamówienia.",
-                    position: 'introjs-under-tooltip'
+                    intro: t('intro.order_detail_edit'),
+                    position: 'bottom'
                 },
                 {
                     element: '#short-print-button',
-                    intro: "Pobrać zamówienie w formie pdf",
+                    intro: t('intro.order_detail_short_pdf'),
+                    position: 'bottom-right-aligned'
+                },
+                {
+                    element: '#print-button',
+                    intro: t('intro.order_detail_pdf'),
                     position: 'bottom-right-aligned'
                 },
                 {
                     element: '#generate-excel-btn',
-                    intro: "A także jako xlsx.",
+                    intro: t('intro.order_detail_excel'),
                     position: 'top'
                 }
             ];
         } else {
             return [
                 {
-                    intro: "To jest strona szczegółów zamówienia. Tutaj możesz przeglądać i edytować swoje konkretne zamówienie.",
+                    intro: t('intro.order_detail_welcome'),
                     position: 'floating',
                     tooltipClass: 'introjs-center-tooltip'
                 },
                 {
                     element: '#order-nav',
-                    intro: "Ta sekcja służy do obsługi zamówienia.",
-                    position: 'bottom-right-aligned'
+                    intro: t('intro.order_detail_nav'),
+                    position: 'bottom'
                 },
                 {
                     element: '#new-order-button',
-                    intro: "Możesz dodawać tu nowe pozycje do zamówienia.",
-                    position: 'bottom-right-aligned'
+                    intro: t('intro.order_detail_empty'),
+                    position: 'bottom'
                 },
                 {
                     element: '#edit-order-button',
-                    intro: "Edytować dane zamówienia.",
-                    position: 'bottom-right-aligned'
-                },
-                {
-                    element: '#print-button',
-                    intro: "Pobrać zamówienie w formie pdf",
-                    position: 'bottom-right-aligned'
-                },
-                {
-                    element: '#generate-excel-btn',
-                    intro: "A także jako xlsx.",
-                    position: 'bottom-right-aligned'
+                    intro: t('intro.order_detail_edit'),
+                    position: 'bottom'
                 }
             ];
         }
     }
 
-    
-    const positionDetailPattern = /^\/position\/\d+$/;
-    if (positionDetailPattern.test(pathname)) {
+    // ── New position (/orders/order/:id/new-position) ───────────────────────
+    if (/^\/orders\/order\/\d+\/new-position\/?$/.test(pathname)) {
         return [
             {
-                intro: "To jest strona szczegółów pozycji. Tutaj możesz zobaczyć wszystkie informacje o tej konkretnej pozycji zamówienia.",
+                intro: t('intro.new_position_welcome'),
                 position: 'floating',
                 tooltipClass: 'introjs-center-tooltip'
             },
             {
-                element: '.position-header, .order-item-header',
-                intro: "To pokazuje nazwę pozycji i podstawowe informacje.",
+                element: '#commission-input',
+                intro: t('intro.new_position_commission'),
                 position: 'bottom'
             },
             {
-                element: '.position-details, .item-details',
-                intro: "Tutaj możesz zobaczyć wszystkie parametry techniczne i specyfikacje dla tej pozycji.",
+                element: '#department-select',
+                intro: t('intro.new_position_department'),
+                position: 'bottom'
+            },
+            {
+                element: '#asortment-group-select',
+                intro: t('intro.new_position_group'),
+                position: 'bottom'
+            },
+            {
+                element: '#dynamic-form',
+                intro: t('intro.new_position_form'),
                 position: 'top'
             },
             {
-                element: '.position-price, .price-info',
-                intro: "Ta sekcja wyświetla informacje cenowe dla pozycji.",
-                position: 'top'
-            },
-            {
-                element: '.position-actions, .item-actions',
-                intro: "Użyj tych przycisków, aby edytować, duplikować lub wrócić do zamówienia.",
+                element: '#show-button',
+                intro: t('intro.new_position_save'),
                 position: 'top'
             }
         ];
     }
 
-    
-    const newPositionPattern = /^\/orders\/order\/\d+\/new-position\/?$/;
-    if (newPositionPattern.test(pathname)) {
+    // ── Edit position (/position/:id/edit) ──────────────────────────────────
+    if (/^\/position\/\d+\/edit$/.test(pathname)) {
         return [
             {
-                intro: "Witamy na stronie tworzenia nowej pozycji! Tutaj możesz dodać nową pozycję do swojego zamówienia.",
+                intro: t('intro.edit_position_welcome'),
                 position: 'floating',
                 tooltipClass: 'introjs-center-tooltip'
             },
             {
-                element: '.form-container, #dynamic-form',
-                intro: "To jest główny formularz, w którym skonfigurujesz swoją nową pozycję ze wszystkimi wymaganymi parametrami.",
+                element: '#dynamic-form',
+                intro: t('intro.edit_position_form'),
                 position: 'top'
             },
             {
-                element: '.product-selection, .department-selection',
-                intro: "Zacznij od wyboru kategorii produktu lub działu dla swojej nowej pozycji.",
+                element: '#reset-button',
+                intro: t('intro.edit_position_reset'),
                 position: 'bottom'
             },
             {
-                element: '.parameters-section, .form-fields',
-                intro: "Wypełnij tutaj wszystkie parametry techniczne i specyfikacje dla swojej pozycji.",
-                position: 'top'
-            },
-            {
-                element: '.save-button, #show-button',
-                intro: "Po wypełnieniu wszystkich wymaganych pól, kliknij tutaj, aby zapisać nową pozycję do zamówienia.",
+                element: '#show-button',
+                intro: t('intro.edit_position_save'),
                 position: 'top'
             }
         ];
     }
 
-    
-    const editPositionPattern = /^\/position\/\d+\/edit$/;
-    if (editPositionPattern.test(pathname)) {
-        return [
-            {
-                intro: "Witamy na stronie edycji pozycji! Tutaj możesz modyfikować istniejącą pozycję zamówienia.",
-                position: 'floating',
-                tooltipClass: 'introjs-center-tooltip'
-            },
-            {
-                element: '.form-container, #dynamic-form',
-                intro: "Ten formularz jest wstępnie wypełniony aktualnymi danymi pozycji. Możesz modyfikować dowolne parametry.",
-                position: 'top'
-            },
-            {
-                element: '.parameters-section, .form-fields',
-                intro: "Przejrzyj i zaktualizuj parametry techniczne i specyfikacje według potrzeb.",
-                position: 'top'
-            },
-            {
-                element: '#reset-button, .reset-btn',
-                intro: "Użyj tego przycisku, aby zresetować wszystkie pola do ich oryginalnych wartości, jeśli chcesz zacząć od nowa.",
-                position: 'bottom'
-            },
-            {
-                element: '.save-button, #show-button',
-                intro: "Kliknij tutaj, aby zapisać zmiany w pozycji. Aktualizacje zostaną zastosowane do Twojego zamówienia.",
-                position: 'top'
-            }
-        ];
-    }
-
-    
     return stepsConfig[pathname] || [];
-}
-
-
-export function createOverlayDiv() {
-    let overlayDiv = document.getElementById('intro-overlay-div');
-    if (!overlayDiv) {
-        overlayDiv = document.createElement('div');
-        overlayDiv.id = 'intro-overlay-div';
-        overlayDiv.style.position = 'fixed';
-        overlayDiv.style.top = '0';
-        overlayDiv.style.left = '0';
-        overlayDiv.style.width = '100%';
-        overlayDiv.style.height = '100%';
-        overlayDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        overlayDiv.style.zIndex = '198';
-
-        document.body.appendChild(overlayDiv);
-    }
-    return overlayDiv;
 }

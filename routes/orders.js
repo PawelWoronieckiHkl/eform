@@ -181,22 +181,24 @@ router.get("/", requireLogin, async (req, res) => {
 
 router.get('/organization-orders?:history', requireLogin, requireOwner, async (req, res) => {
     ownerService.clearContextUser(req);
-    const page = parseInt(req.query.page) || 1;
-    const limit = 25;
-    const offset = (page - 1) * limit;
+    const page = 1;
+    const limit = 10000;
+    const offset = 0;
     const history = req.query.history === 'true';
 
-    const currentUser = ownerService.getCurrentUser(req);
+    const currentUser = req.session.user;
+    console.log('siema', currentUser)
     let [orders, totalOrders] = [];
     if (history) {
         [orders, totalOrders] = await Promise.all([
-            db.getUserOrders(currentUser.userId, limit, offset, history, req.session.user.organization),
-            db.countUserOrders(currentUser.userId, history, req.session.user.organization)
+            db.getUserOrders(currentUser.userId, limit, offset, history, req.session.user.orgId),
+            db.countUserOrders(currentUser.userId, history, req.session.user.orgId)
         ]);
+        // console.log('orders history', orders, totalOrders)
     } else {
         [orders, totalOrders] = await Promise.all([
-            db.getUserOrders(currentUser.userId, limit, offset, false, req.session.user.organization),
-            db.countUserOrders(currentUser.userId, false, req.session.user.organization)
+            db.getUserOrders(currentUser.userId, limit, offset, false, req.session.user.orgId),
+            db.countUserOrders(currentUser.userId, false, req.session.user.orgId)
         ]);
     }
     const totalPages = Math.ceil(totalOrders / limit);

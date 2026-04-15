@@ -52,7 +52,10 @@
                                                         <tr onclick="window.location.href='/orders/order/{{ order.id }}'" class="order-row">
                                                         {% endblock %}
                                                         <th scope="row">{{ order.id }}</th>
-                                                        <td>({{ order.user_ident }})</td>
+                                                        <td>
+                                                            {{ order.user_ident }}
+                                                            {%- if order.user_name %} ({{ order.user_name }}){%- endif %}
+                                                        </td>
                                                         <td>{{ order.commision }}</td>
                                                         <td>{{ order.created_date }}</td>
                                                         {% block extra_rows %}{% endblock %}

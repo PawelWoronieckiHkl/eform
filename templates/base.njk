@@ -159,6 +159,10 @@
                     <img src="/img/logout.png" class='nav-icon' alt="orders-ico">
                     <span class="nav-text">{{ __('base.logout') }}</span>
                 </a>
+                <!-- <a href="#" id='intro-tour-btn' class="custom-nav-link has-tooltip" data-tooltip="{{ __('base.tour') or 'Tour' }}" style="text-decoration: none; margin-top: auto;"> -->
+                    <!-- <i class="fas fa-question-circle nav-icon" style="font-size: 1.4rem; display: flex; align-items: center; justify-content: center;"></i> -->
+                    <!-- <span class="nav-text">{{ __('base.tour') or 'Tour' }}</span> -->
+                <!-- </a> -->
                 {% block user_select %}
                     {% if owner and not admin %}
                         <div id='userSelectContainer'>
@@ -304,6 +308,7 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.js"
     integrity="sha512-qOOdnUM5GtxFYZtMURfJthJ+1PphZz6uCofz6oBnCxCyP3Oc+ieRzc8sb7c+YL1vrenZNwu/C0EaqBaVvbiRhw=="
     crossorigin="anonymous"
-    referrerpolicy="no-referrer"></script>{#
-            <script type='module' src="/scripts/intro/main.js"></script> #}<script type='module' src='/scripts/base.js'></script><script type="module" src="/scripts/getEnv.js"></script><script src="/scripts/navActiveState.js"></script><script type="module" src="/scripts/owner/owner.js"></script><script>window.loadTranslations(document.documentElement.lang || 'en');
+    referrerpolicy="no-referrer"></script>
+    <!-- <script type='module' src="/scripts/intro/main.js"></script> -->
+    <script type='module' src='/scripts/base.js'></script><script type="module" src="/scripts/getEnv.js"></script><script src="/scripts/navActiveState.js"></script><script type="module" src="/scripts/owner/owner.js"></script><script>window.loadTranslations(document.documentElement.lang || 'en');
     window.loadLangs()</script>{% block scripts %}{% endblock scripts %}</body></html>

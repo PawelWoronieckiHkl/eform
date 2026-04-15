@@ -184,28 +184,30 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
     let query = ''
 
 
-    if (organization) {
 
+    if (organization) {
+        // Pobierz zlecenia wszystkich userów powiązanych z daną organizacją (centrala)
         if (!sent) {
             query = `
-             SELECT o.id,o.user_id,o.delivery_address_id, o.commision,o.total_price,o.created_date,o.sent_date,o.organization_id,o.comment,o.status,o.send_address_id,o.order_idx,o.prod_status,o.delivery_date,o.spedition_numbers, u.ident as user_ident FROM \`order\` o
-            join \`user\` u on o.user_id = u.id
-            WHERE o.organization_id = ? and o.status like 'active'
-            ORDER BY o.id DESC 
-            LIMIT ? OFFSET ?
-        `;
+                SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.prod_status, o.delivery_date, o.spedition_numbers, u.ident as user_ident, u.client_name as user_name, u.email as user_email
+                FROM \`order\` o
+                JOIN \`user\` u ON o.user_id = u.id
+                WHERE u.organization_id = ? AND o.status LIKE 'active'
+                ORDER BY o.id DESC
+                LIMIT ? OFFSET ?
+            `;
         } else {
             query = `
-            SELECT o.id,o.user_id,o.delivery_address_id, o.commision,o.total_price,o.created_date,o.sent_date,o.organization_id,o.comment,o.status,o.send_address_id,o.order_idx,o.prod_status,o.delivery_date,o.spedition_numbers, u.ident as user_ident FROM \`order\` o
-            join \`user\` u on o.user_id = u.id
-            WHERE o.organization_id = ? and o.status like 'sent'
-            ORDER BY o.sent_date DESC 
-            LIMIT ? OFFSET ?
-        `;
+                SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.prod_status, o.delivery_date, o.spedition_numbers, u.ident as user_ident, u.client_name as user_name, u.email as user_email
+                FROM \`order\` o
+                JOIN \`user\` u ON o.user_id = u.id
+                WHERE u.organization_id = ? AND o.status LIKE 'sent'
+                ORDER BY o.sent_date DESC
+                LIMIT ? OFFSET ?
+            `;
         }
 
         try {
-
             const rows = await selectQuery(query, [organization, limit, offset]);
             const result = dateUtils.humanizeData(rows);
 
@@ -243,6 +245,8 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
     }
 
     try {
+        console.log('Executing organization orders query with params:', organization, limit, offset);
+
         let rows;
         if (employeeId !== null) {
             rows = await selectQuery(query, [userId, employeeId, limit, offset]);
@@ -276,12 +280,12 @@ async function countUserOrders(userId, sent = false, organization = false, emplo
 
             if (!sent) {
                 count = await selectQuery(
-                    "SELECT COUNT(*) as count FROM `order` WHERE organization_id = ? and status like 'active'", organization
+                    "SELECT COUNT(*) as count FROM `order` o JOIN `user` u ON o.user_id = u.id WHERE u.organization_id = ? AND o.status LIKE 'active'", organization
                 );
             }
             else {
                 count = await selectQuery(
-                    "SELECT COUNT(*) as count FROM `order` WHERE organization_id = ? and status like 'sent'", organization
+                    "SELECT COUNT(*) as count FROM `order` o JOIN `user` u ON o.user_id = u.id WHERE u.organization_id = ? AND o.status LIKE 'sent'", organization
                 );
             }
         } else {

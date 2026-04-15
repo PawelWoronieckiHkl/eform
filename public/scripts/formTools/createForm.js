@@ -16,7 +16,6 @@ export function processCommissionInput(labelValue = false) {
 export async function getPossibleValues(dictValues, values) {
     logFunctionName('getPossibleValues')
     const possibleElements = [];
-
     if (!dictValues || dictValues.length === 0) {
         return { possibleElements };
     }
@@ -30,7 +29,7 @@ export async function getPossibleValues(dictValues, values) {
         let row_number = row.ROW_NUM;
         possibleElements.push(row);
     }
-
+    
     return { possibleElements };
 }
 
@@ -329,7 +328,6 @@ export function fillFields(displayValues, inputs, values) {
         }
 
     }
-
 }
 
 function fillCalculated(values, input) {

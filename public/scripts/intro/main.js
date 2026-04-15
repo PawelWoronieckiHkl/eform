@@ -1,24 +1,24 @@
-
 import { getStepsForPage, getDivToChangeIndex, getRedirectionAfterIntro, createOverlayDiv } from './steps.js';
+
+const t = (key) => window.t ? window.t(key) : key;
 
 function startIntroTour(pathname = window.location.pathname) {
     const steps = getStepsForPage(pathname);
 
     if (steps.length === 0) {
-        console.log('No intro steps defined for this page:', pathname);
         return;
     }
 
-    let intro = introJs.tour();
+    const intro = introJs.tour();
     intro.setOptions({
         showProgress: true,
         showBullets: false,
         exitOnOverlayClick: false,
         exitOnEsc: true,
-        nextLabel: 'Next →',
-        prevLabel: '← Back',
-        skipLabel: 'Skip',
-        doneLabel: 'Done!',
+        nextLabel: t('intro.next'),
+        prevLabel: t('intro.prev'),
+        skipLabel: t('intro.skip'),
+        doneLabel: t('intro.done'),
         scrollToElement: true,
         tooltipPosition: 'auto',
         steps: steps
@@ -26,120 +26,95 @@ function startIntroTour(pathname = window.location.pathname) {
 
     intro.start();
 
-    
-    const storageKey = `introStep_${pathname.replace(/\//g, '_')}`;
-    let stepCounter = parseInt(localStorage.getItem(storageKey)) || 0;
-    let listenersAdded = false;
+    // ─── z-index management on step change ──────────────────────────────
+    function handleStepChange(targetElement) {
+        const { container, elements } = getDivToChangeIndex(pathname);
+        const currentStepId = targetElement
+            ? targetElement.id || (targetElement.classList?.[0] ?? '')
+            : '';
 
-    
-    function saveStep() {
-        localStorage.setItem(storageKey, stepCounter.toString());
-    }
+        if (!container || elements.length === 0) return;
 
-    
-    function addButtonListeners() {
-        if (listenersAdded) return;
+        // Nav bar needs elevated z-index when targeting nav items
+        if (currentStepId === 'orders-history-nav-btn') {
+            const nav = document.querySelector('.desktop-nav');
+            if (nav) nav.style.zIndex = '199';
+        }
 
-        setTimeout(() => {
-            const nextBtn = document.querySelector('.introjs-nextbutton');
-            const backBtn = document.querySelector('.introjs-prevbutton');
 
-            if (nextBtn && !nextBtn.hasAttribute('data-listener-added')) {
-                nextBtn.addEventListener('click', function () {
-                    stepCounter++;
-                    saveStep();
-                    console.log("NEXT - Krok:", stepCounter);
 
-                    
-                    if (pathname === '/' && stepCounter === 4) {
-                        window.location.href = "/orders";
-                    }
-                });
-                nextBtn.setAttribute('data-listener-added', 'true');
-            }
+        if (elements.includes(currentStepId)) {
+            container.style.zIndex = '199';
+            container.classList.add('introjs-showElement');
+        } else if (container.classList.contains('introjs-showElement')) {
+            container.classList.remove('introjs-showElement');
+            container.style.zIndex = '';
+        }
 
-            if (backBtn && !backBtn.hasAttribute('data-listener-added')) {
-                backBtn.addEventListener('click', function () {
-                    stepCounter--;
-                    saveStep();
-                    console.log("BACK - Krok:", stepCounter);
-                });
-                backBtn.setAttribute('data-listener-added', 'true');
-            }
-
-            listenersAdded = true;
-        }, 100);
-    }
-
-    
-    function logCurrentStep(targetElement) {
-        const { container, elements, extra } = getDivToChangeIndex(window.location.pathname);
-
-        const currentStepId = targetElement ? targetElement.id || (targetElement?.classList?.value?.split(' ')[0] ?? '') : '';
-
-        listenersAdded = false;
-        addButtonListeners();
-
-        if (container && elements.length > 0) {
-            if ('orders-history-nav-btn' === currentStepId) {
-                console.log("Zmieniam z-index dla historii zamówień");
-                document.querySelector('.desktop-nav').style.zIndex = '199';
-            }
-
-            if (elements.includes(currentStepId)) {
-                container.style.zIndex = '199';
-                container.classList.add('introjs-showElement')
-                document.querySelector(`#${currentStepId}`).classList.add('active');
+        // Highlight only the active element
+        for (const id of elements) {
+            const el = document.getElementById(id) || document.querySelector(`.${id}`);
+            if (!el) continue;
+            if (id === currentStepId) {
+                el.classList.add('active');
             } else {
-                if (container?.classList?.contains('introjs-showElement')) {
-                    container.classList.remove('introjs-showElement')
-                    container.style.zIndex = '100';
-                }
-            }
-            for (let id of elements) {
-
-                if (id === currentStepId) {
-                    console.log("Active element:", id == currentStepId);
-                    console.log("Active element:", id, currentStepId);
-                    console.log(document.querySelector(`#${id}`))
-                    document.querySelector(`#${id}`)?.classList.add('active');
-                }
-                else {
-                    document.querySelector(`#${id}`)?.classList.remove('active');
-                }
-
+                el.classList.remove('active');
             }
         }
     }
 
     intro.onafterchange(function (targetElement) {
-        logCurrentStep(targetElement);
+        handleStepChange(targetElement);
     });
 
     intro.oncomplete(function () {
-        if (pathname === '/orders/add-order') {
-            const { container } = getDivToChangeIndex(pathname);
-            if (container) {
-                createOverlayDiv();
-                console.log(document.getElementById('intro-overlay-div'));
-                container.style.zIndex = '200';
-            }
-        }
-        else {
+        // Multi-page tour: set flag for next step, clear on last
+        if (pathname === '/') {
+            localStorage.setItem('introShouldContinue', '1');
+            getRedirectionAfterIntro(pathname);
+        } else if (pathname === '/orders/add-order') {
+            localStorage.setItem('introShouldContinue', '1');
+            getRedirectionAfterIntro(pathname);
+        } else if (pathname === '/orders') {
+            localStorage.setItem('introShouldContinue', '1');
+            getRedirectionAfterIntro(pathname);
+        } else if (pathname === '/orders/history') {
+            // End of tour
+            localStorage.removeItem('introShouldContinue');
+        } else {
+            localStorage.removeItem('introShouldContinue');
             getRedirectionAfterIntro(pathname);
         }
     });
 
-    addButtonListeners();
+    intro.onexit(function () {
+        // Clean up z-index changes
+        const { container, elements } = getDivToChangeIndex(pathname);
+        if (container) {
+            container.classList.remove('introjs-showElement');
+            container.style.zIndex = '';
+        }
+        for (const id of elements) {
+            const el = document.getElementById(id) || document.querySelector(`.${id}`);
+            if (el) el.classList.remove('active');
+        }
+        // Remove custom overlay if present (shouldn't be needed)
+        const overlay = document.getElementById('intro-overlay-div');
+        if (overlay) overlay.remove();
+    });
 }
-
-function turnOffIntroTour() {
-
-}
-
 
 document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(() => {
+    // If redirected from previous step, auto-start tour
+    if (localStorage.getItem('introShouldContinue') === '1') {
         startIntroTour();
-    }, 1000);
+        return;
+    }
+    const tourBtn = document.getElementById('intro-tour-btn');
+    if (tourBtn) {
+        tourBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            startIntroTour();
+        });
+    }
 });

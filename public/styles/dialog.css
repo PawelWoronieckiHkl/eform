@@ -509,14 +509,13 @@ p {
 	font-size: 0.75rem;
 	font-weight: 600;
 	width: 90%;
-	height: 20%;
-	max-height: fit-content;
+
 	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	height: 10%;
-	min-height: fit-content;
+
+
 
 	min-width: 18px;
 	color: var(--text-on-brand);

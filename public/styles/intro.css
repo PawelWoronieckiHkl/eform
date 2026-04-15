@@ -1,6 +1,7 @@
 .introjs-overlay {
     z-index: 198 !important;
     background: rgba(0, 0, 0, 0.7) !important;
+    pointer-events: none !important;
 }
 .introjs-helperLayer {
     z-index: 198 !important;
@@ -48,10 +49,13 @@
     border-color: #3f4750 !important;
 }
 .introjs-showElement,
-.introjs-relativePosition {
+.introjs-relativePosition,
+.introjs-highlightedElement,
+.theme-toggle.introjs-showElement {
     z-index: 200 !important;
     position: relative !important;
     border-radius: 8px !important;
+    pointer-events: auto !important;
 }
 #new-order-nav-btn.introjs-showElement,
 #orders-nav-btn.introjs-showElement,
