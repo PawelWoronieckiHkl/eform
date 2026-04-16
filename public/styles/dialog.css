@@ -5,8 +5,8 @@ dialog {
 	box-shadow: var(--shadow-xl), var(--shadow-glow);
 	padding: 2% 3%;
 	align-items: center !important;
-	height: 95vh !important;
-	max-height: 95vh !important;
+
+	max-height: 90vh !important;
 	max-width: 90vw;
 	z-index: 100 !important;
 	background: var(--bg-glass-strong);
@@ -238,6 +238,8 @@ dialog::backdrop {
 
 #color-dialog {
 	width: 80% !important;
+	height: 99% !important;
+	min-height: 99% !important;
 }
 
 #color-dialog #dialog-container {

@@ -93,7 +93,12 @@
     "total_items": "Łączna ilość pozycji",
     "total": "Razem",
     "total_hidden": "Razem",
-    "according_to_price": "Według cennika"
+    "according_to_price": "Według cennika",
+    "status_label": "Status",
+    "status_order_sent": "Zamówienie wysłane",
+    "shipping_date_label": "Data wysyłki",
+    "shipping_method_label": "Sposób wysyłki",
+    "pred_shipping_date_label": "Przewidywana data wysyłki"
   },
   "orders": {
     "title": "Twoje Zamówienia",

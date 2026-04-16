@@ -22,6 +22,7 @@
                     {% if orders %}
                       <div id="orders-search-mount" class="orders-search-mount mt-4 ms-3" {% block search_data %} data-sent="false" {% endblock %} {% if isEmployee %} data-is-employee="true" {% endif %}></div>
                     {% endif %}
+                    {% block user_filter %}{% endblock %}
                   </div>
                   <div class="orders-topbar-center">
                     {% block site_title %}

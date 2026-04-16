@@ -356,25 +356,37 @@ function escapeHtml(str) {
 const searchMount = document.getElementById('orders-search-mount');
 const isSent = searchMount?.dataset.sent === 'true';
 const isEmployee = searchMount?.dataset.isEmployee === 'true';
+const isOrganization = searchMount?.dataset.organization === 'true';
 const orderPath = isSent ? '/orders/history/order' : '/orders/order';
 
 function renderTableRow(order) {
 	const id = escapeHtml(String(order.id));
 
-	// Render tracking numbers with links
+	// Render tracking numbers with dropdown
 	let trackingCell = '';
 	if (isSent) {
 		let trackingHTML = '<span class="text-muted">-</span>';
 		if (order.parsedSpeditionNumbers && order.parsedSpeditionNumbers.length > 0) {
-			trackingHTML = order.parsedSpeditionNumbers.map(tracking => {
+			const items = order.parsedSpeditionNumbers.filter(tr => tr.carrier).map(tracking => {
 				if (tracking.href) {
-					return `<a href="${escapeHtml(tracking.href)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="badge bg-primary text-white text-decoration-none me-1 mb-1" style="font-size: 0.85rem;">
-						${escapeHtml(tracking.carrier)} ${escapeHtml(tracking.code)}
-					</a>`;
+					return `<li><a class="dropdown-item d-flex align-items-center" href="${escapeHtml(tracking.href)}" target="_blank" rel="noopener noreferrer">
+						<span class="badge bg-primary me-2">${escapeHtml(tracking.carrier)}</span>
+						<span>${escapeHtml(tracking.code)}</span>
+						<i class="bi bi-box-arrow-up-right ms-auto text-muted" style="font-size: 0.85rem;"></i>
+					</a></li>`;
 				} else {
-					return `<span class="badge bg-secondary me-1 mb-1" style="font-size: 0.85rem;">${escapeHtml(tracking.fullCode)}</span>`;
+					return `<li><span class="dropdown-item text-muted d-flex align-items-center">
+						<span class="badge bg-secondary me-2">${escapeHtml(tracking.carrier)}</span>
+						<span>${escapeHtml(tracking.code || tracking.fullCode)}</span>
+					</span></li>`;
 				}
 			}).join('');
+			trackingHTML = `<div class="dropdown" onclick="event.stopPropagation()">
+				<button class="btn btn-sm dropdown-toggle" type="button" id="trackingDropdown${id}" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+					${order.parsedSpeditionNumbers.length} ${escapeHtml(t('orders.tracking_parcels') || 'przesyłek')}
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="trackingDropdown${id}">${items}</ul>
+			</div>`;
 		}
 		trackingCell = `<td>${trackingHTML}</td>`;
 	}
@@ -382,7 +394,7 @@ function renderTableRow(order) {
 	const extraCells = isSent ? `
 		<td>${escapeHtml(order.sent_date)}</td>
 		<th scope="row">${order.prod_status ? escapeHtml(t(order.prod_status)) : escapeHtml(t('order.status_order_sent'))}</th>
-		<th scope="row">${escapeHtml(order.delivery_date || '-')}</th>
+		<th scope="row">${order.delivery_date ? escapeHtml(order.delivery_date) : (!order.prod_status && order.max_prod_days ? escapeHtml(order.max_prod_days + ' ' + t('termin.days')) : '-')}</th>
 		${trackingCell}
 		<td>
 			<button class="btn btn-outline-secondary copy-order-btn stop-propagation" data-id="${id}" onclick="event.stopPropagation()">${escapeHtml(t('orders.reorder'))}</button>
@@ -408,6 +420,7 @@ function renderTableRow(order) {
 
 	return `<tr onclick="window.location.href='${orderPath}/${id}'" class="order-row" data-commission="${escapeHtml(order.commision)}">
 		<th scope="row">${escapeHtml(order.order_idx)}</th>
+		${isOrganization ? `<td>${escapeHtml(order.user_ident || '')}${order.user_name ? ` (${escapeHtml(order.user_name)})` : ''}</td>` : ''}
 		<td>${escapeHtml(order.commision)}${order.name ? ` (${escapeHtml(order.name)} ${escapeHtml(order.surname)})` : ''}</td>
 		<td>${escapeHtml(order.created_date)}</td>
 		${extraCells}${actionBtns}
@@ -420,24 +433,32 @@ function renderMobileCard(order) {
 	// Render tracking numbers for mobile
 	let trackingHTML = '';
 	if (isSent && order.parsedSpeditionNumbers && order.parsedSpeditionNumbers.length > 0) {
-		trackingHTML = '<div class="mobile-order-tracking">';
-		trackingHTML += order.parsedSpeditionNumbers.map(tracking => {
+		const items = order.parsedSpeditionNumbers.filter(tr => tr.carrier).map(tracking => {
 			if (tracking.href) {
-				return `<a href="${escapeHtml(tracking.href)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="badge bg-primary text-white text-decoration-none me-1 mb-1" style="font-size: 0.85rem;">
-					${escapeHtml(tracking.carrier)} ${escapeHtml(tracking.code)}
-				</a>`;
+				return `<li><a class="dropdown-item d-flex align-items-center" href="${escapeHtml(tracking.href)}" target="_blank" rel="noopener noreferrer">
+					<span class="badge bg-primary me-2">${escapeHtml(tracking.carrier)}</span>
+					<span>${escapeHtml(tracking.code)}</span>
+				</a></li>`;
 			} else {
-				return `<span class="badge bg-secondary me-1 mb-1" style="font-size: 0.85rem;">${escapeHtml(tracking.fullCode)}</span>`;
+				return `<li><span class="dropdown-item text-muted d-flex align-items-center">
+					<span class="badge bg-secondary me-2">${escapeHtml(tracking.carrier)}</span>
+					<span>${escapeHtml(tracking.code || tracking.fullCode)}</span>
+				</span></li>`;
 			}
 		}).join('');
-		trackingHTML += '</div>';
+		trackingHTML = `<div class="dropdown" onclick="event.stopPropagation()">
+			<button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+				${order.parsedSpeditionNumbers.length} ${escapeHtml(t('orders.tracking_parcels') || 'przesyłek')}
+			</button>
+			<ul class="dropdown-menu">${items}</ul>
+		</div>`;
 	}
 
 	const extraInfo = isSent ? `
 		<div class="mobile-order-extra">
 			<span>${escapeHtml(order.sent_date)}</span>
 			<span>${order.prod_status ? escapeHtml(t(order.prod_status)) : escapeHtml(t('order.status_order_sent'))}</span>
-			<span>${escapeHtml(order.delivery_date || '-')}</span>
+			<span>${order.delivery_date ? escapeHtml(order.delivery_date) : (!order.prod_status && order.max_prod_days ? escapeHtml(order.max_prod_days + ' ' + t('termin.days')) : '-')}</span>
 		</div>
 		${trackingHTML}` : '';
 
@@ -457,6 +478,7 @@ function renderMobileCard(order) {
 			<span class="mobile-order-date">${escapeHtml(order.created_date)}</span>
 		</div>
 		<div class="mobile-order-commission">${escapeHtml(order.commision)}</div>
+		${isOrganization && order.user_ident ? `<div class="mobile-order-client text-muted" style="font-size:0.85rem;">${escapeHtml(order.user_ident)}${order.user_name ? ` (${escapeHtml(order.user_name)})` : ''}</div>` : ''}
 		${extraInfo}
 		<div class="mobile-order-actions">${actions}</div>
 	</div>`;

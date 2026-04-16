@@ -37,7 +37,13 @@
                                                 </div>
                                                 <div class="status-card">
                                                     <div class="status-card-header">
-                                                        <span class="status-card-label">{{ __('order.shipping_date_label') }}</span>
+                                                        <span class="status-card-label">
+                                                            {% if statuses[statusIdx].status == 'sent' %}
+                                                                {{ __('order.shipping_date_label') }}
+                                                            {% else %}
+                                                                {{ __('order.pred_shipping_date_label') }}
+                                                            {% endif %}
+                                                        </span>
                                                     </div>
                                                     <div class="status-card-value">{{ (statuses[statusIdx].shipping_date) }}</div>
                                                 </div>
@@ -79,9 +85,15 @@
                                                 </div>
                                                 <div class="status-card">
                                                     <div class="status-card-header">
-                                                        <span class="status-card-label">{{ __('order.shipping_date_label') }}</span>
+                                                        <span class="status-card-label">{{ __('order.pred_shipping_date_label') }}</span>
                                                     </div>
-                                                    <div class="status-card-value">-</div>
+                                                    <div class="status-card-value">
+                                                        {% if itemProdDays %}
+                                                            {{ itemProdDays }} {{ __('termin.days') }}
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </div>
                                                 </div>
                                                 <div class="status-card">
                                                     <div class="status-card-header">

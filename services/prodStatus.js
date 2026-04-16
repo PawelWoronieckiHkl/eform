@@ -149,7 +149,7 @@ function parseSpeditionNumbers(speditionNumbersJson) {
             if (!parcelCode) return null;
 
             const [carrier, code] = parcelCode.split(' ');
-            if (!code) return { carrier: '', code: parcelCode, href: null };
+            if (!code) return { carrier: 'N/A', code: parcelCode, href: null, fullCode: parcelCode };
 
             let href = null;
             switch (carrier) {

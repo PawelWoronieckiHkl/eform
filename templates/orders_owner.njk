@@ -6,6 +6,7 @@
                 <link rel="stylesheet" href="/styles/mobile/dialog.css">
                     <link rel="stylesheet" href="/styles/owner/orders.css">
                     {% endblock head %}
+                    {% block user_filter %}{% endblock %}
                     {% block users %}
                         <div class='d-flex'>
                             {% block all_orders_btn %}
@@ -45,5 +46,4 @@
                     {% endblock %}
                     {% block scripts %}
                         <script type="module" src="/scripts/orders.js"></script>
-                        <script type="module" src="/scripts/owner/owner.js"></script>
                     {% endblock scripts %}

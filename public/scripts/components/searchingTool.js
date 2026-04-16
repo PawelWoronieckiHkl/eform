@@ -82,7 +82,12 @@ export function initSearchTool({
             input.disabled = true;
             try {
                 const sent = mount.dataset.sent === 'true';
-                const url = `${apiUrl}?q=${encodeURIComponent(q)}&sent=${sent}`;
+                const organization = mount.dataset.organization === 'true';
+                let url = `${apiUrl}?q=${encodeURIComponent(q)}&sent=${sent}`;
+                if (organization) url += '&organization=true';
+                const urlParams = new URLSearchParams(window.location.search);
+                const userIdent = urlParams.get('userIdent');
+                if (userIdent) url += `&userIdent=${encodeURIComponent(userIdent)}`;
                 const data = await get(url);
                 const orders = data.orders ?? [];
 
@@ -98,6 +103,15 @@ export function initSearchTool({
                 }
                 if (pagination) pagination.style.display = 'none';
                 status.textContent = `Wyniki: ${orders.length}`;
+
+                // Re-attach dropdown-active handlers for dynamically rendered dropdowns
+                if (tableBody) {
+                    tableBody.querySelectorAll('.order-row .dropdown').forEach(dropdown => {
+                        const row = dropdown.closest('.order-row');
+                        dropdown.addEventListener('show.bs.dropdown', () => { if (row) row.classList.add('dropdown-active'); });
+                        dropdown.addEventListener('hide.bs.dropdown', () => { if (row) row.classList.remove('dropdown-active'); });
+                    });
+                }
             } catch (err) {
                 console.error('Search error:', err);
                 status.textContent = 'Błąd wyszukiwania';

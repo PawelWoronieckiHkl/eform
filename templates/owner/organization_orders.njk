@@ -17,18 +17,27 @@
                     {% block content %}
                     <div class="content center-content">
                         <div class="container my-5 w-100 mobile-rm-card">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                {% block site_title %}
-                                    <h2 class="fw-bold header">{{ __('orders.title') }}</h2>
-                                {% endblock site_title %}
-                                {% block site_buttons %}
-                                    <a href="/delivery-time" class='btn btn-light' id='delivery-btn'>
-                                        <img
-                                            src="/img/fast-delivery.png"
-                                            alt="delivery bus button"
-                                            style='height:50px;width:50px; border:0px white solid !important'></a>
+                            <div class="orders-topbar mb-4">
+                                <div class="orders-topbar-left">
+                                    {% if orders %}
+                                        <div id="orders-search-mount" class="orders-search-mount mt-4 ms-3" {% block search_data %}data-sent="false" data-organization="true"{% endblock %}></div>
+                                    {% endif %}
+                                </div>
+                                <div class="orders-topbar-center">
+                                    {% block site_title %}
+                                        <h2 class="fw-bold header">{{ __('orders.title') }}</h2>
+                                    {% endblock site_title %}
+                                </div>
+                                <div class="orders-topbar-right">
+                                    {% block site_buttons %}
+                                        <a href="/delivery-time" class='btn btn-light' id='delivery-btn'>
+                                            <img
+                                                src="/img/fast-delivery.png"
+                                                alt="delivery bus button"
+                                                style='height:50px;width:50px; border:0px white solid !important'></a>
                                     {% endblock %}
                                 </div>
+                            </div>
                                 {% block users %}{% endblock %}
                                 {% block orders %}
                                     {% if orders %}

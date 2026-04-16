@@ -23,7 +23,8 @@
   text-overflow: ellipsis;
 }
 
-.table td.buttons {
+.table td.buttons,
+.table td:has(.dropdown) {
   overflow: visible;
 }
 
@@ -58,6 +59,8 @@
 .table .dropdown-menu {
   z-index: 10000 !important;
   position: absolute !important;
+  right: 0 !important;
+  left: auto !important;
   border: 1px solid var(--border-default);
   border-radius: 10px;
   box-shadow: var(--shadow-lg);
@@ -134,6 +137,22 @@
 .order-row.dropdown-active,
 .order-row.dropdown-active:hover {
   transform: none !important;
+  z-index: 99999;
+  position: relative;
+}
+
+/* Gdy dowolny dropdown w tabeli jest otwarty, wyłącz transform na wszystkich wierszach */
+.table:has(.dropdown-active) .order-row {
+  transform: none !important;
+}
+
+.table:has(.dropdown-active) .order-row:hover {
+  transform: none !important;
+}
+
+/* Dropdown menu musi być ponad innymi wierszami */
+.order-row .dropdown-menu {
+  z-index: 99999 !important;
 }
 
 .orders-topbar {
@@ -180,7 +199,7 @@
 }
 
 .table tbody tr {
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   border-bottom: 1px solid var(--border-default);
 }
 
@@ -193,7 +212,9 @@
 
 .order-row {
   cursor: pointer !important;
-  transition: all 0.35s var(--ease-out-expo) !important;
+  transition: background 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo), box-shadow 0.35s var(--ease-out-expo) !important;
+  position: relative;
+  z-index: 1;
 }
 
 .order-row:hover {

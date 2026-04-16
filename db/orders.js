@@ -189,7 +189,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
         // Pobierz zlecenia wszystkich userów powiązanych z daną organizacją (centrala)
         if (!sent) {
             query = `
-                SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.prod_status, o.delivery_date, o.spedition_numbers, u.ident as user_ident, u.client_name as user_name, u.email as user_email
+                SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.prod_status, o.delivery_date, o.spedition_numbers, o.max_prod_days, u.ident as user_ident, u.client_name as user_name, u.email as user_email
                 FROM \`order\` o
                 JOIN \`user\` u ON o.user_id = u.id
                 WHERE u.organization_id = ? AND o.status LIKE 'active'
@@ -198,7 +198,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
             `;
         } else {
             query = `
-                SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.prod_status, o.delivery_date, o.spedition_numbers, u.ident as user_ident, u.client_name as user_name, u.email as user_email
+                SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.prod_status, o.delivery_date, o.spedition_numbers, o.max_prod_days, u.ident as user_ident, u.client_name as user_name, u.email as user_email
                 FROM \`order\` o
                 JOIN \`user\` u ON o.user_id = u.id
                 WHERE u.organization_id = ? AND o.status LIKE 'sent'
@@ -225,7 +225,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
 
     if (!sent) {
         query = `
-        SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.value, o.total_price_hidden, o.employee_id, o.prod_status, o.delivery_date, o.spedition_numbers
+        SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.value, o.total_price_hidden, o.employee_id, o.prod_status, o.delivery_date, o.spedition_numbers, o.max_prod_days
 ,e.id as emp_id, e.name, e.surname FROM \`order\` o 
         left join employee e on e.id = o.employee_id
         WHERE  o.user_id = ? ${sqlInput} and o.status like 'active'
@@ -235,7 +235,7 @@ async function getUserOrders(userId, limit = 10, offset = 0, sent = false, organ
     }
     else {
         query = `
-        SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.value, o.total_price_hidden, o.employee_id, o.prod_status, o.delivery_date, o.spedition_numbers
+        SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price, o.created_date, o.sent_date, o.organization_id, o.comment, o.status, o.send_address_id, o.order_idx, o.value, o.total_price_hidden, o.employee_id, o.prod_status, o.delivery_date, o.spedition_numbers, o.max_prod_days
 ,e.id as emp_id, e.name, e.surname FROM \`order\` o 
         left join employee e on e.id = o.employee_id
         WHERE o.user_id = ? ${sqlInput} and o.status like 'sent'
@@ -498,16 +498,42 @@ async function getOrderWithItems(orderId) {
     return { orderDetails: orderDetails[0], orderItems }
 }
 
-async function searchUserOrders(userId, phrase, limit = 40, offset = 0, sent = false, employeeId = null) {
+async function searchUserOrders(userId, phrase, limit = 40, offset = 0, sent = false, employeeId = null, organization = false) {
     const safephrase = phrase.replace(/%/g, '\\%').replace(/_/g, '\\_');
     const like = `%${safephrase}%`;
     const statusFilter = sent ? 'sent' : 'active';
+
+    if (organization) {
+        const query = `
+            SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price,
+                   o.created_date, o.sent_date, o.organization_id, o.comment, o.status,
+                   o.send_address_id, o.order_idx, o.prod_status, o.delivery_date,
+                   o.spedition_numbers, o.max_prod_days,
+                   u.ident as user_ident, u.client_name as user_name, u.email as user_email
+            FROM \`order\` o
+            JOIN \`user\` u ON o.user_id = u.id
+            WHERE u.organization_id = ?
+              AND o.status = ?
+              AND (o.commision LIKE ? OR o.order_idx LIKE ? OR u.client_name LIKE ? OR u.ident LIKE ?)
+            ORDER BY ${sent ? 'o.sent_date' : 'o.id'} DESC
+            LIMIT ? OFFSET ?
+        `;
+        try {
+            const rows = await selectQuery(query, [organization, statusFilter, like, like, like, like, limit, offset]);
+            if (!rows) return [];
+            return dateUtils.humanizeData(rows);
+        } catch (err) {
+            log(err);
+            return [];
+        }
+    }
+
     const employeeClause = employeeId !== null ? 'AND o.employee_id = ?' : '';
     const query = `
         SELECT o.id, o.user_id, o.delivery_address_id, o.commision, o.total_price,
                o.created_date, o.sent_date, o.organization_id, o.comment, o.status,
                o.send_address_id, o.order_idx, o.value, o.total_price_hidden,
-               o.employee_id, o.prod_status, o.delivery_date, o.spedition_numbers,
+               o.employee_id, o.prod_status, o.delivery_date, o.spedition_numbers, o.max_prod_days,
                e.name, e.surname
         FROM \`order\` o
         LEFT JOIN employee e ON e.id = o.employee_id
@@ -530,10 +556,24 @@ async function searchUserOrders(userId, phrase, limit = 40, offset = 0, sent = f
     }
 }
 
-async function countSearchUserOrders(userId, phrase, sent = false, employeeId = null) {
+async function countSearchUserOrders(userId, phrase, sent = false, employeeId = null, organization = false) {
     const safephrase = phrase.replace(/%/g, '\\%').replace(/_/g, '\\_');
     const like = `%${safephrase}%`;
     const statusFilter = sent ? 'sent' : 'active';
+
+    if (organization) {
+        const sql = `SELECT COUNT(*) as count FROM \`order\` o
+            JOIN \`user\` u ON o.user_id = u.id
+            WHERE u.organization_id = ? AND o.status = ? AND (o.commision LIKE ? OR o.order_idx LIKE ? OR u.client_name LIKE ? OR u.ident LIKE ?)`;
+        try {
+            const result = await selectQuery(sql, [organization, statusFilter, like, like, like, like]);
+            return result ? result[0].count : 0;
+        } catch (err) {
+            log(err);
+            return 0;
+        }
+    }
+
     const employeeClause = employeeId !== null ? 'AND employee_id = ?' : '';
     const sql = `SELECT COUNT(*) as count FROM \`order\`
         WHERE user_id = ? ${employeeClause} AND status = ? AND (commision LIKE ? OR order_idx LIKE ?)`;

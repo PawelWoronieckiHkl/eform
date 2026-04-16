@@ -31,3 +31,33 @@
         max-width: 100%;
     }
 }
+
+.user-filter-inline {
+    position: relative;
+    min-width: 180px;
+    max-width: 250px;
+}
+.user-filter-inline .dropdown-input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid var(--border-default);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+.user-filter-inline .custom-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    max-height: 250px;
+    overflow-y: auto;
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-default);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    display: none;
+}
+.user-filter-inline .custom-dropdown.show {
+    display: block;
+}

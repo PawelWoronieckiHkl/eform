@@ -93,7 +93,12 @@
     "total_items": "Totaal aantal posities",
     "total": "Totaal",
     "total_hidden": "Totaal",
-    "according_to_price": "Volgens prijslijst"
+    "according_to_price": "Volgens prijslijst",
+    "status_label": "Status",
+    "status_order_sent": "Bestelling verzonden",
+    "shipping_date_label": "Verzenddatum",
+    "shipping_method_label": "Verzendmethode",
+    "pred_shipping_date_label": "Verwachte verzenddatum"
   },
   "orders": {
     "title": "Uw bestellingen",

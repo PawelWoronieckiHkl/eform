@@ -17,7 +17,7 @@ const { getExtraAttachments } = require('../services/mailBot/extraAttachments');
 const { log } = require('../utils/logging');
 const { availabeLanguages } = require('../config');
 const { translateOrderItems } = require('../services/translationDict/itemTranslator');
-const { buildItemProductionDays } = require('../services/productionDays');
+const { buildItemProductionDays, recalcAndSaveMaxProdDays } = require('../services/productionDays');
 
 
 router.use(async (req, res, next) => {
@@ -46,10 +46,13 @@ router.get('/search', requireLogin, async (req, res) => {
         const offset = (page - 1) * limit;
         const currentUser = ownerService.getCurrentUser(req);
         const employeeId = req.session.user?.isEmployee ? (req.session.employee?.id ?? null) : null;
+        const organization = req.query.organization === 'true'
+            ? (req.session.user?.isAdmin ? req.session.user?.organization : req.session.user?.orgId)
+            : false;
 
         const [orders, totalOrders] = await Promise.all([
-            db.searchUserOrders(currentUser.userId, q, limit, offset, sent, employeeId),
-            db.countSearchUserOrders(currentUser.userId, q, sent, employeeId)
+            db.searchUserOrders(currentUser.userId, q, limit, offset, sent, employeeId, organization),
+            db.countSearchUserOrders(currentUser.userId, q, sent, employeeId, organization)
         ]);
 
         // Parse spedition numbers for each order
@@ -187,18 +190,17 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
     const history = req.query.history === 'true';
 
     const currentUser = req.session.user;
-    console.log('siema', currentUser)
+    const orgId = currentUser.isAdmin ? currentUser.organization : currentUser.orgId;
     let [orders, totalOrders] = [];
     if (history) {
         [orders, totalOrders] = await Promise.all([
-            db.getUserOrders(currentUser.userId, limit, offset, history, req.session.user.orgId),
-            db.countUserOrders(currentUser.userId, history, req.session.user.orgId)
+            db.getUserOrders(currentUser.userId, limit, offset, history, orgId),
+            db.countUserOrders(currentUser.userId, history, orgId)
         ]);
-        // console.log('orders history', orders, totalOrders)
     } else {
         [orders, totalOrders] = await Promise.all([
-            db.getUserOrders(currentUser.userId, limit, offset, false, req.session.user.orgId),
-            db.countUserOrders(currentUser.userId, false, req.session.user.orgId)
+            db.getUserOrders(currentUser.userId, limit, offset, false, orgId),
+            db.countUserOrders(currentUser.userId, false, orgId)
         ]);
     }
     const totalPages = Math.ceil(totalOrders / limit);
@@ -214,6 +216,11 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
 
     if (req.session.user?.isOwner) {
         if (history) {
+            // Backfill max_prod_days for orders that don't have it yet
+            const ordersToBackfill = (orders || []).filter(o => o.max_prod_days == null && !o.prod_status);
+            for (const order of ordersToBackfill) {
+                order.max_prod_days = await recalcAndSaveMaxProdDays(order.id);
+            }
             res.render('owner/organization_orders_history.njk', {
                 orders,
                 page,
@@ -270,6 +277,12 @@ router.get("/history", requireLogin, async (req, res) => {
                 order.parsedSpeditionNumbers = parseSpeditionNumbers(order.spedition_numbers);
             }
         });
+
+        // Backfill max_prod_days for orders that don't have it yet
+        const ordersToBackfill = orders.filter(o => o.max_prod_days == null && !o.prod_status);
+        await Promise.all(ordersToBackfill.map(async (order) => {
+            order.max_prod_days = await recalcAndSaveMaxProdDays(order.id);
+        }));
     }
     
     if (req.session.user?.isOwner) {

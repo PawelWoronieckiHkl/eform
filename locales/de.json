@@ -93,7 +93,12 @@
     "total_items": "Gesamtanzahl der Positionen",
     "total": "Gesamtbetrag",
     "total_hidden": "Gesamtbetrag",
-    "according_to_price": "Laut Preisliste"
+    "according_to_price": "Laut Preisliste",
+    "status_label": "Status",
+    "status_order_sent": "Bestellung versendet",
+    "shipping_date_label": "Versanddatum",
+    "shipping_method_label": "Versandart",
+    "pred_shipping_date_label": "Voraussichtliches Versanddatum"
   },
   "orders": {
     "title": "Ihre Bestellungen",

@@ -35,7 +35,15 @@
                             {% block extra_rows %}
                                 <td>{{ order.sent_date }}</td>
                                 <th scope="row">{{ __(order.prod_status) if order.prod_status else __('order.status_order_sent') }}</th>
-                                <th scope="row">{{ order.delivery_date if order.delivery_date else '-' }}</th>
+                                <th scope="row">
+                                    {% if order.delivery_date %}
+                                        {{ order.delivery_date }}
+                                    {% elif not order.prod_status and order.max_prod_days %}
+                                        {{ order.max_prod_days }} {{ __('termin.days') }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </th>
                                 <td>
                                     {% if order.parsedSpeditionNumbers and order.parsedSpeditionNumbers.length > 0 %}
                                         <div class="dropdown" onclick="event.stopPropagation()">

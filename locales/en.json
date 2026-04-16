@@ -93,7 +93,12 @@
     "total_items": "Total number of items",
     "total": "Total",
     "total_hidden": "Total",
-    "according_to_price": "According to price list"
+    "according_to_price": "According to price list",
+    "status_label": "Status",
+    "status_order_sent": "Order sent",
+    "shipping_date_label": "Shipping date",
+    "shipping_method_label": "Shipping method",
+    "pred_shipping_date_label": "Estimated shipping date"
   },
   "orders": {
     "title": "Your Orders",
