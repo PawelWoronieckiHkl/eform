@@ -12,8 +12,10 @@ function isElectric(jsonParams) {
 
 function isSlope(jsonParams) {
     if (!jsonParams) return false;
-    const model = String(jsonParams.MODEL || '').toUpperCase();
-    return model.includes('SLOPE');
+    console.log(jsonParams.WYMIAROWANIE_SLOPOW___VISIBLE === true);
+    if (jsonParams.WYMIAROWANIE_SLOPOW___VISIBLE === true) return true;
+    const dodatki = String(jsonParams.DODATKI___DESCRIPTION || '').toUpperCase();
+    return dodatki.includes('SLOPE') || dodatki.includes('SCHRÄG');
 }
 
 function computeItemProductionDays(item, productionTimes) {
@@ -24,7 +26,7 @@ function computeItemProductionDays(item, productionTimes) {
     let days = isSlope(jp) && groupData.slopeDays != null
         ? groupData.slopeDays
         : groupData.days;
-
+        console.log(days);
     if (isElectric(jp)) {
         days += ELECTRIC_EXTRA_DAYS;
     }
