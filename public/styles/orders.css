@@ -23,6 +23,25 @@
   text-overflow: ellipsis;
 }
 
+#inlineUserSelect{
+    max-width: 400px;
+    padding: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    justify-self: start !important;
+}
+#inlineUserDropdown{
+  max-height: 300px;
+  margin-top: 40px;
+    overflow-y: auto;
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-default);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+.dropdown-container{
+  display: flex;
+}
 .table td.buttons,
 .table td:has(.dropdown) {
   overflow: visible;

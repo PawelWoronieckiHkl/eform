@@ -36,6 +36,8 @@
     position: relative;
     min-width: 180px;
     max-width: 250px;
+    text-align: left;
+    margin-right: auto;
 }
 .user-filter-inline .dropdown-input {
     width: 100%;
@@ -50,7 +52,7 @@
     left: 0;
     right: 0;
     z-index: 1050;
-    max-height: 250px;
+    max-height: 300px;
     overflow-y: auto;
     background: var(--bg-card, #fff);
     border: 1px solid var(--border-default);
@@ -60,4 +62,15 @@
 }
 .user-filter-inline .custom-dropdown.show {
     display: block;
+}
+
+#inlineUserSelect {
+    max-width: 120px;
+    padding: 4px 6px;
+    font-size: 0.85rem;
+}
+#inlineUserDropdown {
+    max-height: 300px;
+    overflow-y: auto;
+    min-width: 120px;
 }

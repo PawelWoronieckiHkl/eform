@@ -103,6 +103,7 @@
   "orders": {
     "title": "Twoje Zamówienia",
     "order_no": "Nr. Zam.",
+    "order_id": "ID",
     "commission": "Zlecenie",
     "created_date": "Data utworzenia",
     "action": "Akcja",
@@ -197,6 +198,8 @@
     "new_order_commission": "Wpisz nazwę zlecenia lub numer referencyjny.",
     "new_order_address": "Zaznacz, jeśli zamówienie jest dla klienta zewnętrznego.",
     "new_order_send_address": "Zaznacz, jeśli zamówienie ma być wysłane na inny adres.",
+    "new_order_comment": "Opcjonalny komentarz do zamówienia.",
+    "new_order_save": "Zapisz i utwórz zamówienie.",
     "new_order_fill": "Uzupełnij pola i kliknij 'Utwórz zamówienie'.",
     "orders_welcome": "Twoje aktywne zamówienia. Zarządzaj nimi z tego widoku.",
     "orders_list": "Lista Twoich zamówień — kliknij wiersz, aby zobaczyć szczegóły.",

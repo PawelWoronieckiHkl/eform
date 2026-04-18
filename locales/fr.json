@@ -103,6 +103,7 @@
   "orders": {
     "title": "Vos commandes",
     "order_no": "N° de commande",
+    "order_id": "ID",
     "commission": "Commande",
     "created_date": "Date de création",
     "action": "Action",
@@ -185,6 +186,8 @@
     "new_order_commission": "Entrez le nom de la commande ou le numéro de référence.",
     "new_order_address": "Cochez si la commande est pour un client externe.",
     "new_order_send_address": "Cochez si la commande doit être envoyée à une autre adresse.",
+    "new_order_comment": "Ajoutez un commentaire optionnel à la commande.",
+    "new_order_save": "Enregistrer et créer la commande.",
     "new_order_fill": "Remplissez les champs et cliquez sur 'Créer la commande'.",
     "orders_welcome": "Vos commandes actives. Gérez-les depuis cette vue.",
     "orders_list": "Liste de vos commandes — cliquez sur une ligne pour voir les détails.",

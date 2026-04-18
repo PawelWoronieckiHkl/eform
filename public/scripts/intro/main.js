@@ -27,28 +27,41 @@ function startIntroTour(pathname = window.location.pathname) {
     intro.start();
 
     // ─── z-index management on step change ──────────────────────────────
+    function elevateAncestors(el) {
+        let ancestor = el;
+        while (ancestor && ancestor !== document.body) {
+            ancestor.classList.add('introjs-ancestor');
+            ancestor = ancestor.parentElement;
+        }
+    }
+
+    function clearAncestors() {
+        document.querySelectorAll('.introjs-ancestor').forEach(el => {
+            el.classList.remove('introjs-ancestor');
+        });
+    }
+
     function handleStepChange(targetElement) {
+        // Always clear previous ancestor elevation first
+        clearAncestors();
+
+        // Elevate the target element and all its ancestors above the overlay
+        if (targetElement) {
+            elevateAncestors(targetElement);
+        }
+
+        // Page-specific active highlight management
         const { container, elements } = getDivToChangeIndex(pathname);
+        if (!container || elements.length === 0) return;
+
         const currentStepId = targetElement
             ? targetElement.id || (targetElement.classList?.[0] ?? '')
             : '';
 
-        if (!container || elements.length === 0) return;
-
         // Nav bar needs elevated z-index when targeting nav items
         if (currentStepId === 'orders-history-nav-btn') {
             const nav = document.querySelector('.desktop-nav');
-            if (nav) nav.style.zIndex = '199';
-        }
-
-
-
-        if (elements.includes(currentStepId)) {
-            container.style.zIndex = '199';
-            container.classList.add('introjs-showElement');
-        } else if (container.classList.contains('introjs-showElement')) {
-            container.classList.remove('introjs-showElement');
-            container.style.zIndex = '';
+            if (nav) elevateAncestors(nav);
         }
 
         // Highlight only the active element
@@ -89,10 +102,10 @@ function startIntroTour(pathname = window.location.pathname) {
 
     intro.onexit(function () {
         // Clean up z-index changes
+        clearAncestors();
         const { container, elements } = getDivToChangeIndex(pathname);
         if (container) {
             container.classList.remove('introjs-showElement');
-            container.style.zIndex = '';
         }
         for (const id of elements) {
             const el = document.getElementById(id) || document.querySelector(`.${id}`);

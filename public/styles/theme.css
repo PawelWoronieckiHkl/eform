@@ -167,10 +167,10 @@
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 6px 16px rgba(0, 0, 0, 0.2);
     --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.3), 0 16px 40px rgba(0, 0, 0, 0.25);
 
-    --color-success: #e07a91;
-    --color-success-bg: rgba(224, 122, 145, 0.1);
-    --color-success-border: rgba(224, 122, 145, 0.3);
-    --color-success-glow: rgba(224, 122, 145, 0.25);
+    --color-success: #34d399;
+    --color-success-bg: rgba(52, 211, 153, 0.1);
+    --color-success-border: rgba(52, 211, 153, 0.3);
+    --color-success-glow: rgba(52, 211, 153, 0.25);
     --color-warning-bg: rgba(245, 158, 11, 0.1);
     --color-warning-border: rgba(245, 158, 11, 0.3);
     --color-error-bg: rgba(239, 68, 68, 0.1);
@@ -1241,6 +1241,11 @@ dialog,
 
 [data-theme="dark"] .form-check-label {
     color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .param-info-tooltip,
+[data-theme="dark"] .param-info-tooltip div {
+    color: var(--text-inverse) !important;
 }
 
 [data-theme="dark"] .fw-semibold {

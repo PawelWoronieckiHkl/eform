@@ -103,6 +103,7 @@
   "orders": {
     "title": "Ihre Bestellungen",
     "order_no": "Bestellnr.",
+    "order_id": "ID",
     "commission": "Kommission",
     "created_date": "Erstellungsdatum",
     "action": "Aktion",
@@ -185,6 +186,8 @@
     "new_order_commission": "Geben Sie den Auftragsnamen oder die Referenznummer ein.",
     "new_order_address": "Aktivieren, wenn die Bestellung für einen externen Kunden ist.",
     "new_order_send_address": "Aktivieren, wenn die Bestellung an eine andere Adresse gesendet werden soll.",
+    "new_order_comment": "Optionaler Kommentar zur Bestellung hinzufügen.",
+    "new_order_save": "Bestellung speichern und erstellen.",
     "new_order_fill": "Felder ausfüllen und 'Bestellung erstellen' klicken.",
     "orders_welcome": "Ihre aktiven Bestellungen. Verwalten Sie diese hier.",
     "orders_list": "Bestellliste — klicken Sie auf eine Zeile für Details.",

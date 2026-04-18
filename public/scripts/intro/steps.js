@@ -15,7 +15,7 @@ export function getDivToChangeIndex(pathname) {
         },
         '/orders/add-order': {
             container: document.getElementById('new-order-card'),
-            elements: ['commission-input', 'new-order-card', 'address-checkbox-container', 'send-address-checkbox-container']
+            elements: ['commission-input', 'new-order-card', 'address-checkbox-container', 'send-address-checkbox-container', 'comment', 'save-order-btn']
         },
         '/orders': {
             container: document.querySelector('.order-row'),
@@ -142,6 +142,18 @@ export function getStepsForPage(pathname) {
                 intro: t('intro.new_order_send_address'),
                 position: 'bottom',
                 tooltipClass: 'introjs-under-tooltip'
+            },
+            {
+                element: '#comment',
+                intro: t('intro.new_order_comment'),
+                position: 'bottom',
+                tooltipClass: 'introjs-under-tooltip'
+            },
+            {
+                element: '#save-order-btn',
+                intro: t('intro.new_order_save'),
+                position: 'top',
+                tooltipClass: 'introjs-compact-tooltip'
             },
             {
                 intro: t('intro.new_order_fill'),

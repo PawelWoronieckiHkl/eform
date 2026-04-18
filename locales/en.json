@@ -103,6 +103,7 @@
   "orders": {
     "title": "Your Orders",
     "order_no": "Order No.",
+    "order_id": "ID",
     "commission": "Commission",
     "created_date": "Created Date",
     "action": "Action",
@@ -190,6 +191,8 @@
     "new_order_commission": "Enter the order name or reference number.",
     "new_order_address": "Check this if the order is for an external client.",
     "new_order_send_address": "Check this if the order should be sent to a different address.",
+    "new_order_comment": "Add an optional comment for the order.",
+    "new_order_save": "Save and create the order.",
     "new_order_fill": "Fill in the fields and click 'Create order'.",
     "orders_welcome": "Your active orders. Manage them from this view.",
     "orders_list": "Your orders list — click a row to see details.",

@@ -48,29 +48,12 @@
     z-index: 203 !important;
     border-color: #3f4750 !important;
 }
-.introjs-showElement,
 .introjs-relativePosition,
-.introjs-highlightedElement,
-.theme-toggle.introjs-showElement {
+.introjs-highlightedElement {
     z-index: 200 !important;
     position: relative !important;
     border-radius: 8px !important;
     pointer-events: auto !important;
-}
-#new-order-nav-btn.introjs-showElement,
-#orders-nav-btn.introjs-showElement,
-#new-order-nav-btn.introjs-relativePosition,
-#employee-panel-nav-btn.introjs-relativePosition,
-#employee-panel-nav-btn.introjs-showElement,
-#new-order-nav-btn.introjs-relativePosition,
-#orders-history-nav-btn.introjs-showElement,
-#orders-history-nav-btn.introjs-relativePosition {
-    z-index: 99999999 !important;
-    position: relative !important;
-    border: 3px solid #3f4750  !important;
-    border-radius: 8px !important;
-    transform: scale(1.05) !important;
-    box-shadow: 0 0 20px #3f4750  !important;
 }
 .introjs-fixedTooltip {
     z-index: 200 !important;
@@ -78,9 +61,24 @@
 .introjs-under-tooltip{
     z-index: 1000 !important;
     position: fixed !important;
-    top : 45% !important;
-    left: 60% !important;
-    transform: translateX(-50%) !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    min-width: 380px !important;
+    max-width: 400px !important;
+    width: auto !important;
+}
+.introjs-compact-tooltip {
+    z-index: 1000 !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    min-width: 280px !important;
+    max-width: 320px !important;
+    width: auto !important;
+    padding: 10px !important;
+    min-height: auto !important;
 }
 .introjs-button {
     padding: 8px 16px !important;
@@ -104,34 +102,20 @@
 .introjs-skipbutton:hover {
     background: #545b62 !important;
 }
-html.nav-collapsed .introjs-showElement {
-    z-index: 222 !important;
-    position: relative !important;
-}
-#new-order-nav-btn.introjs-showElement,
-#orders-nav-btn.introjs-showElement
- {
-    z-index: 198 !important;
-    border: 2px solid #3f4750 !important;
-}
 @media (max-width: 768px) {
     .introjs-overlay {
         z-index: 199 !important;
     }
     .introjs-tooltip {
-        z-index: 201 !important;
+        z-index: 2001 !important;
         max-width: 90vw !important;
-    }
-    .introjs-showElement {
-        z-index: 197 !important;
     }
 }
 html.nav-collapsed .desktop-nav .introjs-showElement {
-    z-index: 197 !important;
     position: relative !important;
     transform: none !important;
 }
-.introjs-tooltip {
+.introjs-tooltip:not(.introjs-under-tooltip):not(.introjs-center-tooltip):not(.introjs-compact-tooltip) {
     position:absolute !important;
     min-width: 400px !important;
     max-width: 400px !important;
@@ -151,5 +135,22 @@ html.nav-collapsed .desktop-nav .introjs-showElement {
 }
 .active {
     border: 1px solid #6b6b6b46 !important;
-    z-index: 1!important;
+    z-index: 201 !important;
+}
+
+/* ── Elevate all ancestors so highlighted elements escape stacking contexts ── */
+.introjs-ancestor {
+    z-index: 200 !important;
+    position: relative !important;
+}
+
+/* ── Universal highlight for any intro-targeted element ── */
+.introjs-showElement {
+    z-index: 201 !important;
+    position: relative !important;
+    border: 3px solid #3f4750 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 0 20px rgba(63, 71, 80, 0.6) !important;
+    background: var(--bg-surface-solid, #fff) !important;
+    pointer-events: auto !important;
 }

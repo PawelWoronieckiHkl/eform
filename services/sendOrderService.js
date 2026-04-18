@@ -17,7 +17,7 @@ class OrderSender {
             orderno: order?.order_idx ?? 0,
             orderid: order?.id ?? 0,
             commission: order?.commision ?? "",
-            client: order.client_name,
+            client: `${order.client_name} (${order.user_ident})`,
             organizationIdent: order.org_ident,
             userIdent: order.user_ident,
             created_date: order.created_date,

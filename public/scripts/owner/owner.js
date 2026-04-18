@@ -1,10 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
     const searchMount = document.getElementById('orders-search-mount');
     const isSent = searchMount && searchMount.dataset.sent === 'true';
+    const isOrganization = searchMount && searchMount.dataset.organization === 'true';
 
     function handleInlineUserSelect(selectedIdent) {
-        const basePath = isSent ? '/orders/history' : '/orders/userOrders';
-        const targetPath = `${basePath}?userIdent=${encodeURIComponent(selectedIdent)}`;
+        let targetPath;
+        if (isOrganization) {
+            const historyParam = isSent ? '&history=true' : '';
+            targetPath = `/orders/organization-orders?userIdent=${encodeURIComponent(selectedIdent)}${historyParam}`;
+        } else {
+            const basePath = isSent ? '/orders/history' : '/orders/userOrders';
+            targetPath = `${basePath}?userIdent=${encodeURIComponent(selectedIdent)}`;
+        }
         localStorage.setItem('lastUserPath', targetPath);
         getOrgIdent().then(() => { window.location.href = targetPath; });
     }

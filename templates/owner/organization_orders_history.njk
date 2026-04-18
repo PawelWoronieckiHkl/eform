@@ -25,7 +25,7 @@
                         {% if users and users.length > 0 %}
                             <div class="user-filter-inline mt-4 ms-2">
                                 <div class="dropdown-container">
-                                    <input type="text" id="inlineUserSelect" class="dropdown-input" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUser %} value="{{ selectedUser.client_name }}" {% endif %}/>
+                                    <input type="text" id="inlineUserSelect" class="dropdown-input" placeholder="{{ __('orders.select_user') }}" autocomplete="off" {% if selectedUserIdent %} value="{{ selectedUserIdent }}" {% endif %}/>
                                     <div id="inlineUserDropdown" class="dropdown-menu custom-dropdown">
                                         <div class="dropdown-item context-button">
                                             <a href="/orders/organization-orders?history=true" id='context-dropdown-item' class='context-button'>
@@ -33,7 +33,7 @@
                                             </a>
                                         </div>
                                         {% for user in users %}
-                                            <div class="dropdown-item" data-value="{{ user.ident }}">{{ user.client_name or user.ident }}</div>
+                                            <div class="dropdown-item" data-value="{{ user.ident }}">{{  user.ident }}</div>
                                         {% endfor %}
                                     </div>
                                 </div>

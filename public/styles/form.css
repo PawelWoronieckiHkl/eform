@@ -540,7 +540,7 @@ input[type="number"]:focus {
 }
 
 #buttons-space #show-button {
-	background: var(--brand-gradient);
+	background: var(--color-success);
 	color: var(--text-on-brand);
 	border: none;
 	font-size: 1.1rem;

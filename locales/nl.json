@@ -103,6 +103,7 @@
   "orders": {
     "title": "Uw bestellingen",
     "order_no": "Bestelnummer",
+    "order_id": "ID",
     "commission": "Opdracht",
     "created_date": "Aanmaakdatum",
     "action": "Actie",
@@ -185,6 +186,8 @@
     "new_order_commission": "Voer de ordernaam of referentienummer in.",
     "new_order_address": "Vink aan als de bestelling voor een externe klant is.",
     "new_order_send_address": "Vink aan als de bestelling naar een ander adres moet worden verzonden.",
+    "new_order_comment": "Voeg een optionele opmerking toe aan de bestelling.",
+    "new_order_save": "Bestelling opslaan en aanmaken.",
     "new_order_fill": "Vul de velden in en klik op 'Bestelling aanmaken'.",
     "orders_welcome": "Uw actieve bestellingen. Beheer ze vanuit dit overzicht.",
     "orders_list": "Uw bestellijst — klik op een rij voor details.",

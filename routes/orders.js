@@ -188,6 +188,7 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
     const limit = 10000;
     const offset = 0;
     const history = req.query.history === 'true';
+    const userIdent = req.query.userIdent;
 
     const currentUser = req.session.user;
     const orgId = currentUser.isAdmin ? currentUser.organization : currentUser.orgId;
@@ -202,6 +203,12 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
             db.getUserOrders(currentUser.userId, limit, offset, false, orgId),
             db.countUserOrders(currentUser.userId, false, orgId)
         ]);
+    }
+
+    // Filter by userIdent if provided
+    if (userIdent && orders) {
+        orders = orders.filter(o => o.user_ident === userIdent);
+        totalOrders = orders.length;
     }
     const totalPages = Math.ceil(totalOrders / limit);
 
@@ -226,7 +233,8 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
                 page,
                 limit,
                 totalOrders,
-                totalPages
+                totalPages,
+                selectedUserIdent: userIdent || null
             });
             return;
         }
@@ -630,7 +638,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
 
             const currentUser = ownerService.getCurrentUser(req);
             const user = await db.getUserData(currentUser?.pin)
-            const clientName = user.client_name
+            const clientName = `${user.client_name} (${user.ident})`
             const photoFile = await db.getUserLogo(currentUser?.pin)
             const logoPath = path.join(__dirname, '../img/', photoFile)
             const heads = Object.keys(orderItems[0].json_parameters);
