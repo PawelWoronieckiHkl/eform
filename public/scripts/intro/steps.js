@@ -5,13 +5,23 @@
 
 const t = (key) => window.t ? window.t(key) : key;
 
+// ─── pick the visible instance when duplicate IDs exist (mobile / desktop) ──
+
+function getVisibleEl(selector) {
+    const all = document.querySelectorAll(selector);
+    for (const el of all) {
+        if (el.offsetWidth > 0 || el.offsetHeight > 0) return el;
+    }
+    return null;
+}
+
 // ─── z-index helpers per page ───────────────────────────────────────────────
 
 export function getDivToChangeIndex(pathname) {
     const mapping = {
         '/': {
             container: document.querySelector('.desktop-nav'),
-            elements: ['new-order-nav-btn', 'orders-nav-btn', 'orders-history-nav-btn', 'employee-panel-nav-btn']
+            elements: ['new-order-nav-btn', 'orders-nav-btn', 'orders-history-nav-btn', 'employee-panel-nav-btn','new-order-nav-btn']
         },
         '/orders/add-order': {
             container: document.getElementById('new-order-card'),
@@ -32,9 +42,19 @@ export function getDivToChangeIndex(pathname) {
     };
 
     if (/^\/orders\/order\/\d+$/.test(pathname)) {
+        const hasPositions = document.querySelector('.order-table') !== null;
+        const ids = ['order-nav'];
+        if (getVisibleEl('#new-order-button')) ids.push('new-order-button');
+        if (getVisibleEl('#edit-order-button')) ids.push('edit-order-button');
+        if (hasPositions) {
+            if (getVisibleEl('#discount-btn'))       ids.push('discount-btn');
+            if (getVisibleEl('#short-print-button')) ids.push('short-print-button');
+            if (getVisibleEl('#print-button'))       ids.push('print-button');
+            if (getVisibleEl('#generate-excel-btn')) ids.push('generate-excel-btn');
+        }
         return {
             container: document.getElementById('order-nav'),
-            elements: ['order-nav', 'new-order-button', 'edit-order-button', 'short-print-button', 'print-button', 'generate-excel-btn']
+            elements: ids
         };
     }
 
@@ -48,6 +68,21 @@ export function getRedirectionAfterIntro(pathname) {
         '/': '/orders/add-order',
         '/orders': '/orders/history'
     };
+
+    if (/^\/orders\/order\/\d+$/.test(pathname)) {
+        const hasPositions = document.querySelector('.order-table') !== null;
+        if (!hasPositions) {
+            window.location.href = pathname + '/new-position/';
+        } else {
+            window.location.href = '/orders/history';
+        }
+        return;
+    }
+
+    if (/^\/orders\/order\/\d+\/new-position\/?$/.test(pathname)) {
+        // no redirect — user fills the form and submits naturally
+        return;
+    }
 
     if (map[pathname]) {
         window.location.href = map[pathname];
@@ -107,8 +142,7 @@ export function getStepsForPage(pathname) {
             {
                 element: '#new-order-nav-btn',
                 intro: t('intro.home_go_to_new_order'),
-                position: 'floating',
-                tooltipClass: 'introjs-left-tooltip'
+                position: 'bottom-right-aligned'
             }
         ],
 
@@ -249,7 +283,8 @@ export function getStepsForPage(pathname) {
     if (/^\/orders\/order\/\d+$/.test(pathname)) {
         const hasPositions = document.querySelector('.order-table') !== null;
 
-        if (hasPositions) {
+        if (!hasPositions) {
+            // Empty order — explain toolbar, then redirect to new-position
             return [
                 {
                     intro: t('intro.order_detail_welcome'),
@@ -262,52 +297,84 @@ export function getStepsForPage(pathname) {
                     position: 'bottom'
                 },
                 {
-                    element: '#new-order-button',
-                    intro: t('intro.order_detail_new_pos'),
+                    element: '.custom-order-btn',
+                    intro: t('intro.order_detail_empty'),
                     position: 'bottom'
                 },
                 {
-                    element: '#edit-order-button',
+                    element: '#generate-container #edit-order-button',
                     intro: t('intro.order_detail_edit'),
+                    position: 'bottom'
+                },
+                {
+                    element: '#discount-btn',
+                    intro: t('intro.order_detail_discount'),
                     position: 'bottom'
                 },
                 {
                     element: '#short-print-button',
                     intro: t('intro.order_detail_short_pdf'),
-                    position: 'bottom-right-aligned'
+                    position: 'bottom'
                 },
                 {
-                    element: '#print-button',
+                    element: '#generate-container #print-button',
                     intro: t('intro.order_detail_pdf'),
-                    position: 'bottom-right-aligned'
+                    position: 'bottom'
                 },
                 {
-                    element: '#generate-excel-btn',
+                    element: '#generate-container #generate-excel-btn',
                     intro: t('intro.order_detail_excel'),
-                    position: 'top'
+                    position: 'bottom'
+                },
+                {
+                    intro: t('intro.order_detail_go_to_config'),
+                    position: 'floating',
+                    tooltipClass: 'introjs-center-tooltip'
                 }
             ];
         } else {
+            // Order with positions — explain table operations, then redirect to history
             return [
                 {
-                    intro: t('intro.order_detail_welcome'),
+                    intro: t('intro.order_detail_welcome_back'),
                     position: 'floating',
                     tooltipClass: 'introjs-center-tooltip'
                 },
                 {
-                    element: '#order-nav',
-                    intro: t('intro.order_detail_nav'),
+                    element: '.order-table',
+                    intro: t('intro.order_detail_table'),
+                    position: 'top'
+                },
+                {
+                    element: '.order-table tr',
+                    intro: t('intro.order_detail_item_full'),
+                    position: 'bottom',
+                    tooltipClass: 'introjs-item-full-tooltip'
+                },
+                {
+                    element: '.duplicate-btn',
+                    intro: t('intro.order_detail_duplicate'),
                     position: 'bottom'
                 },
                 {
-                    element: '#new-order-button',
-                    intro: t('intro.order_detail_empty'),
+                    element: '.edit-position-btn',
+                    intro: t('intro.order_detail_edit_pos'),
                     position: 'bottom'
                 },
                 {
-                    element: '#edit-order-button',
-                    intro: t('intro.order_detail_edit'),
+                    element: '.delete-position-btn',
+                    intro: t('intro.order_detail_delete_pos'),
                     position: 'bottom'
+                },
+                {
+                    element: '#send-order',
+                    intro: t('intro.order_detail_send'),
+                    position: 'top'
+                },
+                {
+                    intro: t('intro.order_detail_go_to_history'),
+                    position: 'floating',
+                    tooltipClass: 'introjs-center-tooltip'
                 }
             ];
         }
@@ -337,13 +404,8 @@ export function getStepsForPage(pathname) {
                 position: 'bottom'
             },
             {
-                element: '#dynamic-form',
+                element: '.asortment-container',
                 intro: t('intro.new_position_form'),
-                position: 'top'
-            },
-            {
-                element: '#show-button',
-                intro: t('intro.new_position_save'),
                 position: 'top'
             }
         ];

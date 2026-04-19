@@ -514,5 +514,24 @@ module.exports = {
     insertUserIntousrtble,
     updatePasswordInUsrtblpsswd,
     getUserRole,
-    getUsersFromUsrtblpsswd
+    getUsersFromUsrtblpsswd,
+    getIntroNeeded,
+    setIntroNeeded,
+    enableIntroNeeded
+}
+
+async function getIntroNeeded(pin) {
+    const query = 'SELECT intro_needed FROM `user` WHERE pin = ?';
+    const result = await selectQuery(query, [pin]);
+    return result && result[0] ? !!result[0].intro_needed : false;
+}
+
+async function setIntroNeeded(pin) {
+    const query = 'UPDATE `user` SET intro_needed = 0 WHERE pin = ?';
+    return await updateQuery(query, [pin]);
+}
+
+async function enableIntroNeeded(pin) {
+    const query = 'UPDATE `user` SET intro_needed = 1 WHERE pin = ?';
+    return await updateQuery(query, [pin]);
 }

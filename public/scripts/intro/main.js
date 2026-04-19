@@ -1,6 +1,17 @@
 import { getStepsForPage, getDivToChangeIndex, getRedirectionAfterIntro, createOverlayDiv } from './steps.js';
 
 const t = (key) => window.t ? window.t(key) : key;
+const INTRO_ACTIVE_CLASS = 'introjs-active-element';
+
+async function markIntroDone() {
+    try {
+        await fetch('/user/set-intro-done', { method: 'POST', credentials: 'same-origin' });
+        window.introNeeded = false;
+        localStorage.removeItem('introShouldContinue');
+    } catch (e) {
+        // silently ignore
+    }
+}
 
 function startIntroTour(pathname = window.location.pathname) {
     const steps = getStepsForPage(pathname);
@@ -19,7 +30,7 @@ function startIntroTour(pathname = window.location.pathname) {
         prevLabel: t('intro.prev'),
         skipLabel: t('intro.skip'),
         doneLabel: t('intro.done'),
-        scrollToElement: true,
+        scrollToElement: pathname !== '/orders/history',
         tooltipPosition: 'auto',
         steps: steps
     });
@@ -64,20 +75,56 @@ function startIntroTour(pathname = window.location.pathname) {
             if (nav) elevateAncestors(nav);
         }
 
-        // Highlight only the active element
+        // Highlight only the active element (pick visible instance for duplicate IDs)
         for (const id of elements) {
-            const el = document.getElementById(id) || document.querySelector(`.${id}`);
-            if (!el) continue;
-            if (id === currentStepId) {
-                el.classList.add('active');
-            } else {
-                el.classList.remove('active');
+            const candidates = [
+                ...document.querySelectorAll(`#${id}`),
+                ...document.querySelectorAll(`.${id}`)
+            ];
+            for (const el of candidates) {
+                if (id === currentStepId) {
+                    el.classList.add(INTRO_ACTIVE_CLASS);
+                } else {
+                    el.classList.remove(INTRO_ACTIVE_CLASS);
+                }
             }
         }
     }
 
+    function injectNoShowBtn() {
+        const existing = document.getElementById('intro-no-show-btn');
+        if (existing) existing.remove();
+        const skipBtn = document.querySelector('.introjs-skipbutton');
+        if (skipBtn) {
+            // Wrap skip + no-show in a flex row
+            let wrapper = document.getElementById('intro-top-actions');
+            if (!wrapper) {
+                wrapper = document.createElement('div');
+                wrapper.id = 'intro-top-actions';
+                wrapper.style.cssText = 'display:flex;justify-content:space-between;align-items:center;width:100%;';
+                skipBtn.parentNode.insertBefore(wrapper, skipBtn);
+            }
+            const noShowBtn = document.createElement('button');
+            noShowBtn.id = 'intro-no-show-btn';
+            noShowBtn.className = 'introjs-button introjs-no-show-btn';
+            noShowBtn.textContent = t('intro.dont_show');
+            noShowBtn.onclick = async function () {
+                await markIntroDone();
+                intro.exit();
+            };
+            wrapper.innerHTML = '';
+            wrapper.appendChild(skipBtn);
+            wrapper.appendChild(noShowBtn);
+        }
+    }
+
+    intro.onstart(function () {
+        setTimeout(injectNoShowBtn, 0);
+    });
+
     intro.onafterchange(function (targetElement) {
         handleStepChange(targetElement);
+        setTimeout(injectNoShowBtn, 0);
     });
 
     intro.oncomplete(function () {
@@ -92,10 +139,18 @@ function startIntroTour(pathname = window.location.pathname) {
             localStorage.setItem('introShouldContinue', '1');
             getRedirectionAfterIntro(pathname);
         } else if (pathname === '/orders/history') {
-            // End of tour
+            // End of tour — mark done in DB
             localStorage.removeItem('introShouldContinue');
+            markIntroDone();
+        } else if (/^\/orders\/order\/\d+$/.test(pathname)) {
+            localStorage.setItem('introShouldContinue', '1');
+            getRedirectionAfterIntro(pathname);
+        } else if (/^\/orders\/order\/\d+\/new-position/.test(pathname)) {
+            localStorage.setItem('introShouldContinue', '1');
+            getRedirectionAfterIntro(pathname);
         } else {
             localStorage.removeItem('introShouldContinue');
+            markIntroDone();
             getRedirectionAfterIntro(pathname);
         }
     });
@@ -108,8 +163,13 @@ function startIntroTour(pathname = window.location.pathname) {
             container.classList.remove('introjs-showElement');
         }
         for (const id of elements) {
-            const el = document.getElementById(id) || document.querySelector(`.${id}`);
-            if (el) el.classList.remove('active');
+            const candidates = [
+                ...document.querySelectorAll(`#${id}`),
+                ...document.querySelectorAll(`.${id}`)
+            ];
+            for (const el of candidates) {
+                el.classList.remove(INTRO_ACTIVE_CLASS);
+            }
         }
         // Remove custom overlay if present (shouldn't be needed)
         const overlay = document.getElementById('intro-overlay-div');
@@ -117,17 +177,49 @@ function startIntroTour(pathname = window.location.pathname) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+// Expose globally so inline scripts can call before/after DOMContentLoaded
+window.startIntroTour = startIntroTour;
+
+function initTour() {
+    // Always bind tour buttons via event delegation (buttons may not exist yet)
+    document.addEventListener('click', async function (e) {
+        const tourBtn = e.target.closest('#intro-tour-btn');
+        if (tourBtn) {
+            e.preventDefault();
+            startIntroTour();
+            return;
+        }
+        const headerTourBtn = e.target.closest('#intro-tour-header-btn');
+        if (headerTourBtn) {
+            e.preventDefault();
+            try {
+                await fetch('/user/enable-intro', { method: 'POST', credentials: 'same-origin' });
+                window.introNeeded = true;
+                localStorage.setItem('introShouldContinue', '1');
+            } catch (err) { /* ignore */ }
+            if (window.location.pathname !== '/') {
+                window.location.href = '/';
+            } else {
+                startIntroTour();
+            }
+            return;
+        }
+    });
+
     // If redirected from previous step, auto-start tour
     if (localStorage.getItem('introShouldContinue') === '1') {
         startIntroTour();
         return;
     }
-    const tourBtn = document.getElementById('intro-tour-btn');
-    if (tourBtn) {
-        tourBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            startIntroTour();
-        });
+    // Auto-start for new users who haven't seen the tour yet
+    if (window.introNeeded === true && window.userLoggedIn) {
+        startIntroTour();
+        return;
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTour);
+} else {
+    initTour();
+}

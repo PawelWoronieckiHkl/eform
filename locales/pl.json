@@ -216,10 +216,19 @@
     "order_detail_nav": "Pasek narzędzi zamówienia.",
     "order_detail_new_pos": "Dodaj nową pozycję do zamówienia.",
     "order_detail_edit": "Edytuj dane zamówienia.",
+    "order_detail_discount": "Centrum rabatów — ustaw rabat dla zamówienia.",
     "order_detail_short_pdf": "Pobierz skrócony PDF zamówienia.",
     "order_detail_pdf": "Pobierz pełny PDF zamówienia.",
     "order_detail_excel": "Eksportuj zamówienie do pliku Excel.",
     "order_detail_empty": "To zamówienie nie ma jeszcze pozycji. Dodaj pierwszą pozycję!",
+    "order_detail_go_to_config": "Teraz przeniesiemy się do konfiguracji pozycji zamówienia.",
+    "order_detail_welcome_back": "Wróciłeś do zamówienia — teraz omówimy operacje na pozycjach.",
+    "order_detail_go_to_history": "Teraz przejdziemy do historii wysłanych zamówień.",
+    "order_detail_table": "Tabela pozycji zamówienia — tutaj widzisz wszystkie dodane pozycje.",
+    "order_detail_duplicate": "Duplikuj pozycję — szybkie kopiowanie istniejącej pozycji.",
+    "order_detail_edit_pos": "Edytuj parametry wybranej pozycji.",
+    "order_detail_delete_pos": "Usuń pozycję z zamówienia.",
+    "order_detail_send": "Wyślij zamówienie — po wysłaniu trafi ono do realizacji.",
     "new_position_welcome": "Dodawanie nowej pozycji do zamówienia.",
     "new_position_commission": "Wpisz nazwę pozycji (np. nazwa produktu).",
     "new_position_department": "Wybierz dział produktu.",
@@ -232,6 +241,9 @@
     "edit_position_save": "Zapisz zmiany w pozycji.",
     "employee_welcome": "Panel zarządzania pracownikami.",
     "employee_list": "Lista pracowników z danymi logowania i ostatnią aktywnością.",
-    "employee_add": "Dodaj nowego pracownika."
-  }
+    "employee_add": "Dodaj nowego pracownika.",
+    "order_detail_item_full": "Każda pozycja zawiera wszystkie parametry, ceny i orientacyjny czas produkcji.",
+    "dont_show": "Nie pokazuj więcej"
+  },
+  "order_detail_item_full": "Każda pozycja zawiera wszystkie parametry, ceny i orientacyjny czas produkcji."
 }

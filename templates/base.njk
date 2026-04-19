@@ -309,7 +309,11 @@
     integrity="sha512-qOOdnUM5GtxFYZtMURfJthJ+1PphZz6uCofz6oBnCxCyP3Oc+ieRzc8sb7c+YL1vrenZNwu/C0EaqBaVvbiRhw=="
     crossorigin="anonymous"
     referrerpolicy="no-referrer"></script>
-    <!-- <script type='module' src="/scripts/intro/main.js"></script><script type='module' src='/scripts/base.js'></script><script type="module" src="/scripts/getEnv.js"></script><script src="/scripts/navActiveState.js"></script><script type="module" src="/scripts/owner/owner.js"></script><script>window.loadTranslations(document.documentElement.lang || 'en'); -->
-    <!-- window.loadLangs() -->
-<!-- </script> -->
+    <script>
+        window.introNeeded = {{ introNeeded | dump }};
+        window.userLoggedIn = {{ (owner or admin or isEmployee) | dump }};
+    </script>
+    <script type='module' src="/scripts/intro/main.js"></script><script type='module' src='/scripts/base.js'></script><script type="module" src="/scripts/getEnv.js"></script><script src="/scripts/navActiveState.js"></script><script type="module" src="/scripts/owner/owner.js"></script><script>window.loadTranslations(document.documentElement.lang || 'en');
+    window.loadLangs()
+</script>
 {% block scripts %}{% endblock scripts %}</body></html>

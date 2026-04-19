@@ -548,4 +548,28 @@ router.get('/uid', requireLogin, async (req, res) => {
     }
 });
 
+router.post('/set-intro-done', requireLogin, async (req, res) => {
+    try {
+        const pin = req.session.user.pin;
+        await db.setIntroNeeded(pin);
+        req.session.user.introNeeded = false;
+        return res.json({ status: 'success' });
+    } catch (err) {
+        log('Error setting intro done:', err);
+        return res.status(500).json({ status: 'error' });
+    }
+});
+
+router.post('/enable-intro', requireLogin, async (req, res) => {
+    try {
+        const pin = req.session.user.pin;
+        await db.enableIntroNeeded(pin);
+        req.session.user.introNeeded = true;
+        return res.json({ status: 'success' });
+    } catch (err) {
+        log('Error enabling intro:', err);
+        return res.status(500).json({ status: 'error' });
+    }
+});
+
 module.exports = router;

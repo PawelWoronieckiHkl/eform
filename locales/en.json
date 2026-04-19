@@ -209,10 +209,19 @@
     "order_detail_nav": "Order toolbar.",
     "order_detail_new_pos": "Add a new item to the order.",
     "order_detail_edit": "Edit order details.",
+    "order_detail_discount": "Discount center — set a discount for the order.",
     "order_detail_short_pdf": "Download short PDF of the order.",
     "order_detail_pdf": "Download full PDF of the order.",
     "order_detail_excel": "Export order to Excel file.",
     "order_detail_empty": "This order has no items yet. Add the first one!",
+    "order_detail_go_to_config": "Now we will move to the order item configuration.",
+    "order_detail_welcome_back": "You're back — now let's go through the item operations.",
+    "order_detail_go_to_history": "Now we will move to the sent orders history.",
+    "order_detail_table": "Order items table — here you can see all added items.",
+    "order_detail_duplicate": "Duplicate item — quickly copy an existing item.",
+    "order_detail_edit_pos": "Edit the parameters of the selected item.",
+    "order_detail_delete_pos": "Delete item from the order.",
+    "order_detail_send": "Send the order — once sent it will be processed.",
     "new_position_welcome": "Adding a new item to the order.",
     "new_position_commission": "Enter item name (e.g. product name).",
     "new_position_department": "Select the product department.",
@@ -225,6 +234,8 @@
     "edit_position_save": "Save changes to the item.",
     "employee_welcome": "Employee management panel.",
     "employee_list": "List of employees with login data and last activity.",
-    "employee_add": "Add a new employee."
+    "employee_add": "Add a new employee.",
+    "order_detail_item_full": "Each item contains all parameters, prices, and estimated production time.",
+    "dont_show": "Don't show again"
   }
 }

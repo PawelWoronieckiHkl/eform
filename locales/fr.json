@@ -204,10 +204,19 @@
     "order_detail_nav": "Barre d'outils de la commande.",
     "order_detail_new_pos": "Ajouter un nouvel article à la commande.",
     "order_detail_edit": "Modifier les détails de la commande.",
+    "order_detail_discount": "Centre de remises — définir une remise pour la commande.",
     "order_detail_short_pdf": "Télécharger le PDF court de la commande.",
     "order_detail_pdf": "Télécharger le PDF complet de la commande.",
     "order_detail_excel": "Exporter la commande en fichier Excel.",
     "order_detail_empty": "Cette commande n'a pas encore d'articles. Ajoutez le premier !",
+    "order_detail_go_to_config": "Nous allons maintenant passer à la configuration de l'article.",
+    "order_detail_welcome_back": "Vous êtes de retour — passons en revue les opérations sur les articles.",
+    "order_detail_go_to_history": "Nous allons maintenant consulter l'historique des commandes.",
+    "order_detail_table": "Tableau des articles — ici vous pouvez voir tous les articles ajoutés.",
+    "order_detail_duplicate": "Dupliquer l'article — copie rapide d'un article existant.",
+    "order_detail_edit_pos": "Modifier les paramètres de l'article sélectionné.",
+    "order_detail_delete_pos": "Supprimer l'article de la commande.",
+    "order_detail_send": "Envoyer la commande — une fois envoyée, elle sera traitée.",
     "new_position_welcome": "Ajout d'un nouvel article à la commande.",
     "new_position_commission": "Entrez le nom de l'article (ex. nom du produit).",
     "new_position_department": "Sélectionnez le département du produit.",
@@ -220,6 +229,9 @@
     "edit_position_save": "Enregistrer les modifications.",
     "employee_welcome": "Panneau de gestion des employés.",
     "employee_list": "Liste des employés avec données de connexion et dernière activité.",
-    "employee_add": "Ajouter un nouvel employé."
-  }
+    "employee_add": "Ajouter un nouvel employé.",
+    "order_detail_item_full": "Chaque article contient tous les paramètres, les prix et le délai de production estimé.",
+    "dont_show": "Ne plus afficher"
+  },
+  "order_detail_item_full": "Chaque article contient tous les paramètres, prix et le délai de production estimé."
 }

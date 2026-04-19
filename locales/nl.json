@@ -204,10 +204,19 @@
     "order_detail_nav": "Bestelling werkbalk.",
     "order_detail_new_pos": "Nieuw item toevoegen aan de bestelling.",
     "order_detail_edit": "Bestelgegevens bewerken.",
+    "order_detail_discount": "Kortingscentrum — stel een korting in voor de bestelling.",
     "order_detail_short_pdf": "Kort PDF van de bestelling downloaden.",
     "order_detail_pdf": "Volledig PDF van de bestelling downloaden.",
     "order_detail_excel": "Bestelling exporteren naar Excel.",
     "order_detail_empty": "Deze bestelling heeft nog geen items. Voeg het eerste toe!",
+    "order_detail_go_to_config": "Nu gaan we naar de configuratie van het bestelitem.",
+    "order_detail_welcome_back": "Welkom terug — laten we de itembewerkingen doorlopen.",
+    "order_detail_go_to_history": "Nu gaan we naar de bestelgeschiedenis.",
+    "order_detail_table": "Itemtabel — hier ziet u alle toegevoegde items.",
+    "order_detail_duplicate": "Item dupliceren — snel een bestaand item kopiëren.",
+    "order_detail_edit_pos": "Parameters van het geselecteerde item bewerken.",
+    "order_detail_delete_pos": "Item uit de bestelling verwijderen.",
+    "order_detail_send": "Bestelling verzenden — na verzending wordt deze verwerkt.",
     "new_position_welcome": "Nieuw item toevoegen aan de bestelling.",
     "new_position_commission": "Voer de itemnaam in (bijv. productnaam).",
     "new_position_department": "Selecteer de productafdeling.",
@@ -220,6 +229,9 @@
     "edit_position_save": "Wijzigingen opslaan.",
     "employee_welcome": "Medewerker beheerpanel.",
     "employee_list": "Lijst van medewerkers met inloggegevens en laatste activiteit.",
-    "employee_add": "Nieuwe medewerker toevoegen."
-  }
+    "employee_add": "Nieuwe medewerker toevoegen.",
+    "order_detail_item_full": "Elk item bevat alle parameters, prijzen en de geschatte productietijd.",
+    "dont_show": "Niet meer tonen"
+  },
+  "order_detail_item_full": "Elk item bevat alle parameters, prijzen en de geschatte productietijd."
 }

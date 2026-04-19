@@ -1,3 +1,14 @@
+/* Centered and much lower tooltip for order item full step */
+.introjs-item-full-tooltip {
+    position: fixed !important;
+    left: 50vw !important;
+    top: calc(100px + 130px) !important;
+    transform: translate(-50%, 0) !important;
+    min-width: 340px !important;
+    max-width: 480px !important;
+    text-align: center !important;
+    z-index: 3000 !important;
+}
 .introjs-overlay {
     z-index: 198 !important;
     background: rgba(0, 0, 0, 0.7) !important;
@@ -34,15 +45,6 @@
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     margin: 0 !important;
-}
-.introjs-tooltipReferenceLayer:first-child .introjs-tooltip {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    margin: 0 !important;
-    width: 0px !important;
-    text-align: center !important;
 }
 .introjs-arrow {
     z-index: 203 !important;
@@ -88,19 +90,51 @@
     color: white !important;
     border: none !important;
     cursor: pointer !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: background 0.15s ease !important;
 }
 .introjs-button:hover {
-    background: #3f4750  !important;
+    background: #545b62 !important;
+    text-decoration: none !important;
+}
+.introjs-button:focus {
+    outline: 2px solid #3f4750 !important;
+    outline-offset: 2px !important;
+    text-decoration: none !important;
 }
 .introjs-skipbutton {
     background: #f5f5f5 !important;
-    padding: 10px !important;
-    color: gray !important;
+    color: #888 !important;
     border: 1px solid #ccc !important;
-    border-radius: 12px !important;
+    border-radius: 4px !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
 }
 .introjs-skipbutton:hover {
-    background: #545b62 !important;
+    background: #e8e8e8 !important;
+    color: #555 !important;
+    text-decoration: none !important;
+}
+
+.introjs-no-show-btn {
+    background: #f5f5f5 !important;
+    color: #888 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+}
+.introjs-no-show-btn:hover {
+    background: #e8e8e8 !important;
+    color: #555 !important;
+    text-decoration: none !important;
 }
 @media (max-width: 768px) {
     .introjs-overlay {
@@ -128,12 +162,7 @@ html.nav-collapsed .desktop-nav .introjs-showElement {
 .introjs-bottom-left-aligned {
     margin-top: +60px !important;
 }
-.introjs-button {
-    padding: 8px 16px !important;
-    margin: 5px !important;
-    border-radius: 4px !important;
-}
-.active {
+.introjs-active-element {
     border: 1px solid #6b6b6b46 !important;
     z-index: 201 !important;
 }
@@ -144,6 +173,12 @@ html.nav-collapsed .desktop-nav .introjs-showElement {
     position: relative !important;
 }
 
+/* ── Tooltip shifted right+down so it doesn't cover the target button ── */
+.introjs-left-tooltip {
+    left: 60px !important;
+    top: 30px !important;
+}
+
 /* ── Universal highlight for any intro-targeted element ── */
 .introjs-showElement {
     z-index: 201 !important;
@@ -151,6 +186,23 @@ html.nav-collapsed .desktop-nav .introjs-showElement {
     border: 3px solid #3f4750 !important;
     border-radius: 8px !important;
     box-shadow: 0 0 20px rgba(63, 71, 80, 0.6) !important;
-    background: var(--bg-surface-solid, #fff) !important;
     pointer-events: auto !important;
+}
+
+/* Keep native button/link styling visible while the intro highlight is active. */
+.introjs-showElement:not(a):not(button) {
+    background: var(--bg-surface-solid, #fff) !important;
+}
+
+/* Hide highlight artifacts on floating steps (no real element targeted) */
+.introjsFloatingElement.introjs-showElement {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    pointer-events: none !important;
+}
+
+/* Keep intro helper styling scoped away from Bootstrap's generic .active rules. */
+.introjs-showElement.introjs-active-element.btn {
+    color: inherit !important;
 }

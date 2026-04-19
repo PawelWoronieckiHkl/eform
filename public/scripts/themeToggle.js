@@ -49,6 +49,20 @@
             document.body.appendChild(btn);
         }
 
+        // Insert tour button BEFORE theme toggle (only for logged-in users)
+        if (window.userLoggedIn) {
+            const tourBtn = document.createElement('button');
+            tourBtn.id = 'intro-tour-header-btn';
+            tourBtn.className = 'theme-toggle';
+            tourBtn.type = 'button';
+            tourBtn.setAttribute('aria-label', 'Tour');
+            tourBtn.title = 'Tour';
+            tourBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>';
+            if (langHeader && langSwitcher) {
+                langHeader.insertBefore(tourBtn, btn);
+            }
+        }
+
         // Ustaw ikonę
         applyTheme(getPreferredTheme());
 

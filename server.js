@@ -12,6 +12,7 @@ const mainRoutes = require('./routes/index');
 const adminRoutes = require('./routes/admin');
 const addressRoutes = require('./routes/address');
 const { addOrganizationsForAdmin } = require('./middleware/loginMixture.js');
+const usersDb = require('./db/users.js');
 const bodyParser = require("body-parser");
 const { photoPath, dataDir, localesDir, availabeLanguages, defaultLanguage } = require('./config');
 const cookieParser = require('cookie-parser');
@@ -124,6 +125,25 @@ app.use((req, res, next) => {
 	res.locals.locale = req.getLocale();
 	next();
 });
+
+// ─── intro_needed global middleware ─────────────────────────────────────────
+app.use(async (req, res, next) => {
+	const pin = req.session?.user?.pin;
+	if (pin) {
+		try {
+			req.session.user.introNeeded = await usersDb.getIntroNeeded(pin);
+			log('[intro] pin:', pin, 'introNeeded:', req.session.user.introNeeded);
+		} catch (e) {
+			log('[intro] DB error:', e.message);
+			req.session.user.introNeeded = false;
+		}
+		res.locals.introNeeded = req.session.user.introNeeded;
+	} else {
+		res.locals.introNeeded = null;
+	}
+	next();
+});
+
 app.use(addOrganizationsForAdmin);
 app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);

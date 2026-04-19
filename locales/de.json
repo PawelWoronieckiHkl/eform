@@ -204,10 +204,19 @@
     "order_detail_nav": "Bestellungs-Werkzeugleiste.",
     "order_detail_new_pos": "Neue Position zur Bestellung hinzufügen.",
     "order_detail_edit": "Bestelldaten bearbeiten.",
+    "order_detail_discount": "Rabattzentrum — Rabatt für die Bestellung festlegen.",
     "order_detail_short_pdf": "Kurz-PDF der Bestellung herunterladen.",
     "order_detail_pdf": "Voll-PDF der Bestellung herunterladen.",
     "order_detail_excel": "Bestellung als Excel exportieren.",
     "order_detail_empty": "Diese Bestellung hat noch keine Positionen. Fügen Sie die erste hinzu!",
+    "order_detail_go_to_config": "Jetzt wechseln wir zur Konfiguration der Bestellposition.",
+    "order_detail_welcome_back": "Willkommen zurück — jetzt besprechen wir die Positionsoperationen.",
+    "order_detail_go_to_history": "Jetzt wechseln wir zur Bestellhistorie.",
+    "order_detail_table": "Positionstabelle — hier sehen Sie alle hinzugefügten Positionen.",
+    "order_detail_duplicate": "Position duplizieren — schnelles Kopieren einer vorhandenen Position.",
+    "order_detail_edit_pos": "Parameter der ausgewählten Position bearbeiten.",
+    "order_detail_delete_pos": "Position aus der Bestellung entfernen.",
+    "order_detail_send": "Bestellung absenden — nach dem Versand wird sie bearbeitet.",
     "new_position_welcome": "Neue Position zur Bestellung hinzufügen.",
     "new_position_commission": "Positionsname eingeben (z.B. Produktname).",
     "new_position_department": "Produktabteilung wählen.",
@@ -220,6 +229,9 @@
     "edit_position_save": "Änderungen speichern.",
     "employee_welcome": "Mitarbeiterverwaltung.",
     "employee_list": "Mitarbeiterliste mit Anmeldedaten und letzter Aktivität.",
-    "employee_add": "Neuen Mitarbeiter hinzufügen."
-  }
+    "employee_add": "Neuen Mitarbeiter hinzufügen.",
+    "order_detail_item_full": "Jede Position enthält alle Parameter, Preise und die geschätzte Produktionszeit.",
+    "dont_show": "Nicht mehr anzeigen"
+  },
+  "order_detail_item_full": "Jeder Posten enthält alle Parameter, Preise und die voraussichtliche Produktionszeit."
 }
