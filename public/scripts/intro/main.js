@@ -186,7 +186,7 @@ function initTour() {
         const tourBtn = e.target.closest('#intro-tour-btn');
         if (tourBtn) {
             e.preventDefault();
-            startIntroTour();
+            await startAfterTranslations();
             return;
         }
         const headerTourBtn = e.target.closest('#intro-tour-header-btn');
@@ -200,20 +200,26 @@ function initTour() {
             if (window.location.pathname !== '/') {
                 window.location.href = '/';
             } else {
-                startIntroTour();
+                await startAfterTranslations();
             }
             return;
         }
     });
 
+    // Wait for translations before starting the tour
+    async function startAfterTranslations() {
+        if (window.translationsReady) await window.translationsReady;
+        startIntroTour();
+    }
+
     // If redirected from previous step, auto-start tour
     if (localStorage.getItem('introShouldContinue') === '1') {
-        startIntroTour();
+        startAfterTranslations();
         return;
     }
     // Auto-start for new users who haven't seen the tour yet
     if (window.introNeeded === true && window.userLoggedIn) {
-        startIntroTour();
+        startAfterTranslations();
         return;
     }
 }

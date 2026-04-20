@@ -38,5 +38,5 @@ window.loadLangs = async function getLanguages() {
   }
 }
 
-window.loadTranslations(document.documentElement.lang || 'en');
+window.translationsReady = window.loadTranslations(document.documentElement.lang || 'en');
 window.loadLangs()

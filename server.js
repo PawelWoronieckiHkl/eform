@@ -132,7 +132,7 @@ app.use(async (req, res, next) => {
 	if (pin) {
 		try {
 			req.session.user.introNeeded = await usersDb.getIntroNeeded(pin);
-			log('[intro] pin:', pin, 'introNeeded:', req.session.user.introNeeded);
+			// log('[intro] pin:', pin, 'introNeeded:', req.session.user.introNeeded);
 		} catch (e) {
 			log('[intro] DB error:', e.message);
 			req.session.user.introNeeded = false;

@@ -80,7 +80,7 @@
     max-width: 320px !important;
     width: auto !important;
     padding: 10px !important;
-    min-height: auto !important;
+    max-height: 300px !important;
 }
 .introjs-button {
     padding: 8px 16px !important;
