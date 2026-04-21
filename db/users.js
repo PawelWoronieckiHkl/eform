@@ -517,7 +517,9 @@ module.exports = {
     getUsersFromUsrtblpsswd,
     getIntroNeeded,
     setIntroNeeded,
-    enableIntroNeeded
+    enableIntroNeeded,
+    getRecentClients,
+    saveRecentClient
 }
 
 async function getIntroNeeded(pin) {
@@ -534,4 +536,29 @@ async function setIntroNeeded(pin) {
 async function enableIntroNeeded(pin) {
     const query = 'UPDATE `user` SET intro_needed = 1 WHERE pin = ?';
     return await updateQuery(query, [pin]);
+}
+
+const RECENT_CLIENTS_MAX = 10;
+
+async function getRecentClients(userId) {
+    const query = 'SELECT recent_clients FROM `user` WHERE id = ?';
+    const result = await selectQuery(query, [userId]);
+    if (!result || !result[0] || !result[0].recent_clients) return [];
+    try {
+        const parsed = typeof result[0].recent_clients === 'string'
+            ? JSON.parse(result[0].recent_clients)
+            : result[0].recent_clients;
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
+async function saveRecentClient(userId, ident, name) {
+    let recent = await getRecentClients(userId);
+    recent = recent.filter(u => u.ident !== ident);
+    recent.unshift({ ident, name });
+    if (recent.length > RECENT_CLIENTS_MAX) recent.length = RECENT_CLIENTS_MAX;
+    const query = 'UPDATE `user` SET recent_clients = ? WHERE id = ?';
+    return await updateQuery(query, [JSON.stringify(recent), userId]);
 }

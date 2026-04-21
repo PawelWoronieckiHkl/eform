@@ -129,6 +129,7 @@ dialog::backdrop {
 	border-radius: var(--radius-xl);
 	transition: box-shadow 0.3s, background-color 0.3s;
 	cursor: pointer;
+	max-height: 320px !important;
 }
 
 .image-box:hover {

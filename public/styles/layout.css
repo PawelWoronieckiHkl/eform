@@ -57,6 +57,7 @@
 	}
 
 	#userDropdown {
+		margin-top: 40px !important;
 		max-height: 25vh;
 		overflow-y: auto;
 		overflow-x: hidden;

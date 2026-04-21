@@ -26,6 +26,17 @@
 .dropdown-item.hidden {
     display: none;
 }
+.dropdown-item-recent {
+    font-weight: 600;
+}
+.dropdown-separator {
+    height: 1px;
+    margin: 4px 8px;
+    background-color: var(--border-default);
+}
+.dropdown-separator.hidden {
+    display: none;
+}
 @media (max-width: 768px) {
     #userSelectContainer {
         max-width: 100%;

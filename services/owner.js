@@ -1,4 +1,5 @@
 const { getUserByIdent } = require('../db/owner');
+const { saveRecentClient } = require('../db/users');
 const { log } = require('../utils/logging');
 
 
@@ -31,6 +32,13 @@ async function setContextUserByIdent(req, userIdent) {
         };
 
         req.session.context_user = contextUser;
+
+        // Save to recent clients list
+        const loggedInUserId = req.session.user?.userId;
+        if (loggedInUserId) {
+            saveRecentClient(loggedInUserId, userData.ident, userData.client_name)
+                .catch(err => log('[OwnerService] Error saving recent client:', err.message));
+        }
 
         return contextUser;
 

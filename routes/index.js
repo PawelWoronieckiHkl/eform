@@ -212,6 +212,37 @@ router.get('/context-user', requireLogin, async (req, res) => {
 });
 
 
+router.get('/recent-clients', requireLogin, async (req, res) => {
+  try {
+    const userId = req.session.user?.userId;
+    if (!userId) {
+      return res.status(200).json([]);
+    }
+    const recent = await usersDb.getRecentClients(userId);
+    return res.status(200).json(recent);
+  } catch (error) {
+    log('Error fetching recent clients:', error);
+    return res.status(500).json([]);
+  }
+});
+
+
+router.post('/recent-clients', requireLogin, async (req, res) => {
+  try {
+    const userId = req.session.user?.userId;
+    const { ident, name } = req.body;
+    if (!userId || !ident || !name) {
+      return res.status(400).json({ success: false });
+    }
+    await usersDb.saveRecentClient(userId, ident, name);
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    log('Error saving recent client:', error);
+    return res.status(500).json({ success: false });
+  }
+});
+
+
 router.get('/set-organization/:id', requireLogin, async (req, res) => {
   try {
     const { id } = req.params;

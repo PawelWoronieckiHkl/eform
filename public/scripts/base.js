@@ -137,6 +137,27 @@ export async function getUserName() {
     return data;
 }
 
+// ─── Recent users helpers (fetched from DB via API) ─────────────────────────
+
+const RECENT_USERS_MAX = 10;
+let _recentClientsCache = null;
+
+async function fetchRecentClients() {
+    if (_recentClientsCache !== null) return _recentClientsCache;
+    try {
+        const res = await fetch('/recent-clients', { method: 'GET', credentials: 'include' });
+        if (!res.ok) return [];
+        _recentClientsCache = await res.json();
+        return _recentClientsCache;
+    } catch { return []; }
+}
+
+function invalidateRecentClientsCache() {
+    _recentClientsCache = null;
+}
+
+// ─── Dropdown factory ───────────────────────────────────────────────────────
+
 function initUserDropdown(inputId, dropdownId, onSelect) {
     const userInput = document.getElementById(inputId);
     const userDropdown = document.getElementById(dropdownId);
@@ -155,25 +176,57 @@ function initUserDropdown(inputId, dropdownId, onSelect) {
 
     allUsers.sort((a, b) => a.name.localeCompare(b.name, 'pl', { sensitivity: 'base' }));
 
-    userDropdown.innerHTML = '';
-    allUsers.forEach(user => {
-        const dropdownItem = document.createElement('div');
-        dropdownItem.className = 'dropdown-item';
-        dropdownItem.setAttribute('data-value', user.ident);
-        dropdownItem.textContent = user.name;
-        userDropdown.appendChild(dropdownItem);
-    });
+    function renderDropdown(recent) {
+        userDropdown.innerHTML = '';
 
-    const sortedDropdownItems = userDropdown.querySelectorAll('.dropdown-item');
+        const recentIdents = new Set((recent || []).map(u => u.ident));
 
-    userInput.addEventListener('focus', function () {
+        // Recent users on top (only those still in allUsers)
+        const validRecent = (recent || []).filter(r => allUsers.some(u => u.ident === r.ident));
+        if (validRecent.length > 0) {
+            validRecent.forEach(user => {
+                const item = document.createElement('div');
+                item.className = 'dropdown-item dropdown-item-recent';
+                item.setAttribute('data-value', user.ident);
+                item.textContent = user.ident;
+                userDropdown.appendChild(item);
+            });
+            const sep = document.createElement('div');
+            sep.className = 'dropdown-separator';
+            userDropdown.appendChild(sep);
+        }
+
+        // Remaining users (alphabetical, skip those already shown as recent)
+        allUsers.forEach(user => {
+            if (recentIdents.has(user.ident)) return;
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.setAttribute('data-value', user.ident);
+            item.textContent = user.name;
+            userDropdown.appendChild(item);
+        });
+    }
+
+    // Initial render without recent (will be updated on focus)
+    renderDropdown([]);
+
+    function getAllDropdownItems() {
+        return userDropdown.querySelectorAll('.dropdown-item');
+    }
+
+    async function openDropdown() {
+        const recent = await fetchRecentClients();
+        renderDropdown(recent);
         showAllItems();
         userDropdown.classList.add('show');
+    }
+
+    userInput.addEventListener('focus', function () {
+        openDropdown();
     });
 
     userInput.addEventListener('click', function () {
-        showAllItems();
-        userDropdown.classList.add('show');
+        openDropdown();
     });
 
     userInput.addEventListener('input', function () {
@@ -186,6 +239,15 @@ function initUserDropdown(inputId, dropdownId, onSelect) {
             const selectedIdent = e.target.getAttribute('data-value');
             userInput.value = selectedName;
             userDropdown.classList.remove('show');
+            invalidateRecentClientsCache();
+            if (selectedIdent) {
+                fetch('/recent-clients', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ident: selectedIdent, name: selectedName })
+                }).catch(() => {});
+            }
             if (onSelect) onSelect(selectedIdent, selectedName);
         }
     });
@@ -220,14 +282,21 @@ function initUserDropdown(inputId, dropdownId, onSelect) {
     });
 
     function showAllItems() {
-        sortedDropdownItems.forEach(item => item.classList.remove('hidden', 'highlighted'));
+        getAllDropdownItems().forEach(item => item.classList.remove('hidden', 'highlighted'));
+        userDropdown.querySelectorAll('.dropdown-separator').forEach(s => s.classList.remove('hidden'));
     }
 
     function filterItems(searchTerm) {
-        sortedDropdownItems.forEach(item => {
+        let anyRecentVisible = false;
+        getAllDropdownItems().forEach(item => {
             const text = item.textContent.toLowerCase();
-            item.classList.toggle('hidden', !text.includes(searchTerm));
+            const match = text.includes(searchTerm);
+            item.classList.toggle('hidden', !match);
             item.classList.remove('highlighted');
+            if (match && item.classList.contains('dropdown-item-recent')) anyRecentVisible = true;
+        });
+        userDropdown.querySelectorAll('.dropdown-separator').forEach(s => {
+            s.classList.toggle('hidden', !anyRecentVisible);
         });
         userDropdown.classList.add('show');
     }

@@ -178,38 +178,7 @@
                                   {% endif %}
                                 {% endif %}
                               {% endfor %}
-                              {# Display spec prices from json_parameters #}
-                              {% if rowObj.item.json_parameters.CENA_S is defined and rowObj.item.json_parameters.CENA_S %}
-                                {% if idx == 0 %}
-                                  <td class="price" colspan="1">
-                                  {% endif %}
-                                  <td class="price" colspan="2">
-                                    <span class="price-label gold">CENA_Spec:</span>
-                                    <b>{{ rowObj.item.json_parameters.CENA_S }}</b>
-                                  </td>
-                                  {% set idx = idx + 1 %}
-                                {% endif %}
-                                {% if rowObj.item.json_parameters.DOPLATA_S is defined and rowObj.item.json_parameters.DOPLATA_S %}
-                                  {% if idx == 0 %}
-                                    <td class="price" colspan="1">
-                                    {% endif %}
-                                    <td class="price" colspan="2">
-                                      <span class="price-label gold">DOPLATA_Spec:</span>
-                                      <b>{{ rowObj.item.json_parameters.DOPLATA_S }}</b>
-                                    </td>
-                                    {% set idx = idx + 1 %}
-                                  {% endif %}
-                                  {% if rowObj.item.json_parameters.DOPLATA_EL_S is defined and rowObj.item.json_parameters.DOPLATA_EL_S %}
-                                    {% if idx == 0 %}
-                                      <td class="price" colspan="1">
-                                      {% endif %}
-                                      <td class="price" colspan="2">
-                                        <span class="price-label gold">DOPLATA_EL_Spec:</span>
-                                        <b>{{ rowObj.item.json_parameters.DOPLATA_EL_S }}</b>
-                                      </td>
-                                      {% set idx = idx + 1 %}
-                                    {% endif %}
-                                  </tr>
+                              </tr>
                                 {% endif %}
                                 {% set globalIndex = globalIndex + 1 %}
                               {% endfor %}
