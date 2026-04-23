@@ -1,0 +1,1 @@
+ALTER TABLE `user` ADD COLUMN `report_configs` JSON DEFAULT NULL;

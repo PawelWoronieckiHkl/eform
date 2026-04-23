@@ -1,0 +1,202 @@
+{% extends "base.njk" %}
+
+{% block head %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/admin/reports.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="content" style="padding: 1.5rem;">
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="/admin" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Panel
+        </a>
+        <h2 class="mb-0" style="font-size:1.35rem; font-weight:700;">
+            <i class="bi bi-graph-up me-2 text-primary"></i>Raporty Zamówień
+        </h2>
+    </div>
+
+    <div class="reports-layout">
+        <!-- ── SIDEBAR ─────────────────────────────────────────── -->
+        <div class="reports-sidebar">
+
+            <!-- Saved configs — na górze, zwijane -->
+            <div class="reports-card collapsible-card" id="saved-configs-card" {% if not savedConfigs or not savedConfigs.length %}style="display:none;"{% endif %}>
+                <button class="collapsible-header" id="saved-configs-toggle" data-key="saved-configs" aria-expanded="false">
+                    <span><i class="bi bi-bookmark-star me-1"></i>Zapisane konfiguracje</span>
+                    <i class="bi bi-chevron-up collapsible-icon"></i>
+                </button>
+                <div class="collapsible-body" id="saved-configs-body">
+                    <div class="config-list" id="config-list">
+                        {% for cfg in savedConfigs %}
+                        <div class="config-item" data-config='{{ cfg | dump }}'>
+                            <div>
+                                <div class="config-name">{{ cfg.name }}</div>
+                                <div class="config-meta">{{ cfg.userIds.length }} klientów</div>
+                            </div>
+                            <button class="config-delete-btn" data-name="{{ cfg.name }}" title="Usuń">×</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Run & save -->
+            <div class="reports-card collapsible-card">
+                <button class="collapsible-header" data-key="actions" aria-expanded="false">
+                    <span><i class="bi bi-play-circle me-1"></i>Akcje</span>
+                    <i class="bi bi-chevron-up collapsible-icon"></i>
+                </button>
+                <div class="collapsible-body">
+                    <button class="btn btn-primary w-100 mb-2" id="btn-run-report">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Generuj raport
+                    </button>
+                    <div class="save-config-row">
+                        <input type="text" id="config-name-input" placeholder="Nazwa konfiguracji..." maxlength="100">
+                        <button class="btn btn-outline-secondary btn-sm" id="btn-save-config" title="Zapisz konfigurację">
+                            <i class="bi bi-bookmark-plus"></i>
+                        </button>
+                    </div>
+                    <div class="date-today-option">
+                        <input type="checkbox" id="date-to-today" checked>
+                        <label for="date-to-today">Zakres „do" zawsze aktualny</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client filter -->
+            <div class="reports-card collapsible-card">
+                <button class="collapsible-header" data-key="clients" aria-expanded="false">
+                    <span><i class="bi bi-people me-1"></i>Klienci</span>
+                    <i class="bi bi-chevron-up collapsible-icon"></i>
+                </button>
+                <div class="collapsible-body">
+                    <div class="select-all-row">
+                        <button class="btn btn-xs btn-outline-secondary btn-sm py-0" id="btn-select-all">Zaznacz wszystkich</button>
+                        <button class="btn btn-xs btn-outline-secondary btn-sm py-0" id="btn-deselect-all">Odznacz</button>
+                    </div>
+                    <input type="text" class="client-search" id="client-search" placeholder="Szukaj klienta...">
+                    <div class="client-list" id="client-list">
+                        {% for client in clients %}
+                        <div class="client-list-item selected"
+                             data-id="{{ client.id }}"
+                             data-ident="{{ client.ident }}"
+                             data-name="{{ client.client_name }}"
+                             data-order-count="{{ client.order_count }}">
+                            <input type="checkbox" checked data-client-id="{{ client.id }}">
+                            <span class="client-ident">{{ client.ident }}</span>
+                            <span class="client-name-small" title="{{ client.client_name }}">{{ client.client_name }}</span>
+                            <span class="client-order-count ms-auto">{{ client.order_count }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="client-selection-info" id="selection-info">
+                        Zaznaczono: <strong id="selected-count">{{ clients | length }}</strong> / {{ clients | length }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date range -->
+            <div class="reports-card collapsible-card">
+                <button class="collapsible-header" data-key="dates" aria-expanded="false">
+                    <span><i class="bi bi-calendar-range me-1"></i>Zakres dat</span>
+                    <i class="bi bi-chevron-up collapsible-icon"></i>
+                </button>
+                <div class="collapsible-body">
+                    <div class="date-row">
+                        <input type="date" id="date-from" title="Od">
+                        <input type="date" id="date-to" title="Do">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── MAIN ────────────────────────────────────────────── -->
+        <div class="reports-main">
+
+            <!-- Toolbar -->
+            <div class="reports-card" style="padding: 0.75rem 1rem;">
+                <!-- Level 1: category -->
+                <div class="category-toggle mb-2" id="category-toggle">
+                    <button class="active" data-category="overall">
+                        <i class="bi bi-people me-1"></i>Całość
+                    </button>
+                    <button data-category="groups">
+                        <i class="bi bi-diagram-3 me-1"></i>Grupy asortymentowe
+                    </button>
+                    <button data-category="dept-clients">
+                        <i class="bi bi-person-lines-fill me-1"></i>Dział → Klienci
+                    </button>
+                </div>
+                <!-- Level 2: sub-views (change depending on category) -->
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                    <div class="view-toggle" id="view-toggle">
+                        <button class="active" data-view="table" data-category="overall">
+                            <i class="bi bi-table me-1"></i>Tabela
+                        </button>
+                        <button data-view="bar" data-category="overall">
+                            <i class="bi bi-bar-chart me-1"></i>Wykres słupkowy
+                        </button>
+                        <button data-view="trend" data-category="overall">
+                            <i class="bi bi-graph-up me-1"></i>Trend miesięczny
+                        </button>
+                        <button data-view="groups-table" data-category="groups" style="display:none;">
+                            <i class="bi bi-table me-1"></i>Tabela grup
+                        </button>
+                        <button data-view="groups-chart" data-category="groups" style="display:none;">
+                            <i class="bi bi-bar-chart-steps me-1"></i>Wykres grup
+                        </button>
+                        <button data-view="dc-table" data-category="dept-clients" style="display:none;">
+                            <i class="bi bi-table me-1"></i>Tabela klientów
+                        </button>
+                        <button data-view="dc-chart" data-category="dept-clients" style="display:none;">
+                            <i class="bi bi-bar-chart-fill me-1"></i>Wykres klientów
+                        </button>
+                    </div>
+                    <div id="report-meta" class="text-muted" style="font-size:0.78rem;"></div>
+                </div>
+                <div class="metric-toggle-row">
+                    <span class="metric-toggle-label">Pokaż:</span>
+                    <div class="metric-toggle" id="metric-toggle">
+                        <button class="active" data-metric="value"><i class="bi bi-currency-euro me-1"></i>Wartość</button>
+                        <button class="active" data-metric="orders"><i class="bi bi-hash me-1"></i>Zamówienia</button>
+                        <button data-metric="positions"><i class="bi bi-box me-1"></i>Pozycje</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-bar" id="summary-bar" style="display:none;">
+                <div class="summary-tile">
+                    <div class="tile-value" id="sum-clients">—</div>
+                    <div class="tile-label">Klientów</div>
+                </div>
+                <div class="summary-tile">
+                    <div class="tile-value" id="sum-orders">—</div>
+                    <div class="tile-label">Zamówień</div>
+                </div>
+                <div class="summary-tile">
+                    <div class="tile-value" id="sum-value">—</div>
+                    <div class="tile-label">Łączna wartość</div>
+                </div>
+                <div class="summary-tile">
+                    <div class="tile-value" id="sum-positions">—</div>
+                    <div class="tile-label">Pozycji</div>
+                </div>
+            </div>
+
+            <!-- Results area -->
+            <div id="report-area">
+                <div class="reports-empty">
+                    <i class="bi bi-bar-chart-line" style="font-size:2.5rem; opacity:0.3;"></i>
+                    <p class="mt-2">Kliknij „Generuj raport" aby zobaczyć dane.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="/scripts/admin/reports.js"></script>
+{% endblock %}

@@ -4,6 +4,7 @@ const { requireLogin } = require('../middleware/loginMixture');
 const logService = require('../services/logService.js');
 const { formatLoginTime } = require('../utils/humanize_date.js');
 const db = require("../db/db_helper.js");
+const reportsDb = require("../db/admin/reports.js");
 const { log } = require('../utils/logging');
 const sessionService = require('../services/sessionService');
 
@@ -24,6 +25,18 @@ function requireAdmin(req, res, next) {
     if (!req.session.user || !req.session.user.isAdmin) {
         return res.status(403).render('no-permission.njk');
     }
+    next();
+}
+
+function requireReportsApiAccess(req, res, next) {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Sesja wygasła. Zaloguj się ponownie.' });
+    }
+
+    if (!req.session.user.isAdmin) {
+        return res.status(403).json({ success: false, message: 'Brak uprawnień do raportów.' });
+    }
+
     next();
 }
 
@@ -116,13 +129,6 @@ router.get('/organizations', requireLogin, requireAdmin, (req, res) => {
     });
 });
 
-router.get('/reports', requireLogin, requireAdmin, (req, res) => {
-    res.render('admin/placeholder.njk', {
-        title: 'Raporty Zamówień',
-        message: 'Ta funkcja zostanie wkrótce dodana.'
-    });
-});
-
 router.get('/settings', requireLogin, requireAdmin, (req, res) => {
     res.render('admin/placeholder.njk', {
         title: 'Ustawienia Systemowe',
@@ -201,6 +207,60 @@ router.get('/translations/:groupNumber/:lang', requireLogin, requireAdmin, async
     } catch (error) {
         log('Error fetching translations:', error);
         res.status(500).json({ success: false, message: 'Błąd pobierania tłumaczeń' });
+    }
+});
+
+// ─── Reports module ──────────────────────────────────────────────────────────
+
+router.get('/reports', requireLogin, requireAdmin, async (req, res) => {
+    try {
+        const clients = await reportsDb.getReportClients();
+        const savedConfigs = await reportsDb.getReportConfigs(req.session.user.userId);
+        res.render('admin/reports.njk', { clients, savedConfigs });
+    } catch (error) {
+        log('Error loading reports page:', error);
+        res.status(500).render('error.njk', { message: 'Błąd ładowania raportów' });
+    }
+});
+
+router.post('/api/reports/stats', requireReportsApiAccess, async (req, res) => {
+    try {
+        const { userIds, dateFrom, dateTo } = req.body;
+        const ids = Array.isArray(userIds) ? userIds : (userIds ? JSON.parse(userIds) : null);
+        const [stats, trend, groups, deptClients] = await Promise.all([
+            reportsDb.getOrderStats(ids, dateFrom || null, dateTo || null),
+            reportsDb.getMonthlyTrend(ids, dateFrom || null, dateTo || null),
+            reportsDb.getGroupStats(ids, dateFrom || null, dateTo || null),
+            reportsDb.getDeptClientStats(ids, dateFrom || null, dateTo || null),
+        ]);
+        res.json({ success: true, stats, trend, groups, deptClients });
+    } catch (error) {
+        log('Error fetching report stats:', error);
+        res.status(500).json({ success: false, message: 'Błąd pobierania danych' });
+    }
+});
+
+router.post('/api/reports/configs', requireReportsApiAccess, async (req, res) => {
+    try {
+        const { name, userIds, dateFrom, dateTo, dateToToday } = req.body;
+        if (!name || typeof name !== 'string' || name.length > 100) {
+            return res.status(400).json({ success: false, message: 'Nieprawidłowa nazwa konfiguracji' });
+        }
+        const configs = await reportsDb.saveReportConfig(req.session.user.userId, { name, userIds: userIds || [], dateFrom: dateFrom || null, dateTo: dateTo || null, dateToToday: !!dateToToday });
+        res.json({ success: true, configs });
+    } catch (error) {
+        log('Error saving report config:', error);
+        res.status(500).json({ success: false, message: 'Błąd zapisu konfiguracji' });
+    }
+});
+
+router.delete('/api/reports/configs/:name', requireReportsApiAccess, async (req, res) => {
+    try {
+        const configs = await reportsDb.deleteReportConfig(req.session.user.userId, decodeURIComponent(req.params.name));
+        res.json({ success: true, configs });
+    } catch (error) {
+        log('Error deleting report config:', error);
+        res.status(500).json({ success: false, message: 'Błąd usuwania konfiguracji' });
     }
 });
 

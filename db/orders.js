@@ -4,6 +4,24 @@ const bcrypt = require('bcryptjs');
 const { result } = require('lodash');
 const { log } = require('../utils/logging');
 
+/**
+ * Parse a textual total_price (e.g. "Razem: 2027.70€", "Gesamtbetrag: 315.00€")
+ * or a plain numeric string into a float. Returns null when unparseable.
+ */
+function parseTotalPrice(raw) {
+    if (raw === null || raw === undefined || raw === '') return null;
+    const str = String(raw);
+    // If it already looks numeric, return directly
+    const direct = parseFloat(str);
+    if (!isNaN(direct) && /^[\d\s.,]+$/.test(str.trim())) return direct;
+    // Extract the part after the last ':'
+    const afterColon = str.includes(':') ? str.split(':').pop() : str;
+    // Strip currency symbols and whitespace
+    const cleaned = afterColon.replace(/[€$£¥]/g, '').replace(/\s/g, '').replace(',', '.');
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? null : parsed;
+}
+
 
 async function getOrderWithItems(orderId) {
 
@@ -412,13 +430,14 @@ async function changeOrderStatus(orderId, status) {
 async function updateOrderPriceOnSend(orderId, prices) {
     const hidden = prices?.hiddenPrices[0] ?? null;
     const visible = prices?.visiblePrices[0] ?? null;
+    const totalFloat = parseTotalPrice(visible);
+    const totalFloatHidden = parseTotalPrice(hidden);
 
-    const query = `UPDATE \`order\` SET total_price = ?, total_price_hidden = ?  where id = ?`
+    const query = `UPDATE \`order\` SET total_price = ?, total_price_hidden = ?, total_float = ?, total_float_hidden = ? where id = ?`
     try {
-        const response = await updateQuery(query, [visible, hidden, orderId])
+        const response = await updateQuery(query, [visible, hidden, totalFloat, totalFloatHidden, orderId])
         return response;
     }
-
     catch (err) {
         log(err);
         return false;

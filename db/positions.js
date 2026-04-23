@@ -116,8 +116,8 @@ async function updateOrderPrice(orderId, newPrice) {
     total_hidden = parseFloat(total_hidden.toFixed(2));
     newPrice = { total: total, total_hidden: total_hidden };
 
-    const updateQueryStr = 'UPDATE `order` SET total_price = ?, total_price_hidden=? WHERE id = ?';
-    const response = await updateQuery(updateQueryStr, [total, total_hidden, orderId]);
+    const updateQueryStr = 'UPDATE `order` SET total_price = ?, total_price_hidden = ?, total_float = ?, total_float_hidden = ? WHERE id = ?';
+    const response = await updateQuery(updateQueryStr, [total, total_hidden, total, total_hidden, orderId]);
     return response;
 }
 
