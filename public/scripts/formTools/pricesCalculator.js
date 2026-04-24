@@ -3,8 +3,13 @@ import { showToast } from "../components/toast.js";
 import { loadScript } from './scriptLoader.js';
 import { buildValuesToDisplay } from "./updateFieldsAndValues.js";
 import { validateFormInput } from "./validateUtils.js";
+import { getEnvVersion } from "../getEnv.js";
 
-
+let _isTestEnv = false;
+getEnvVersion().then(v => {
+    _isTestEnv = (v === 'Testowa');
+    console.log('Wersja środowiska:', v, '| _isTestEnv:', _isTestEnv);
+});
 function formatNumberForDisplay(value) {
     const num = parseFloat(value);
 
@@ -131,7 +136,7 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
                         console.log('Ustawiamy wartość ze SCRIPT u:', scriptParamName, scriptValue);
 
                         // If param ends with _S and no input exists, create a hidden clone from the parent param
-                        const isNewSuffix = !inputs[scriptParamName] && scriptParamName.endsWith('_S');
+                        const isNewSuffix = _isTestEnv && !inputs[scriptParamName] && scriptParamName.endsWith('_S');
                         if (isNewSuffix) {
                             const parentName = scriptParamName.slice(0, -2);
                             const parentInput = inputs[parentName];

@@ -18,11 +18,7 @@
                     <div class="content center-content">
                         <div class="container my-5 w-100 mobile-rm-card">
                             <div class="orders-topbar mb-4">
-                                <div class="orders-topbar-left">
-                                    {% if orders %}
-                                        <div id="orders-search-mount" class="orders-search-mount mt-4 ms-3" {% block search_data %}data-sent="false" data-organization="true"{% endblock %}></div>
-                                    {% endif %}
-                                </div>
+                                <div class="orders-topbar-left"></div>
                                 <div class="orders-topbar-center">
                                     {% block site_title %}
                                         <h2 class="fw-bold header">{{ __('orders.title') }}</h2>
@@ -39,6 +35,27 @@
                                 </div>
                             </div>
                                 {% block users %}{% endblock %}
+                                {% block filters_bar %}
+                                    {% if orders %}
+                                        <div id="orders-filters-bar" class="orders-filters-bar">
+                                            <div class="filter-group">
+                                                <label for="orders-search-mount">{{ __('orders.search') or 'Szukaj' }}</label>
+                                                <div id="orders-search-mount" class="orders-search-mount" {% block search_data %}data-sent="false" data-organization="true"{% endblock %}></div>
+                                            </div>
+                                            <div class="orders-date-filter">
+                                                <div class="filter-group">
+                                                    <label for="filter-date-from">{{ __('orders.created_from') or 'Data od' }}</label>
+                                                    <input type="date" id="filter-date-from" data-filter="dateFrom" class="form-control form-control-sm">
+                                                </div>
+                                                <span class="filters-separator">&ndash;</span>
+                                                <div class="filter-group">
+                                                    <label for="filter-date-to">{{ __('orders.created_to') or 'Data do' }}</label>
+                                                    <input type="date" id="filter-date-to" data-filter="dateTo" class="form-control form-control-sm">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endblock %}
                                 {% block orders %}
                                     {% if orders %}
                                         <table class="table align-middle d-none d-md-table">

@@ -1,0 +1,18 @@
+/* Mobile toast overrides */
+@media (max-width: 767.98px) {
+    #custom-toast-container {
+        width: 100%;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: env(safe-area-inset-bottom, 0);
+        padding: 0 12px;
+        box-sizing: border-box;
+    }
+
+    #custom-toast-container > div {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 8px;
+        border-radius: 8px;
+    }
+}

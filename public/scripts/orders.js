@@ -393,7 +393,7 @@ function renderTableRow(order) {
 
 	const extraCells = isSent ? `
 		<td>${escapeHtml(order.sent_date)}</td>
-		<th scope="row">${order.prod_status ? escapeHtml(t(order.prod_status)) : escapeHtml(t('order.status_order_sent'))}</th>
+		<th scope="row" data-prod-status="${escapeHtml(order.prod_status || '')}">${order.prod_status ? escapeHtml(t(order.prod_status)) : escapeHtml(t('order.status_order_sent'))}</th>
 		<th scope="row">${order.delivery_date ? escapeHtml(order.delivery_date) : (!order.prod_status && order.max_prod_days ? escapeHtml(order.max_prod_days + ' ' + t('termin.days')) : '-')}</th>
 		${trackingCell}
 		<td>
@@ -482,6 +482,25 @@ function renderMobileCard(order) {
 		${extraInfo}
 		<div class="mobile-order-actions">${actions}</div>
 	</div>`;
+}
+
+// Populate status select from initial server-rendered rows (sent orders only)
+if (isSent) {
+	const statusSelect = document.getElementById('filter-prod-status');
+	if (statusSelect) {
+		const statusCells = document.querySelectorAll('[data-prod-status]');
+		const unique = new Set();
+		statusCells.forEach(el => {
+			const raw = el.dataset.prodStatus;
+			if (raw) unique.add(raw);
+		});
+		unique.forEach(raw => {
+			const opt = document.createElement('option');
+			opt.value = raw;
+			opt.textContent = t(raw) || raw;
+			statusSelect.appendChild(opt);
+		});
+	}
 }
 
 initSearchTool({

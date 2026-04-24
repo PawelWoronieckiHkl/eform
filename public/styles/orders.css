@@ -387,9 +387,112 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-width: 380px;
+  max-width: 100%;
   width: 100%;
 }
+
+/* ─── Filters bar ─────────────────────────────────────── */
+.orders-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 12px 0 4px;
+  width: 100%;
+}
+
+/*
+  Search group: grows to fill space; max-width mirrors the columns it covers.
+  Base orders (4 equal cols): search covers cols 1-2  → ≈ 50% of bar.
+  History   (7 equal cols): search covers cols 1-2  → ≈ 28% of bar.
+  This pushes date/status/sent-date filters roughly above their own columns.
+*/
+.orders-filters-bar > .filter-group:first-child {
+  flex: 1 1 180px;
+}
+
+/* Base orders — no status filter, 4 cols */
+.orders-filters-bar:not(:has(.orders-status-filter)) > .filter-group:first-child {
+  max-width: calc(50% - 8px);
+}
+
+/* History — has status filter, 7 cols */
+.orders-filters-bar:has(.orders-status-filter) > .filter-group:first-child {
+  max-width: calc(28% - 8px);
+}
+
+/* Date / status / sent-date groups stay their natural size */
+.orders-filters-bar > .orders-date-filter,
+.orders-filters-bar > .orders-status-filter {
+  flex: 0 0 auto;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+}
+
+.filter-group label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.orders-date-filter {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-bottom: 10px !important;
+}
+
+.orders-date-filter .filter-group {
+  flex-direction: column;
+}
+
+.orders-date-filter .form-control {
+  max-width: 145px;
+  font-size: 0.82rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  padding: 6px 10px;
+}
+
+.orders-date-filter .form-control:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(100,116,139,0.15);
+}
+
+.filters-separator {
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+  padding-bottom: 8px;
+}
+
+.orders-status-filter .form-select {
+  max-width: 180px;
+  font-size: 0.82rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  margin-bottom: 10px !important;
+}
+
+.orders-status-filter .form-select:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(100,116,139,0.15);
+}
+/* ─────────────────────────────────────────────────────── */
 
 .orders-search {
   display: flex;
@@ -438,5 +541,19 @@
 @media (max-width: 767.98px) {
   .orders-search-mount {
     max-width: 100%;
+  }
+  .orders-filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .orders-date-filter {
+    margin-left: 15% !important;
+    flex-wrap: wrap;
+  }
+  .orders-date-filter .form-control,
+  .orders-status-filter .form-select {
+    max-width: 100%;
+    width: 100%;
   }
 }

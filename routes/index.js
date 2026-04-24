@@ -62,6 +62,7 @@ router.get('/env', requireLogin, (req, res) => {
     dev: 'Deweloperska',
     test: "Testowa",
     archive: "Archiwalna"
+    ,prod: "Produkcyjna"
   }
   let ver = process.env?.NODE_ENV ?? false
   let versionString = false

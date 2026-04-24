@@ -517,10 +517,20 @@ async function getOrderWithItems(orderId) {
     return { orderDetails: orderDetails[0], orderItems }
 }
 
-async function searchUserOrders(userId, phrase, limit = 40, offset = 0, sent = false, employeeId = null, organization = false) {
+async function searchUserOrders(userId, phrase, limit = 40, offset = 0, sent = false, employeeId = null, organization = false, filters = {}) {
     const safephrase = phrase.replace(/%/g, '\\%').replace(/_/g, '\\_');
-    const like = `%${safephrase}%`;
+    const like = phrase ? `%${safephrase}%` : '%';
     const statusFilter = sent ? 'sent' : 'active';
+
+    // Build optional extra WHERE clauses
+    const extraClauses = [];
+    const extraParams = [];
+    if (filters.dateFrom) { extraClauses.push('DATE(o.created_date) >= ?'); extraParams.push(filters.dateFrom); }
+    if (filters.dateTo)   { extraClauses.push('DATE(o.created_date) <= ?'); extraParams.push(filters.dateTo); }
+    if (filters.prodStatus === '__received__') { extraClauses.push('(o.prod_status IS NULL OR o.prod_status = \'\')'); } else if (filters.prodStatus) { extraClauses.push('o.prod_status = ?'); extraParams.push(filters.prodStatus); }
+    if (filters.sentDateFrom) { extraClauses.push('DATE(o.sent_date) >= ?'); extraParams.push(filters.sentDateFrom); }
+    if (filters.sentDateTo)   { extraClauses.push('DATE(o.sent_date) <= ?'); extraParams.push(filters.sentDateTo); }
+    const extraWhere = extraClauses.length ? ' AND ' + extraClauses.join(' AND ') : '';
 
     if (organization) {
         const query = `
@@ -534,11 +544,12 @@ async function searchUserOrders(userId, phrase, limit = 40, offset = 0, sent = f
             WHERE u.organization_id = ?
               AND o.status = ?
               AND (o.commision LIKE ? OR o.order_idx LIKE ? OR u.client_name LIKE ? OR u.ident LIKE ?)
+              ${extraWhere}
             ORDER BY ${sent ? 'o.sent_date' : 'o.id'} DESC
             LIMIT ? OFFSET ?
         `;
         try {
-            const rows = await selectQuery(query, [organization, statusFilter, like, like, like, like, limit, offset]);
+            const rows = await selectQuery(query, [organization, statusFilter, like, like, like, like, ...extraParams, limit, offset]);
             if (!rows) return [];
             return dateUtils.humanizeData(rows);
         } catch (err) {
@@ -559,12 +570,14 @@ async function searchUserOrders(userId, phrase, limit = 40, offset = 0, sent = f
         WHERE o.user_id = ? ${employeeClause}
           AND o.status = ?
           AND (o.commision LIKE ? OR o.order_idx LIKE ?)
+          ${extraWhere}
         ORDER BY o.id DESC
         LIMIT ? OFFSET ?
     `;
-    const params = employeeId !== null
-        ? [userId, employeeId, statusFilter, like, like, limit, offset]
-        : [userId, statusFilter, like, like, limit, offset];
+    const baseParams = employeeId !== null
+        ? [userId, employeeId, statusFilter, like, like]
+        : [userId, statusFilter, like, like];
+    const params = [...baseParams, ...extraParams, limit, offset];
     try {
         const rows = await selectQuery(query, params);
         if (!rows) return [];
@@ -575,17 +588,27 @@ async function searchUserOrders(userId, phrase, limit = 40, offset = 0, sent = f
     }
 }
 
-async function countSearchUserOrders(userId, phrase, sent = false, employeeId = null, organization = false) {
+async function countSearchUserOrders(userId, phrase, sent = false, employeeId = null, organization = false, filters = {}) {
     const safephrase = phrase.replace(/%/g, '\\%').replace(/_/g, '\\_');
-    const like = `%${safephrase}%`;
+    const like = phrase ? `%${safephrase}%` : '%';
     const statusFilter = sent ? 'sent' : 'active';
+
+    const extraClauses = [];
+    const extraParams = [];
+    if (filters.dateFrom) { extraClauses.push('DATE(o.created_date) >= ?'); extraParams.push(filters.dateFrom); }
+    if (filters.dateTo)   { extraClauses.push('DATE(o.created_date) <= ?'); extraParams.push(filters.dateTo); }
+    if (filters.prodStatus === '__received__') { extraClauses.push('(o.prod_status IS NULL OR o.prod_status = \'\')'); } else if (filters.prodStatus) { extraClauses.push('o.prod_status = ?'); extraParams.push(filters.prodStatus); }
+    if (filters.sentDateFrom) { extraClauses.push('DATE(o.sent_date) >= ?'); extraParams.push(filters.sentDateFrom); }
+    if (filters.sentDateTo)   { extraClauses.push('DATE(o.sent_date) <= ?'); extraParams.push(filters.sentDateTo); }
+    const extraWhere = extraClauses.length ? ' AND ' + extraClauses.join(' AND ') : '';
 
     if (organization) {
         const sql = `SELECT COUNT(*) as count FROM \`order\` o
             JOIN \`user\` u ON o.user_id = u.id
-            WHERE u.organization_id = ? AND o.status = ? AND (o.commision LIKE ? OR o.order_idx LIKE ? OR u.client_name LIKE ? OR u.ident LIKE ?)`;
+            WHERE u.organization_id = ? AND o.status = ? AND (o.commision LIKE ? OR o.order_idx LIKE ? OR u.client_name LIKE ? OR u.ident LIKE ?)
+            ${extraWhere}`;
         try {
-            const result = await selectQuery(sql, [organization, statusFilter, like, like, like, like]);
+            const result = await selectQuery(sql, [organization, statusFilter, like, like, like, like, ...extraParams]);
             return result ? result[0].count : 0;
         } catch (err) {
             log(err);
@@ -593,12 +616,15 @@ async function countSearchUserOrders(userId, phrase, sent = false, employeeId = 
         }
     }
 
-    const employeeClause = employeeId !== null ? 'AND employee_id = ?' : '';
-    const sql = `SELECT COUNT(*) as count FROM \`order\`
-        WHERE user_id = ? ${employeeClause} AND status = ? AND (commision LIKE ? OR order_idx LIKE ?)`;
-    const params = employeeId !== null
+    const employeeClause = employeeId !== null ? 'AND o.employee_id = ?' : '';
+    const sql = `SELECT COUNT(*) as count FROM \`order\` o
+        LEFT JOIN employee e ON e.id = o.employee_id
+        WHERE o.user_id = ? ${employeeClause} AND o.status = ? AND (o.commision LIKE ? OR o.order_idx LIKE ?)
+        ${extraWhere}`;
+    const baseParams = employeeId !== null
         ? [userId, employeeId, statusFilter, like, like]
         : [userId, statusFilter, like, like];
+    const params = [...baseParams, ...extraParams];
     try {
         const result = await selectQuery(sql, params);
         return result ? result[0].count : 0;

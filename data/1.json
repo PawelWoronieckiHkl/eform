@@ -1,261 +1,379 @@
-"[[\"ILOSC\"
-{\"param_description\":\"ILOŚĆ\"
-\"option_value\":\"2\"
-\"option_description\":\"\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"MODEL\"
-{\"param_description\":\"MODEL\"
-\"locked\":false
-\"option_value\":\"BB24\"
-\"option_description\":\"EOS\"
-\"row\":\"1\"}]
-[\"MODEL_DACH\"
-{\"param_description\":\"TYP OKNA\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"RODZAJ_DACH\"
-{\"param_description\":\"MODEL OKNA\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"ROZMIAR_DACH\"
-{\"param_description\":\"ROZMIAR OKNA\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"SZEROKOSC_DACH\"
-{\"param_description\":\"SZEROKOSC [MM]\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"WYSOKOSC_DACH\"
-{\"param_description\":\"WYSOKOSC [MM]\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"KOLOR\"
-{\"param_description\":\"KOLOR\"
-\"locked\":false
-\"option_value\":\"2001-P20\"
-\"option_description\":\"PG #3\"
-\"row\":\"1\"}]
-[\"KOLOR_DODATKOWY\"
-{\"param_description\":\"KOLOR DODATKOWY\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"KOLOR_SYSTE\"
-{\"param_description\":\"KOLOR SYSTEMU\"
-\"locked\":false
-\"option_value\":\"1858EOS\"
-\"option_description\":\"CZARNY\"
-\"row\":\"1\"}]
-[\"SZEROKOSC\"
-{\"param_description\":\"SZEROKOŚĆ [MM]\"
-\"locked\":false
-\"row\":\"1\"
-\"option_value\":\"1232\"}]
-[\"WYSOKOSC\"
-{\"param_description\":\"WYSOKOŚĆ [MM]\"
-\"locked\":false
-\"row\":\"1\"
-\"option_value\":\"1232\"}]
-[\"WYMIAROWANIE_SLOPOW\"
-{\"param_description\":\"WYMIAROWANIE SLOPÓW\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"STEROWANIE\"
-{\"param_description\":\"STEROWANIE\"
-\"locked\":false
-\"row\":\"1\"
-\"option_value\":\"2977411858\"
-\"option_description\":\"Rączka metalowa czarny\"}]
-[\"MOTOR\"
-{\"param_description\":\"MOTOR\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"ZASILANIE\"
-{\"param_description\":\"ZASILANIE\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"PILOT\"
-{\"param_description\":\"PILOT\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"AUTOMATYKA\"
-{\"param_description\":\"AUTOMATYKA\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"STRONA_STEROWANIA\"
-{\"param_description\":\"STRONA STEROWANIA\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"FUNKCJA\"
-{\"param_description\":\"FUNKCJE SZNURA\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"KOLOR_STEROWANIA\"
-{\"param_description\":\"KOLOR STEROWANIA\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"STEROWANIE_ELEKTRYCZNE\"
-{\"param_description\":\"STEROWANIE ELEKTRYCZNE\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"STRONA_LADOWANIA\"
-{\"param_description\":\"STRONA ŁADOWANIA\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"STRONA_WYJSCIA_PRZEWODU\"
-{\"param_description\":\"STRONA WYJŚCIA PRZEWODU\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"OCHRONA_CHILD_SAFETY\"
-{\"param_description\":\"OCHRONA CHILD SAFETY\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"WYSOKOSC_MONTAZU\"
-{\"param_description\":\"WYSOKOŚĆ MONTAŻU [MM]\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"DLUGOSC_STER\"
-{\"param_description\":\"DŁUGOŚĆ STEROWANIA [MM]\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"PROWADNICE\"
-{\"param_description\":\"PROWADNICE\"
-\"locked\":false
-\"row\":\"1\"
-\"option_value\":\"US3\"
-\"option_description\":\" U-Profil DO WKRĘCANIA\"}]
-[\"PROW_KOLOR\"
-{\"param_description\":\"KOLOR PROWADNICY\"
-\"locked\":false
-\"option_value\":\"US31858\"
-\"option_description\":\"CZARNA\"
-\"row\":\"1\"}]
-[\"MONTAZ\"
-{\"param_description\":\"MONTAŻ\"
-\"locked\":false
-\"row\":\"1\"}]
-[\"DODATKI\"
-{\"param_description\":\"DODATKI\"
-\"locked\":false
-\"row\":\"1\"
-\"option_value\":\"KUHGMBS150|KUHGMBSG250\"
-\"option_description\":\"\"}]
-[\"POW\"
-{\"param_description\":\"POW.[M2]\"
-\"option_value\":\"1.52\"
-\"option_description\":\"\"
-\"locked\":false
-\"row\":\"2\"}]
-[\"CENA\"
-{\"param_description\":\"CENA DET. [€] brutto\"
-\"option_value\":\"457.6\"
-\"option_description\":\"\"
-\"locked\":false
-\"row\":\"2\"}]
-[\"DOPLATA\"
-{\"param_description\":\"DOPŁATA DET. [€] brutto\"
-\"option_value\":\"191.71\"
-\"option_description\":\"\"
-\"locked\":false
-\"row\":\"2\"}]
-[\"DOPLATA_EL\"
-{\"param_description\":\"DOPŁATA EL DET. [€] brutto\"
-\"locked\":false
-\"row\":\"0\"}]
-[\"CENA_SUMA\"
-{\"param_description\":\"CENA ŁĄCZNA  [€] (za szt)\"
-\"option_value\":\"649.31\"
-\"option_description\":\"\"
-\"locked\":false
-\"row\":\"2\"}]
-[\"SUMA_BRUTTO\"
-{\"param_description\":\"WARTOŚĆ BR.[€]\"
-\"option_value\":\"1298.62\"
-\"option_description\":\"\"
-\"locked\":false
-\"row\":\"2\"
-\"listsum\":true}]
-[\"CENA_RABAT\"
-{\"param_description\":\"RABAT\"
-\"option_value\":\"60%\"
-\"option_description\":\"\"
-\"locked\":true
-\"row\":\"2\"}]
-[\"DOPLATA_RABAT\"
-{\"param_description\":\"RABAT DODATKOWY\"
-\"locked\":true
-\"row\":\"2\"
-\"option_value\":\"30%\"}]
-[\"DOPLATA_EL_RABAT\"
-{\"param_description\":\"RABAT EL\"
-\"locked\":false
-\"row\":\"0\"}]
-[\"CENA_KONCOWA\"
-{\"param_description\":\"CENA NETTO PO RABACIE [€]\"
-\"option_value\":\"317.24\"
-\"option_description\":\"\"
-\"locked\":true
-\"row\":\"2\"}]
-[\"WARTOSC_KONCOWA\"
-{\"param_description\":\"WART. NET. PO RABACIE [€]\"
-\"option_value\":\"634.48\"
-\"option_description\":\"\"
-\"locked\":true
-\"row\":\"2\"
-\"listsum\":true}]
-[\"OPIS_POZYCJI\"
-{\"param_description\":\"OPIS_POZYCJI\"
-\"locked\":false
-\"row\":\"0\"
-\"option_value\":\"MODEL=BB24
-KOLOR=2001-P20
-KOLOR SYSTEMU=1858EOS
-SZEROKOŚĆ [MM]=1232
-WYSOKOŚĆ [MM]=1232
-STEROWANIE=2977411858
-PROWADNICE=US3
-KOLOR PROWADNICY=US31858
-DODATKI=KUHGMBS150|KUHGMBSG250\"}]
-[\"OPIS_CENY\"
-{\"param_description\":\"OPIS_CENY\"
-\"locked\":false
-\"row\":\"0\"
-\"option_value\":\"DOPŁATA DET. [€] brutto=191.71\"}]
-[\"OPIS_RABATU\"
-{\"param_description\":\"OPIS_RABATU\"
-\"locked\":false
-\"row\":\"0\"
-\"option_value\":\"RABAT=60.00%
-RABAT DODATKOWY=30.00%\"}]
-[\"ZALACZNIK_1\"
-{\"param_description\":\"Załącznik 1\"
-\"locked\":false
-\"row\":\"0\"}]
-[\"ZALACZNIK_2\"
-{\"param_description\":\"Załącznik 2\"
-\"locked\":false
-\"row\":\"0\"}]
-[\"ZALACZNIK_3\"
-{\"param_description\":\"Załącznik 3\"
-\"locked\":false
-\"row\":\"0\"}]
-[\"CENA_S\"
-{\"param_description\":\"CENA DET. [€] brutto-spec\"
-\"locked\":true
-\"option_value\":\"(416(PG3))*1.1\"
-\"row\":\"2\"}]
-[\"DOPLATA_S\"
-{\"param_description\":\"DOPŁATA DET. [€] brutto-spec\"
-\"locked\":true
-\"option_value\":\"(55(KUHGMBS150)+70(KUHGMBSG250)+49.28(PROWADNICAUS2))*1.1\"
-\"row\":\"2\"}]
-[\"CENA_RABAT_S\"
-{\"param_description\":\"RABAT-spec\"
-\"locked\":true
-\"option_value\":\"NaN%\"
-\"row\":\"2\"}]
-[\"DOPLATA_RABAT_S\"
-{\"param_description\":\"RABAT DODATKOWY-spec\"
-\"locked\":true
-\"option_value\":\"NaN%\"
-\"row\":\"2\"}]]"
+{"POW": 0,
+ "uid": "a2a7bec7dc1947f997124b6e96c4f642",
+ "CENA": 95.29,
+ "ILOSC": 1,
+ "KOLOR": "4074-25",
+ "MODEL": "SLOPE25",
+ "MOTOR": "",
+ "PILOT": "",
+ "CENA_S": "95.29(SLOPE1U25PG3)",
+ "MONTAZ": "2",
+ "DODATKI": "",
+ "DOPLATA": 103.5,
+ "TYP_KUR": "",
+ "DLUGSTER": 900,
+ "WYSOKOSC": "",
+ "CENA_SUMA": 198.79,
+ "DOPLATA_S": "103.5(SLOPE25_1)",
+ "OPIS_CENY": "CATALOGUSPRIJS INCLUSIEF BTW [€]=95.29,
+TOESLAGPRIJS INCLUSIEF BTW [€]=103.5",
+ "POW_ALIAS": "",
+ "SZEROKOSC": "",
+ "ZASILANIE": "",
+ "AUTOMATYKA": "",
+ "CENA_ALIAS": "",
+ "CENA_RABAT": 0,
+ "DOPLATA_EL": 0,
+ "MODEL_DACH": "",
+ "POW___DICT": false,
+ "SLOPE_TYPE": "S1L_25",
+ "STEROWANIE": "",
+ "CENA___DICT": false,
+ "ILOSC_ALIAS": "",
+ "KOLOR_ALIAS": "4074-25",
+ "KOLOR_SYSTE": "4077_PROF",
+ "MODEL_ALIAS": "",
+ "MOTOR_ALIAS": "",
+ "OPIS_RABATU": "",
+ "PILOT_ALIAS": "",
+ "POW___TITLE": "OPPERVLAKTE [m2]",
+ "PROWADZENIE": "<NONE>",
+ "RODZAJ_DACH": "",
+ "STRSTERSLOP": "S1L_L",
+ "SUMA_BRUTTO": 198.79,
+ "CENA_KONCOWA": 198.79,
+ "CENA_RABAT_S": "",
+ "CENA___TITLE": "CATALOGUSPRIJS INCLUSIEF BTW [€]",
+ "DLUGOSC_STER": "",
+ "ILOSC___DICT": false,
+ "KOLOR___DICT": true,
+ "MODEL___DICT": true,
+ "MONTAZ_ALIAS": "",
+ "MOTOR___DICT": true,
+ "OPIS_POZYCJI": "MODEL=SLOPE25,
+KLEUR van jaloezieën=4074-25,
+KLEUR PROFIEL=4077,
+SLOPE FORM=S1L_25,
+BEDIENSEITE S=S1L_L,
+AFMETINGEN VOOR SLOP [MM]=[object Object],
+KINDERVEILIGHEIDSSYSTEEM=CS_YES,
+BEDIENINGSLENGTE [MM]=900,
+INSTALLATIETYPE=2",
+ "PILOT___DICT": true,
+ "ROZMIAR_DACH": "",
+ "DODATKI_ALIAS": "",
+ "DOPLATA_ALIAS": "",
+ "ILOSC___TITLE": "AANTAL",
+ "KOLOR___TITLE": "KLEUR van jaloezieën",
+ "MODEL___TITLE": "MODEL",
+ "MONTAZ___DICT": true,
+ "MOTOR___TITLE": "MOTOR",
+ "PILOT___TITLE": "AFSTANDSBEDIENING",
+ "POW___VISIBLE": true,
+ "TYP_KUR_ALIAS": "",
+ "WYSOKOSC_DACH": "",
+ "uid___VISIBLE": false,
+ "CENA___VISIBLE": true,
+ "DLUGSTER_ALIAS": "",
+ "DODATKI___DICT": true,
+ "DOPLATA___DICT": false,
+ "MONTAZ___TITLE": "INSTALLATIETYPE",
+ "SZEROKOSC_DACH": "",
+ "TYP_KUR___DICT": true,
+ "WYSOKOSC_ALIAS": "",
+ "CENA_SUMA_ALIAS": "",
+ "DLUGSTER___DICT": false,
+ "DODATKI___TITLE": "EXTRA'S",
+ "DOPLATA___TITLE": "TOESLAGPRIJS INCLUSIEF BTW [€]",
+ "ILOSC___VISIBLE": true,
+ "KOLOR_DODATKOWY": "",
+ "KOLOR___VISIBLE": true,
+ "MODEL___VISIBLE": true,
+ "MOTOR___VISIBLE": false,
+ "OPIS_CENY_ALIAS": "",
+ "PILOT___VISIBLE": false,
+ "SZEROKOSC_ALIAS": "",
+ "TYP_KUR___TITLE": "Krukasuitgang",
+ "WARTOSC_KONCOWA": 198.79,
+ "WYSOKOSC___DICT": false,
+ "ZASILANIE_ALIAS": "",
+ "AUTOMATYKA_ALIAS": "",
+ "CENA_RABAT_ALIAS": "",
+ "CENA_SUMA___DICT": false,
+ "CENA_S___VISIBLE": false,
+ "DLUGSTER___TITLE": "BEDIENINGSLENGTE [MM]",
+ "DOPLATA_EL_ALIAS": "",
+ "DOPLATA_EL_RABAT": 0,
+ "KOLOR_STEROWANIA": "",
+ "MODEL_DACH_ALIAS": "",
+ "MONTAZ___VISIBLE": true,
+ "OPIS_CENY___DICT": false,
+ "SLOPE_TYPE_ALIAS": "",
+ "STEROWANIE_ALIAS": "",
+ "STRONA_LADOWANIA": "",
+ "SZEROKOSC___DICT": false,
+ "WYSOKOSC_MONTAZU": "",
+ "WYSOKOSC___TITLE": "HOOGTE [MM]",
+ "ZASILANIE___DICT": true,
+ "AUTOMATYKA___DICT": true,
+ "CENA_RABAT___DICT": false,
+ "CENA_SUMA___TITLE": "PRIJS INCLUSIEF BTW PER STUK [€]",
+ "DODATKI___VISIBLE": false,
+ "DOPLATA_EL___DICT": false,
+ "DOPLATA___VISIBLE": true,
+ "KOLOR_SYSTE_ALIAS": "4077",
+ "MODEL_DACH___DICT": true,
+ "OPIS_CENY___TITLE": "OPIS_CENY",
+ "OPIS_RABATU_ALIAS": "",
+ "POW___DESCRIPTION": "",
+ "PROWADZENIE_ALIAS": "",
+ "RODZAJ_DACH_ALIAS": "",
+ "SLOPE_TYPE___DICT": true,
+ "STEROWANIE___DICT": false,
+ "STRONA_STEROWANIA": "",
+ "STRSTERSLOP_ALIAS": "",
+ "SUMA_BRUTTO_ALIAS": "",
+ "SZEROKOSC___TITLE": "BREEDTE [MM]",
+ "TYP_KUR___VISIBLE": false,
+ "ZASILANIE___TITLE": "VOEDING",
+ "AUTOMATYKA___TITLE": "HUISAUTOMATISERING",
+ "CENA_KONCOWA_ALIAS": "",
+ "CENA_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS",
+ "CENA___DESCRIPTION": "",
+ "DLUGOSC_STER_ALIAS": "",
+ "DLUGSTER___VISIBLE": true,
+ "DOPLATA_EL___TITLE": "PRIJS VOOR EL INCLUSIEF BTW [€]",
+ "KOLOR_SYSTE___DICT": true,
+ "MODEL_DACH___TITLE": "VENSTER TYPE",
+ "OPIS_POZYCJI_ALIAS": "",
+ "OPIS_RABATU___DICT": false,
+ "PROWADZENIE___DICT": true,
+ "RODZAJ_DACH___DICT": true,
+ "ROZMIAR_DACH_ALIAS": "",
+ "SLOPE_TYPE___TITLE": "SLOPE FORM",
+ "STEROWANIE___TITLE": "BEDIENING",
+ "STRSTERSLOP___DICT": true,
+ "SUMA_BRUTTO___DICT": false,
+ "WYSOKOSC___VISIBLE": false,
+ "CENA_KONCOWA___DICT": false,
+ "CENA_SUMA___VISIBLE": true,
+ "DLUGOSC_STER___DICT": true,
+ "DOPLATA_S___VISIBLE": false,
+ "ILOSC___DESCRIPTION": "",
+ "KOLOR_SYSTE___TITLE": "KLEUR PROFIEL",
+ "KOLOR___DESCRIPTION": "PRIJSGROUP #3",
+ "MODEL___DESCRIPTION": "SLOPE25MM",
+ "MOTOR___DESCRIPTION": "",
+ "OPIS_CENY___VISIBLE": false,
+ "OPIS_POZYCJI___DICT": false,
+ "OPIS_RABATU___TITLE": "OPIS_RABATU",
+ "PILOT___DESCRIPTION": "",
+ "PROWADZENIE___TITLE": "ZIJGELEIDING",
+ "RODZAJ_DACH___TITLE": "MODEL",
+ "ROZMIAR_DACH___DICT": true,
+ "STRSTERSLOP___TITLE": "BEDIENSEITE S",
+ "SUMA_BRUTTO___TITLE": "TOTAALPRIJS INCLUSIEF BTW [€]",
+ "SZEROKOSC___VISIBLE": false,
+ "WYMIAROWANIE_SLOPOW": {"TYP": "TYP1",
+ "WYM_B": 979,
+ "WYM_H": "",
+ "WYM_B1": "",
+ "WYM_H1": 2346,
+ "WYM_H2": 1338,
+ "WYM_H3": "",
+ "TYP_ALIAS": "",
+ "TYP___DICT": true,
+ "TYP___TITLE": "TYPE",
+ "WYM_B_ALIAS": "",
+ "WYM_H_ALIAS": "",
+ "WYM_B1_ALIAS": "",
+ "WYM_B___DICT": false,
+ "WYM_H1_ALIAS": "",
+ "WYM_H2_ALIAS": "",
+ "WYM_H3_ALIAS": "",
+ "WYM_H___DICT": false,
+ "TYP___VISIBLE": false,
+ "WYM_B1___DICT": false,
+ "WYM_B___TITLE": "B [mm]",
+ "WYM_H1___DICT": false,
+ "WYM_H2___DICT": false,
+ "WYM_H3___DICT": false,
+ "WYM_H___TITLE": "H [mm]",
+ "WYM_B1___TITLE": "B1 [mm]",
+ "WYM_H1___TITLE": "H1 [mm]",
+ "WYM_H2___TITLE": "H2 [mm]",
+ "WYM_H3___TITLE": "H3[mm]",
+ "WYM_B___VISIBLE": true,
+ "WYM_H___VISIBLE": false,
+ "WYM_B1___VISIBLE": false,
+ "WYM_H1___VISIBLE": true,
+ "WYM_H2___VISIBLE": true,
+ "WYM_H3___VISIBLE": false,
+ "TYP___DESCRIPTION": "TYP 1",
+ "WYM_B___DESCRIPTION": "",
+ "WYM_H___DESCRIPTION": "",
+ "WYM_B1___DESCRIPTION": "",
+ "WYM_H1___DESCRIPTION": "",
+ "WYM_H2___DESCRIPTION": "",
+ "WYM_H3___DESCRIPTION": "",
+ "TYP_ALIAS___DESCRIPTION": "",
+ "WYM_B_ALIAS___DESCRIPTION": "",
+ "WYM_H_ALIAS___DESCRIPTION": "",
+ "WYM_B1_ALIAS___DESCRIPTION": "",
+ "WYM_H1_ALIAS___DESCRIPTION": "",
+ "WYM_H2_ALIAS___DESCRIPTION": "",
+ "WYM_H3_ALIAS___DESCRIPTION": ""},
+ "WYSOKOSC_DACH_ALIAS": "",
+ "ZASILANIE___VISIBLE": false,
+ "AUTOMATYKA___VISIBLE": false,
+ "CENA_KONCOWA___TITLE": "PRIJS EXCL. BTW [€]",
+ "CENA_RABAT___VISIBLE": false,
+ "DLUGOSC_STER___TITLE": "BEDIENINGSLENGTE [MM]",
+ "DOPLATA_EL___VISIBLE": false,
+ "MODEL_DACH___VISIBLE": false,
+ "MONTAZ___DESCRIPTION": "UNIVERSELE BEUGEL",
+ "OCHRONA_CHILD_SAFETY": "CS_YES",
+ "OPIS_POZYCJI___TITLE": "OPIS_POZYCJI",
+ "ROZMIAR_DACH___TITLE": "GAFMETING",
+ "SLOPE_TYPE___VISIBLE": true,
+ "STEROWANIE___VISIBLE": false,
+ "SZEROKOSC_DACH_ALIAS": "",
+ "WYSOKOSC_DACH___DICT": false,
+ "DODATKI___DESCRIPTION": "",
+ "DOPLATA___DESCRIPTION": "",
+ "KOLOR_DODATKOWY_ALIAS": "",
+ "KOLOR_SYSTE___VISIBLE": true,
+ "OPIS_RABATU___VISIBLE": false,
+ "PROWADZENIE___VISIBLE": true,
+ "RODZAJ_DACH___VISIBLE": false,
+ "STRSTERSLOP___VISIBLE": true,
+ "SUMA_BRUTTO___VISIBLE": true,
+ "SZEROKOSC_DACH___DICT": false,
+ "TYP_KUR___DESCRIPTION": "",
+ "WARTOSC_KONCOWA_ALIAS": "",
+ "WYSOKOSC_DACH___TITLE": "HOOGTE [MM]",
+ "CENA_KONCOWA___VISIBLE": false,
+ "CENA_RABAT_S___VISIBLE": false,
+ "DLUGOSC_STER___VISIBLE": false,
+ "DLUGSTER___DESCRIPTION": "",
+ "DOPLATA_EL_RABAT_ALIAS": "",
+ "KOLOR_DODATKOWY___DICT": false,
+ "KOLOR_STEROWANIA_ALIAS": "",
+ "OPIS_POZYCJI___VISIBLE": false,
+ "ROZMIAR_DACH___VISIBLE": false,
+ "STRONA_LADOWANIA_ALIAS": "",
+ "SZEROKOSC_DACH___TITLE": "BREEDTE [MM]",
+ "WARTOSC_KONCOWA___DICT": false,
+ "WYSOKOSC_MONTAZU_ALIAS": "",
+ "WYSOKOSC___DESCRIPTION": "",
+ "CENA_SUMA___DESCRIPTION": "",
+ "DOPLATA_EL_RABAT___DICT": false,
+ "KOLOR_DODATKOWY___TITLE": "KLEUR STOF 2",
+ "KOLOR_STEROWANIA___DICT": false,
+ "OPIS_CENY___DESCRIPTION": "",
+ "POW_ALIAS___DESCRIPTION": "",
+ "STRONA_LADOWANIA___DICT": true,
+ "STRONA_STEROWANIA_ALIAS": "",
+ "STRONA_WYJSCIA_PRZEWODU": "",
+ "SZEROKOSC___DESCRIPTION": "",
+ "WARTOSC_KONCOWA___TITLE": "TOTAALPRIJS EXCL. BTW [€]",
+ "WYSOKOSC_DACH___VISIBLE": false,
+ "WYSOKOSC_MONTAZU___DICT": false,
+ "ZASILANIE___DESCRIPTION": "",
+ "AUTOMATYKA___DESCRIPTION": "",
+ "CENA_ALIAS___DESCRIPTION": "",
+ "CENA_RABAT___DESCRIPTION": "",
+ "DOPLATA_EL_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS VOOR EL",
+ "DOPLATA_EL___DESCRIPTION": "",
+ "KOLOR_STEROWANIA___TITLE": "KLEUR SCHNUR",
+ "MODEL_DACH___DESCRIPTION": "",
+ "SLOPE_TYPE___DESCRIPTION": "SLOPE TRAPEZIUM",
+ "STEROWANIE___DESCRIPTION": "",
+ "STRONA_LADOWANIA___TITLE": "OPLAADSTOPCONTACTZIJDE",
+ "STRONA_STEROWANIA___DICT": true,
+ "SZEROKOSC_DACH___VISIBLE": false,
+ "WYSOKOSC_MONTAZU___TITLE": "MONTAGEHOOGTE [MM]",
+ "ILOSC_ALIAS___DESCRIPTION": "",
+ "KOLOR_ALIAS___DESCRIPTION": "PG #3",
+ "KOLOR_DODATKOWY___VISIBLE": false,
+ "KOLOR_SYSTE___DESCRIPTION": "PROFIEL",
+ "MODEL_ALIAS___DESCRIPTION": "",
+ "MOTOR_ALIAS___DESCRIPTION": "",
+ "OPIS_RABATU___DESCRIPTION": "",
+ "PILOT_ALIAS___DESCRIPTION": "",
+ "PROWADZENIE___DESCRIPTION": "ZONDER ZIJGELEIDING",
+ "RODZAJ_DACH___DESCRIPTION": "",
+ "STRONA_STEROWANIA___TITLE": "BEDIENSEITE",
+ "STRSTERSLOP___DESCRIPTION": "LINKS",
+ "SUMA_BRUTTO___DESCRIPTION": "",
+ "WARTOSC_KONCOWA___VISIBLE": false,
+ "WYMIAROWANIE_SLOPOW_ALIAS": "",
+ "CENA_KONCOWA___DESCRIPTION": "",
+ "DLUGOSC_STER___DESCRIPTION": "",
+ "DOPLATA_EL_RABAT___VISIBLE": false,
+ "KOLOR_STEROWANIA___VISIBLE": false,
+ "MONTAZ_ALIAS___DESCRIPTION": "",
+ "OCHRONA_CHILD_SAFETY_ALIAS": "",
+ "OPIS_POZYCJI___DESCRIPTION": "",
+ "ROZMIAR_DACH___DESCRIPTION": "",
+ "STRONA_LADOWANIA___VISIBLE": false,
+ "WYSOKOSC_MONTAZU___VISIBLE": false,
+ "DODATKI_ALIAS___DESCRIPTION": "",
+ "DOPLATA_ALIAS___DESCRIPTION": "",
+ "OCHRONA_CHILD_SAFETY___DICT": true,
+ "STRONA_STEROWANIA___VISIBLE": false,
+ "TYP_KUR_ALIAS___DESCRIPTION": "",
+ "WYMIAROWANIE_SLOPOW___TITLE": "AFMETINGEN VOOR SLOP [MM]",
+ "WYSOKOSC_DACH___DESCRIPTION": "",
+ "DLUGSTER_ALIAS___DESCRIPTION": "",
+ "OCHRONA_CHILD_SAFETY___TITLE": "KINDERVEILIGHEIDSSYSTEEM",
+ "SZEROKOSC_DACH___DESCRIPTION": "",
+ "WYSOKOSC_ALIAS___DESCRIPTION": "",
+ "CENA_SUMA_ALIAS___DESCRIPTION": "",
+ "KOLOR_DODATKOWY___DESCRIPTION": "",
+ "OPIS_CENY_ALIAS___DESCRIPTION": "",
+ "STRONA_WYJSCIA_PRZEWODU_ALIAS": "",
+ "SZEROKOSC_ALIAS___DESCRIPTION": "",
+ "WARTOSC_KONCOWA___DESCRIPTION": "",
+ "WYMIAROWANIE_SLOPOW___VISIBLE": true,
+ "ZASILANIE_ALIAS___DESCRIPTION": "",
+ "AUTOMATYKA_ALIAS___DESCRIPTION": "",
+ "CENA_RABAT_ALIAS___DESCRIPTION": "",
+ "DOPLATA_EL_ALIAS___DESCRIPTION": "",
+ "DOPLATA_EL_RABAT___DESCRIPTION": "",
+ "KOLOR_STEROWANIA___DESCRIPTION": "",
+ "MODEL_DACH_ALIAS___DESCRIPTION": "",
+ "OCHRONA_CHILD_SAFETY___VISIBLE": true,
+ "SLOPE_TYPE_ALIAS___DESCRIPTION": "",
+ "STEROWANIE_ALIAS___DESCRIPTION": "",
+ "STRONA_LADOWANIA___DESCRIPTION": "",
+ "STRONA_WYJSCIA_PRZEWODU___DICT": true,
+ "WYSOKOSC_MONTAZU___DESCRIPTION": "",
+ "KOLOR_SYSTE_ALIAS___DESCRIPTION": "SCHIENE",
+ "OPIS_RABATU_ALIAS___DESCRIPTION": "",
+ "PROWADZENIE_ALIAS___DESCRIPTION": "",
+ "RODZAJ_DACH_ALIAS___DESCRIPTION": "",
+ "STRONA_STEROWANIA___DESCRIPTION": "",
+ "STRONA_WYJSCIA_PRZEWODU___TITLE": "KABELUITGANGZIJDE",
+ "STRSTERSLOP_ALIAS___DESCRIPTION": "",
+ "SUMA_BRUTTO_ALIAS___DESCRIPTION": "",
+ "CENA_KONCOWA_ALIAS___DESCRIPTION": "",
+ "DLUGOSC_STER_ALIAS___DESCRIPTION": "",
+ "OPIS_POZYCJI_ALIAS___DESCRIPTION": "",
+ "ROZMIAR_DACH_ALIAS___DESCRIPTION": "",
+ "STRONA_WYJSCIA_PRZEWODU___VISIBLE": false,
+ "WYMIAROWANIE_SLOPOW___DESCRIPTION": "",
+ "WYSOKOSC_DACH_ALIAS___DESCRIPTION": "",
+ "OCHRONA_CHILD_SAFETY___DESCRIPTION": "JA VOLGENS DE EN 13120-NORM",
+ "SZEROKOSC_DACH_ALIAS___DESCRIPTION": "",
+ "KOLOR_DODATKOWY_ALIAS___DESCRIPTION": "",
+ "WARTOSC_KONCOWA_ALIAS___DESCRIPTION": "",
+ "DOPLATA_EL_RABAT_ALIAS___DESCRIPTION": "",
+ "KOLOR_STEROWANIA_ALIAS___DESCRIPTION": "",
+ "STRONA_LADOWANIA_ALIAS___DESCRIPTION": "",
+ "WYSOKOSC_MONTAZU_ALIAS___DESCRIPTION": "",
+ "STRONA_STEROWANIA_ALIAS___DESCRIPTION": "",
+ "STRONA_WYJSCIA_PRZEWODU___DESCRIPTION": "",
+ "WYMIAROWANIE_SLOPOW_ALIAS___DESCRIPTION": "",
+ "OCHRONA_CHILD_SAFETY_ALIAS___DESCRIPTION": "",
+ "STRONA_WYJSCIA_PRZEWODU_ALIAS___DESCRIPTION": ""}

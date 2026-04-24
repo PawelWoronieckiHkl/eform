@@ -50,9 +50,17 @@ router.get('/search', requireLogin, async (req, res) => {
             ? (req.session.user?.isAdmin ? req.session.user?.organization : req.session.user?.orgId)
             : false;
 
+        const filters = {
+            dateFrom:     req.query.dateFrom     || null,
+            dateTo:       req.query.dateTo       || null,
+            prodStatus:   req.query.prodStatus   || null,
+            sentDateFrom: req.query.sentDateFrom || null,
+            sentDateTo:   req.query.sentDateTo   || null,
+        };
+
         const [orders, totalOrders] = await Promise.all([
-            db.searchUserOrders(currentUser.userId, q, limit, offset, sent, employeeId, organization),
-            db.countSearchUserOrders(currentUser.userId, q, sent, employeeId, organization)
+            db.searchUserOrders(currentUser.userId, q, limit, offset, sent, employeeId, organization, filters),
+            db.countSearchUserOrders(currentUser.userId, q, sent, employeeId, organization, filters)
         ]);
 
         // Parse spedition numbers for each order

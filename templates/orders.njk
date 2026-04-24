@@ -19,9 +19,6 @@
               <div class="container my-5 w-100 mobile-rm-card">
                 <div class="orders-topbar mb-4">
                   <div class="orders-topbar-left">
-                    {% if orders %}
-                      <div id="orders-search-mount" class="orders-search-mount mt-4 ms-3" {% block search_data %} data-sent="false" {% endblock %} {% if isEmployee %} data-is-employee="true" {% endif %}></div>
-                    {% endif %}
                     {% block user_filter %}{% endblock %}
                   </div>
                   <div class="orders-topbar-center">
@@ -40,6 +37,27 @@
                     </div>
                   </div>
                   {% block all_orders_btn %}{% endblock %}
+                  {% block filters_bar %}
+                    {% if orders %}
+                      <div id="orders-filters-bar" class="orders-filters-bar">
+                        <div class="filter-group">
+                          <label for="orders-search-mount">{{ __('orders.search') or 'Szukaj' }}</label>
+                          <div id="orders-search-mount" class="orders-search-mount" {% block search_data %} data-sent="false" {% endblock %} {% if isEmployee %} data-is-employee="true" {% endif %}></div>
+                        </div>
+                        <div class="orders-date-filter">
+                          <div class="filter-group">
+                            <label for="filter-date-from">{{ __('orders.created_from') or 'Data od' }}</label>
+                            <input type="date" id="filter-date-from" data-filter="dateFrom" class="form-control form-control-sm">
+                          </div>
+                          <span class="filters-separator">&ndash;</span>
+                          <div class="filter-group">
+                            <label for="filter-date-to">{{ __('orders.created_to') or 'Data do' }}</label>
+                            <input type="date" id="filter-date-to" data-filter="dateTo" class="form-control form-control-sm">
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endblock %}
                   {% block orders %}
                     {% if orders %}
                       <!-- Desktop table version -->

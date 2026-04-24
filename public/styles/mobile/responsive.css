@@ -1,0 +1,38 @@
+/* Mobile responsive overrides */
+@media (max-width: 767.98px) {
+    .form-content {
+        margin-left: 0;
+        max-width: 100%;
+    }
+
+    #dynamic-form {
+        grid-template-columns: 1fr;
+    }
+
+    .comment-space {
+        width: 100%;
+    }
+
+    .table {
+        width: 100% !important;
+        table-layout: auto !important;
+    }
+
+    .commission-space {
+        display: grid !important;
+    }
+
+    .comm-input {
+        width: 100% !important;
+    }
+
+    [class$="-select-area"] {
+        display: grid;
+        flex-direction: column;
+    }
+
+    [class$="-select-area"] > button {
+        display: block;
+        width: 100% !important;
+    }
+}

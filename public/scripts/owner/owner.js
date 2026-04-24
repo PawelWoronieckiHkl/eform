@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const searchMount = document.getElementById('orders-search-mount');
-    const isSent = searchMount && searchMount.dataset.sent === 'true';
-    const isOrganization = searchMount && searchMount.dataset.organization === 'true';
+    if (!searchMount) return;
+
+    const isSent = searchMount.dataset.sent === 'true';
+    const isOrganization = searchMount.dataset.organization === 'true';
 
     function handleInlineUserSelect(selectedIdent) {
         let targetPath;
@@ -17,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Init inline dropdown (orders_owner.njk) — uses global initUserDropdown from base.js
+    if (typeof window.initUserDropdown !== 'function') return;
     const inline = window.initUserDropdown('inlineUserSelect', 'inlineUserDropdown', handleInlineUserSelect);
 
     // Restore selected user from URL

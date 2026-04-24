@@ -62,6 +62,23 @@ export function initSearchTool({
 
     const { input, status } = buildSearchUI(mount, placeholder);
 
+    // Helper: collect values from [data-filter] elements in the closest .orders-filters-bar
+    function collectFilterParams() {
+        const bar = mount.closest('.orders-filters-bar') || mount.parentElement;
+        if (!bar) return {};
+        const params = {};
+        bar.querySelectorAll('[data-filter]').forEach(el => {
+            const key = el.dataset.filter;
+            const val = (el.value ?? '').trim();
+            if (val) params[key] = val;
+        });
+        return params;
+    }
+
+    function hasActiveFilters() {
+        return Object.keys(collectFilterParams()).length > 0;
+    }
+
     if (apiUrl) {
         const tableBody = tableBodySelector ? document.querySelector(tableBodySelector) : null;
         const mobileList = mobileListSelector ? document.querySelector(mobileListSelector) : null;
@@ -71,7 +88,10 @@ export function initSearchTool({
         const originalMobileHTML = mobileList?.innerHTML ?? null;
 
         const doSearch = debounce(async (q) => {
-            if (!q.trim()) {
+            const filterParams = collectFilterParams();
+            const hasFilters = Object.keys(filterParams).length > 0;
+
+            if (!q.trim() && !hasFilters) {
                 if (tableBody && originalTableHTML !== null) tableBody.innerHTML = originalTableHTML;
                 if (mobileList && originalMobileHTML !== null) mobileList.innerHTML = originalMobileHTML;
                 if (pagination) pagination.style.display = '';
@@ -88,6 +108,9 @@ export function initSearchTool({
                 const urlParams = new URLSearchParams(window.location.search);
                 const userIdent = urlParams.get('userIdent');
                 if (userIdent) url += `&userIdent=${encodeURIComponent(userIdent)}`;
+                for (const [k, v] of Object.entries(filterParams)) {
+                    url += `&${encodeURIComponent(k)}=${encodeURIComponent(v)}`;
+                }
                 const data = await get(url);
                 const orders = data.orders ?? [];
 
@@ -122,6 +145,24 @@ export function initSearchTool({
         }, debounceMs);
 
         input.addEventListener('input', (e) => doSearch(e.target.value));
+
+        // Attach change listeners to all [data-filter] elements in the bar
+        // Use MutationObserver to also catch dynamically added elements (e.g. status select)
+        function bindFilterListeners(bar) {
+            bar.querySelectorAll('[data-filter]').forEach(el => {
+                if (!el.dataset.filterBound) {
+                    el.dataset.filterBound = '1';
+                    el.addEventListener('change', () => doSearch(input.value));
+                }
+            });
+        }
+        const filtersBar = mount.closest('.orders-filters-bar') || mount.parentElement;
+        if (filtersBar) {
+            bindFilterListeners(filtersBar);
+            const observer = new MutationObserver(() => bindFilterListeners(filtersBar));
+            observer.observe(filtersBar, { childList: true, subtree: true });
+        }
+
         return;
     }
 

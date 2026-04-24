@@ -28,13 +28,53 @@
                             <th scope="col">{{ __('translate.delivery') }}</th>
                             <th scope="col">{{ __('orders.tracking_numbers') or 'Numery przesyłek' }}</th>
                         {% endblock %}
-                        {% block order_item_link %}
-                            <tr onclick="window.location.href='/orders/history/order/{{ order.id }}'" class="order-row">
-                            {% endblock %}
-                            {% block action_th %}{% endblock %}
+                        {% block filters_bar %}
+                            {% if orders %}
+                            <div id="orders-filters-bar" class="orders-filters-bar">
+                                <div class="filter-group">
+                                    <label for="orders-search-mount">{{ __('orders.search') or 'Szukaj' }}</label>
+                                    <div id="orders-search-mount" class="orders-search-mount" data-sent="true" {% if isEmployee %}data-is-employee="true"{% endif %}></div>
+                                </div>
+                                <div class="orders-date-filter">
+                                    <div class="filter-group">
+                                        <label for="filter-date-from">{{ __('orders.created_from') or 'Data od' }}</label>
+                                        <input type="date" id="filter-date-from" data-filter="dateFrom" class="form-control form-control-sm">
+                                    </div>
+                                    <span class="filters-separator">&ndash;</span>
+                                    <div class="filter-group">
+                                        <label for="filter-date-to">{{ __('orders.created_to') or 'Data do' }}</label>
+                                        <input type="date" id="filter-date-to" data-filter="dateTo" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+                                <div class="orders-status-filter filter-group">
+                                    <label for="filter-prod-status">{{ __('orders.status') }}</label>
+                                    <select id="filter-prod-status" data-filter="prodStatus" class="form-select form-select-sm">
+                                        <option value="">{{ __('orders.all_statuses') }}</option>
+                                        <option value="__received__">{{ __('order.status_order_sent') }}</option>
+                                        <option value="!sent!">{{ __('!sent!') }}</option>
+                                        <option value="!preparation!">{{ __('!preparation!') }}</option>
+                                        <option value="!production!">{{ __('!production!') }}</option>
+                                        <option value="!backorder!">{{ __('!backorder!') }}</option>
+                                    </select>
+                                </div>
+                                <div class="orders-date-filter ms-5">
+                                    <div class="filter-group">
+                                        <label for="filter-sent-from">{{ __('orders.sent_date_from') or 'Wys. od' }}</label>
+                                        <input type="date" id="filter-sent-from" data-filter="sentDateFrom" class="form-control form-control-sm">
+                                    </div>
+                                    <span class="filters-separator">&ndash;</span>
+                                    <div class="filter-group">
+                                        <label for="filter-sent-to">{{ __('orders.sent_date_to') or 'Wys. do' }}</label>
+                                        <input type="date" id="filter-sent-to" data-filter="sentDateTo" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endblock %}
+                        {% block action_th %}{% endblock %}
                             {% block extra_rows %}
                                 <td>{{ order.sent_date }}</td>
-                                <th scope="row">{{ __(order.prod_status) if order.prod_status else __('order.status_order_sent') }}</th>
+                                <th scope="row" data-prod-status="{{ order.prod_status or '' }}">{{ __(order.prod_status) if order.prod_status else __('order.status_order_sent') }}</th>
                                 <th scope="row">
                                     {% if order.delivery_date %}
                                         {{ order.delivery_date }}
