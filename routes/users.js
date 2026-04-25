@@ -20,6 +20,8 @@ router.use(async (req, res, next) => {
     res.locals.owner = req.session?.user?.isOwner || false;
     res.locals.admin = req.session?.user?.isAdmin || false;
     res.locals.isEmployee = req.session?.user?.isEmployee || false;
+    res.locals.isGroup = req.session?.user?.isGroup || req.session?.context_user?.isGroup || false;
+    res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
 
     if (req.session?.user?.isOwner) {
         try {
@@ -94,11 +96,23 @@ router.get("/auth/login", async (req, res, next) => {
         return res.redirect(`${req.baseUrl}/login`);
     }
 
+    // Sprawdź najpierw czy to sklep grupy (group_user)
+    const shopLogin = await authService.handleGroupShopLogin(req, res, next, pin, password);
+    if (shopLogin === true) {
+        return res.redirect("/");
+    }
+
     return authService.handleAuthLogin(req, res, next, pin, password);
 });
 
 router.post("/auth/login", async (req, res, next) => {
     const { pin, password } = req.body;
+
+    const shopLogin = await authService.handleGroupShopLogin(req, res, next, pin, password);
+    if (shopLogin === true) {
+        return res.redirect("/");
+    }
+
     return authService.handleAuthLogin(req, res, next, pin, password);
 });
 
@@ -183,11 +197,22 @@ router.get('/logo', requireLogin, async (req, res) => {
     const currentUser = ownerService.getCurrentUser(req);
     const pin = currentUser.pin;
 
-    let photoFilename = await db.getUserLogo(pin);
-    if (req.session.user?.isAdmin) {
-        photoFilename = await db.getLogo(req.session.user.organization);
+    let photoFilename;
+    const role = await db.getUserRole(pin);
+
+    if (role === 'group') {
+        photoFilename = await db.getUserPhoto(pin);
     }
-    const photoPath = path.join(__dirname, '..', 'img', photoFilename)
+
+    if (!photoFilename) {
+        if (req.session.user?.isAdmin) {
+            photoFilename = await db.getLogo(req.session.user.organization);
+        } else {
+            photoFilename = await db.getUserLogo(pin);
+        }
+    }
+
+    const photoPath = path.join(__dirname, '..', 'img', photoFilename);
     res.sendFile(photoPath);
 })
 

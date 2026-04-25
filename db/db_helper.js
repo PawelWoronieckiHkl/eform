@@ -5,6 +5,7 @@ const otherQueries = require('./others');
 const ownerQueries = require('./owner');
 const statusesQueries = require('./statuses');
 const addressQueries = require('./address');
+const groupQueries = require('./group');
 
 
 module.exports = {
@@ -14,5 +15,6 @@ module.exports = {
   ...orderQueries,
   ...ownerQueries,
   ...statusesQueries,
-  ...addressQueries
+  ...addressQueries,
+  ...groupQueries
 };

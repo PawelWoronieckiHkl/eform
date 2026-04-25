@@ -1,0 +1,125 @@
+{% extends "base.njk" %}
+{% block title %}Twoje Sklepy{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="/styles/group/shops.css">
+{% endblock %}
+
+{% block key_nav %}
+    window.location.href = '/'
+{% endblock %}
+
+{% block back_link %}
+    <button class="modern-back-btn" onclick="window.location.href='/'">
+{% endblock %}
+
+{% block content %}
+    <div class="content col-9 center-content">
+        <div class="container my-4">
+
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="mb-0">Twoje Sklepy</h2>
+                <a href="/group/shops/new" class="action-btn action-btn-add">
+                    + Dodaj sklep
+                </a>
+            </div>
+
+            {% if success === 'added' %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    Sklep został dodany.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% elif success === 'updated' %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    Sklep został zaktualizowany.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+
+            {% if error === 'notfound' %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Nie znaleziono sklepu lub brak uprawnień.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endif %}
+
+            {% if shops and shops.length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered group-shops-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Identyfikator</th>
+                                <th>PIN (login)</th>
+                                <th>Miasto</th>
+                                <th>Email</th>
+                                <th class="text-center">Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for shop in shops %}
+                                <tr data-shop-id="{{ shop.id }}">
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <span class="fw-semibold">{{ shop.ident }}</span>
+                                    </td>
+                                    <td>
+                                        <code>{{ shop.pin }}</code>
+                                    </td>
+                                    <td>{{ shop.city or '—' }}</td>
+                                    <td>{{ shop.email or '—' }}</td>
+                                    <td class="text-center shop-actions">
+                                        <a href="/group/shops/{{ shop.id }}/edit"
+                                           class="action-btn action-btn-edit me-1"
+                                           title="Edytuj">
+                                            Edytuj
+                                        </a>
+                                        <button type="button"
+                                                class="action-btn action-btn-delete btn-delete-shop"
+                                                data-shop-id="{{ shop.id }}"
+                                                data-shop-name="{{ shop.ident }}"
+                                                title="Usuń">
+                                            Usuń
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state text-center py-5">
+                    <p class="text-muted mb-3">Nie masz jeszcze żadnych sklepów.</p>
+                    <a href="/group/shops/new" class="action-btn action-btn-add">
+                        + Dodaj pierwszy sklep
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Modal potwierdzenia usunięcia -->
+    <div class="modal fade" id="deleteShopModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Usuń sklep</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Czy na pewno chcesz usunąć sklep
+                    <strong id="deleteShopName"></strong>?
+                    <br>
+                    <small class="text-muted">Tej operacji nie można cofnąć.</small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteShop">Usuń</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/scripts/group/shops.js"></script>
+{% endblock %}

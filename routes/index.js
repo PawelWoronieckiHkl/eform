@@ -23,6 +23,8 @@ router.use(async (req, res, next) => {
   res.locals.owner = req.session?.user?.isOwner || false;
   res.locals.admin = req.session?.user?.isAdmin || false;
   res.locals.isEmployee = req.session?.user?.isEmployee || false;
+  res.locals.isGroup = req.session?.user?.isGroup || req.session?.context_user?.isGroup || false;
+  res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
 
   if (req.session?.user?.isOwner) {
     try {

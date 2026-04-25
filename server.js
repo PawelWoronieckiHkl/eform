@@ -11,6 +11,7 @@ const userRoutes = require('./routes/users');
 const mainRoutes = require('./routes/index');
 const adminRoutes = require('./routes/admin');
 const addressRoutes = require('./routes/address');
+const groupRoutes = require('./routes/group');
 const { addOrganizationsForAdmin } = require('./middleware/loginMixture.js');
 const usersDb = require('./db/users.js');
 const bodyParser = require("body-parser");
@@ -147,6 +148,7 @@ app.use(async (req, res, next) => {
 app.use(addOrganizationsForAdmin);
 app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);
+app.use('/group', groupRoutes);
 app.use('/', mainRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/position', positionsRoutes);

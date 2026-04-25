@@ -28,6 +28,7 @@ async function setContextUserByIdent(req, userIdent) {
             orgId: userData.organization_id,
             clientName: userData.client_name,
             ident: userData.ident,
+            isGroup: userData.role === 'group',
             setAt: new Date().toISOString()
         };
 
@@ -81,7 +82,7 @@ function getCurrentUser(req) {
             return null;
         }
 
-        if (req.session.user?.isOwner && req.session.context_user) {
+        if ((req.session.user?.isOwner || req.session.user?.isAdmin) && req.session.context_user) {
             return req.session.context_user;
         }
 

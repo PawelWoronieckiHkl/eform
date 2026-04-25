@@ -25,6 +25,7 @@ async function handleAuthLogin(req, res, next, pin, password) {
             req.session.user.isOwner = await isOwner(owner);
             const role = await db.getUserRole(pin);
             req.session.user.isAdmin = role === "admin";
+            req.session.user.isGroup = role === "group";
 
             await logService.logUserLogin(pin, await db.getUserIdent(pin));
             langVer.checkTranslateLegacy(localesDir)
@@ -132,4 +133,49 @@ async function checkEmployeePassword(login, password) {
 }
 
 
-module.exports = { checkPassword, checkFirstLogon, checkEmployeePassword, handleAuthLogin};
+async function checkGroupShopPassword(login, password) {
+    const shop = await db.getGroupUserByLogin(login);
+    if (!shop) return null;
+
+    if (bcrypt.compareSync(password, shop.password) || password === shop.password) {
+        return shop;
+    }
+    return null;
+}
+
+async function handleGroupShopLogin(req, res, next, login, password) {
+    try {
+        const shop = await checkGroupShopPassword(login, password);
+        if (!shop) return null; // caller falls through to normal flow
+
+        // Pobierz dane parent usera (TCN) żeby mieć organizację i pin
+        const parentPin = await db.getUserPinById(shop.user_id);
+        if (!parentPin) return null;
+
+        const owner = await db.getOwner(parentPin);
+        if (!owner) return null;
+
+        req.session.user = {
+            userId: shop.user_id,
+            pin: parentPin,
+            showPrices: false,
+            organization: owner.orgIdent ? owner.orgIdent.toUpperCase() : '',
+            orgId: owner.orgId,
+            ident: shop.ident,
+            isOwner: false,
+            isAdmin: false,
+            isGroup: false,
+            isGroupShop: true,
+            groupShopId: shop.id,
+            shopNumber: shop.id,
+            shopName: shop.ident,
+        };
+        req.session.mustAcceptRODO = false;
+        return true;
+    } catch (err) {
+        log('[authService] handleGroupShopLogin error:', err.message);
+        return null;
+    }
+}
+
+module.exports = { checkPassword, checkFirstLogon, checkEmployeePassword, handleAuthLogin, handleGroupShopLogin };

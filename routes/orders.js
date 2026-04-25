@@ -24,6 +24,8 @@ router.use(async (req, res, next) => {
     res.locals.owner = req.session?.user?.isOwner || false;
     res.locals.admin = req.session?.user?.isAdmin || false;
     res.locals.isEmployee = req.session?.user?.isEmployee || false;
+    res.locals.isGroup = req.session?.user?.isGroup || req.session?.context_user?.isGroup || false;
+    res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
 
     if (req.session?.user?.isOwner) {
         try {
@@ -631,6 +633,14 @@ router.get("/order/:orderId/new-position/", requireLogin, (req, res) => {
 
 
 router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
+    // Sklep grupy nie może samodzielnie wysłać — musi zatwierdzić centrala
+    if (req.session.user?.isGroupShop) {
+        return res.status(403).json({
+            success: false,
+            message: 'Zamówienie sklepu musi zostać zatwierdzone przez centralę. Użyj opcji „Wyślij do zatwierdzenia".'
+        });
+    }
+
     try {
         let extraMail = process.env.EXTRA_MAIL ? process.env.EXTRA_MAIL.split(',') : false;
         const id = req.params.orderId;
@@ -779,18 +789,31 @@ router.post('/save-order', requireLogin, async (req, res) => {
         }
 
         const currentUser = ownerService.getCurrentUser(req);
+        const groupUserId = req.session.user?.isGroupShop ? req.session.user.groupShopId : null;
         let id = 0;
         if (req.session.user.isEmployee) {
-
-            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, req.session?.employee.id ?? null, mailId);
+            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, req.session?.employee.id ?? null, mailId, groupUserId);
         }
         else {
-            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, null, mailId);
+            id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, null, mailId, groupUserId);
         }
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: `/orders/order/${id}` });
     }
     catch (err) {
         log(err);
+    }
+});
+
+router.post('/submit-for-approval/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
+    try {
+        if (!req.session.user?.isGroupShop) {
+            return res.status(403).json({ success: false, message: 'Tylko sklep może wysłać zamówienie do zatwierdzenia.' });
+        }
+        await db.submitOrderForApproval(req.params.orderId);
+        return res.json({ success: true, message: 'Zamówienie wysłane do zatwierdzenia przez centralę.', redirect: '/orders' });
+    } catch (err) {
+        log(err);
+        return res.status(500).json({ success: false, message: 'Błąd serwera.' });
     }
 });
 

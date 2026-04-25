@@ -118,4 +118,19 @@ function requireOwner(req, res, next) {
   next();
 }
 
-module.exports = { requireLogin, requirePermission, checkOrderOwnership, isOwner, requireOwner, addOrganizationsForAdmin };
+function requireGroup(req, res, next) {
+  const isGroup = req.session.user?.isGroup || req.session.context_user?.isGroup || false;
+  if (!isGroup) {
+    return res.redirect('/user/no-permission');
+  }
+  next();
+}
+
+function requireGroupShop(req, res, next) {
+  if (!req.session.user?.isGroupShop) {
+    return res.redirect('/user/no-permission');
+  }
+  next();
+}
+
+module.exports = { requireLogin, requirePermission, checkOrderOwnership, isOwner, requireOwner, requireGroup, requireGroupShop, addOrganizationsForAdmin };

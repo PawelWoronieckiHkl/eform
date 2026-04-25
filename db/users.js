@@ -110,6 +110,12 @@ async function getUserLogo(pin) {
     return result && result.length > 0 ? result[0].photo_path : 'hkl.png';
 }
 
+async function getUserPhoto(pin) {
+    const query = `SELECT photo FROM \`user\` WHERE pin = ?`;
+    const result = await selectQuery(query, [pin]);
+    return result && result.length > 0 ? result[0].photo : null;
+}
+
 
 async function getLogo(id) {
     const query = `select photo_path from organization where id = ?`;
@@ -182,6 +188,12 @@ async function getUserId(pin) {
     const result = await selectQuery(query, [pin])
 
     return result[0].id;
+}
+
+async function getUserPinById(id) {
+    const query = `SELECT pin FROM \`user\` WHERE id = ?`;
+    const result = await selectQuery(query, [id]);
+    return result?.[0]?.pin || null;
 }
 
 
@@ -478,6 +490,7 @@ module.exports = {
     getFirstLogonInfo,
     getPolicyState,
     getUserLogo,
+    getUserPhoto,
     getOwner,
     updateUserData,
     getOwnerByUserId,
@@ -519,7 +532,8 @@ module.exports = {
     setIntroNeeded,
     enableIntroNeeded,
     getRecentClients,
-    saveRecentClient
+    saveRecentClient,
+    getUserPinById,
 }
 
 async function getIntroNeeded(pin) {

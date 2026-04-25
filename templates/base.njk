@@ -155,6 +155,12 @@
                     <img src="/img/employee.png" class='nav-icon' alt="orders-ico">
                     <span class="nav-text">{{ __('base.employee_panel') }}</span>
                 </a>
+                {% if isGroup %}
+                    <a href="/group/shops" class="custom-nav-link has-tooltip" data-tooltip="Twoje Sklepy">
+                        <img src="/img/orders.png" class='nav-icon' alt="shops-icon">
+                        <span class="nav-text">Twoje Sklepy</span>
+                    </a>
+                {% endif %}
                 <a href="#" data-action="logout" id='logout-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="{{ __('base.logout') }}" style="text-decoration: none;">
                     <img src="/img/logout.png" class='nav-icon' alt="orders-ico">
                     <span class="nav-text">{{ __('base.logout') }}</span>

@@ -357,11 +357,12 @@ async function insertSendAddress(address) {
     }
 }
 
-async function insertNewOrder(commision, addressId, userId, comment, sendAddressId = null, totalPrice = 0, employeeId = null, mailId = null) {
+async function insertNewOrder(commision, addressId, userId, comment, sendAddressId = null, totalPrice = 0, employeeId = null, mailId = null, groupUserId = null) {
     addressId = addressId || null;
     mailId = mailId || null;
     sendAddressId = sendAddressId || null;
     employeeId = employeeId || null;
+    groupUserId = groupUserId || null;
 
     const query = `INSERT INTO \`order\` 
     (user_id,
@@ -374,10 +375,11 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
     created_date,
     send_address_id,
     contact_info_id,
-    employee_id)
+    employee_id,
+    group_user_id)
     values (?,?,?,?,
     (select u.organization_id from eform.\`user\` u  where u.id =?) 
-    ,?,'active',?,?,?,?)`
+    ,?,'active',?,?,?,?,?)`
     try {
         const response = await insertQuery(query,
             [userId,
@@ -389,7 +391,8 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
                 dateUtils.getDbTimestamp(),
                 sendAddressId,
                 mailId,
-                employeeId
+                employeeId,
+                groupUserId
             ]
         )
 
@@ -399,6 +402,50 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
     catch (err) {
         log(err);
         return false;
+    }
+}
+
+async function submitOrderForApproval(orderId) {
+    const query = `UPDATE \`order\` SET status = 'pending_approval' WHERE id = ?`;
+    try {
+        const response = await updateQuery(query, [orderId]);
+        return response;
+    } catch (err) {
+        log(err);
+        return false;
+    }
+}
+
+async function getGroupShopOrders(groupUserId, limit = 10, offset = 0, sent = false) {
+    const statuses = sent
+        ? `('sent')`
+        : `('active', 'pending_approval')`;
+    const query = `
+        SELECT o.id, o.user_id, o.commision, o.total_price, o.created_date, o.sent_date,
+               o.comment, o.status, o.order_idx, o.prod_status, o.spedition_numbers, o.max_prod_days
+        FROM \`order\` o
+        WHERE o.group_user_id = ? AND o.status IN ${statuses}
+        ORDER BY o.id DESC
+        LIMIT ? OFFSET ?
+    `;
+    try {
+        const rows = await selectQuery(query, [groupUserId, limit, offset]);
+        return dateUtils.humanizeData(rows || []);
+    } catch (err) {
+        log(err);
+        return [];
+    }
+}
+
+async function countGroupShopOrders(groupUserId, sent = false) {
+    const statuses = sent ? `('sent')` : `('active', 'pending_approval')`;
+    const query = `SELECT COUNT(*) as cnt FROM \`order\` WHERE group_user_id = ? AND status IN ${statuses}`;
+    try {
+        const result = await selectQuery(query, [groupUserId]);
+        return result?.[0]?.cnt || 0;
+    } catch (err) {
+        log(err);
+        return 0;
     }
 }
 
@@ -668,6 +715,9 @@ module.exports = {
     saveDiscount,
     getDiscount,
     getOrderNo,
-    updateMaxProdDays
+    updateMaxProdDays,
+    submitOrderForApproval,
+    getGroupShopOrders,
+    countGroupShopOrders,
 }
 
