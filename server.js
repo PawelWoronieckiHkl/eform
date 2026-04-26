@@ -127,6 +127,15 @@ app.use((req, res, next) => {
 	next();
 });
 
+// ─── group flags global middleware ──────────────────────────────────────────
+// Make isGroup/isGroupShop available in every template (incl. /group/* views),
+// so that nav items remain visible across all pages for group users.
+app.use((req, res, next) => {
+	res.locals.isGroup = req.session?.user?.isGroup || req.session?.context_user?.isGroup || false;
+	res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
+	next();
+});
+
 // ─── intro_needed global middleware ─────────────────────────────────────────
 app.use(async (req, res, next) => {
 	const pin = req.session?.user?.pin;

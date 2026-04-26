@@ -74,6 +74,16 @@ async function checkOrderOwnership(req, res, next) {
       return next();
     }
 
+    // Group shop: order belongs to this shop (check by group_user_id)
+    if (req.session.user?.isGroupShop) {
+      const groupShopId = req.session.user.groupShopId;
+      const orderId = req.params.orderId;
+      if (!groupShopId) return res.redirect('/user/no-permission');
+      const owns = await db.checkGroupShopOrderOwner(orderId, groupShopId);
+      if (!owns) return res.redirect('/user/no-permission');
+      return next();
+    }
+
     const userId = req.session.user?.userId;
     const orderId = req.params.orderId;
     // log(userId, orderId, 'in checkOrderOwnership middleware');

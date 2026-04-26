@@ -168,7 +168,7 @@ async function handleGroupShopLogin(req, res, next, login, password) {
             isGroupShop: true,
             groupShopId: shop.id,
             shopNumber: shop.id,
-            shopName: shop.ident,
+            shopName: shop.name || shop.ident,
         };
         req.session.mustAcceptRODO = false;
         return true;

@@ -43,6 +43,12 @@ async function checkOwner(orderId, userId) {
     return order.length > 0;
 }
 
+async function checkGroupShopOrderOwner(orderId, groupShopId) {
+    const query = 'SELECT id FROM \`order\` WHERE id = ? AND group_user_id = ?';
+    const order = await selectQuery(query, [orderId, groupShopId]);
+    return order.length > 0;
+}
+
 async function getOrderDetails(orderId) {
     const orderDetailsQuery = `SELECT 
     \`order\`.id,
@@ -160,7 +166,7 @@ async function getOrderDataToSend(orderId) {
     let orderDetailsQuery = '';
 
     if (hasSendAddress) {
-        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.comment, o.order_idx, o.total_price, o.total_price_hidden, o.contact_info_id, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, s.name, s.street, s.zip, s.city, s.country, s.phone, COALESCE(ci.email, s.email, u.email) as email
+        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.comment, o.order_idx, o.total_price, o.total_price_hidden, o.contact_info_id, u.client_name, u.tax_id, u.ident as user_ident, u.street as user_street, u.zip as user_zip, u.city as user_city, u.country as user_country, u.phone as user_phone, org.ident as org_ident, s.name, s.street, s.zip, s.city, s.country, s.phone, COALESCE(ci.email, s.email, u.email) as email
 FROM \`order\` o
 join \`user\` u on u.id = o.user_id
 join send_address s on s.id = o.send_address_id
@@ -168,7 +174,7 @@ left join contact_info ci on ci.id = o.contact_info_id
 join organization org on org.id = o.organization_id
 where o.id = ?`;
     } else if (hasDeliveryAddress) {
-        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, o.contact_info_id, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, da.name, da.street, da.zip, da.city, da.country, da.phone_number as phone, COALESCE(ci.email, u.email) as email
+        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, o.contact_info_id, u.client_name, u.tax_id, u.ident as user_ident, u.street as user_street, u.zip as user_zip, u.city as user_city, u.country as user_country, u.phone as user_phone, org.ident as org_ident, da.name, da.street, da.zip, da.city, da.country, da.phone_number as phone, COALESCE(ci.email, u.email) as email
 FROM \`order\` o
 join \`user\` u on u.id = o.user_id
 join delivery_address da on da.id = o.delivery_address_id
@@ -176,9 +182,25 @@ left join contact_info ci on ci.id = o.contact_info_id
 join organization org on org.id = o.organization_id
 where o.id = ?`;
     } else {
-        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, o.contact_info_id, u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident, CONCAT(u.client_name, ' (', u.ident, ')') as name, u.street, u.zip, u.city, u.country, u.phone, COALESCE(ci.email, u.email) as email
+        // No explicit send/delivery address selected.
+        // For group shop orders use group_user data (address + email);
+        // fallback to parent user data otherwise.
+        orderDetailsQuery = `SELECT o.id, o.commision, o.created_date, o.sent_date, o.order_idx, o.comment, o.total_price, o.total_price_hidden, o.contact_info_id,
+            u.client_name, u.tax_id, u.ident as user_ident, org.ident as org_ident,
+            u.street as user_street, u.zip as user_zip, u.city as user_city, u.country as user_country, u.phone as user_phone,
+            CASE WHEN o.group_user_id IS NOT NULL
+                 THEN COALESCE(NULLIF(gu.name, ''), gu.ident)
+                 ELSE u.client_name
+            END as name,
+            COALESCE(NULLIF(gu.street, ''), u.street) as street,
+            COALESCE(NULLIF(gu.zip, ''), u.zip) as zip,
+            COALESCE(NULLIF(gu.city, ''), u.city) as city,
+            u.country as country,
+            COALESCE(NULLIF(gu.phone, ''), u.phone) as phone,
+            COALESCE(ci.email, NULLIF(gu.email, ''), u.email) as email
 FROM \`order\` o
 join \`user\` u on u.id = o.user_id
+left join group_user gu on gu.id = o.group_user_id
 left join contact_info ci on ci.id = o.contact_info_id
 join organization org on org.id = o.organization_id
 where o.id = ?`;
@@ -709,6 +731,7 @@ module.exports = {
     insertSendAddress,
     getUserOrderId,
     checkOwner,
+    checkGroupShopOrderOwner,
     updateOrderPriceOnSend,
     getTotal,
     syncTotalPriceIfMissing,

@@ -784,14 +784,22 @@ dialog::backdrop {
     -webkit-backdrop-filter: blur(var(--blur-md));
     border: 1px solid var(--border-default);
     border-radius: var(--radius-full);
-    padding: 4px;
+    padding: 6px;
     box-shadow: var(--shadow-sm);
     transition: all var(--transition-base);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .language-switcher a {
     border-radius: var(--radius-full);
-    padding: 4px 6px;
+    padding: 8px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
     transition: all var(--transition-fast);
 }
 

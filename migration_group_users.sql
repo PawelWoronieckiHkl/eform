@@ -28,6 +28,13 @@ CREATE TABLE IF NOT EXISTS group_user (
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Kolumna łącząca zamówienie z konkretnym sklepem grupy
+-- UWAGA: Uruchom tylko raz. MySQL 9.x nie obsługuje ADD COLUMN IF NOT EXISTS.
 ALTER TABLE `order`
-  ADD COLUMN IF NOT EXISTS `group_user_id` INT DEFAULT NULL
-    COMMENT 'FK do group_user.id — sklep, który złożył zamówienie';
+  ADD COLUMN `group_user_id` INT DEFAULT NULL
+    COMMENT 'FK do group_user.id — sklep, ktory zlozyl zamowienie';
+
+-- Opisowa nazwa sklepu (np. "Sklep Centrum Warszawa") — wyświetlana w panelu grupy
+-- UWAGA: Uruchom tylko raz. Jeśli kolumna już istnieje, zignoruj błąd "Duplicate column".
+ALTER TABLE `group_user`
+  ADD COLUMN `name` VARCHAR(150) NOT NULL DEFAULT ''
+    COMMENT 'Nazwa opisowa sklepu, wyświetlana w panelu grupy';

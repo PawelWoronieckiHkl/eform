@@ -38,7 +38,7 @@
                   </div>
                   {% block all_orders_btn %}{% endblock %}
                   {% block filters_bar %}
-                    {% if orders %}
+                    {% if orders and orders | length > 0 %}
                       <div id="orders-filters-bar" class="orders-filters-bar">
                         <div class="filter-group">
                           <label for="orders-search-mount">{{ __('orders.search') or 'Szukaj' }}</label>
@@ -59,7 +59,7 @@
                     {% endif %}
                   {% endblock %}
                   {% block orders %}
-                    {% if orders %}
+                    {% if orders and orders | length > 0 %}
                       <!-- Desktop table version -->
                       <table class="table align-middle d-none d-md-table">
                         <thead>
@@ -98,8 +98,17 @@
                                     </button>
                                     <a class="action-btn action-btn-edit p-1 stop-propagation has-tooltip" id='edit-order-btn' data-tooltip="{{ __('orders.edit_order_tooltip') }}" href='/orders/edit/{{ order.id }}'>
                                       <img src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
-                                      <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn has-tooltip" data-tooltip="{{ __('orders.send_order_tooltip') }}" type="button" id='send-order' data-id="{{ order.id }}">
-                                        <img src="/img/send.png" alt="{{ __('orders.send') }}"></button>
+                                      {% if isGroupShop %}
+                                        {% if order.status == 'pending_approval' %}
+                                          <span class="badge bg-warning text-dark align-self-center" style="font-size:0.8rem;">Do zatwierdzenia</span>
+                                        {% else %}
+                                          <button class="action-btn action-btn-send p-1 stop-propagation submit-approval-btn has-tooltip" data-tooltip="Wyślij do zatwierdzenia" type="button" data-id="{{ order.id }}">
+                                            <img src="/img/send.png" alt="Wyślij do zatwierdzenia"></button>
+                                        {% endif %}
+                                      {% else %}
+                                        <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn has-tooltip" data-tooltip="{{ __('orders.send_order_tooltip') }}" type="button" id='send-order' data-id="{{ order.id }}">
+                                          <img src="/img/send.png" alt="{{ __('orders.send') }}"></button>
+                                      {% endif %}
                                       </td>
                                     {% endblock buttons_space %}
                                   {% endif %}
@@ -127,9 +136,19 @@
                                   <a class="action-btn action-btn-edit stop-propagation" href='/orders/edit/{{ order.id }}'>
                                     {{ __('orders.edit') }}
                                   </a>
-                                  <button class="action-btn action-btn-send stop-propagation send-order-btn" type="button" data-id="{{ order.id }}">
-                                    {{ __('orders.send') }}
-                                  </button>
+                                  {% if isGroupShop %}
+                                    {% if order.status == 'pending_approval' %}
+                                      <span class="badge bg-warning text-dark">Do zatwierdzenia</span>
+                                    {% else %}
+                                      <button class="action-btn action-btn-send stop-propagation submit-approval-btn" type="button" data-id="{{ order.id }}">
+                                        Wyślij do zatwierdzenia
+                                      </button>
+                                    {% endif %}
+                                  {% else %}
+                                    <button class="action-btn action-btn-send stop-propagation send-order-btn" type="button" data-id="{{ order.id }}">
+                                      {{ __('orders.send') }}
+                                    </button>
+                                  {% endif %}
                                 </div>
                               </div>
                             {% endfor %}

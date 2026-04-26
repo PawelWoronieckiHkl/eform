@@ -39,6 +39,34 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
   env.addGlobal('__', __);
   const data = await sendData
   log('sendDAta', data)
+
+  // Sum of ordered quantities (ILOŚĆ) across all positions.
+  // Source of truth: order_item.json_parameters — always stored in Polish keys
+  // (json_parameters_desc is the translated/displayed variant). Key: "ILOSC".
+  // Fallbacks: order_item.amount column, then 1 per row.
+  const readQty = (item) => {
+    if (!item) return 1;
+    let jp = item.json_parameters;
+    if (typeof jp === 'string') {
+      try { jp = JSON.parse(jp); } catch { jp = null; }
+    }
+    if (jp && typeof jp === 'object') {
+      const raw = jp.ILOSC ?? jp['ILOŚĆ'] ?? jp.ilosc;
+      const qty = Number(raw);
+      if (Number.isFinite(qty) && qty > 0) return qty;
+    }
+    const amt = Number(item.amount);
+    if (Number.isFinite(amt) && amt > 0) return amt;
+    return 1;
+  };
+
+  let totalQuantity = 0;
+  for (const table of (cleanOrderItems || [])) {
+    for (const rowObj of (table.rows || [])) {
+      totalQuantity += readQty(rowObj && rowObj.item);
+    }
+  }
+
   const html = env.render('order-pdf.njk', {
     orderDetails: orderData,
     cleanOrderItems: cleanOrderItems,
@@ -46,8 +74,14 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
     sendData: data,
     orderNr: orderIdx,
     prices: prices,
-    maxProdDays: maxProdDays
+    maxProdDays: maxProdDays,
+    totalQuantity: totalQuantity
   });
+
+  // Prevent single-letter orphans: replace space after single-letter word with non-breaking space
+  // e.g. "w Polsce" -> "w\u00a0Polsce", "i tak" -> "i\u00a0tak"
+  const fixOrphans = (str) => str.replace(/(^|[ \u00a0])([a-zA-Z\u00c0-\u017e])[ ]/g, '$1$2\u00a0');
+  const htmlFixed = fixOrphans(html);
   let browser;
   if (process.env.NODE_ENV == 'live-dev') {
     browser = await chromium.launch({
@@ -76,7 +110,7 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
       ${fs.readFileSync(path.join(__dirname, 'styles/order-pdf.css'), 'utf8')}
     </style>
   </head>
-  <body>${html}</body>
+  <body>${htmlFixed}</body>
   </html>
 `, {
       waitUntil: 'networkidle',

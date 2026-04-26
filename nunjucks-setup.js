@@ -19,6 +19,7 @@ module.exports = {
         log(lang)
         return i18n.__(key, { locale: lang });
       });
+
     }
     return env;
   },

@@ -355,10 +355,30 @@
                                                                                             {% endblock %}
                                                                                             {% block send_order_btn %}
                                                                                                 {% if not isEmployee %}
-                                                                                                    <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn me-3 custom-order-btn" type="button" id='send-order' data-id="{{ orderDetails.id }}">
-                                                                                                        <p>
-                                                                                                            {{ __('order.send_order_btn') }}</p>
-                                                                                                    </button>
+                                                                                                    <div class="d-flex justify-content-end align-items-center w-100">
+                                                                                                    {% if isGroupShop %}
+                                                                                                        {% if orderDetails.status == 'pending_approval' %}
+                                                                                                            <span class="badge bg-warning text-dark me-3 align-self-center" style="font-size:0.95rem;">Wysłane do zatwierdzenia</span>
+                                                                                                        {% else %}
+                                                                                                            <button class="action-btn action-btn-send p-1 stop-propagation me-3 custom-order-btn" type="button" id='submit-for-approval-btn' data-id="{{ orderDetails.id }}">
+                                                                                                                <p>Wyślij do zatwierdzenia</p>
+                                                                                                            </button>
+                                                                                                        {% endif %}
+                                                                                                    {% elif isGroup and orderDetails.group_user_id and orderDetails.status == 'pending_approval' %}
+                                                                                                        <span class="badge bg-warning text-dark me-3 align-self-center" style="font-size:0.95rem;">Oczekuje zatwierdzenia</span>
+                                                                                                        <button class="action-btn action-btn-send p-1 me-2 custom-order-btn" type="button" id='group-approve-btn' data-id="{{ orderDetails.id }}">
+                                                                                                            <p>✓ Zatwierdź i wyślij</p>
+                                                                                                        </button>
+                                                                                                        <button class="action-btn action-btn-delete p-1 custom-order-btn" type="button" id='group-reject-btn' data-id="{{ orderDetails.id }}">
+                                                                                                            <p>Odrzuć</p>
+                                                                                                        </button>
+                                                                                                    {% else %}
+                                                                                                        <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn me-3 custom-order-btn" type="button" id='send-order' data-id="{{ orderDetails.id }}">
+                                                                                                            <p>
+                                                                                                                {{ __('order.send_order_btn') }}</p>
+                                                                                                        </button>
+                                                                                                    {% endif %}
+                                                                                                    </div>
                                                                                                 {% endif %}
                                                                                             {% endblock %}
                                                                                         </div>
@@ -399,4 +419,111 @@
                                                                             orderNavBtn.classList.add('active');
                                                                         }
                                                                     </script>
+                                                                    {% if isGroupShop %}
+                                                                    <script type="module">
+                                                                        import { createInfoDialog } from '/scripts/components/htmlManipulator.js';
+                                                                        import { showToast } from '/scripts/components/toast.js';
+                                                                        (function() {
+                                                                            const btn = document.getElementById('submit-for-approval-btn');
+                                                                            if (!btn) return;
+                                                                            const parent = document.getElementById('dialog-container') || document.body;
+                                                                            btn.addEventListener('click', function() {
+                                                                                createInfoDialog({
+                                                                                    title: 'Wyślij do zatwierdzenia',
+                                                                                    message: 'Czy na pewno chcesz wysłać zamówienie do zatwierdzenia przez centralę?',
+                                                                                    parent,
+                                                                                    buttons: [
+                                                                                        { label: 'Anuluj', className: 'btn btn-secondary me-1', id: 'cancel-btn' },
+                                                                                        { label: 'Wyślij', className: 'btn btn-success ms-1', id: 'confirm-btn', enter: true,
+                                                                                          action: async () => {
+                                                                                            btn.disabled = true;
+                                                                                            try {
+                                                                                                const res = await fetch(`/orders/submit-for-approval/${btn.dataset.id}`, {
+                                                                                                    method: 'POST',
+                                                                                                    headers: { 'Content-Type': 'application/json' }
+                                                                                                });
+                                                                                                const data = await res.json();
+                                                                                                if (data.success) {
+                                                                                                    showToast('success', 'Wysłano do zatwierdzenia');
+                                                                                                    setTimeout(() => { window.location.href = data.redirect || '/orders'; }, 800);
+                                                                                                } else {
+                                                                                                    showToast('error', data.message || 'Błąd serwera.');
+                                                                                                    btn.disabled = false;
+                                                                                                }
+                                                                                            } catch (e) {
+                                                                                                showToast('error', 'Błąd połączenia.');
+                                                                                                btn.disabled = false;
+                                                                                            }
+                                                                                          }
+                                                                                        }
+                                                                                    ]
+                                                                                });
+                                                                            });
+                                                                        })();
+                                                                    </script>
+                                                                    {% endif %}
+                                                                    {% if isGroup %}
+                                                                    <script type="module">
+                                                                        import { createInfoDialog } from '/scripts/components/htmlManipulator.js';
+                                                                        import { showToast } from '/scripts/components/toast.js';
+                                                                        (function() {
+                                                                            const approveBtn = document.getElementById('group-approve-btn');
+                                                                            const rejectBtn = document.getElementById('group-reject-btn');
+                                                                            const parent = document.getElementById('dialog-container') || document.body;
+
+                                                                            function performAction(url, btn, successLabel) {
+                                                                                btn.disabled = true;
+                                                                                fetch(url, {
+                                                                                    method: 'POST',
+                                                                                    headers: { 'Content-Type': 'application/json' },
+                                                                                    credentials: 'same-origin'
+                                                                                }).then(r => r.json()).then(data => {
+                                                                                    if (data.success) {
+                                                                                        showToast('success', successLabel);
+                                                                                        setTimeout(() => { window.location.href = data.redirect || '/group/panel?tab=pending'; }, 900);
+                                                                                    } else {
+                                                                                        showToast('error', data.message || 'Błąd serwera.');
+                                                                                        btn.disabled = false;
+                                                                                    }
+                                                                                }).catch(() => {
+                                                                                    showToast('error', 'Błąd połączenia.');
+                                                                                    btn.disabled = false;
+                                                                                });
+                                                                            }
+
+                                                                            function openConfirm({ title, message, confirmLabel, confirmClass, action }) {
+                                                                                createInfoDialog({
+                                                                                    title, message, parent,
+                                                                                    buttons: [
+                                                                                        { label: 'Anuluj', className: 'btn btn-secondary me-1', id: 'cancel-btn' },
+                                                                                        { label: confirmLabel, className: confirmClass, id: 'confirm-btn', enter: true, action }
+                                                                                    ]
+                                                                                });
+                                                                            }
+
+                                                                            if (approveBtn) {
+                                                                                approveBtn.addEventListener('click', () => {
+                                                                                    openConfirm({
+                                                                                        title: 'Zatwierdź i wyślij',
+                                                                                        message: 'Zamówienie zostanie wysłane do centrali. Operacja jest nieodwracalna.',
+                                                                                        confirmLabel: '✓ Zatwierdź i wyślij',
+                                                                                        confirmClass: 'btn btn-success ms-1',
+                                                                                        action: () => performAction(`/group/approve-order/${approveBtn.dataset.id}`, approveBtn, 'Zamówienie zatwierdzone.')
+                                                                                    });
+                                                                                });
+                                                                            }
+                                                                            if (rejectBtn) {
+                                                                                rejectBtn.addEventListener('click', () => {
+                                                                                    openConfirm({
+                                                                                        title: 'Odrzuć zamówienie',
+                                                                                        message: 'Zamówienie zostanie cofnięte do statusu „aktywne”. Sklep będzie mógł je ponownie edytować.',
+                                                                                        confirmLabel: 'Odrzuć',
+                                                                                        confirmClass: 'btn btn-danger ms-1',
+                                                                                        action: () => performAction(`/group/reject-order/${rejectBtn.dataset.id}`, rejectBtn, 'Zamówienie odrzucone.')
+                                                                                    });
+                                                                                });
+                                                                            }
+                                                                        })();
+                                                                    </script>
+                                                                    {% endif %}
                                                                 {% endblock scripts %}

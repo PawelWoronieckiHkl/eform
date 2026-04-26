@@ -156,9 +156,9 @@
                     <span class="nav-text">{{ __('base.employee_panel') }}</span>
                 </a>
                 {% if isGroup %}
-                    <a href="/group/shops" class="custom-nav-link has-tooltip" data-tooltip="Twoje Sklepy">
-                        <img src="/img/orders.png" class='nav-icon' alt="shops-icon">
-                        <span class="nav-text">Twoje Sklepy</span>
+                    <a href="/group/panel" class="custom-nav-link has-tooltip" data-tooltip="{{ __('group.panel_title') }}">
+                        <img src="/img/orders.png" class='nav-icon' alt="group-panel-icon">
+                        <span class="nav-text">{{ __('group.panel_title') }}</span>
                     </a>
                 {% endif %}
                 <a href="#" data-action="logout" id='logout-nav-btn' class="custom-nav-link has-tooltip" data-tooltip="{{ __('base.logout') }}" style="text-decoration: none;">

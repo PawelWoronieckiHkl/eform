@@ -90,7 +90,7 @@
         </div>
       {% endif %}
       <div class="print-total-items">
-        {{ __('order.total_items') }}: {{ globalIndex - 1 }}
+        {{ __('order.total_items') }}: {{ totalQuantity if totalQuantity is defined else (globalIndex - 1) }}
       </div>
       {% if sendData.total %}
         <div id='total-container'>
@@ -112,6 +112,16 @@
         <h2 class='header-3'>{{ __('order.client_data') }}</h2>
         <div class="order-details-line">{{ __('new-order.client_name') }}: {{ sendData.client }}</div>
         <div class="order-details-line">{{ __('base.nip') }}: {{ sendData.tax }}</div>
+        {% if sendData.userStreet or sendData.userCity or sendData.userZip %}
+          <div class="order-details-line">{{ __('new-order.street') }}: {{ sendData.userStreet or '-' }}</div>
+          <div class="order-details-line">{{ __('new-order.city') }}: {{ sendData.userZip }} {{ sendData.userCity }}</div>
+          {% if sendData.userCountry %}
+            <div class="order-details-line">{{ __('new-order.country') }}: {{ sendData.userCountry }}</div>
+          {% endif %}
+          {% if sendData.userPhone %}
+            <div class="order-details-line">{{ __('new-order.phone') }}: {{ sendData.userPhone }}</div>
+          {% endif %}
+        {% endif %}
         <div class="order-details-line">{{ __('orders.created_date') }}: {{ sendData.created_date }}</div>
         <div class="order-details-line">{{ __('orders.sent_date') }}: {{ sendData.sentDate }}</div>
       </div>

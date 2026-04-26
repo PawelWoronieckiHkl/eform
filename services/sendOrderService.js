@@ -5,6 +5,7 @@ const { slopePhotoPath } = require('../config');
 const { KeyObject } = require('crypto');
 const { ordersManager } = require('../utils/saveOrdersOutput');
 const { log } = require('../utils/logging');
+const { formatClientLabel } = require('../utils/formatClient');
 class OrderSender {
 
     constructor(req, order, orderItems) {
@@ -17,7 +18,7 @@ class OrderSender {
             orderno: order?.order_idx ?? 0,
             orderid: order?.id ?? 0,
             commission: order?.commision ?? "",
-            client: `${order.client_name} (${order.user_ident})`,
+            client: formatClientLabel(order.client_name, order.user_ident),
             organizationIdent: order.org_ident,
             userIdent: order.user_ident,
             created_date: order.created_date,
@@ -31,6 +32,12 @@ class OrderSender {
             country: order.country,
             email: order.email,
             phone: order.phone,
+            // Stały adres klienta (zawsze z tabeli `user`) — niezależny od adresu dostawy
+            userStreet: order.user_street || '',
+            userZip: order.user_zip || '',
+            userCity: order.user_city || '',
+            userCountry: order.user_country || '',
+            userPhone: order.user_phone || '',
             total: order.total_price,
             total_hidden: order.total_price_hidden,
             items: []

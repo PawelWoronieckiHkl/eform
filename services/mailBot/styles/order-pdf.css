@@ -10,6 +10,10 @@ body {
     color: #000;
     margin: 0;
     padding: 0;
+    /* Prevent single-letter orphans at line ends (Polish typography) */
+    text-wrap: pretty;
+    orphans: 2;
+    widows: 2;
 }
 
 

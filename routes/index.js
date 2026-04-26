@@ -94,10 +94,29 @@ router.get('/change-language', (req, res) => {
 
 router.get("/", requireLogin, async (req, res) => {
   const currentUser = ownerService.getCurrentUser(req);
-  user = await db.getUserData(currentUser.pin);
   const mustAcceptRODO = req.session.mustAcceptRODO || false;
-  const orders = await db.getUserOrders(user.id, 4, 0);
-  const ordersSent = await db.getUserOrders(user.id, 4, 0, true);
+  let user, orders, ordersSent;
+
+  if (req.session.user?.isGroupShop) {
+    const groupShopId = req.session.user.groupShopId;
+    const shop = await db.getGroupUserById(groupShopId);
+    user = {
+      client_name: shop.name || shop.ident,
+      tax_id: shop.tax_id || '',
+      street: shop.street || '',
+      zip: shop.zip || '',
+      city: shop.city || '',
+      country: '',
+      email: shop.email || '',
+    };
+    orders = await db.getGroupShopOrders(groupShopId, 4, 0) || [];
+    ordersSent = await db.getGroupShopOrders(groupShopId, 4, 0, true) || [];
+  } else {
+    user = await db.getUserData(currentUser.pin);
+    orders = await db.getUserOrders(user.id, 4, 0);
+    ordersSent = await db.getUserOrders(user.id, 4, 0, true);
+  }
+
   let organizations = [];
   if (req.session.user.isAdmin) {
     organizations = await db.getAllOrganizations();

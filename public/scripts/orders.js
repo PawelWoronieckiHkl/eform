@@ -129,6 +129,9 @@ document.addEventListener('click', (e) => {
 	const sendBtn = e.target.closest('.send-order-btn');
 	if (sendBtn) { e.stopPropagation(); buildAndShowDialog(sendBtn, 'sendOrder'); return; }
 
+	const submitApprovalBtn = e.target.closest('.submit-approval-btn');
+	if (submitApprovalBtn) { e.stopPropagation(); buildAndShowDialog(submitApprovalBtn, 'submitForApproval'); return; }
+
 	const copyBtn = e.target.closest('.copy-order-btn');
 	if (copyBtn) { e.stopPropagation(); buildAndShowDialog(copyBtn, 'copyItem'); return; }
 }, true);
@@ -155,14 +158,18 @@ function buildAndShowDialog(btn, functionName) {
 	const parent = document.getElementById('dialog-container');
 	const title = functionName === 'sendOrder'
 		? `${t('orders.send_order')}`
-		: functionName === 'copyItem'
-			? `${t('orders.open_as_new')}`
-			: "";
+		: functionName === 'submitForApproval'
+			? 'Wyślij do zatwierdzenia'
+			: functionName === 'copyItem'
+				? `${t('orders.open_as_new')}`
+				: "";
 	const label = functionName === 'sendOrder'
 		? `${t('orders.send_word')}`
-		: functionName === 'copyItem'
-			? `${t('orders.accept')}`
-			: "";
+		: functionName === 'submitForApproval'
+			? 'Wyślij'
+			: functionName === 'copyItem'
+				? `${t('orders.accept')}`
+				: "";
 
 	const { buttons, dialog } = createInfoDialog({
 		title: title,
@@ -179,6 +186,9 @@ function buildAndShowDialog(btn, functionName) {
 					if (functionName == 'sendOrder') {
 						sendOrder(btn)
 					}
+					else if (functionName == 'submitForApproval') {
+						submitForApproval(btn)
+					}
 					else if (functionName == 'copyItem') {
 						copyItem(btn)
 					}
@@ -189,6 +199,25 @@ function buildAndShowDialog(btn, functionName) {
 		],
 		parent
 	});
+}
+
+async function submitForApproval(btn) {
+	const orderId = btn.dataset.id;
+	try {
+		const response = await fetch(`/orders/submit-for-approval/${orderId}`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' }
+		});
+		const result = await response.json();
+		if (result.success) {
+			showToast('success', 'Wysłano do zatwierdzenia');
+			setTimeout(() => { window.location.href = result.redirect || '/orders'; }, 1200);
+		} else {
+			showToast('error', result.message || 'Błąd serwera.');
+		}
+	} catch (e) {
+		showToast('error', 'Błąd połączenia.');
+	}
 }
 
 async function sendOrder(sendBtn) {

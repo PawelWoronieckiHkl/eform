@@ -11,13 +11,14 @@ const { getExtraAttachments } = require('../services/mailBot/extraAttachments');
 const { buildItemProductionDays } = require('../services/productionDays');
 const path = require('path');
 const { log } = require('../utils/logging');
+const { formatClientLabel } = require('../utils/formatClient');
 
 // ── Middleware: wszystkie trasy wymagają zalogowania i roli 'group' ──────────
 
 router.use(requireLogin, requireGroup);
 
 router.use((req, res, next) => {
-    res.locals.isGroup = req.session?.user?.isGroup || false;
+    res.locals.isGroup = req.session?.user?.isGroup || req.session?.context_user?.isGroup || false;
     res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
     next();
 });
@@ -41,8 +42,14 @@ router.get('/shops', async (req, res, next) => {
 
 // ── GET /group/shops/new ─ formularz dodania sklepu ─────────────────────────
 
-router.get('/shops/new', async (req, res) => {
-    return res.render('group/shop_form.njk', { shop: null, mode: 'new' });
+router.get('/shops/new', async (req, res, next) => {
+    try {
+        const currentUser = ownerService.getCurrentUser(req);
+        const preview = await db.previewNewGroupUser(currentUser.userId);
+        return res.render('group/shop_form.njk', { shop: null, mode: 'new', ...preview });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 // ── POST /group/shops ─ zapisz nowy sklep ────────────────────────────────────
@@ -50,54 +57,49 @@ router.get('/shops/new', async (req, res) => {
 router.post('/shops', async (req, res, next) => {
     try {
         const currentUser = ownerService.getCurrentUser(req);
-        const { ident, pin, password, street, zip, city, phone, email, tax_id } = req.body;
+        const { password, street, zip, city, phone, email } = req.body;
 
-        if (!ident || !pin || !password) {
+        const preview = await db.previewNewGroupUser(currentUser.userId);
+
+        if (!password || password.length < 5) {
             return res.render('group/shop_form.njk', {
                 shop: req.body,
                 mode: 'new',
-                error: 'Pola: identyfikator, pin i hasło są wymagane.'
+                ...preview,
+                error: 'Hasło jest wymagane i musi mieć minimum 5 znaków.'
             });
         }
 
-        if (await db.isGroupLoginTaken(pin)) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email && !emailRegex.test(email.trim())) {
             return res.render('group/shop_form.njk', {
                 shop: req.body,
                 mode: 'new',
-                error: 'Podany pin jest już zajęty.'
-            });
-        }
-
-        if (await db.isGroupIdentTaken(ident)) {
-            return res.render('group/shop_form.njk', {
-                shop: req.body,
-                mode: 'new',
-                error: 'Podany identyfikator jest już zajęty.'
+                ...preview,
+                error: 'Nieprawidłowy format adresu email.'
             });
         }
 
         const result = await db.addGroupUser({
             parentUserId: currentUser.userId,
-            ident: ident.trim(),
-            pin: pin.trim(),
             password,
+            name: (req.body.name || '').trim(),
             street: (street || '').trim(),
             zip: (zip || '').trim(),
             city: (city || '').trim(),
             phone: (phone || '').trim(),
-            email: (email || '').trim(),
-            taxId: (tax_id || '').trim()
+            email: (email || '').trim()
         });
 
         if (!result.success) {
             return res.render('group/shop_form.njk', {
                 shop: req.body,
                 mode: 'new',
-                error: 'Błąd podczas dodawania sklepu. Sprawdź czy identyfikator lub pin nie są zajęte.'
+                error: 'Błąd podczas dodawania sklepu.'
             });
         }
 
-        return res.redirect('/group/shops?success=added');
+        return res.redirect('/group/panel?tab=shops&success=added');
     } catch (err) {
         log('[group/shops POST] Error:', err);
         return next(err);
@@ -112,7 +114,7 @@ router.get('/shops/:id/edit', async (req, res, next) => {
         const shop = await db.getGroupUserById(req.params.id);
 
         if (!shop || shop.user_id !== currentUser.userId) {
-            return res.redirect('/group/shops?error=notfound');
+            return res.redirect('/group/panel?tab=shops&error=notfound');
         }
 
         return res.render('group/shop_form.njk', { shop, mode: 'edit' });
@@ -131,51 +133,25 @@ router.post('/shops/:id', async (req, res, next) => {
         const shop = await db.getGroupUserById(id);
 
         if (!shop || shop.user_id !== currentUser.userId) {
-            return res.redirect('/group/shops?error=notfound');
+            return res.redirect('/group/panel?tab=shops&error=notfound');
         }
 
-        const { ident, pin, password, street, zip, city, phone, email, tax_id } = req.body;
-
-        if (!ident || !pin) {
-            return res.render('group/shop_form.njk', {
-                shop: { ...shop, ...req.body, id },
-                mode: 'edit',
-                error: 'Pola: identyfikator i pin są wymagane.'
-            });
-        }
-
-        if (await db.isGroupLoginTaken(pin, id)) {
-            return res.render('group/shop_form.njk', {
-                shop: { ...shop, ...req.body, id },
-                mode: 'edit',
-                error: 'Podany pin jest już zajęty.'
-            });
-        }
-
-        if (await db.isGroupIdentTaken(ident, id)) {
-            return res.render('group/shop_form.njk', {
-                shop: { ...shop, ...req.body, id },
-                mode: 'edit',
-                error: 'Podany identyfikator jest już zajęty.'
-            });
-        }
+        const { password, street, zip, city, phone, email } = req.body;
 
         await db.updateGroupUser(id, {
-            ident: ident.trim(),
-            pin: pin.trim(),
+            name: (req.body.name || '').trim(),
             street: (street || '').trim(),
             zip: (zip || '').trim(),
             city: (city || '').trim(),
             phone: (phone || '').trim(),
-            email: (email || '').trim(),
-            taxId: (tax_id || '').trim()
+            email: (email || '').trim()
         });
 
         if (password && password.trim()) {
             await db.updateGroupUserPassword(id, password.trim());
         }
 
-        return res.redirect('/group/shops?success=updated');
+        return res.redirect('/group/panel?tab=shops&success=updated');
     } catch (err) {
         log('[group/shops/:id POST] Error:', err);
         return next(err);
@@ -199,6 +175,62 @@ router.delete('/shops/:id', async (req, res, next) => {
     } catch (err) {
         log('[group/shops DELETE] Error:', err);
         return res.status(500).json({ success: false, message: 'Błąd serwera.' });
+    }
+});
+
+// ── GET /group/panel ─ unified group management panel ────────────────────────
+
+router.get('/panel', async (req, res, next) => {
+    try {
+        const currentUser = ownerService.getCurrentUser(req);
+        const tab = req.query.tab || 'shops';
+        const sent = req.query.sent === 'true';
+        const shopFilterRaw = req.query.shop ? parseInt(req.query.shop, 10) : null;
+        const shopFilter = (shopFilterRaw && !Number.isNaN(shopFilterRaw)) ? shopFilterRaw : null;
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = 20;
+        const offset = (page - 1) * limit;
+
+        const [shops, pendingOrders, orders, ordersTotal, shopCounts] = await Promise.all([
+            db.getGroupUsersByParentId(currentUser.userId),
+            db.getPendingOrdersByParentUserId(currentUser.userId),
+            db.getAllShopOrdersByParentUserId(currentUser.userId, limit, offset, sent, shopFilter),
+            db.countAllShopOrdersByParentUserId(currentUser.userId, sent, shopFilter),
+            db.getOrderCountsByShop(currentUser.userId),
+        ]);
+
+        const pendingCount = pendingOrders ? pendingOrders.length : 0;
+        const totalPages = Math.ceil(ordersTotal / limit);
+
+        // Find shop ident for filter chip
+        let shopFilterIdent = null;
+        let shopFilterName = null;
+        if (shopFilter && shops) {
+            const found = shops.find(s => s.id === shopFilter);
+            shopFilterIdent = found ? found.ident : null;
+            shopFilterName = found ? (found.name || '') : null;
+        }
+
+        return res.render('group/panel.njk', {
+            tab,
+            shops: shops || [],
+            shopCounts: shopCounts || {},
+            pendingOrders: pendingOrders || [],
+            pendingCount,
+            orders: orders || [],
+            ordersTotal,
+            totalPages,
+            page,
+            sent,
+            shopFilter,
+            shopFilterIdent,
+            shopFilterName,
+            success: req.query.success,
+            error: req.query.error,
+        });
+    } catch (err) {
+        log('[group/panel GET] Error:', err);
+        return next(err);
     }
 });
 
@@ -227,7 +259,7 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
 
         // Weryfikacja: zamówienie należy do jednego ze sklepów tej grupy
         const shop = await db.getGroupUserByOrderId(orderId);
-        if (!shop || shop.parent_user_id !== currentUser.userId) {
+        if (!shop || shop.user_id !== currentUser.userId) {
             return res.status(403).json({ success: false, message: 'Brak uprawnień.' });
         }
 
@@ -246,8 +278,9 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
         await sender.saveToFile();
 
         const user = await db.getUserData(currentUser.pin);
-        const shopLabel = `${shop.ident} (id: ${shop.id})`;
-        const clientName = `${user.client_name} (${user.ident}) / ${shopLabel}`;
+        const shopLabel = `${shop.name || shop.ident} (id: ${shop.id})`;
+        const clientBase = formatClientLabel(user.client_name, user.ident);
+        const clientName = `${clientBase} / ${shopLabel}`;
         const photoFile = await db.getUserLogo(currentUser.pin);
         const logoPath = path.join(__dirname, '../img/', photoFile);
         const { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
@@ -261,9 +294,10 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
         let confirmationEmail;
         if (orderDetails?.contact_info_id) {
             const contactInfo = await db.getMailById(orderDetails.contact_info_id);
-            confirmationEmail = contactInfo?.email || mail.user_email;
+            confirmationEmail = contactInfo?.email || shop.email || mail.user_email;
         } else {
-            confirmationEmail = mail.user_email;
+            // Brak wybranego kontaktu z listy → preferuj email sklepu group_user
+            confirmationEmail = shop.email || mail.user_email;
         }
 
         const mainRecipient = mail.organization_email;
@@ -290,7 +324,7 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
             bccList.join(', ')
         );
 
-        return res.json({ success: true, message: 'Zamówienie zatwierdzone i wysłane.', redirect: '/group/pending-orders' });
+        return res.json({ success: true, message: 'Zamówienie zatwierdzone i wysłane.', redirect: '/group/panel?tab=pending' });
     } catch (err) {
         log('[group/approve-order POST] Error:', err);
         return res.status(500).json({ success: false, message: 'Błąd serwera.' });
@@ -305,15 +339,42 @@ router.post('/reject-order/:orderId', requireLogin, requireGroup, async (req, re
         const orderId = parseInt(req.params.orderId, 10);
 
         const shop = await db.getGroupUserByOrderId(orderId);
-        if (!shop || shop.parent_user_id !== currentUser.userId) {
+        if (!shop || shop.user_id !== currentUser.userId) {
             return res.status(403).json({ success: false, message: 'Brak uprawnień.' });
         }
 
         await db.changeOrderStatus(orderId, 'active');
-        return res.json({ success: true, message: 'Zamówienie odrzucone.', redirect: '/group/pending-orders' });
+        return res.json({ success: true, message: 'Zamówienie odrzucone.', redirect: '/group/panel?tab=pending' });
     } catch (err) {
         log('[group/reject-order POST] Error:', err);
         return res.status(500).json({ success: false, message: 'Błąd serwera.' });
+    }
+});
+
+// ── GET /group/shop-orders ─ wszystkie zamówienia ze sklepów (dla grupy-matki) ──
+
+router.get('/shop-orders', async (req, res, next) => {
+    try {
+        const currentUser = ownerService.getCurrentUser(req);
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const sent = req.query.sent === 'true';
+        const limit = 20;
+        const offset = (page - 1) * limit;
+
+        const orders = await db.getAllShopOrdersByParentUserId(currentUser.userId, limit, offset, sent);
+        const total = await db.countAllShopOrdersByParentUserId(currentUser.userId, sent);
+        const totalPages = Math.ceil(total / limit);
+
+        return res.render('group/shop_orders.njk', {
+            orders,
+            page,
+            totalPages,
+            total,
+            sent
+        });
+    } catch (err) {
+        log('[group/shop-orders GET] Error:', err);
+        return next(err);
     }
 });
 

@@ -4,7 +4,7 @@ const { log } = require('../utils/logging');
 
 async function getGroupUsersByParentId(parentUserId) {
     const query = `
-        SELECT id, user_id, ident, pin, street, zip, city, phone, email, tax_id
+        SELECT id, user_id, ident, pin, plain, name, street, zip, city, phone, email, tax_id
         FROM group_user
         WHERE user_id = ?
         ORDER BY id, ident
@@ -15,7 +15,7 @@ async function getGroupUsersByParentId(parentUserId) {
 
 async function getGroupUserById(id) {
     const query = `
-        SELECT id, user_id, ident, pin, street, zip, city, phone, email, tax_id
+        SELECT id, user_id, ident, pin, name, street, zip, city, phone, email, tax_id
         FROM group_user
         WHERE id = ?
     `;
@@ -51,33 +51,63 @@ async function isGroupIdentTaken(ident, excludeId = null) {
     return result && result.length > 0;
 }
 
+async function previewNewGroupUser(parentUserId) {
+    const parentPin = await (require('./users').getUserPinById)(parentUserId);
+    const parentIdent = parentPin
+        ? await (require('./users').getUserIdent)(parentPin)
+        : String(parentUserId);
+
+    const countResult = await selectQuery(
+        `SELECT COUNT(*) as cnt FROM group_user WHERE user_id = ?`,
+        [parentUserId]
+    );
+    const seq = (countResult?.[0]?.cnt || 0) + 1;
+    return {
+        ident: `${parentIdent}-${seq}`,
+        pin:   `${parentPin || parentIdent}-${seq}`
+    };
+}
+
 async function addGroupUser(data) {
     const {
         parentUserId,
-        ident,
-        pin,
         password,
+        name = '',
         street = '',
         zip = '',
         city = '',
         phone = '',
-        email = '',
-        taxId = ''
+        email = ''
     } = data;
 
     const hashedPassword = bcrypt.hashSync(password, 12);
 
+    // Generuj ident: {parentIdent}-{n} np. TCN-1, TCN-2
+    // Generuj pin:   {parentPin}-{n}  np. TCN123-1, TCN123-2
+    const parentPin = await (require('./users').getUserPinById)(parentUserId);
+    const parentIdent = parentPin
+        ? await (require('./users').getUserIdent)(parentPin)
+        : String(parentUserId);
+
+    const countResult = await selectQuery(
+        `SELECT COUNT(*) as cnt FROM group_user WHERE user_id = ?`,
+        [parentUserId]
+    );
+    const seq = (countResult?.[0]?.cnt || 0) + 1;
+    const ident = `${parentIdent}-${seq}`;
+    const pin = `${parentPin || parentIdent}-${seq}`;
+
     const query = `
         INSERT INTO group_user
-            (user_id, ident, pin, password, plain, street, zip, city, phone, email, tax_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (user_id, ident, pin, password, plain, name, street, zip, city, phone, email, tax_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '')
     `;
     try {
         const result = await insertQuery(query, [
             parentUserId, ident, pin, hashedPassword, password,
-            street, zip, city, phone, email, taxId
+            name, street, zip, city, phone, email
         ]);
-        return { success: true, id: result[0]?.insertId };
+        return { success: true, id: result[0]?.insertId, ident, pin };
     } catch (err) {
         log('[group.js] addGroupUser error:', err.message);
         if (err.code === 'ER_DUP_ENTRY') {
@@ -89,25 +119,21 @@ async function addGroupUser(data) {
 
 async function updateGroupUser(id, data) {
     const {
-        ident,
-        pin,
+        name = '',
         street = '',
         zip = '',
         city = '',
         phone = '',
-        email = '',
-        taxId = ''
+        email = ''
     } = data;
 
     const query = `
         UPDATE group_user
-        SET ident = ?, pin = ?,
-            street = ?, zip = ?, city = ?, phone = ?, email = ?, tax_id = ?
+        SET name = ?, street = ?, zip = ?, city = ?, phone = ?, email = ?
         WHERE id = ?
     `;
     await updateQuery(query, [
-        ident, pin,
-        street, zip, city, phone, email, taxId,
+        name, street, zip, city, phone, email,
         id
     ]);
     return { success: true };
@@ -135,7 +161,7 @@ async function countGroupUsers(parentUserId) {
 async function getPendingOrdersByParentUserId(parentUserId) {
     const query = `
         SELECT o.id, o.commision, o.created_date, o.total_price, o.comment, o.status,
-               gu.id as shop_id, gu.ident as shop_ident, gu.id as shop_number
+               gu.id as shop_id, gu.ident as shop_ident, gu.name as shop_name, gu.id as shop_number
         FROM \`order\` o
         JOIN group_user gu ON gu.id = o.group_user_id
         WHERE gu.user_id = ? AND o.status = 'pending_approval'
@@ -170,12 +196,76 @@ async function appendShopNumberToOrderIdx(orderId, shopNumber) {
     await updateQuery(query, [shopNumber, orderId]);
 }
 
+async function getAllShopOrdersByParentUserId(parentUserId, limit = 20, offset = 0, sent = false, shopId = null) {
+    const statuses = sent ? `('sent')` : `('active', 'pending_approval')`;
+    const params = [parentUserId];
+    let shopFilter = '';
+    if (shopId) {
+        shopFilter = ' AND gu.id = ?';
+        params.push(shopId);
+    }
+    const query = `
+        SELECT o.id, o.commision, o.created_date, o.sent_date, o.total_price, o.comment,
+               o.status, o.order_idx, o.prod_status,
+               gu.id as shop_id, gu.ident as shop_ident, gu.name as shop_name
+        FROM \`order\` o
+        JOIN group_user gu ON gu.id = o.group_user_id
+        WHERE gu.user_id = ? AND o.status IN ${statuses}${shopFilter}
+        ORDER BY o.id DESC
+        LIMIT ? OFFSET ?
+    `;
+    params.push(limit, offset);
+    const result = await selectQuery(query, params);
+    return result || [];
+}
+
+async function countAllShopOrdersByParentUserId(parentUserId, sent = false, shopId = null) {
+    const statuses = sent ? `('sent')` : `('active', 'pending_approval')`;
+    const params = [parentUserId];
+    let shopFilter = '';
+    if (shopId) {
+        shopFilter = ' AND gu.id = ?';
+        params.push(shopId);
+    }
+    const query = `
+        SELECT COUNT(*) as cnt FROM \`order\` o
+        JOIN group_user gu ON gu.id = o.group_user_id
+        WHERE gu.user_id = ? AND o.status IN ${statuses}${shopFilter}
+    `;
+    const result = await selectQuery(query, params);
+    return result?.[0]?.cnt || 0;
+}
+
+async function getOrderCountsByShop(parentUserId) {
+    const query = `
+        SELECT gu.id as shop_id,
+               SUM(CASE WHEN o.status = 'pending_approval' THEN 1 ELSE 0 END) as pending_count,
+               SUM(CASE WHEN o.status = 'sent' THEN 1 ELSE 0 END) as sent_count,
+               SUM(CASE WHEN o.status IN ('pending_approval','sent') THEN 1 ELSE 0 END) as total_count
+        FROM group_user gu
+        LEFT JOIN \`order\` o ON o.group_user_id = gu.id
+        WHERE gu.user_id = ?
+        GROUP BY gu.id
+    `;
+    const rows = await selectQuery(query, [parentUserId]);
+    const map = {};
+    (rows || []).forEach(r => {
+        map[r.shop_id] = {
+            pending: Number(r.pending_count) || 0,
+            sent: Number(r.sent_count) || 0,
+            total: Number(r.total_count) || 0
+        };
+    });
+    return map;
+}
+
 module.exports = {
     getGroupUsersByParentId,
     getGroupUserById,
     getGroupUserByLogin,
     isGroupLoginTaken,
     isGroupIdentTaken,
+    previewNewGroupUser,
     addGroupUser,
     updateGroupUser,
     updateGroupUserPassword,
@@ -185,4 +275,7 @@ module.exports = {
     countPendingOrdersByParentUserId,
     getGroupUserByOrderId,
     appendShopNumberToOrderIdx,
+    getAllShopOrdersByParentUserId,
+    countAllShopOrdersByParentUserId,
+    getOrderCountsByShop,
 };

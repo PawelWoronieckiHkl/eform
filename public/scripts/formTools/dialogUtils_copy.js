@@ -58,7 +58,7 @@ export class DialogManager {
     this.user = await getUserName();
     this.options = options;
     this.groupNumber = groupNumber;
-    this.filters = filters
+    this.filters = filters || {};
     this.attrValues = attrs
     this.org = await window.formsManager.getOrgIdent();
 

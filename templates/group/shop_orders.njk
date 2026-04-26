@@ -1,0 +1,115 @@
+{% extends "base.njk" %}
+{% block title %}{{ __('group.shop_orders_page_title') }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="/styles/group/shops.css">
+{% endblock %}
+
+{% block key_nav %}
+    window.location.href = '/group/shop-orders'
+{% endblock %}
+
+{% block back_link %}
+    <button class="modern-back-btn" onclick="window.location.href='/group/shops'">
+{% endblock %}
+
+{% block content %}
+    <div class="content col-9 center-content">
+        <div class="container my-4">
+
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="mb-0">{{ __('group.shop_orders_h2') }}</h2>
+                <a href="/group/shops" class="btn btn-outline-secondary btn-sm">← {{ __('group.back_to_shops') }}</a>
+            </div>
+
+            {# Tab: aktywne / wysłane #}
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link {% if not sent %}active{% endif %}" href="/group/shop-orders">{{ __('group.tab_active') }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if sent %}active{% endif %}" href="/group/shop-orders?sent=true">{{ __('group.tab_sent_history') }}</a>
+                </li>
+            </ul>
+
+            {% if orders and orders.length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>{{ __('group.col_order_no') }}</th>
+                                <th>{{ __('group.col_shop') }}</th>
+                                <th>{{ __('group.col_commission') }}</th>
+                                <th>{{ __('group.col_status') }}</th>
+                                <th>{{ __('group.col_date') }}</th>
+                                <th class="text-end">{{ __('group.col_actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                <tr>
+                                    <td>
+                                        <a href="/orders/order/{{ order.id }}" class="fw-semibold">
+                                            {{ order.order_idx or ('#' + order.id) }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ order.shop_name or order.shop_ident }}</span>
+                                    </td>
+                                    <td>{{ order.commision or '—' }}</td>
+                                    <td>
+                                        {% if order.status == 'active' %}
+                                            <span class="badge bg-primary">{{ __('group.status_active') }}</span>
+                                        {% elif order.status == 'pending_approval' %}
+                                            <span class="badge bg-warning text-dark">{{ __('group.status_pending_approval') }}</span>
+                                        {% elif order.status == 'sent' %}
+                                            <span class="badge bg-success">{{ __('group.status_sent') }}</span>
+                                        {% else %}
+                                            <span class="badge bg-light text-dark">{{ order.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-muted small">{{ order.created_date }}</td>
+                                    <td class="text-end">
+                                        <a href="/orders/order/{{ order.id }}" class="btn btn-sm btn-outline-primary">{{ __('group.preview_btn') }}</a>
+                                        {% if order.status == 'pending_approval' %}
+                                            <a href="/group/pending-orders" class="btn btn-sm btn-outline-warning ms-1">{{ __('group.approve_btn') }}</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {# Paginacja #}
+                {% if totalPages > 1 %}
+                    <nav aria-label="{{ __('group.pagination_aria') }}">
+                        <ul class="pagination justify-content-center">
+                            {% if page > 1 %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page - 1 }}{% if sent %}&sent=true{% endif %}">‹</a>
+                                </li>
+                            {% endif %}
+                            {% for p in range(1, totalPages + 1) %}
+                                <li class="page-item {% if p == page %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ p }}{% if sent %}&sent=true{% endif %}">{{ p }}</a>
+                                </li>
+                            {% endfor %}
+                            {% if page < totalPages %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page + 1 }}{% if sent %}&sent=true{% endif %}">›</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+
+            {% else %}
+                <div class="text-center py-5">
+                    <p class="text-muted lead">{% if sent %}{{ __('group.shop_orders_empty_sent') }}{% else %}{{ __('group.shop_orders_empty_active') }}{% endif %}</p>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

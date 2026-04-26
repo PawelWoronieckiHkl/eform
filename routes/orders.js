@@ -10,6 +10,7 @@ const mailBot = require('../services/mailBot/mailBot');
 const path = require('path');
 const OrderSender = require("../services/sendOrderService");
 const { generatePdf } = require('../services/mailBot/pdfGenerator');
+const { formatClientLabel } = require('../utils/formatClient');
 const { buildOrderItemStructure } = require('../services/itemBuilder.js');
 const { getPriceAfterDiscount } = require('../services/getDiscount.js');
 const { SyncProdStatus, setParcelHref, parseSpeditionNumbers } = require('../services/prodStatus.js');
@@ -88,9 +89,18 @@ router.get('/search', requireLogin, async (req, res) => {
 
 router.get('/edit/:orderId', requireLogin, async (req, res) => {
     const currentUser = ownerService.getCurrentUser(req);
-    const addr = await db.getUserAddresses(currentUser.userId);
-    const emails = await db.getUserMails(currentUser.userId);
     const orderData = await db.getOrderDetails(req.params.orderId);
+    let addr, emails;
+
+    if (req.session.user?.isGroupShop) {
+        const shop = await db.getGroupUserById(req.session.user.groupShopId);
+        addr = shop ? [{ id: null, name: shop.name || shop.ident, phone: shop.phone || '', street: shop.street || '', city: shop.city || '', zip: shop.zip || '', country: '' }] : [];
+        emails = (shop && shop.email) ? [{ id: null, email: shop.email }] : [];
+    } else {
+        addr = await db.getUserAddresses(currentUser.userId);
+        emails = await db.getUserMails(currentUser.userId);
+    }
+
     log('siemanko@@@@ ', orderData)
     res.render('edit_order.njk', {
         orderData: orderData,
@@ -151,6 +161,25 @@ router.get("/", requireLogin, async (req, res) => {
     const offset = (page - 1) * limit;
     let orders, totalOrders;
     const currentUser = ownerService.getCurrentUser(req);
+
+    if (req.session.user?.isGroupShop) {
+        const groupShopId = req.session.user.groupShopId;
+        [orders, totalOrders] = await Promise.all([
+            db.getGroupShopOrders(groupShopId, limit, offset),
+            db.countGroupShopOrders(groupShopId)
+        ]);
+        const totalPages = Math.ceil(totalOrders / limit);
+        return res.render('orders.njk', {
+            orders,
+            page,
+            limit,
+            totalOrders,
+            totalPages,
+            admin: false,
+            owner: false,
+            isEmployee: false
+        });
+    }
 
     if (req.session.user?.isEmployee) {
         [orders, totalOrders] = await Promise.all([
@@ -273,7 +302,14 @@ router.get("/history", requireLogin, async (req, res) => {
     let status = new SyncProdStatus();
     const files = await status.init(user.orgIdent, user.userIdent);
 
-    if (req.session.user?.isEmployee) {
+    if (req.session.user?.isGroupShop) {
+        const groupShopId = req.session.user.groupShopId;
+        [orders, totalOrders] = await Promise.all([
+            db.getGroupShopOrders(groupShopId, limit, offset, true),
+            db.countGroupShopOrders(groupShopId, true)
+        ]);
+    }
+    else if (req.session.user?.isEmployee) {
         [orders, totalOrders] = await Promise.all([
             db.getUserOrders(currentUser.userId, limit, offset, true, false, req.session.employee.id),
             db.countUserOrders(currentUser.userId, true, false, req.session.employee.id)
@@ -367,6 +403,22 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
 
 router.get("/add-order", requireLogin, async (req, res) => {
     const currentUser = ownerService.getCurrentUser(req);
+
+    if (req.session.user?.isGroupShop) {
+        const shop = await db.getGroupUserById(req.session.user.groupShopId);
+        const shopAddr = shop ? [{
+            id: null,
+            name: shop.name || shop.ident,
+            phone: shop.phone || '',
+            street: shop.street || '',
+            city: shop.city || '',
+            zip: shop.zip || '',
+            country: ''
+        }] : [];
+        const shopEmails = (shop && shop.email) ? [{ id: null, email: shop.email }] : [];
+        return res.render("new-order.njk", { addr: shopAddr, emails: shopEmails });
+    }
+
     const addr = await db.getUserAddresses(currentUser.userId);
     const emails = await db.getUserMails(currentUser.userId);
     log(addr, 'USER ADDRESSES IN ADD ORDER VIEW');
@@ -413,6 +465,7 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 discount: clientDiscount,
                 total,
                 isEmployee: req.session.user?.isEmployee || false,
+                isGroupShop: req.session.user?.isGroupShop || false,
                 totalPrice: totalPrice,
                 availableLanguages: availabeLanguages,
                 admin: req.session.user?.isAdmin || false,
@@ -656,7 +709,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
 
             const currentUser = ownerService.getCurrentUser(req);
             const user = await db.getUserData(currentUser?.pin)
-            const clientName = `${user.client_name} (${user.ident})`
+            const clientName = formatClientLabel(user.client_name, user.ident)
             const photoFile = await db.getUserLogo(currentUser?.pin)
             const logoPath = path.join(__dirname, '../img/', photoFile)
             const heads = Object.keys(orderItems[0].json_parameters);
@@ -796,6 +849,9 @@ router.post('/save-order', requireLogin, async (req, res) => {
         }
         else {
             id = await db.insertNewOrder(commission, addrId, currentUser.userId, comment, sendAddrId, 0, null, mailId, groupUserId);
+        }
+        if (!id) {
+            return res.status(500).json({ status: "error", message: "Nie udało się utworzyć zamówienia. Skontaktuj się z administratorem." });
         }
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: `/orders/order/${id}` });
     }

@@ -1,0 +1,395 @@
+{% extends "base.njk" %}
+{% block title %}{{ __('group.panel_title') }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="/styles/group/panel.css">
+{% endblock %}
+
+{% block key_nav %}
+    window.location.href = '/group/panel'
+{% endblock %}
+
+{% block back_link %}
+    <button class="modern-back-btn" onclick="window.location.href='/'">
+{% endblock %}
+
+{% block content %}
+<div class="content col-12">
+    <div class="container-fluid px-4" style="margin-top: 2.5rem;">
+        <div class="gp-panel-card">
+
+        {# ── Nagłówek ── #}
+        <div class="gp-header">
+            <div>
+                <h1 class="gp-title">{{ __('group.panel_title') }}</h1>
+                <p class="gp-title-sub">{{ __('group.panel_subtitle') }}</p>
+            </div>
+        </div>
+
+        {# ── Alerty ── #}
+        {% if success === 'added' %}
+            <div class="gp-alert gp-alert--success" id="gp-alert">
+                <span>✓</span> {{ __('group.alert_shop_added') }}
+                <button class="gp-alert-close" onclick="this.parentElement.remove()">✕</button>
+            </div>
+        {% elif success === 'updated' %}
+            <div class="gp-alert gp-alert--success" id="gp-alert">
+                <span>✓</span> {{ __('group.alert_shop_updated') }}
+                <button class="gp-alert-close" onclick="this.parentElement.remove()">✕</button>
+            </div>
+        {% elif success === 'deleted' %}
+            <div class="gp-alert gp-alert--success" id="gp-alert">
+                <span>✓</span> {{ __('group.alert_shop_deleted') }}
+                <button class="gp-alert-close" onclick="this.parentElement.remove()">✕</button>
+            </div>
+        {% endif %}
+        {% if error === 'notfound' %}
+            <div class="gp-alert gp-alert--warning" id="gp-alert">
+                <span>⚠</span> {{ __('group.alert_shop_notfound') }}
+                <button class="gp-alert-close" onclick="this.parentElement.remove()">✕</button>
+            </div>
+        {% endif %}
+
+        {# ── Zakładki ── #}
+        <div class="gp-tabs" role="tablist">
+            <button class="gp-tab {% if tab == 'shops' or not tab %}active{% endif %}" data-tab="shops" role="tab">
+                {{ __('group.tab_shops') }}
+                {% if shops and shops | length > 0 %}
+                    <span class="gp-tab-badge gp-tab-badge--neutral">{{ shops | length }}</span>
+                {% endif %}
+            </button>
+            <button class="gp-tab {% if tab == 'orders' %}active{% endif %}" data-tab="orders" role="tab">
+                {{ __('group.tab_orders') }}
+            </button>
+            <button class="gp-tab {% if tab == 'pending' %}active{% endif %}" data-tab="pending" role="tab">
+                {{ __('group.tab_pending') }}
+                {% if pendingCount > 0 %}
+                    <span class="gp-tab-badge gp-tab-badge--warning">{{ pendingCount }}</span>
+                {% endif %}
+            </button>
+        </div>
+
+        <div>
+
+            {# ═══════════════════════════════ SKLEPY ═══════════════════════════════ #}
+            <div class="gp-pane {% if tab == 'shops' or not tab %}active{% endif %}" data-pane="shops">
+
+                <div class="gp-toolbar">
+                    <span style="font-size: var(--text-sm); color: var(--text-tertiary);">
+                        {% if shops and shops | length > 0 %}{{ shops | length }} {{ __('group.shops_label') }}{% endif %}
+                    </span>
+                    <a href="/group/shops/new" class="gp-btn gp-btn--primary">+ {{ __('group.add_shop_btn') }}</a>
+                </div>
+
+                {% if shops and shops | length > 0 %}
+                    <div class="gp-table-wrap">
+                        <table class="gp-table">
+                            <thead>
+                                <tr>
+                                    <th>{{ __('group.col_shop') }}</th>
+                                    <th>{{ __('group.col_pin_login') }}</th>
+                                    <th>{{ __('group.col_email') }}</th>
+                                    <th>{{ __('group.col_orders') }}</th>
+                                    <th>{{ __('group.col_copy_creds') }}</th>
+                                    <th style="text-align:right">{{ __('group.col_actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for shop in shops %}
+                                    <tr data-shop-id="{{ shop.id }}">
+                                        <td>
+                                            <div class="gp-shop-ident">
+                                                <div class="gp-shop-avatar">{{ (shop.name or shop.ident)[0] | upper }}</div>
+                                                <div>
+                                                    <div class="gp-shop-name">{{ shop.name or shop.ident }}</div>
+                                                    <div class="gp-shop-city">
+                                                        {{ shop.city or '—' }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="gp-pin">{{ shop.pin }}</span>
+                                        </td>
+                                        <td class="muted">{{ shop.email or '—' }}</td>
+                                        <td>
+                                            {% set sc = shopCounts[shop.id] %}
+                                            {% if sc and sc.total > 0 %}
+                                                <a href="/group/panel?tab=orders&shop={{ shop.id }}"
+                                                   class="gp-shop-orders-link"
+                                                   title="{{ __('group.show_shop_orders_title') }}">
+                                                    <span class="gp-badge gp-badge--neutral">{{ sc.total }}</span>
+                                                    {% if sc.pending > 0 %}
+                                                        <span class="gp-badge gp-badge--pending" title="{{ __('group.tab_pending') }}">{{ sc.pending }}</span>
+                                                    {% endif %}
+                                                </a>
+                                            {% else %}
+                                                <span class="gp-badge gp-badge--neutral gp-badge--zero" title="{{ __('group.no_orders_title') }}">0</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if shop.plain %}
+                                            <button type="button" class="gp-btn gp-btn--ghost gp-btn--sm btn-copy-creds" data-pin="{{ shop.pin }}" data-pass="{{ shop.plain }}" title="{{ __('group.copy_creds_title') }}" data-label-copy="{{ __('group.copy_creds_title') }}" data-label-copied="{{ __('group.copied_label') }}">
+                                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
+                                                    <rect x="3" y="5" width="10" height="10" rx="2" fill="#5e6e82"/>
+                                                    <rect x="7" y="3" width="8" height="8" rx="2" fill="#bfc9d5"/>
+                                                </svg>
+                                            </button>
+                                            {% else %}
+                                            <span class="muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="actions" style="text-align:right;">
+                                            <div class="d-inline-flex gap-1 justify-content-end">
+                                                <a href="/group/shops/{{ shop.id }}/edit"
+                                                   class="gp-btn gp-btn--edit">{{ __('group.edit_btn') }}</a>
+                                                <button type="button"
+                                                        class="gp-btn gp-btn--danger btn-delete-shop"
+                                                        data-shop-id="{{ shop.id }}"
+                                                        data-shop-name="{{ shop.name or shop.ident }}">{{ __('group.delete_btn') }}</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="gp-empty">
+                        <div class="gp-empty-icon">🏪</div>
+                        <p class="gp-empty-title">{{ __('group.no_shops_title') }}</p>
+                        <p class="gp-empty-desc">{{ __('group.no_shops_desc') }}</p>
+                        <a href="/group/shops/new" class="gp-btn gp-btn--primary">+ {{ __('group.add_shop_btn') }}</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# ══════════════════════════ ZAMÓWIENIA SKLEPÓW ═══════════════════════ #}
+            <div class="gp-pane {% if tab == 'orders' %}active{% endif %}" data-pane="orders">
+
+                <div class="gp-toolbar">
+                    <div class="gp-toolbar-pills">
+                        <a class="gp-pill {% if not sent %}active{% endif %}" href="/group/panel?tab=orders{% if shopFilter %}&shop={{ shopFilter }}{% endif %}">{{ __('group.pill_active') }}</a>
+                        <a class="gp-pill {% if sent %}active{% endif %}" href="/group/panel?tab=orders&sent=true{% if shopFilter %}&shop={{ shopFilter }}{% endif %}">{{ __('group.pill_history') }}</a>
+                    </div>
+                    {% if shops and shops | length > 0 %}
+                        <label class="gp-shop-filter">
+                            <span class="gp-shop-filter-label">{{ __('group.filter_shop_label') }}</span>
+                            <select class="gp-select" id="gpShopFilter" data-sent="{{ 'true' if sent else '' }}" aria-label="{{ __('group.filter_aria') }}">
+                                <option value="">{{ __('group.filter_all_shops') }}</option>
+                                {% for s in shops %}
+                                    <option value="{{ s.id }}" {% if shopFilter and s.id == shopFilter %}selected{% endif %}>{{ s.name or s.ident }}{% if s.name and s.ident %} ({{ s.ident }}){% endif %}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                    {% endif %}
+                    {% if shopFilter %}
+                        <div class="gp-filter-chip">
+                            {{ __('group.filter_shop_label') }} <strong>{{ shopFilterName or shopFilterIdent or shopFilter }}</strong>
+                            <a href="/group/panel?tab=orders{% if sent %}&sent=true{% endif %}" class="gp-filter-chip-clear" title="{{ __('group.clear_filter') }}">✕</a>
+                        </div>
+                    {% endif %}
+                    <span style="font-size: var(--text-sm); color: var(--text-tertiary);">
+                        {{ ordersTotal }} {{ __('group.orders_label') }}
+                    </span>
+                </div>
+
+                {% if orders and orders | length > 0 %}
+                    <div class="gp-table-wrap">
+                        <table class="gp-table">
+                            <thead>
+                                <tr>
+                                    <th>{{ __('group.col_order_no') }}</th>
+                                    <th>{{ __('group.col_shop') }}</th>
+                                    <th>{{ __('group.col_commissioner') }}</th>
+                                    <th>{{ __('group.col_status') }}</th>
+                                    <th>{{ __('group.col_date') }}</th>
+                                    <th style="text-align:right">{{ __('group.col_actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                    <tr>
+                                        <td>
+                                            <a href="/orders/order/{{ order.id }}" class="gp-order-link">
+                                                {{ order.order_idx or ('#' + order.id) }}
+                                            </a>
+                                        </td>
+                                        <td><span class="gp-badge gp-badge--shop">{{ order.shop_name or order.shop_ident }}</span></td>
+                                        <td class="muted">{{ order.commision or '—' }}</td>
+                                        <td>
+                                            {% if order.status == 'active' %}
+                                                <span class="gp-badge gp-badge--active">{{ __('group.status_active') }}</span>
+                                            {% elif order.status == 'pending_approval' %}
+                                                <span class="gp-badge gp-badge--pending">{{ __('group.status_pending') }}</span>
+                                            {% elif order.status == 'sent' %}
+                                                <span class="gp-badge gp-badge--sent">{{ __('group.status_sent') }}</span>
+                                            {% else %}
+                                                <span class="gp-badge gp-badge--active">{{ order.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="muted">{{ order.created_date }}</td>
+                                        <td class="actions">
+                                            <a href="/orders/order/{{ order.id }}" class="gp-btn gp-btn--ghost">{{ __('group.preview_btn') }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if totalPages > 1 %}
+                        <div class="gp-pagination">
+                            {% if page > 1 %}
+                                <a class="gp-page-btn" href="/group/panel?tab=orders&page={{ page - 1 }}{% if sent %}&sent=true{% endif %}{% if shopFilter %}&shop={{ shopFilter }}{% endif %}">‹</a>
+                            {% endif %}
+                            {% for p in range(1, totalPages + 1) %}
+                                <a class="gp-page-btn {% if p == page %}active{% endif %}"
+                                   href="/group/panel?tab=orders&page={{ p }}{% if sent %}&sent=true{% endif %}{% if shopFilter %}&shop={{ shopFilter }}{% endif %}">{{ p }}</a>
+                            {% endfor %}
+                            {% if page < totalPages %}
+                                <a class="gp-page-btn" href="/group/panel?tab=orders&page={{ page + 1 }}{% if sent %}&sent=true{% endif %}{% if shopFilter %}&shop={{ shopFilter }}{% endif %}">›</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="gp-empty">
+                        <div class="gp-empty-icon">📦</div>
+                        <p class="gp-empty-title">{{ __('group.no_orders_title') }}</p>
+                        <p class="gp-empty-desc">{% if sent %}{{ __('group.no_orders_sent_desc') }}{% else %}{{ __('group.no_orders_active_desc') }}{% endif %}</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# ════════════════════════════ DO ZATWIERDZENIA ═══════════════════════ #}
+            <div class="gp-pane {% if tab == 'pending' %}active{% endif %}" data-pane="pending">
+
+                {% if pendingOrders and pendingOrders | length > 0 %}
+                    <div class="gp-table-wrap">
+                        <table class="gp-table">
+                            <thead>
+                                <tr>
+                                    <th>{{ __('group.col_order_no') }}</th>
+                                    <th>{{ __('group.col_shop') }}</th>
+                                    <th>{{ __('group.col_commissioner') }}</th>
+                                    <th>{{ __('group.col_comment') }}</th>
+                                    <th>{{ __('group.col_date') }}</th>
+                                    <th style="text-align:right">{{ __('group.col_actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in pendingOrders %}
+                                    <tr>
+                                        <td>
+                                            <a href="/orders/order/{{ order.id }}" target="_blank" class="gp-order-link">
+                                                {{ order.order_idx or order.id }}
+                                            </a>
+                                        </td>
+                                        <td><span class="gp-badge gp-badge--shop">{{ order.shop_name or order.shop_ident }}</span></td>
+                                        <td class="muted">{{ order.commision or '—' }}</td>
+                                        <td class="muted" style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ order.comment or '—' }}</td>
+                                        <td class="muted">{{ order.created_date or '—' }}</td>
+                                        <td class="actions" style="text-align:right;">
+                                            <div class="d-inline-flex gap-1 justify-content-end">
+                                                <a href="/orders/order/{{ order.id }}" target="_blank" class="gp-btn gp-btn--ghost">{{ __('group.preview_btn') }}</a>
+                                                <button class="gp-btn gp-btn--success js-approve-btn"
+                                                        data-order-id="{{ order.id }}">✓ {{ __('group.approve_btn') }}</button>
+                                                <button class="gp-btn gp-btn--danger js-reject-btn"
+                                                        data-order-id="{{ order.id }}">{{ __('group.reject_btn') }}</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="gp-empty">
+                        <div class="gp-empty-icon">✓</div>
+                        <p class="gp-empty-title">{{ __('group.pending_empty_title') }}</p>
+                        <p class="gp-empty-desc">{{ __('group.pending_empty_desc') }}</p>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>{# /tab-content #}
+        </div>{# /gp-panel-card #}
+    </div>
+</div>
+
+{# ════════ MODAL: Usuń sklep ════════ #}
+<div class="modal fade gp-modal" id="deleteShopModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('group.modal_delete_shop_title') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ __('group.modal_delete_shop_q') }} <strong id="deleteShopName"></strong>?
+                <br><br>
+                <small style="color: var(--color-error); opacity: 0.8;">{{ __('group.modal_irreversible') }}</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="gp-btn gp-btn--ghost" data-bs-dismiss="modal">{{ __('group.cancel_btn') }}</button>
+                <button type="button" class="gp-btn gp-btn--danger" id="confirmDeleteShop" data-label="{{ __('group.modal_delete_shop_confirm') }}" data-label-progress="{{ __('group.deleting_progress') }}">{{ __('group.modal_delete_shop_confirm') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# ════════ MODAL: Zatwierdź ════════ #}
+<div class="modal fade gp-modal" id="approveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('group.modal_approve_title') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ __('group.modal_approve_q') }}
+                <br><br>
+                <small style="color: var(--text-tertiary);">{{ __('group.modal_approve_warn') }}</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="gp-btn gp-btn--ghost" data-bs-dismiss="modal">{{ __('group.cancel_btn') }}</button>
+                <button type="button" class="gp-btn gp-btn--success" id="approveConfirmBtn">✓ {{ __('group.modal_approve_confirm') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# ════════ MODAL: Odrzuć ════════ #}
+<div class="modal fade gp-modal" id="rejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('group.modal_reject_title') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ __('group.modal_reject_q') }}
+                <br><br>
+                <small style="color: var(--text-tertiary);">{{ __('group.modal_reject_warn') }}</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="gp-btn gp-btn--ghost" data-bs-dismiss="modal">{{ __('group.cancel_btn') }}</button>
+                <button type="button" class="gp-btn gp-btn--danger" id="rejectConfirmBtn">{{ __('group.modal_reject_confirm') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="application/json" id="gp-i18n">
+{
+    "deleteError": {{ __('group.error_delete') | dump | safe }},
+    "connError": {{ __('group.error_connection') | dump | safe }},
+    "serverError": {{ __('group.error_server') | dump | safe }},
+    "deletingProgress": {{ __('group.deleting_progress') | dump | safe }}
+}
+</script>
+<script src="/scripts/group/panel.js"></script>
+{% endblock %}

@@ -1,5 +1,5 @@
 {% extends "base.njk" %}
-{% block title %}Oczekujące zamówienia{% endblock %}
+{% block title %}{{ __('group.pending_page_title') }}{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="/styles/group/shops.css">
@@ -18,9 +18,9 @@
         <div class="container my-4">
 
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h2 class="mb-0">Oczekujące zamówienia sklepów</h2>
+                <h2 class="mb-0">{{ __('group.pending_h2') }}</h2>
                 <a href="/group/shops" class="btn btn-outline-secondary btn-sm">
-                    ← Wróć do sklepów
+                    ← {{ __('group.back_to_shops') }}
                 </a>
             </div>
 
@@ -29,12 +29,12 @@
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>Nr zamówienia</th>
-                                <th>Sklep</th>
-                                <th>Komisant</th>
-                                <th>Komentarz</th>
-                                <th>Data</th>
-                                <th class="text-end">Akcje</th>
+                                <th>{{ __('group.col_order_no') }}</th>
+                                <th>{{ __('group.col_shop') }}</th>
+                                <th>{{ __('group.col_commission') }}</th>
+                                <th>{{ __('group.col_comment') }}</th>
+                                <th>{{ __('group.col_date') }}</th>
+                                <th class="text-end">{{ __('group.col_actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,18 +45,18 @@
                                             {{ order.order_idx or order.id }}
                                         </a>
                                     </td>
-                                    <td>{{ order.client_name }} <span class="text-muted small">({{ order.shop_ident }})</span></td>
+                                    <td>{{ order.shop_name or order.shop_ident }}</td>
                                     <td>{{ order.commission or '—' }}</td>
                                     <td class="text-muted small">{{ order.comment or '—' }}</td>
                                     <td class="text-muted small">{{ order.created_at | date if order.created_at else '—' }}</td>
                                     <td class="text-end">
                                         <button class="btn btn-success btn-sm me-1 js-approve-btn"
                                                 data-order-id="{{ order.id }}">
-                                            Zatwierdź i wyślij
+                                            {{ __('group.approve_send_btn') }}
                                         </button>
                                         <button class="btn btn-outline-danger btn-sm js-reject-btn"
                                                 data-order-id="{{ order.id }}">
-                                            Odrzuć
+                                            {{ __('group.reject_btn') }}
                                         </button>
                                     </td>
                                 </tr>
@@ -66,7 +66,7 @@
                 </div>
             {% else %}
                 <div class="alert alert-info" role="alert">
-                    Brak oczekujących zamówień do zatwierdzenia.
+                    {{ __('group.pending_empty') }}
                 </div>
             {% endif %}
 
@@ -78,15 +78,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="approveModalLabel">Zatwierdź zamówienie</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                    <h5 class="modal-title" id="approveModalLabel">{{ __('group.modal_approve_title') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('group.close_btn') }}"></button>
                 </div>
                 <div class="modal-body">
-                    Czy na pewno chcesz zatwierdzić i wysłać to zamówienie? Operacja jest nieodwracalna.
+                    {{ __('group.modal_approve_body') }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-                    <button type="button" class="btn btn-success" id="approveConfirmBtn">Zatwierdź i wyślij</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('group.cancel_btn') }}</button>
+                    <button type="button" class="btn btn-success" id="approveConfirmBtn">{{ __('group.approve_send_btn') }}</button>
                 </div>
             </div>
         </div>
@@ -97,15 +97,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="rejectModalLabel">Odrzuć zamówienie</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                    <h5 class="modal-title" id="rejectModalLabel">{{ __('group.modal_reject_title') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('group.close_btn') }}"></button>
                 </div>
                 <div class="modal-body">
-                    Zamówienie zostanie cofnięte do statusu „aktywne" i sklep będzie mógł je edytować.
+                    {{ __('group.modal_reject_body') }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-                    <button type="button" class="btn btn-danger" id="rejectConfirmBtn">Odrzuć</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('group.cancel_btn') }}</button>
+                    <button type="button" class="btn btn-danger" id="rejectConfirmBtn">{{ __('group.reject_btn') }}</button>
                 </div>
             </div>
         </div>
