@@ -141,9 +141,12 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
             locked = false;
         }
 
+        const sub = !!(window.subParams && window.subParams.includes(paramName));
+
         displayValues.set(paramName, {
             param_description: param?.DESCRIPTION || '',
             locked: locked,
+            sub: sub,
             option_value: value,
             option_description: '',
             row: param?.LISTROW || '1'
@@ -239,6 +242,24 @@ export function buildValuesToDisplay(dictValues, value, paramName, displayValues
         }
 
     }
+
+    // always propagate sub flag for SUB___ params
+    if (window.subParams && window.subParams.includes(paramName)) {
+        currentValue['sub'] = true;
+    }
+
+    // For SUB___ params: mirror locked flag from base param name.
+    // Scripts hardcode e.g. window.lockedParams.push('CENA_RABAT') — the SUB___ variant
+    // must also become locked when its base param is locked.
+    if (paramName.startsWith('SUB___')) {
+        const baseName = paramName.slice(6); // 'SUB___CENA_RABAT' → 'CENA_RABAT'
+        if (window.lockedParams && window.lockedParams.includes(baseName)) {
+            currentValue['locked'] = true;
+            if (!window.lockedParams.includes(paramName)) {
+                window.lockedParams.push(paramName);
+            }
+        }
+    }
 }
 
 
@@ -301,11 +322,12 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
 
     for (const paramName in inputs) {
         let param = params.find((param) => param.NAME === paramName);
+        if (!param) continue;
         const currentSelect = inputs[paramName];
         if (currentSelect.tagName === "INPUT") { };
         const allowed = allowedOptions[paramName];
 
-        if (currentSelect.tagName === 'BUTTON' & !(param.SOURCE == param.NAME)) {
+        if (currentSelect.tagName === 'BUTTON' && !(param.SOURCE == param.NAME)) {
 
             const newBtn = currentSelect.cloneNode(true);
             currentSelect.parentNode.replaceChild(newBtn, currentSelect);
@@ -370,6 +392,10 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
             if (shouldEnable == 'password') {
                 shouldEnable = false;
                 // password: ukryte w formularzu, ale nadal liczone
+                // jeśli dodatkowo SUB___ → locked:true (cena sub ukryta)
+                if (key.startsWith('SUB___') && window.lockedParams && !window.lockedParams.includes(key)) {
+                    window.lockedParams.push(key);
+                }
             } else if (!shouldEnable) {
                 disabledParams.add(param.NAME);
             }
@@ -381,7 +407,11 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
         }
         let paramDiv = inputs[key].parentNode;
 
-        if (shouldEnable) {
+        // SUB___ params are always hidden in the form UI regardless of ENABLE
+        if (key.startsWith('SUB___')) {
+            paramDiv.style.display = 'none';
+            delete window.enabledParams[param.NAME];
+        } else if (shouldEnable) {
             paramDiv.style.display = 'grid';
             window.enabledParams[param.NAME] = true;
         }

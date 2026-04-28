@@ -10,7 +10,8 @@ async function jsonTextBackToMap(orderItems) {
     displayHeaders1: [],
     displayHeaders2: [],
     rows: [],
-    locked: []
+    locked: [],
+    sub: []
   };
 
   for (let item of orderItems) {
@@ -30,6 +31,7 @@ async function jsonTextBackToMap(orderItems) {
     let currentDisplayHeaders2 = [];
 
     for (const [key, param] of jsonParameters.entries()) {
+      if (key.startsWith('SUB___')) continue; // handled separately in subParamValues
 
       const display = param && param.param_description ? param.param_description : key;
       const headerKey = display + "||" + key;
@@ -58,7 +60,8 @@ async function jsonTextBackToMap(orderItems) {
           headerKeys1: table.headerKeys1,
           headerKeys2: table.headerKeys2,
           rows: table.rows,
-          locked: table.locked
+          locked: table.locked,
+          sub: table.sub
         }));
       }
       table = {
@@ -67,11 +70,13 @@ async function jsonTextBackToMap(orderItems) {
         displayHeaders1: currentDisplayHeaders1,
         displayHeaders2: currentDisplayHeaders2,
         rows: [],
-        locked: table.locked
-
+        locked: table.locked,
+        sub: table.sub
       };
     }
     item.lockedParams = []
+    item.subParams = []
+    item.subParamValues = []
     item.posId = item.id || 0
     let rowObj = {};
     for (const [key, param] of jsonParameters.entries()) {
@@ -95,11 +100,21 @@ async function jsonTextBackToMap(orderItems) {
         } else {
           value = param.option_value;
         }
+      }
 
+      // SUB___ params: store in subParamValues, skip main table entirely
+      if (key.startsWith('SUB___')) {
+        const isLocked = param && param.locked === true;
+        if (!isLocked && value !== '-' && value !== null && value !== undefined) {
+          const display = param && param.param_description ? param.param_description : key;
+          item.subParamValues.push({ display, value });
+        }
+        continue;
+      }
+
+      if (param) {
         if ('locked' in param && 'param_description' in param) {
-
           if (param.locked) {
-
             if (!table.locked.includes(param.param_description)) {
               table.locked.push(param.param_description)
             }
@@ -129,8 +144,8 @@ async function jsonTextBackToMap(orderItems) {
       headerKeys1: table.headerKeys1,
       headerKeys2: table.headerKeys2,
       rows: table.rows,
-      locked: table.locked
-
+      locked: table.locked,
+      sub: table.sub
     }));
   }
   // Check if any price is not numeric
@@ -256,7 +271,8 @@ function removeEmptyColumns(table) {
       headerKeys1,
       headerKeys2,
       rows: mappedRows,
-      locked: table.locked
+      locked: table.locked,
+      sub: table.sub || []
     };
   }
 
@@ -324,7 +340,8 @@ function removeEmptyColumns(table) {
     headerKeys1: newHeaderKeys1,
     headerKeys2: newHeaderKeys2,
     rows: newRows,
-    locked: table.locked
+    locked: table.locked,
+    sub: table.sub || []
   };
 }
 

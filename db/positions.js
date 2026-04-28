@@ -9,7 +9,7 @@ async function insertNewForm(formData) {
     const orderpos = await getPosCounter(formData.order) + 1;
     formData.orderpos = orderpos;
     log(orderpos, formData.orderpos, "ORDER POS IN INSERT NEW FORM @@@@@@@@@@@@")
-    const insertFormQuery = 'INSERT INTO order_item(order_id, name, commision, json_parameters, json_parameters_desc, amount, list_price, discount_percentage, discount, unit_price, total_price,comment,ver,asortment_group_number,lang,department,group_name,parameters_short,orderpos) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    const insertFormQuery = 'INSERT INTO order_item(order_id, name, commision, json_parameters, json_parameters_desc, amount, list_price, discount_percentage, discount, unit_price, total_price, total_price_sub, comment,ver,asortment_group_number,lang,department,group_name,parameters_short,orderpos) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 
     const fields = [
         formData.order,
@@ -23,6 +23,7 @@ async function insertNewForm(formData) {
         formData.discount,
         formData.unitPrice,
         formData.totalPrice,
+        formData.totalPriceSub || 0,
         formData.comment,
         formData.version,
         formData.groupNumber,
@@ -96,7 +97,8 @@ async function getOrderpos(posId) {
 async function updateOrderPrice(orderId, newPrice) {
     let total = 0;
     let total_hidden = 0;
-    const getItemPrices = `SELECT oi.unit_price , oi.total_price 
+    let total_sub = 0;
+    const getItemPrices = `SELECT oi.unit_price , oi.total_price, oi.total_price_sub 
     FROM eform.order_item oi
     join eform.\`order\` o on oi.order_id = o.id where o.id =?;`;
 
@@ -111,13 +113,15 @@ async function updateOrderPrice(orderId, newPrice) {
         log(price, price.unit_price, price.total_price, "PRICE ITEM @@@@@@@@@@@@")
         total += parseFloat(price.unit_price);
         total_hidden += parseFloat(price?.total_price ?? 0);
+        total_sub += parseFloat(price?.total_price_sub ?? 0);
     }
     total = parseFloat(total.toFixed(2));
     total_hidden = parseFloat(total_hidden.toFixed(2));
-    newPrice = { total: total, total_hidden: total_hidden };
+    total_sub = parseFloat(total_sub.toFixed(2));
+    newPrice = { total: total, total_hidden: total_hidden, total_sub: total_sub };
 
-    const updateQueryStr = 'UPDATE `order` SET total_price = ?, total_price_hidden = ?, total_float = ?, total_float_hidden = ? WHERE id = ?';
-    const response = await updateQuery(updateQueryStr, [total, total_hidden, total, total_hidden, orderId]);
+    const updateQueryStr = 'UPDATE `order` SET total_price = ?, total_price_hidden = ?, total_float = ?, total_float_hidden = ?, total_price_sub = ? WHERE id = ?';
+    const response = await updateQuery(updateQueryStr, [total, total_hidden, total, total_hidden, total_sub, orderId]);
     return response;
 }
 
@@ -147,6 +151,7 @@ async function updatePosition(positionData, total) {
         comment = ?,
         unit_price = ?,
         total_price = ?,
+        total_price_sub = ?,
         parameters_short = ?
     WHERE id = ?
   `;
@@ -158,6 +163,7 @@ async function updatePosition(positionData, total) {
         positionData.comment,
         total.total,
         total.total_hidden,
+        total.total_sub || 0,
         JSON.stringify(positionData.jsonShort),
         parseInt(positionData.id)
     ]

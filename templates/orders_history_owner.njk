@@ -146,29 +146,6 @@
                                 </div>
                             {% endblock empty %}
                             {% block scripts %}
-                                <script>
-                                    let orderHistoryNavBtn = document.getElementById('orders-history-nav-btn');
-                                    if (orderHistoryNavBtn) {
-                                        orderHistoryNavBtn.classList.add('active');
-                                    }
-                                    // Obsługa dropdown - wyłączenie transform na wierszu
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        const dropdowns = document.querySelectorAll('.order-row .dropdown');
-                                        dropdowns.forEach(dropdown => {
-                                            const row = dropdown.closest('.order-row');
-                                            dropdown.addEventListener('show.bs.dropdown', function () {
-                                                if (row) 
-                                                    row.classList.add('dropdown-active');
-                                                
-                                            });
-                                            dropdown.addEventListener('hide.bs.dropdown', function () {
-                                                if (row) 
-                                                    row.classList.remove('dropdown-active');
-                                                
-                                            });
-                                        });
-                                    });
-                                </script>
                                 <script type="module" src="/scripts/orders.js"></script>
                             {% endblock scripts %}
                         </tr>

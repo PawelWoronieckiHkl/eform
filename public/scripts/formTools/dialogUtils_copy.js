@@ -502,7 +502,15 @@ export class DialogManager {
 
         ? Array.from(filterValues).sort((a, b) => {
 
-          if (a.includes('#') && b.includes('#')) {
+          // Guard: push null/undefined values to the end
+          if (a == null && b == null) return 0;
+          if (a == null) return 1;
+          if (b == null) return -1;
+
+          const aStr = String(a);
+          const bStr = String(b);
+
+          if (aStr.includes('#') && bStr.includes('#')) {
 
             const extractValue = (str) => {
 
@@ -512,8 +520,8 @@ export class DialogManager {
 
             };
 
-            const aValue = extractValue(a);
-            const bValue = extractValue(b);
+            const aValue = extractValue(aStr);
+            const bValue = extractValue(bStr);
 
             const aIsNumber = /^\d+$/.test(aValue);
             const bIsNumber = /^\d+$/.test(bValue);
@@ -540,8 +548,8 @@ export class DialogManager {
           }
 
 
-          const aNum = parseFloat(String(a).replace(',', '.'));
-          const bNum = parseFloat(String(b).replace(',', '.'));
+          const aNum = parseFloat(aStr.replace(',', '.'));
+          const bNum = parseFloat(bStr.replace(',', '.'));
 
           if (!isNaN(aNum) && !isNaN(bNum)) {
             return aNum - bNum;
@@ -555,7 +563,7 @@ export class DialogManager {
             return -1;
           }
 
-          return String(a).localeCompare(String(b), undefined, { sensitivity: 'base' });
+          return aStr.localeCompare(bStr, undefined, { sensitivity: 'base' });
 
         })
         : [];

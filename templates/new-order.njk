@@ -287,27 +287,6 @@
                             {% endblock content %}
                             {% block scripts %}
                                 <script src="/vendor/country-select-js/build/js/countrySelect.min.js"></script>
-                                <script>
-                                    let neworderbtn = document.getElementById('new-order-nav-btn');
-                                    if (neworderbtn) {
-                                        neworderbtn.classList.add('active');
-                                    }
-                                    var langToCountry = { pl: 'pl', de: 'de', en: 'gb', nl: 'nl', fr: 'fr' };
-                                    var currentCountry = langToCountry['{{ locale }}'] || 'pl';
-                                    var preferredList = [currentCountry].concat(["pl","de","gb","nl","fr"].filter(function(c){ return c !== currentCountry; }));
-                                    $(function () {
-                                        $("#country").countrySelect({
-                                            preferredCountries: preferredList,
-                                            defaultCountry: currentCountry
-                                        });
-                                    });
-                                    $(function () {
-                                        $("#sendCountry").countrySelect({
-                                            preferredCountries: preferredList,
-                                            defaultCountry: currentCountry
-                                        });
-                                    });
-                                </script>
                                 <script type="module" src="/scripts/orders.js"></script>
                                 <script type="module" src="/scripts/new-order.js"></script>
                                 <script type="module" src="/scripts/createNewAddress.js"></script>

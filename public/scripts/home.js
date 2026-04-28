@@ -1,3 +1,5 @@
+document.body.classList.add('home-page');
+
 const rodoBtn = document.getElementById('accept-rodo-btn');
 
 if (rodoBtn) {

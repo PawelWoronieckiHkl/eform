@@ -543,3 +543,13 @@ initSearchTool({
 	renderTableRow,
 	renderMobileCard
 });
+
+// Disable row transform while Bootstrap dropdown is open
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.order-row .dropdown').forEach(function (dropdown) {
+        const row = dropdown.closest('.order-row');
+        if (!row) return;
+        dropdown.addEventListener('show.bs.dropdown', function () { row.classList.add('dropdown-active'); });
+        dropdown.addEventListener('hide.bs.dropdown', function () { row.classList.remove('dropdown-active'); });
+    });
+});

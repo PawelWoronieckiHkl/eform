@@ -14,6 +14,7 @@ const statusInfo = document.getElementById('status-info');
 const commentBtn = document.getElementById('comment-btn');
 const editIcon = document.getElementById('edit-comment-btn');
 const unlockBtns = document.querySelectorAll('[id="unlockBtn"]')
+const unlockSubBtns = document.querySelectorAll('[id="unlockSubBtn"]')
 const lockBtns = document.querySelectorAll('[id="lockBtn"]')
 const sendBtn = document.querySelector('.send-order-btn')
 const excelBtns = document.querySelectorAll('[id="generate-excel-btn"]')
@@ -321,6 +322,26 @@ unlockBtns.forEach(unlockBtn => {
   });
 });
 
+// --- Sub params toggle (przekierowanie do widoku z sub-params) ---
+unlockSubBtns.forEach(unlockSubBtn => {
+  unlockSubBtn.addEventListener('click', async () => await toggleSub())
+});
+
+async function toggleSub() {
+  try {
+    const response = await fetch('/orders/toggle-sub', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const result = await response.json();
+    if (result.status === 'success') {
+      window.location.reload();
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
 
 async function movePosition(positionId, direction) {
   try {
@@ -401,4 +422,104 @@ async function setOrderPos(positionId, idx) {
     showToast('error', 'Błąd podczas ustawiania kolejności pozycji');
     console.error('Error setting position order:', error);
   }
-} 
+}
+
+// --- Group shop: submit for approval ---
+(function () {
+    const btn = document.getElementById('submit-for-approval-btn');
+    if (!btn) return;
+    const parent = document.getElementById('dialog-container') || document.body;
+    btn.addEventListener('click', function () {
+        createInfoDialog({
+            title: 'Wyślij do zatwierdzenia',
+            message: 'Czy na pewno chcesz wysłać zamówienie do zatwierdzenia przez centralę?',
+            parent,
+            buttons: [
+                { label: 'Anuluj', className: 'btn btn-secondary me-1', id: 'cancel-btn' },
+                {
+                    label: 'Wyślij', className: 'btn btn-success ms-1', id: 'confirm-btn', enter: true,
+                    action: async () => {
+                        btn.disabled = true;
+                        try {
+                            const res = await fetch(`/orders/submit-for-approval/${btn.dataset.id}`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' }
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                                showToast('success', 'Wysłano do zatwierdzenia');
+                                setTimeout(() => { window.location.href = data.redirect || '/orders'; }, 800);
+                            } else {
+                                showToast('error', data.message || 'Błąd serwera.');
+                                btn.disabled = false;
+                            }
+                        } catch (e) {
+                            showToast('error', 'Błąd połączenia.');
+                            btn.disabled = false;
+                        }
+                    }
+                }
+            ]
+        });
+    });
+}());
+
+// --- Group: approve / reject order ---
+(function () {
+    const approveBtn = document.getElementById('group-approve-btn');
+    const rejectBtn = document.getElementById('group-reject-btn');
+    if (!approveBtn && !rejectBtn) return;
+    const parent = document.getElementById('dialog-container') || document.body;
+
+    function performAction(url, actionBtn, successLabel) {
+        actionBtn.disabled = true;
+        fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('success', successLabel);
+                    setTimeout(() => { window.location.href = data.redirect || '/group/panel?tab=pending'; }, 900);
+                } else {
+                    showToast('error', data.message || 'Błąd serwera.');
+                    actionBtn.disabled = false;
+                }
+            })
+            .catch(() => {
+                showToast('error', 'Błąd połączenia.');
+                actionBtn.disabled = false;
+            });
+    }
+
+    function openConfirm({ title, message, confirmLabel, confirmClass, action }) {
+        createInfoDialog({
+            title, message, parent,
+            buttons: [
+                { label: 'Anuluj', className: 'btn btn-secondary me-1', id: 'cancel-btn' },
+                { label: confirmLabel, className: confirmClass, id: 'confirm-btn', enter: true, action }
+            ]
+        });
+    }
+
+    if (approveBtn) {
+        approveBtn.addEventListener('click', () => {
+            openConfirm({
+                title: 'Zatwierdź i wyślij',
+                message: 'Zamówienie zostanie wysłane do centrali. Operacja jest nieodwracalna.',
+                confirmLabel: '✓ Zatwierdź i wyślij',
+                confirmClass: 'btn btn-success ms-1',
+                action: () => performAction(`/group/approve-order/${approveBtn.dataset.id}`, approveBtn, 'Zamówienie zatwierdzone.')
+            });
+        });
+    }
+    if (rejectBtn) {
+        rejectBtn.addEventListener('click', () => {
+            openConfirm({
+                title: 'Odrzuć zamówienie',
+                message: 'Zamówienie zostanie cofnięte do statusu „aktywne". Sklep będzie mógł je ponownie edytować.',
+                confirmLabel: 'Odrzuć',
+                confirmClass: 'btn btn-danger ms-1',
+                action: () => performAction(`/group/reject-order/${rejectBtn.dataset.id}`, rejectBtn, 'Zamówienie odrzucone.')
+            });
+        });
+    }
+}()); 

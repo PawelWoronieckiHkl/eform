@@ -457,6 +457,7 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
             req.session.user.showPricesOnce = false;
             return;
         } else {
+            console.log(cleanOrderItems, 'CLEAN ORDER ITEMS IN ORDER VIEW');
             res.render('order.njk', {
                 orderDetails,
                 orderItems,
@@ -465,7 +466,9 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 discount: clientDiscount,
                 total,
                 isEmployee: req.session.user?.isEmployee || false,
+                isGroup: req.session?.user?.isGroup || req.session?.context_user?.isGroup || false,
                 isGroupShop: req.session.user?.isGroupShop || false,
+                showSub: req.session.user?.showSubParams || false,
                 totalPrice: totalPrice,
                 availableLanguages: availabeLanguages,
                 admin: req.session.user?.isAdmin || false,
@@ -824,6 +827,15 @@ router.post('/lock', requireLogin, async (req, res) => {
         return res.json({ status: 'success', refresh: true })
     }
     catch (err) {
+        log(err);
+    }
+});
+
+router.post('/toggle-sub', requireLogin, async (req, res) => {
+    try {
+        if (req.session) req.session.user.showSubParams = !req.session.user?.showSubParams;
+        return res.json({ status: 'success', refresh: true });
+    } catch (err) {
         log(err);
     }
 });

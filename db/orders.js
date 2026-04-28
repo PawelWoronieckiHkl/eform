@@ -513,11 +513,12 @@ async function updateOrderPriceOnSend(orderId, prices) {
     }
 }
 async function getTotal(orderId) {
-    const query = `select SUM(total_price) as total_price_hidden, SUM(unit_price) as total_price from order_item where order_id = ?`;
+    const query = `select SUM(total_price) as total_price_hidden, SUM(unit_price) as total_price, SUM(total_price_sub) as total_price_sub from order_item where order_id = ?`;
     const result = await selectQuery(query, orderId);
     return {
         visible: result[0]?.total_price || 0,
-        hidden: result[0]?.total_price_hidden || 0
+        hidden: result[0]?.total_price_hidden || 0,
+        sub: result[0]?.total_price_sub || 0
     };
 }
 

@@ -231,24 +231,24 @@ html.nav-collapsed #order-nav {
     cursor: pointer;
 }
 
-.order-table tbody tr:not(#price-row):not(.prod-time-row):hover {
+.order-table tbody tr:not(#price-row):not(.prod-time-row):not(.sub-params-row):hover {
     background: var(--bg-hover);
     transform: translateX(4px);
     box-shadow: inset 3px 0 0 var(--brand-primary);
 }
 
-.order-table tbody tr:not(#price-row):not(.prod-time-row):hover td,
-.order-table tbody tr:not(#price-row):not(.prod-time-row):hover th {
+.order-table tbody tr:not(#price-row):not(.prod-time-row):not(.sub-params-row):hover td,
+.order-table tbody tr:not(#price-row):not(.prod-time-row):not(.sub-params-row):hover th {
     background: transparent;
 }
 
-.order-table tbody tr:not(#price-row):not(.prod-time-row):hover+#price-row {
+.order-table tbody tr:not(#price-row):not(.prod-time-row):not(.sub-params-row):hover+#price-row {
     background: var(--bg-hover);
     transform: translateX(4px);
     box-shadow: inset 3px 0 0 var(--brand-primary);
 }
 
-.order-table tbody tr:not(#price-row):not(.prod-time-row):hover+#price-row td {
+.order-table tbody tr:not(#price-row):not(.prod-time-row):not(.sub-params-row):hover+#price-row td {
     background: transparent;
 }
 
@@ -314,6 +314,60 @@ html.nav-collapsed #order-nav {
 .prod-time-row {
     background: transparent !important;
     cursor: default !important;
+}
+
+.sub-params-row {
+    background: transparent !important;
+    cursor: default !important;
+    display: none;
+}
+
+.sub-params-cell {
+    padding: 6px 12px !important;
+}
+
+.sub-params-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(var(--blur-sm));
+    border: 1px solid var(--border-default);
+    border-left: 4px solid var(--brand-secondary, #6c757d);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+.sub-param-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sub-param-label {
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+.mobile-sub-params {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-default);
+    border-left: 4px solid var(--brand-secondary, #6c757d);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    display: none;
+}
+
+.mobile-sub-param-item {
+    margin-bottom: 4px;
+}
+
+#unlockSubBtn.active {
+    background: var(--bg-hover, rgba(0,0,0,0.08));
+    border-radius: var(--radius-sm);
 }
 
 

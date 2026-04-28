@@ -218,7 +218,6 @@ async function buildDynamicForm(version, groupNumber, config = null) {
 	}, 10000);
 }
 
-
 function setupShowButton(inputs, values, valuesToDisplay, orderId, comment, version, groupNumber) {
 	console.log('setupShowButton')
 	console.log('inputs object keys:', Object.keys(inputs));
@@ -319,7 +318,7 @@ async function sendData(inputs, values, valuesToDisplay, orderId, comment, versi
 	const jsonValuesToDisplay = JSON.stringify(Array.from(valuesToDisplay.entries()));
 
 	const postBody = buildOrderItemStructure(
-		parseInt(orderId), {}, 0, 0, total.total, total.total_hidden,
+		parseInt(orderId), {}, 0, 0, total.total, total.total_hidden, total.total_sub || 0,
 		commission, commission, values, jsonValuesToDisplay, 1, comment.value, version, groupNumber, document.documentElement.lang, selectedDepartment, selectedGroup, window.shortJson
 	);
 

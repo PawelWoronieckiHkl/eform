@@ -25,7 +25,7 @@ import { SourceWindow } from './formTools/slope.js';
 import { applyAttachmentFromServer } from './formTools/attachment.js';
 import { showToast } from "./components/toast.js";
 import { createElement, isEnabled } from "./components/htmlManipulator.js";
-import { hideLocked, hideParams } from './formTools/createForm.js'
+import { hideLocked, hideSub, hideParams } from './formTools/createForm.js'
 import { AttrLoader } from "./formTools/storage.js";
 import { Translator } from "./formTools/fileTranslator.js"
 import { stopSpin, startSpin } from "./components/hourglass.js";
@@ -58,6 +58,7 @@ export async function generateForm(
   window.attachments = [];
   window.constValues = {};
   window.lockedParams = [];
+  window.subParams = [];
   window.spin = spin;
   
   window.calculationQueue = [];
@@ -119,7 +120,19 @@ export async function generateForm(
     const paramName = param.NAME;
     if (!paramName || paramName.startsWith("_") || !param.DESCRIPTION) return;
 
+    // SUB___ params: only visible for group and groupShop users
+    if (paramName.startsWith('SUB___')) {
+      if (!window.isGroup && !window.isGroupShop) return;
+      // go into sub bucket only — NOT locked
+      if (!window.subParams.includes(paramName)) window.subParams.push(paramName);
+    }
+
     const div = createElement('div', { class: [`${param.NAME}-select-area`] }, form);
+
+    // SUB___ param inputs always hidden from form UI
+    if (paramName.startsWith('SUB___')) {
+      div.style.display = 'none';
+    }
 
 
 
@@ -206,8 +219,8 @@ export async function generateForm(
 
     inputs[param.NAME] = input;
     if (!editFlag) {
-      displayValues.set(param.NAME, { 'param_description': param?.ALIAS_DESCRIPTION ?? param.DESCRIPTION });
-
+      const isSub = !!(window.subParams && window.subParams.includes(param.NAME));
+      displayValues.set(param.NAME, { 'param_description': param?.ALIAS_DESCRIPTION ?? param.DESCRIPTION, sub: isSub });
     }
 
     if (!editFlag) {
@@ -269,7 +282,10 @@ export async function generateForm(
     }
 
 
-    if (!isEnabled(param.ENABLE, values, paramName) || param.FORMROW == '0') {
+    if (paramName.startsWith('SUB___')) {
+      // SUB___ always hidden — never show in form UI regardless of ENABLE/FORMROW
+      div.style.display = 'none';
+    } else if (!isEnabled(param.ENABLE, values, paramName) || param.FORMROW == '0') {
       div.style.display = 'none'
     }
     else {
@@ -444,6 +460,7 @@ export async function updateProcedure({
   values = setDescription(values, value, allOptionsByParameter, name)
   if (percent) values = convertIntoPercent(values, name, value, inputs, params)
   displayValues = hideLocked(inputs, displayValues)
+  displayValues = hideSub(inputs, displayValues)
   if (buildValues) buildValuesToDisplay(allOptionsByParameter, value, name, displayValues, tagName);
   displayValues = setListRow(params, displayValues)
   values['uid'] = window.uid;
@@ -564,7 +581,11 @@ export function getTotal(displayValues) {
   const totalObj = {};
   for (let [key, value] of displayValues) {
     if (value?.listsum) {
-      if (value?.locked) {
+      if (value?.sub) {
+        // sub params always go to total_sub, even when also locked
+        totalObj['total_sub'] = (totalObj['total_sub'] || 0) + parseFloat(value.option_value || 0);
+      }
+      else if (value?.locked) {
         totalObj['total_hidden'] = parseFloat(value.option_value);
       }
       else {

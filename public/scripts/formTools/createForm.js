@@ -383,13 +383,19 @@ export function hideLocked(inputs, displayValues) {
 
     for (const [key, value] of displayValues) {
         if (window.lockedParams.includes(key)) {
-
-
             value['locked'] = true
         }
         else {
             value['locked'] = false
         }
+    }
+    return displayValues
+}
+
+export function hideSub(inputs, displayValues) {
+    const subParams = window.subParams || [];
+    for (const [key, value] of displayValues) {
+        value['sub'] = subParams.includes(key);
     }
     return displayValues
 }

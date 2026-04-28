@@ -86,10 +86,4 @@
         <p>{{ __('order.add_position') }}</p>
     </div>
 {% endif %}
-<script>
-    function eksportujDoExcel() {
-        var tabela = document.getElementById('tabela');
-        var wb = XLSX.utils.table_to_book(tabela, {sheet: "Arkusz1"});
-        XLSX.writeFile(wb, 'tabela.xlsx');
-    }
-</script>
+<script src="/scripts/pdf.js"></script>

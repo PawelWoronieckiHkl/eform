@@ -35,8 +35,14 @@
                                                 <img class='ico' src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
                                             </div>
                                             <div id="generate-container-mobile">
+                                                {% if not isGroup and not isGroupShop %}
                                                 <button id="unlockBtn" class="btn">
                                                     <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
+                                                {% endif %}
+                                                    {% if isGroup %}
+                                                        <button id="unlockSubBtn" class="btn has-tooltip{% if showSub %} active{% endif %}" data-tooltip="Pokaż/ukryj parametry sub">
+                                                            <img src="/img/key-chain.png" alt="sub params icon" class='icon'></button>
+                                                    {% endif %}
                                                     <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'>
                                                         <img src="/img/pdf.png" alt="pdf icon" class='icon'></button>
                                                         <button id="generate-excel-btn" class="btn has-tooltip" data-tooltip="{{ __('order.generate_excel_tooltip') }}">
@@ -81,8 +87,14 @@
                                                             <div class='d-flex'>
                                                                 <button class="btn has-tooltip" data-tooltip="{{ __('base.give_discount_tooltip') }}" id='discount-btn'>
                                                                     <img src="/img/sale.png" alt="sale icon" class='icon'></button>
+                                                                    {% if not isGroup and not isGroupShop %}
                                                                     <button id="unlockBtn" class="btn">
                                                                         <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
+                                                                    {% endif %}
+                                                                        {% if isGroup %}
+                                                                            <button id="unlockSubBtn" class="btn has-tooltip{% if showSub %} active{% endif %}" data-tooltip="Pokaż/ukryj parametry sub">
+                                                                                <img src="/img/key-chain.png" alt="sub params icon" class='icon'></button>
+                                                                        {% endif %}
                                                                         <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_short_pdf_tooltip') }}" id='short-print-button'>
                                                                             <img src="/img/pdf-short.png" alt="pdf icon" class='icon'></button>
                                                                              {% if admin and availableLanguages %}
@@ -144,7 +156,7 @@
                                                                                                     {% endblock %}
                                                                                                     <th class="edit-buttons">#</th>
                                                                                                     {% for header in table.headers1 %}
-                                                                                                        {% if not(header in table.locked) %}
+                                                                                                        {% if not(header in table.locked) and not(header in table.sub) %}
                                                                                                             <th class="th-field">{{ header }}</th>
                                                                                                         {% endif %}
                                                                                                     {% endfor %}
@@ -190,7 +202,7 @@
                                                                                                                 </td>
                                                                                                                 <th scope="row" class='order-idx' data-id="{{ rowObj.item.id }}" data-idx='{{ globalIndex }}'>{{ globalIndex }}</th>
                                                                                                                 {% for header in table.headers1 %}
-                                                                                                                    {% if (not(header in rowObj.item.lockedParams)) %}
+                                                                                                                    {% if not(header in rowObj.item.lockedParams) %}
                                                                                                                         <td class="td-val">{{ rowObj.row.row1[header] or '-' }}</td>
                                                                                                                     {% endif %}
                                                                                                                 {% endfor %}
@@ -203,7 +215,7 @@
                                                                                                             </tr>
                                                                                                             <tr id='price-row'>
                                                                                                                 {% for header in table.headers2 %}
-                                                                                                                    {% if (not(header in rowObj.item.lockedParams)) %}
+                                                                                                                    {% if not(header in rowObj.item.lockedParams) %}
                                                                                                                         {% set value = rowObj.row.row2[header] %}
                                                                                                                         {% if value and value != '-' and value != '' %}
                                                                                                                             <td class="price" colspan="2">
@@ -214,6 +226,22 @@
                                                                                                                     {% endif %}
                                                                                                                 {% endfor %}
                                                                                                             </tr>
+                                                                                                            {% if isGroup and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                                                                                                <tr class="sub-params-row"{% if showSub %} style="display: table-row;"{% endif %}>
+                                                                                                                    <td colspan="100%" class="sub-params-cell">
+                                                                                                                        <div class="sub-params-container">
+                                                                                                                            {% for entry in rowObj.item.subParamValues %}
+                                                                                                                                {% if entry.value and entry.value != '-' and entry.value != '' %}
+                                                                                                                                    <span class="sub-param-item">
+                                                                                                                                        <span class="sub-param-label">{{ entry.display }}:</span>
+                                                                                                                                        <b>{{ entry.value }}</b>
+                                                                                                                                    </span>
+                                                                                                                                {% endif %}
+                                                                                                                            {% endfor %}
+                                                                                                                        </div>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            {% endif %}
                                                                                                             {% set itemProdDays = itemProductionDays[rowObj.item.id] %}
                                                                                                             {% block estimatedProdDate %}
                                                                                                                 <tr class="prod-time-row">
@@ -271,7 +299,7 @@
                                                                                                                     {% if table.headers1.length > 0 %}
                                                                                                                         <div class="mobile-item-specs">
                                                                                                                             {% for header in table.headers1 %}
-                                                                                                                                {% if not(header in rowObj.item.lockedParams) %}
+                                                                                                                        {% if not(header in rowObj.item.lockedParams) %}
                                                                                                                                     <div class="mobile-spec-item">
                                                                                                                                         <strong>{{ header }}:</strong>
                                                                                                                                         {{ rowObj.row.row1[header] or '-' }}
@@ -283,7 +311,7 @@
                                                                                                                     {% if table.headers2.length > 0 %}
                                                                                                                         <div class="mobile-item-prices">
                                                                                                                             {% for header in table.headers2 %}
-                                                                                                                                {% if not(header in rowObj.item.lockedParams) %}
+                                                                                                                            {% if not(header in rowObj.item.lockedParams) %}
                                                                                                                                     <div class="mobile-price-item">
                                                                                                                                         <strong>{{ header }}:</strong>
                                                                                                                                         <b>{{ rowObj.row.row2[header] or '-' }}</b>
@@ -297,6 +325,17 @@
                                                                                                                             <strong>{{ __('order.comment') }}:</strong>
                                                                                                                             <br>
                                                                                                                                 {{ rowObj.item.comment }}
+                                                                                                                            </div>
+                                                                                                                        {% endif %}
+                                                                                                                        {% if isGroup and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                                                                                                            <div class="mobile-sub-params"{% if showSub %} style="display: block;"{% endif %}>
+                                                                                                                                {% for entry in rowObj.item.subParamValues %}
+                                                                                                                                    {% if entry.value and entry.value != '-' and entry.value != '' %}
+                                                                                                                                        <div class="mobile-sub-param-item">
+                                                                                                                                            <strong>{{ entry.display }}:</strong> <b>{{ entry.value }}</b>
+                                                                                                                                        </div>
+                                                                                                                                    {% endif %}
+                                                                                                                                {% endfor %}
                                                                                                                             </div>
                                                                                                                         {% endif %}
                                                                                                                         <div class="mobile-item-actions">
@@ -413,117 +452,4 @@
                                                                 {% block scripts %}
                                                                     <script type='module' src="/scripts/order.js"></script>
                                                                     <script src="/scripts/mobileCards.js"></script>
-                                                                    <script>
-                                                                        let orderNavBtn = document.getElementById('orders-nav-btn');
-                                                                        if (orderNavBtn) {
-                                                                            orderNavBtn.classList.add('active');
-                                                                        }
-                                                                    </script>
-                                                                    {% if isGroupShop %}
-                                                                    <script type="module">
-                                                                        import { createInfoDialog } from '/scripts/components/htmlManipulator.js';
-                                                                        import { showToast } from '/scripts/components/toast.js';
-                                                                        (function() {
-                                                                            const btn = document.getElementById('submit-for-approval-btn');
-                                                                            if (!btn) return;
-                                                                            const parent = document.getElementById('dialog-container') || document.body;
-                                                                            btn.addEventListener('click', function() {
-                                                                                createInfoDialog({
-                                                                                    title: 'Wyślij do zatwierdzenia',
-                                                                                    message: 'Czy na pewno chcesz wysłać zamówienie do zatwierdzenia przez centralę?',
-                                                                                    parent,
-                                                                                    buttons: [
-                                                                                        { label: 'Anuluj', className: 'btn btn-secondary me-1', id: 'cancel-btn' },
-                                                                                        { label: 'Wyślij', className: 'btn btn-success ms-1', id: 'confirm-btn', enter: true,
-                                                                                          action: async () => {
-                                                                                            btn.disabled = true;
-                                                                                            try {
-                                                                                                const res = await fetch(`/orders/submit-for-approval/${btn.dataset.id}`, {
-                                                                                                    method: 'POST',
-                                                                                                    headers: { 'Content-Type': 'application/json' }
-                                                                                                });
-                                                                                                const data = await res.json();
-                                                                                                if (data.success) {
-                                                                                                    showToast('success', 'Wysłano do zatwierdzenia');
-                                                                                                    setTimeout(() => { window.location.href = data.redirect || '/orders'; }, 800);
-                                                                                                } else {
-                                                                                                    showToast('error', data.message || 'Błąd serwera.');
-                                                                                                    btn.disabled = false;
-                                                                                                }
-                                                                                            } catch (e) {
-                                                                                                showToast('error', 'Błąd połączenia.');
-                                                                                                btn.disabled = false;
-                                                                                            }
-                                                                                          }
-                                                                                        }
-                                                                                    ]
-                                                                                });
-                                                                            });
-                                                                        })();
-                                                                    </script>
-                                                                    {% endif %}
-                                                                    {% if isGroup %}
-                                                                    <script type="module">
-                                                                        import { createInfoDialog } from '/scripts/components/htmlManipulator.js';
-                                                                        import { showToast } from '/scripts/components/toast.js';
-                                                                        (function() {
-                                                                            const approveBtn = document.getElementById('group-approve-btn');
-                                                                            const rejectBtn = document.getElementById('group-reject-btn');
-                                                                            const parent = document.getElementById('dialog-container') || document.body;
-
-                                                                            function performAction(url, btn, successLabel) {
-                                                                                btn.disabled = true;
-                                                                                fetch(url, {
-                                                                                    method: 'POST',
-                                                                                    headers: { 'Content-Type': 'application/json' },
-                                                                                    credentials: 'same-origin'
-                                                                                }).then(r => r.json()).then(data => {
-                                                                                    if (data.success) {
-                                                                                        showToast('success', successLabel);
-                                                                                        setTimeout(() => { window.location.href = data.redirect || '/group/panel?tab=pending'; }, 900);
-                                                                                    } else {
-                                                                                        showToast('error', data.message || 'Błąd serwera.');
-                                                                                        btn.disabled = false;
-                                                                                    }
-                                                                                }).catch(() => {
-                                                                                    showToast('error', 'Błąd połączenia.');
-                                                                                    btn.disabled = false;
-                                                                                });
-                                                                            }
-
-                                                                            function openConfirm({ title, message, confirmLabel, confirmClass, action }) {
-                                                                                createInfoDialog({
-                                                                                    title, message, parent,
-                                                                                    buttons: [
-                                                                                        { label: 'Anuluj', className: 'btn btn-secondary me-1', id: 'cancel-btn' },
-                                                                                        { label: confirmLabel, className: confirmClass, id: 'confirm-btn', enter: true, action }
-                                                                                    ]
-                                                                                });
-                                                                            }
-
-                                                                            if (approveBtn) {
-                                                                                approveBtn.addEventListener('click', () => {
-                                                                                    openConfirm({
-                                                                                        title: 'Zatwierdź i wyślij',
-                                                                                        message: 'Zamówienie zostanie wysłane do centrali. Operacja jest nieodwracalna.',
-                                                                                        confirmLabel: '✓ Zatwierdź i wyślij',
-                                                                                        confirmClass: 'btn btn-success ms-1',
-                                                                                        action: () => performAction(`/group/approve-order/${approveBtn.dataset.id}`, approveBtn, 'Zamówienie zatwierdzone.')
-                                                                                    });
-                                                                                });
-                                                                            }
-                                                                            if (rejectBtn) {
-                                                                                rejectBtn.addEventListener('click', () => {
-                                                                                    openConfirm({
-                                                                                        title: 'Odrzuć zamówienie',
-                                                                                        message: 'Zamówienie zostanie cofnięte do statusu „aktywne”. Sklep będzie mógł je ponownie edytować.',
-                                                                                        confirmLabel: 'Odrzuć',
-                                                                                        confirmClass: 'btn btn-danger ms-1',
-                                                                                        action: () => performAction(`/group/reject-order/${rejectBtn.dataset.id}`, rejectBtn, 'Zamówienie odrzucone.')
-                                                                                    });
-                                                                                });
-                                                                            }
-                                                                        })();
-                                                                    </script>
-                                                                    {% endif %}
                                                                 {% endblock scripts %}

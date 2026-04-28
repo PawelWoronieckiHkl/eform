@@ -29,7 +29,22 @@
         else if (currentPath === '/orders/history') {
             isActive = link.id === 'orders-history-nav-btn';
         }
-        
+
+        else if (currentPath.startsWith('/orders/history/order/')) {
+            isActive = link.id === 'orders-history-nav-btn';
+        }
+
+        else if (currentPath.startsWith('/orders/edit/')) {
+            isActive = link.id === 'new-order-nav-btn';
+        }
+
+        else if (currentPath === '/orders/organization-orders') {
+            const historyParam = new URLSearchParams(window.location.search).get('history');
+            isActive = historyParam === 'true'
+                ? link.id === 'orders-history-nav-btn'
+                : link.id === 'orders-nav-btn';
+        }
+
         else if (href === '/orders' && currentPath === '/orders') {
             isActive = true;
         }

@@ -177,3 +177,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// countrySelect init — locale from <html lang>
+(function () {
+    const langToCountry = { pl: 'pl', de: 'de', en: 'gb', nl: 'nl', fr: 'fr' };
+    const currentCountry = langToCountry[document.documentElement.lang] || 'pl';
+    const preferredList = [currentCountry].concat(['pl', 'de', 'gb', 'nl', 'fr'].filter(function (c) { return c !== currentCountry; }));
+    $(function () {
+        if ($.fn.countrySelect) {
+            $('#country').countrySelect({ preferredCountries: preferredList, defaultCountry: currentCountry });
+            $('#sendCountry').countrySelect({ preferredCountries: preferredList, defaultCountry: currentCountry });
+        }
+    });
+}());
+
