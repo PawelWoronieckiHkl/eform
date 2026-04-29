@@ -582,8 +582,10 @@ export function getTotal(displayValues) {
   for (let [key, value] of displayValues) {
     if (value?.listsum) {
       if (value?.sub) {
-        // sub params always go to total_sub, even when also locked
-        totalObj['total_sub'] = (totalObj['total_sub'] || 0) + parseFloat(value.option_value || 0);
+        // sub params: use assignment like total/total_hidden so that SUB___CENA_RABAT
+        // (the discounted price, defined after SUB___CENA) overwrites rather than accumulates.
+        // Accumulation caused double-counting when both SUB___CENA and SUB___CENA_RABAT had listsum=true.
+        totalObj['total_sub'] = parseFloat(value.option_value || 0);
       }
       else if (value?.locked) {
         totalObj['total_hidden'] = parseFloat(value.option_value);

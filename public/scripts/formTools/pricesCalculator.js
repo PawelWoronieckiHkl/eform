@@ -167,6 +167,14 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
                             values[scriptParamName] = scriptValue;
                             buildValuesToDisplay(allOptionsByParameter, strVal, scriptParamName, displayValues, 'INPUT', true);
 
+                            // Mirror value to SUB___ variant if it exists (e.g. CENA → SUB___CENA)
+                            const subVariantName = 'SUB___' + scriptParamName;
+                            if (inputs[subVariantName] && !scriptParamName.startsWith('SUB___')) {
+                                inputs[subVariantName].value = scriptValue;
+                                values[subVariantName] = scriptValue;
+                                buildValuesToDisplay(allOptionsByParameter, strVal, subVariantName, displayValues, 'INPUT', true);
+                            }
+
                             // For auto-created _S params, set description from parent with -spec suffix
                             if (isNewSuffix) {
                                 const parentName = scriptParamName.slice(0, -2);

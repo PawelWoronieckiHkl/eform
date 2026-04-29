@@ -266,7 +266,6 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
         let extraMail = process.env.EXTRA_MAIL ? process.env.EXTRA_MAIL.split(',') : false;
 
         await db.changeOrderStatus(orderId, 'sent');
-        await db.appendShopNumberToOrderIdx(orderId, shop.id);
 
         const { orderDetails, orderItems } = await db.getOrderDataToSend(orderId);
         if (!orderItems || orderItems.length === 0) {

@@ -51,17 +51,31 @@ async function isGroupIdentTaken(ident, excludeId = null) {
     return result && result.length > 0;
 }
 
+async function findNextSeq(parentUserId, parentIdent) {
+    const rows = await selectQuery(
+        `SELECT ident FROM group_user WHERE user_id = ?`,
+        [parentUserId]
+    );
+    const prefix = `${parentIdent}-`;
+    const usedNums = new Set(
+        (rows || [])
+            .map(r => r.ident)
+            .filter(id => id && id.startsWith(prefix))
+            .map(id => parseInt(id.slice(prefix.length), 10))
+            .filter(n => Number.isFinite(n) && n > 0)
+    );
+    let seq = 1;
+    while (usedNums.has(seq)) seq++;
+    return seq;
+}
+
 async function previewNewGroupUser(parentUserId) {
     const parentPin = await (require('./users').getUserPinById)(parentUserId);
     const parentIdent = parentPin
         ? await (require('./users').getUserIdent)(parentPin)
         : String(parentUserId);
 
-    const countResult = await selectQuery(
-        `SELECT COUNT(*) as cnt FROM group_user WHERE user_id = ?`,
-        [parentUserId]
-    );
-    const seq = (countResult?.[0]?.cnt || 0) + 1;
+    const seq = await findNextSeq(parentUserId, parentIdent);
     return {
         ident: `${parentIdent}-${seq}`,
         pin:   `${parentPin || parentIdent}-${seq}`
@@ -89,11 +103,7 @@ async function addGroupUser(data) {
         ? await (require('./users').getUserIdent)(parentPin)
         : String(parentUserId);
 
-    const countResult = await selectQuery(
-        `SELECT COUNT(*) as cnt FROM group_user WHERE user_id = ?`,
-        [parentUserId]
-    );
-    const seq = (countResult?.[0]?.cnt || 0) + 1;
+    const seq = await findNextSeq(parentUserId, parentIdent);
     const ident = `${parentIdent}-${seq}`;
     const pin = `${parentPin || parentIdent}-${seq}`;
 
@@ -191,9 +201,45 @@ async function getGroupUserByOrderId(orderId) {
     return result?.[0] || null;
 }
 
-async function appendShopNumberToOrderIdx(orderId, shopNumber) {
-    const query = `UPDATE \`order\` SET order_idx = CONCAT(order_idx, '-', ?) WHERE id = ?`;
-    await updateQuery(query, [shopNumber, orderId]);
+async function appendShopNumberToOrderIdx(orderId, shopIdent) {
+    // Wyciągnij sufiks liczbowy z ident (np. "TCN-1" → "1", "TCN-12" → "12")
+    const match = shopIdent ? String(shopIdent).match(/-?(\d+)$/) : null;
+    const shopSeq = match ? match[1] : String(shopIdent);
+    const query = `UPDATE \`order\` SET order_idx = CONCAT(?, '-', order_idx) WHERE id = ?`;
+    await updateQuery(query, [shopSeq, orderId]);
+}
+
+async function setGroupShopOrderIdx(orderId, groupUserId) {
+    try {
+        const { connetToDb } = require('./core');
+        const conn = await connetToDb();
+        await conn.connect();
+
+        // Pobierz ident sklepu i wylicz numer sekwencyjny zamówień w jednym połączeniu
+        const [[shopRow]] = await conn.query(
+            `SELECT ident FROM group_user WHERE id = ?`,
+            [groupUserId]
+        );
+        const shopIdent = shopRow?.ident || String(groupUserId);
+        const match = shopIdent.match(/-?(\d+)$/);
+        const shopSeq = match ? match[1] : shopIdent;
+
+        const [[countRow]] = await conn.query(
+            `SELECT COUNT(*) AS cnt FROM \`order\` WHERE group_user_id = ?`,
+            [groupUserId]
+        );
+        const localCount = Number(countRow?.cnt) || 1;
+
+        await conn.query(
+            `UPDATE \`order\` SET order_idx = ? WHERE id = ?`,
+            [`${shopSeq}-${localCount}`, orderId]
+        );
+
+        await conn.end();
+        log(`[setGroupShopOrderIdx] order ${orderId} → ${shopSeq}-${localCount}`);
+    } catch (err) {
+        log(`[setGroupShopOrderIdx] error: ${err.message}`);
+    }
 }
 
 async function getAllShopOrdersByParentUserId(parentUserId, limit = 20, offset = 0, sent = false, shopId = null) {
@@ -275,6 +321,7 @@ module.exports = {
     countPendingOrdersByParentUserId,
     getGroupUserByOrderId,
     appendShopNumberToOrderIdx,
+    setGroupShopOrderIdx,
     getAllShopOrdersByParentUserId,
     countAllShopOrdersByParentUserId,
     getOrderCountsByShop,

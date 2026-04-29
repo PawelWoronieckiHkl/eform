@@ -407,13 +407,26 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
         }
         let paramDiv = inputs[key].parentNode;
 
-        // SUB___ params are always hidden in the form UI regardless of ENABLE
+        // SUB___ params: hidden for regular users/group admins; visible for isGroupShop (non-locked, ENABLE formula passes)
         if (key.startsWith('SUB___')) {
-            paramDiv.style.display = 'none';
-            delete window.enabledParams[param.NAME];
+            const isLockedSub = window.lockedParams && window.lockedParams.includes(key);
+            if (window.isGroupShop && !isLockedSub && shouldEnable) {
+                paramDiv.style.display = 'grid';
+                window.enabledParams[param.NAME] = true;
+            } else {
+                paramDiv.style.display = 'none';
+                delete window.enabledParams[param.NAME];
+            }
         } else if (shouldEnable) {
-            paramDiv.style.display = 'grid';
-            window.enabledParams[param.NAME] = true;
+            // For isGroupShop: hide ALL row2/listsum price params — they only see SUB___ prices
+            const isRowTwo = param.LISTROW == '2' || param.LISTSUM == 'true';
+            if (window.isGroupShop && isRowTwo) {
+                paramDiv.style.display = 'none';
+                delete window.enabledParams[param.NAME];
+            } else {
+                paramDiv.style.display = 'grid';
+                window.enabledParams[param.NAME] = true;
+            }
         }
         else {
             paramDiv.style.display = 'none';

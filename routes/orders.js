@@ -865,6 +865,9 @@ router.post('/save-order', requireLogin, async (req, res) => {
         if (!id) {
             return res.status(500).json({ status: "error", message: "Nie udało się utworzyć zamówienia. Skontaktuj się z administratorem." });
         }
+        if (groupUserId) {
+            await db.setGroupShopOrderIdx(id, groupUserId);
+        }
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: `/orders/order/${id}` });
     }
     catch (err) {

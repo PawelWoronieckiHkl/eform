@@ -85,8 +85,10 @@
                                                                 </a>
                                                             {% endblock %}
                                                             <div class='d-flex'>
+                                                                {% if not isGroup and not isGroupShop %}
                                                                 <button class="btn has-tooltip" data-tooltip="{{ __('base.give_discount_tooltip') }}" id='discount-btn'>
                                                                     <img src="/img/sale.png" alt="sale icon" class='icon'></button>
+                                                                {% endif %}
                                                                     {% if not isGroup and not isGroupShop %}
                                                                     <button id="unlockBtn" class="btn">
                                                                         <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
@@ -214,6 +216,7 @@
                                                                                                                 <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                                                                                                             </tr>
                                                                                                             <tr id='price-row'>
+                                                                                                                {% if not isGroupShop %}
                                                                                                                 {% for header in table.headers2 %}
                                                                                                                     {% if not(header in rowObj.item.lockedParams) %}
                                                                                                                         {% set value = rowObj.row.row2[header] %}
@@ -225,9 +228,10 @@
                                                                                                                         {% endif %}
                                                                                                                     {% endif %}
                                                                                                                 {% endfor %}
+                                                                                                                {% endif %}
                                                                                                             </tr>
-                                                                                                            {% if isGroup and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
-                                                                                                                <tr class="sub-params-row"{% if showSub %} style="display: table-row;"{% endif %}>
+                                                                                                            {% if (isGroup or isGroupShop) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                                                                                                <tr class="sub-params-row"{% if showSub or isGroupShop %} style="display: table-row;"{% endif %}>
                                                                                                                     <td colspan="100%" class="sub-params-cell">
                                                                                                                         <div class="sub-params-container">
                                                                                                                             {% for entry in rowObj.item.subParamValues %}
@@ -308,7 +312,7 @@
                                                                                                                             {% endfor %}
                                                                                                                         </div>
                                                                                                                     {% endif %}
-                                                                                                                    {% if table.headers2.length > 0 %}
+                                                                                                                    {% if table.headers2.length > 0 and not isGroupShop %}
                                                                                                                         <div class="mobile-item-prices">
                                                                                                                             {% for header in table.headers2 %}
                                                                                                                             {% if not(header in rowObj.item.lockedParams) %}
@@ -327,8 +331,8 @@
                                                                                                                                 {{ rowObj.item.comment }}
                                                                                                                             </div>
                                                                                                                         {% endif %}
-                                                                                                                        {% if isGroup and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
-                                                                                                                            <div class="mobile-sub-params"{% if showSub %} style="display: block;"{% endif %}>
+                                                                                                                        {% if (isGroup or isGroupShop) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                                                                                                            <div class="mobile-sub-params"{% if showSub or isGroupShop %} style="display: block;"{% endif %}>
                                                                                                                                 {% for entry in rowObj.item.subParamValues %}
                                                                                                                                     {% if entry.value and entry.value != '-' and entry.value != '' %}
                                                                                                                                         <div class="mobile-sub-param-item">
@@ -381,16 +385,25 @@
                                                                                                         <div id='total-container'>
                                                                                                             <div class="total-price d-flex justify-content-end align-items-center">
                                                                                                                 <span class='total price-label col-3 text-center'>
-                                                                                                                    
-                                                                                                                    {% if totalPrice.visible != '0.00' %}
-                                                                                                                        {{ __('order.total') }}: {{ totalPrice.visible }}&#8364;
-                                                                                                                    </span>
-                                                                                                                {% else %}
-                                                                                                                    Według cennika</span>
-                                                                                                            {% endif %}
+                                                                                                                    {% if isGroupShop %}
+                                                                                                                        {% if totalPrice.sub and totalPrice.sub != 0 %}
+                                                                                                                            {{ __('order.total') }}: {{ totalPrice.sub }}&#8364;
+                                                                                                                        </span>
+                                                                                                                        {% else %}
+                                                                                                                            Według cennika</span>
+                                                                                                                        {% endif %}
+                                                                                                                    {% else %}
+                                                                                                                        {% if totalPrice.visible != '0.00' %}
+                                                                                                                            {{ __('order.total') }}: {{ totalPrice.visible }}&#8364;
+                                                                                                                        </span>
+                                                                                                                        {% else %}
+                                                                                                                            Według cennika</span>
+                                                                                                                        {% endif %}
+                                                                                                                    {% endif %}
+                                                                                                                </div>
+                                                                                                            </div>
                                                                                                         </div>
-                                                                                                    </div>
-                                                                                                {% endif %}
+                                                                                                    {% endif %}
                                                                                             {% endblock %}
                                                                                             {% block send_order_btn %}
                                                                                                 {% if not isEmployee %}
