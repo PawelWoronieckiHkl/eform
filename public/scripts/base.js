@@ -98,6 +98,13 @@ export async function getUserName() {
         throw new Error('Błąd pobierania nazwy użytkownika: ' + data.message);
     }
 
+    const escapeHtml = (value) => String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
 
     let contextInfo = '';
     try {
@@ -130,8 +137,13 @@ export async function getUserName() {
 
     setTimeout(() => {
 
-        document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${data.name}
-        </br> <p class='pt-2'>Mail: </br> ${data.email}</p>  ${contextInfo}`;
+        const shopInfo = data.shopName
+            ? `</br><p class='pt-2'>Filia: </br> ${escapeHtml(data.shopName)}</p>`
+            : '';
+
+        document.getElementById('user-info').innerHTML = `${t('base.user')}: </br> ${escapeHtml(data.name)}
+        ${shopInfo}
+        </br> <p class='pt-2'>Mail: </br> ${escapeHtml(data.email)}</p>  ${contextInfo}`;
         getEmp();
     }, 100);
     return data;

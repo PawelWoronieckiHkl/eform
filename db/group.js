@@ -170,7 +170,7 @@ async function countGroupUsers(parentUserId) {
 
 async function getPendingOrdersByParentUserId(parentUserId) {
     const query = `
-        SELECT o.id, o.commision, o.created_date, o.total_price, o.comment, o.status,
+        SELECT o.id, o.order_idx, o.commision, o.created_date, o.total_price, o.comment, o.status,
                gu.id as shop_id, gu.ident as shop_ident, gu.name as shop_name, gu.id as shop_number
         FROM \`order\` o
         JOIN group_user gu ON gu.id = o.group_user_id
@@ -199,47 +199,6 @@ async function getGroupUserByOrderId(orderId) {
     `;
     const result = await selectQuery(query, [orderId]);
     return result?.[0] || null;
-}
-
-async function appendShopNumberToOrderIdx(orderId, shopIdent) {
-    // Wyciągnij sufiks liczbowy z ident (np. "TCN-1" → "1", "TCN-12" → "12")
-    const match = shopIdent ? String(shopIdent).match(/-?(\d+)$/) : null;
-    const shopSeq = match ? match[1] : String(shopIdent);
-    const query = `UPDATE \`order\` SET order_idx = CONCAT(?, '-', order_idx) WHERE id = ?`;
-    await updateQuery(query, [shopSeq, orderId]);
-}
-
-async function setGroupShopOrderIdx(orderId, groupUserId) {
-    try {
-        const { connetToDb } = require('./core');
-        const conn = await connetToDb();
-        await conn.connect();
-
-        // Pobierz ident sklepu i wylicz numer sekwencyjny zamówień w jednym połączeniu
-        const [[shopRow]] = await conn.query(
-            `SELECT ident FROM group_user WHERE id = ?`,
-            [groupUserId]
-        );
-        const shopIdent = shopRow?.ident || String(groupUserId);
-        const match = shopIdent.match(/-?(\d+)$/);
-        const shopSeq = match ? match[1] : shopIdent;
-
-        const [[countRow]] = await conn.query(
-            `SELECT COUNT(*) AS cnt FROM \`order\` WHERE group_user_id = ?`,
-            [groupUserId]
-        );
-        const localCount = Number(countRow?.cnt) || 1;
-
-        await conn.query(
-            `UPDATE \`order\` SET order_idx = ? WHERE id = ?`,
-            [`${shopSeq}-${localCount}`, orderId]
-        );
-
-        await conn.end();
-        log(`[setGroupShopOrderIdx] order ${orderId} → ${shopSeq}-${localCount}`);
-    } catch (err) {
-        log(`[setGroupShopOrderIdx] error: ${err.message}`);
-    }
 }
 
 async function getAllShopOrdersByParentUserId(parentUserId, limit = 20, offset = 0, sent = false, shopId = null) {
@@ -320,8 +279,6 @@ module.exports = {
     getPendingOrdersByParentUserId,
     countPendingOrdersByParentUserId,
     getGroupUserByOrderId,
-    appendShopNumberToOrderIdx,
-    setGroupShopOrderIdx,
     getAllShopOrdersByParentUserId,
     countAllShopOrdersByParentUserId,
     getOrderCountsByShop,

@@ -66,7 +66,7 @@ router.post('/shops', async (req, res, next) => {
                 shop: req.body,
                 mode: 'new',
                 ...preview,
-                error: 'Hasło jest wymagane i musi mieć minimum 5 znaków.'
+                error: req.__('group.form_error_password_required')
             });
         }
 
@@ -76,7 +76,7 @@ router.post('/shops', async (req, res, next) => {
                 shop: req.body,
                 mode: 'new',
                 ...preview,
-                error: 'Nieprawidłowy format adresu email.'
+                error: req.__('group.form_error_email_invalid')
             });
         }
 
@@ -95,7 +95,7 @@ router.post('/shops', async (req, res, next) => {
             return res.render('group/shop_form.njk', {
                 shop: req.body,
                 mode: 'new',
-                error: 'Błąd podczas dodawania sklepu.'
+                error: req.__('group.form_error_add_shop')
             });
         }
 
@@ -167,14 +167,14 @@ router.delete('/shops/:id', async (req, res, next) => {
         const shop = await db.getGroupUserById(id);
 
         if (!shop || shop.user_id !== currentUser.userId) {
-            return res.status(403).json({ success: false, message: 'Brak uprawnień.' });
+            return res.status(403).json({ success: false, message: req.__('group.error_forbidden') });
         }
 
         await db.deleteGroupUser(id);
         return res.status(200).json({ success: true });
     } catch (err) {
         log('[group/shops DELETE] Error:', err);
-        return res.status(500).json({ success: false, message: 'Błąd serwera.' });
+        return res.status(500).json({ success: false, message: req.__('group.error_server') });
     }
 });
 
@@ -241,7 +241,7 @@ router.get('/pending-orders', requireLogin, requireGroup, async (req, res, next)
         const currentUser = ownerService.getCurrentUser(req);
         const orders = await db.getPendingOrdersByParentUserId(currentUser.userId);
         return res.render('group/pending_orders.njk', {
-            title: 'Oczekujące zamówienia',
+            title: req.__('group.pending_page_title'),
             orders,
         });
     } catch (err) {
@@ -260,16 +260,19 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
         // Weryfikacja: zamówienie należy do jednego ze sklepów tej grupy
         const shop = await db.getGroupUserByOrderId(orderId);
         if (!shop || shop.user_id !== currentUser.userId) {
-            return res.status(403).json({ success: false, message: 'Brak uprawnień.' });
+            return res.status(403).json({ success: false, message: req.__('group.error_forbidden') });
         }
 
         let extraMail = process.env.EXTRA_MAIL ? process.env.EXTRA_MAIL.split(',') : false;
 
-        await db.changeOrderStatus(orderId, 'sent');
-
         const { orderDetails, orderItems } = await db.getOrderDataToSend(orderId);
         if (!orderItems || orderItems.length === 0) {
-            return res.status(400).json({ success: false, message: 'Zamówienie jest puste.' });
+            return res.status(400).json({ success: false, message: req.__('group.error_empty_order') });
+        }
+
+        const statusChanged = await db.changeOrderStatus(orderId, 'sent');
+        if (!statusChanged) {
+            return res.status(400).json({ success: false, message: req.__('group.error_empty_order') });
         }
 
         const sender = new OrderSender.OrderSender(req, orderDetails, orderItems);
@@ -323,10 +326,10 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
             bccList.join(', ')
         );
 
-        return res.json({ success: true, message: 'Zamówienie zatwierdzone i wysłane.', redirect: '/group/panel?tab=pending' });
+        return res.json({ success: true, message: req.__('group.approve_sent_success'), redirect: '/group/panel?tab=pending' });
     } catch (err) {
         log('[group/approve-order POST] Error:', err);
-        return res.status(500).json({ success: false, message: 'Błąd serwera.' });
+        return res.status(500).json({ success: false, message: req.__('group.error_server') });
     }
 });
 
@@ -339,14 +342,14 @@ router.post('/reject-order/:orderId', requireLogin, requireGroup, async (req, re
 
         const shop = await db.getGroupUserByOrderId(orderId);
         if (!shop || shop.user_id !== currentUser.userId) {
-            return res.status(403).json({ success: false, message: 'Brak uprawnień.' });
+            return res.status(403).json({ success: false, message: req.__('group.error_forbidden') });
         }
 
         await db.changeOrderStatus(orderId, 'active');
-        return res.json({ success: true, message: 'Zamówienie odrzucone.', redirect: '/group/panel?tab=pending' });
+        return res.json({ success: true, message: req.__('group.reject_success'), redirect: '/group/panel?tab=pending' });
     } catch (err) {
         log('[group/reject-order POST] Error:', err);
-        return res.status(500).json({ success: false, message: 'Błąd serwera.' });
+        return res.status(500).json({ success: false, message: req.__('group.error_server') });
     }
 });
 

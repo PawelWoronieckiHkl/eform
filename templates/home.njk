@@ -54,7 +54,9 @@
                         <p>
                             <strong>E-mail:</strong>
                             {{ user.email }}</p>
-                        <a class='btn btn-outline-secondary m-auto mt-3' href="/user/edit-user">{{ __('base.edit_user_data') }}</a>
+                        {% if not isGroupShop %}
+                            <a class='btn btn-outline-secondary m-auto mt-3' href="/user/edit-user">{{ __('base.edit_user_data') }}</a>
+                        {% endif %}
                     </div>
                 </div>
             {% else %}

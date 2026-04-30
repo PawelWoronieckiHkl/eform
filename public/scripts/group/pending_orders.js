@@ -4,6 +4,7 @@
  */
 (function () {
     'use strict';
+    const i18n = (key) => (typeof t === 'function' ? t(key) : key);
 
     const approveModal = new bootstrap.Modal(document.getElementById('approveModal'));
     const rejectModal  = new bootstrap.Modal(document.getElementById('rejectModal'));
@@ -57,7 +58,7 @@
             }
         } catch (err) {
             console.error('Błąd:', err);
-            alert('Wystąpił błąd serwera. Spróbuj ponownie.');
+            alert(i18n('group.error_server_retry'));
         }
     }
 }());

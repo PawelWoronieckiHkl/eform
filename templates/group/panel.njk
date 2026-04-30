@@ -212,7 +212,7 @@
                                     <tr>
                                         <td>
                                             <a href="/orders/order/{{ order.id }}" class="gp-order-link">
-                                                {{ order.order_idx or ('#' + order.id) }}
+                                                {{ order.order_idx or '—' }}
                                             </a>
                                         </td>
                                         <td><span class="gp-badge gp-badge--shop">{{ order.shop_name or order.shop_ident }}</span></td>
@@ -282,7 +282,7 @@
                                     <tr>
                                         <td>
                                             <a href="/orders/order/{{ order.id }}" target="_blank" class="gp-order-link">
-                                                {{ order.order_idx or order.id }}
+                                                {{ order.order_idx or '—' }}
                                             </a>
                                         </td>
                                         <td><span class="gp-badge gp-badge--shop">{{ order.shop_name or order.shop_ident }}</span></td>
@@ -388,7 +388,9 @@
     "deleteError": {{ __('group.error_delete') | dump | safe }},
     "connError": {{ __('group.error_connection') | dump | safe }},
     "serverError": {{ __('group.error_server') | dump | safe }},
-    "deletingProgress": {{ __('group.deleting_progress') | dump | safe }}
+    "deletingProgress": {{ __('group.deleting_progress') | dump | safe }},
+    "pinLogin": {{ __('group.sf_pin_login') | dump | safe }},
+    "passwordLabel": {{ __('login.password_label') | dump | safe }}
 }
 </script>
 <script src="/scripts/group/panel.js"></script>

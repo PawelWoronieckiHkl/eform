@@ -159,14 +159,14 @@ function buildAndShowDialog(btn, functionName) {
 	const title = functionName === 'sendOrder'
 		? `${t('orders.send_order')}`
 		: functionName === 'submitForApproval'
-			? 'Wyślij do zatwierdzenia'
+			? t('group.submit_for_approval_title')
 			: functionName === 'copyItem'
 				? `${t('orders.open_as_new')}`
 				: "";
 	const label = functionName === 'sendOrder'
 		? `${t('orders.send_word')}`
 		: functionName === 'submitForApproval'
-			? 'Wyślij'
+			? t('orders.send_word')
 			: functionName === 'copyItem'
 				? `${t('orders.accept')}`
 				: "";
@@ -210,13 +210,13 @@ async function submitForApproval(btn) {
 		});
 		const result = await response.json();
 		if (result.success) {
-			showToast('success', 'Wysłano do zatwierdzenia');
+			showToast('success', t('group.submit_for_approval_success'));
 			setTimeout(() => { window.location.href = result.redirect || '/orders'; }, 1200);
 		} else {
-			showToast('error', result.message || 'Błąd serwera.');
+			showToast('error', result.message || t('group.error_server'));
 		}
 	} catch (e) {
-		showToast('error', 'Błąd połączenia.');
+		showToast('error', t('group.error_connection'));
 	}
 }
 

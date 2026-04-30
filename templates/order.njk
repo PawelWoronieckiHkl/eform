@@ -40,7 +40,7 @@
                                                     <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                 {% endif %}
                                                     {% if isGroup %}
-                                                        <button id="unlockSubBtn" class="btn has-tooltip{% if showSub %} active{% endif %}" data-tooltip="Pokaż/ukryj parametry sub">
+                                                        <button id="unlockSubBtn" class="btn has-tooltip{% if showSub %} active{% endif %}" data-tooltip="{{ __('group.toggle_sub_params_tooltip') }}">
                                                             <img src="/img/key-chain.png" alt="sub params icon" class='icon'></button>
                                                     {% endif %}
                                                     <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_pdf_tooltip') }}" id='print-button'>
@@ -94,7 +94,7 @@
                                                                         <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                                     {% endif %}
                                                                         {% if isGroup %}
-                                                                            <button id="unlockSubBtn" class="btn has-tooltip{% if showSub %} active{% endif %}" data-tooltip="Pokaż/ukryj parametry sub">
+                                                                            <button id="unlockSubBtn" class="btn has-tooltip{% if showSub %} active{% endif %}" data-tooltip="{{ __('group.toggle_sub_params_tooltip') }}">
                                                                                 <img src="/img/key-chain.png" alt="sub params icon" class='icon'></button>
                                                                         {% endif %}
                                                                         <button class="btn has-tooltip" data-tooltip="{{ __('base.generate_short_pdf_tooltip') }}" id='short-print-button'>
@@ -390,14 +390,14 @@
                                                                                                                             {{ __('order.total') }}: {{ totalPrice.sub }}&#8364;
                                                                                                                         </span>
                                                                                                                         {% else %}
-                                                                                                                            Według cennika</span>
+                                                                                                                            {{ __('order.according_to_price') }}</span>
                                                                                                                         {% endif %}
                                                                                                                     {% else %}
                                                                                                                         {% if totalPrice.visible != '0.00' %}
                                                                                                                             {{ __('order.total') }}: {{ totalPrice.visible }}&#8364;
                                                                                                                         </span>
                                                                                                                         {% else %}
-                                                                                                                            Według cennika</span>
+                                                                                                                            {{ __('order.according_to_price') }}</span>
                                                                                                                         {% endif %}
                                                                                                                     {% endif %}
                                                                                                                 </div>
@@ -410,19 +410,19 @@
                                                                                                     <div class="d-flex justify-content-end align-items-center w-100">
                                                                                                     {% if isGroupShop %}
                                                                                                         {% if orderDetails.status == 'pending_approval' %}
-                                                                                                            <span class="badge bg-warning text-dark me-3 align-self-center" style="font-size:0.95rem;">Wysłane do zatwierdzenia</span>
+                                                                                                            <span class="badge bg-warning text-dark me-3 align-self-center" style="font-size:0.95rem;">{{ __('group.status_submitted_for_approval') }}</span>
                                                                                                         {% else %}
                                                                                                             <button class="action-btn action-btn-send p-1 stop-propagation me-3 custom-order-btn" type="button" id='submit-for-approval-btn' data-id="{{ orderDetails.id }}">
-                                                                                                                <p>Wyślij do zatwierdzenia</p>
+                                                                                                                <p>{{ __('group.submit_for_approval_title') }}</p>
                                                                                                             </button>
                                                                                                         {% endif %}
                                                                                                     {% elif isGroup and orderDetails.group_user_id and orderDetails.status == 'pending_approval' %}
-                                                                                                        <span class="badge bg-warning text-dark me-3 align-self-center" style="font-size:0.95rem;">Oczekuje zatwierdzenia</span>
+                                                                                                        <span class="badge bg-warning text-dark me-3 align-self-center" style="font-size:0.95rem;">{{ __('group.status_pending_approval') }}</span>
                                                                                                         <button class="action-btn action-btn-send p-1 me-2 custom-order-btn" type="button" id='group-approve-btn' data-id="{{ orderDetails.id }}">
-                                                                                                            <p>✓ Zatwierdź i wyślij</p>
+                                                                                                            <p>✓ {{ __('group.approve_send_btn') }}</p>
                                                                                                         </button>
                                                                                                         <button class="action-btn action-btn-delete p-1 custom-order-btn" type="button" id='group-reject-btn' data-id="{{ orderDetails.id }}">
-                                                                                                            <p>Odrzuć</p>
+                                                                                                            <p>{{ __('group.reject_btn') }}</p>
                                                                                                         </button>
                                                                                                     {% else %}
                                                                                                         <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn me-3 custom-order-btn" type="button" id='send-order' data-id="{{ orderDetails.id }}">

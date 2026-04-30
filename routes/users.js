@@ -272,6 +272,14 @@ router.get('/name', requireLogin, async (req, res) => {
 
     const pin = req.session.user.pin;
     const mailAdresses = await db.getUserMail(pin)
+    let shopName = null;
+    let email = mailAdresses?.user_email || '';
+
+    if (req.session.user?.isGroupShop && req.session.user?.groupShopId) {
+        const shop = await db.getGroupUserById(req.session.user.groupShopId);
+        shopName = shop?.name || shop?.ident || req.session.user.shopName || null;
+        email = shop?.email || email;
+    }
 
 
     let response = await db.getUserName(pin);
@@ -281,7 +289,8 @@ router.get('/name', requireLogin, async (req, res) => {
             success: true,
             name: response,
             pin: pin,
-            email: mailAdresses.user_email
+            email,
+            shopName
         });
     }
     else {

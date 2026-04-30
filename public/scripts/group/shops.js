@@ -2,6 +2,7 @@ const deleteButtons = document.querySelectorAll('.btn-delete-shop');
 const modal = new bootstrap.Modal(document.getElementById('deleteShopModal'));
 const nameEl = document.getElementById('deleteShopName');
 const confirmBtn = document.getElementById('confirmDeleteShop');
+const i18n = (key) => (typeof t === 'function' ? t(key) : key);
 
 let pendingDeleteId = null;
 
@@ -16,8 +17,9 @@ deleteButtons.forEach(btn => {
 confirmBtn?.addEventListener('click', async () => {
     if (!pendingDeleteId) return;
 
+    const baseLabel = confirmBtn.textContent;
     confirmBtn.disabled = true;
-    confirmBtn.textContent = 'Usuwanie…';
+    confirmBtn.textContent = i18n('group.deleting_progress');
 
     try {
         const res = await fetch(`/group/shops/${pendingDeleteId}`, {
@@ -36,13 +38,13 @@ confirmBtn?.addEventListener('click', async () => {
                 window.location.reload();
             }
         } else {
-            alert(data.message || 'Błąd podczas usuwania sklepu.');
+            alert(data.message || i18n('group.error_delete'));
         }
     } catch (err) {
-        alert('Błąd połączenia z serwerem.');
+        alert(i18n('group.error_connection'));
     } finally {
         confirmBtn.disabled = false;
-        confirmBtn.textContent = 'Usuń';
+        confirmBtn.textContent = baseLabel;
         pendingDeleteId = null;
     }
 });

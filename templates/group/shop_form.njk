@@ -116,7 +116,7 @@
                                            name="street"
                                            maxlength="200"
                                            value="{{ shop.street or '' }}"
-                                           placeholder="Street 1">
+                                           placeholder="{{ __('new-order.street_placeholder') }}">
                                 </div>
 
                                 <div class="col-md-4">
@@ -138,7 +138,7 @@
                                            name="city"
                                            maxlength="100"
                                            value="{{ shop.city or '' }}"
-                                           placeholder="City">
+                                           placeholder="{{ __('new-order.city_placeholder') }}">
                                 </div>
 
                                 <div class="col-md-6">

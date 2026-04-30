@@ -22,6 +22,29 @@ function parseTotalPrice(raw) {
     return isNaN(parsed) ? null : parsed;
 }
 
+async function buildGroupShopOrderIdx(groupUserId) {
+    const shopRows = await selectQuery(
+        `SELECT ident FROM group_user WHERE id = ?`,
+        [groupUserId]
+    );
+    const shopIdent = shopRows?.[0]?.ident || String(groupUserId);
+    const match = String(shopIdent).match(/-?(\d+)$/);
+    const shopSeq = match ? match[1] : String(shopIdent);
+    const prefix = `${shopSeq}-`;
+    const escapedShopSeq = String(shopSeq).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    const orderRows = await selectQuery(
+        `SELECT order_idx FROM \`order\` WHERE group_user_id = ? AND order_idx REGEXP ?`,
+        [groupUserId, `^${escapedShopSeq}-[0-9]+$`]
+    );
+    const maxOrderSeq = (orderRows || [])
+        .map(row => parseInt(String(row.order_idx).slice(prefix.length), 10))
+        .filter(num => Number.isFinite(num) && num > 0)
+        .reduce((max, num) => Math.max(max, num), 0);
+
+    return `${prefix}${maxOrderSeq + 1}`;
+}
+
 
 async function getOrderWithItems(orderId) {
 
@@ -386,6 +409,53 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
     employeeId = employeeId || null;
     groupUserId = groupUserId || null;
 
+    const groupShopOrderIdx = groupUserId ? await buildGroupShopOrderIdx(groupUserId) : null;
+
+    if (groupShopOrderIdx) {
+        const query = `INSERT INTO \`order\` 
+        (user_id,
+        delivery_address_id,
+        commision,
+        total_price,
+        organization_id,
+        comment,
+        status,
+        created_date,
+        send_address_id,
+        contact_info_id,
+        employee_id,
+        order_idx,
+        group_user_id)
+        values (?,?,?,
+        ?,
+        (select u.organization_id from eform.\`user\` u  where u.id =?) 
+        ,?,'active',?,?,?,?,?,?)`
+        try {
+            const response = await insertQuery(query,
+                [userId,
+                    addressId,
+                    commision,
+                    totalPrice,
+                    userId,
+                    comment,
+                    dateUtils.getDbTimestamp(),
+                    sendAddressId,
+                    mailId,
+                    employeeId,
+                    groupShopOrderIdx,
+                    groupUserId
+                ]
+            )
+
+            return response[0].insertId;
+        }
+
+        catch (err) {
+            log(err);
+            return false;
+        }
+    }
+
     const query = `INSERT INTO \`order\` 
     (user_id,
     delivery_address_id,
@@ -428,6 +498,10 @@ async function insertNewOrder(commision, addressId, userId, comment, sendAddress
 }
 
 async function submitOrderForApproval(orderId) {
+    if (!(await orderHasItems(orderId))) {
+        return false;
+    }
+
     const query = `UPDATE \`order\` SET status = 'pending_approval' WHERE id = ?`;
     try {
         const response = await updateQuery(query, [orderId]);
@@ -436,6 +510,12 @@ async function submitOrderForApproval(orderId) {
         log(err);
         return false;
     }
+}
+
+async function orderHasItems(orderId) {
+    const query = `SELECT COUNT(*) as cnt FROM order_item WHERE order_id = ?`;
+    const result = await selectQuery(query, [orderId]);
+    return Number(result?.[0]?.cnt) > 0;
 }
 
 async function getGroupShopOrders(groupUserId, limit = 10, offset = 0, sent = false) {
@@ -484,6 +564,10 @@ async function updateOrderComment(orderId, comment) {
 }
 
 async function changeOrderStatus(orderId, status) {
+    if (status === 'sent' && !(await orderHasItems(orderId))) {
+        return false;
+    }
+
     const sentDate = dateUtils.getDbTimestamp();
     const query = `UPDATE \`order\` SET status = ?, sent_date = ?  where id = ?`
     try {
@@ -741,6 +825,7 @@ module.exports = {
     getOrderNo,
     updateMaxProdDays,
     submitOrderForApproval,
+    orderHasItems,
     getGroupShopOrders,
     countGroupShopOrders,
 }

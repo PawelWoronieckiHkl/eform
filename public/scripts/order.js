@@ -83,7 +83,7 @@ function createDuplicateDiag(btn) {
         id: "cancel-btn"
       },
       {
-        label: "Ok",
+        label: t('common.ok'),
         className: "btn btn-success m-2",
         id: "confirm-btn",
         action: async () => {
@@ -113,7 +113,7 @@ async function duplicate(btn) {
         window.location.href = result.redirect;
       }, 300);
     } else {
-      showToast('error', result.error || "Błąd podczas duplikowania");
+      showToast('error', result.error || t('order.duplicate_error'));
     }
   } catch (error) {
     showToast('error', error.message || error);
@@ -219,7 +219,7 @@ async function unlock(password) {
     } else {
       const diagInput = document.getElementById('diag-input-container')
       createElement('div', {
-        class: ['alert', 'alert-danger', 'mt-3', 'me-4', 'p-2', 'text-center'], role: 'alert', text: 'Hasło nieprawidłowe',
+        class: ['alert', 'alert-danger', 'mt-3', 'me-4', 'p-2', 'text-center'], role: 'alert', text: t('order.invalid_password'),
 
       }, diagInput)
       console.log('HASLO NIEPRAWIDLOWE')
@@ -362,7 +362,7 @@ async function movePosition(positionId, direction) {
       showToast('error', result.message);
     }
   } catch (error) {
-    showToast('error', 'Błąd podczas przesuwania pozycji');
+    showToast('error', t('order.move_position_error'));
     console.error('Error moving position:', error);
   }
 }
@@ -419,7 +419,7 @@ async function setOrderPos(positionId, idx) {
       showToast('error', result.message);
     }
   } catch (error) {
-    showToast('error', 'Błąd podczas ustawiania kolejności pozycji');
+    showToast('error', t('order.set_position_order_error'));
     console.error('Error setting position order:', error);
   }
 }
@@ -431,13 +431,13 @@ async function setOrderPos(positionId, idx) {
     const parent = document.getElementById('dialog-container') || document.body;
     btn.addEventListener('click', function () {
         createInfoDialog({
-            title: 'Wyślij do zatwierdzenia',
-            message: 'Czy na pewno chcesz wysłać zamówienie do zatwierdzenia przez centralę?',
+            title: t('group.submit_for_approval_title'),
+            message: t('group.submit_for_approval_message'),
             parent,
             buttons: [
-                { label: 'Anuluj', className: 'btn btn-secondary me-1', id: 'cancel-btn' },
+                { label: t('orders.abort'), className: 'btn btn-secondary me-1', id: 'cancel-btn' },
                 {
-                    label: 'Wyślij', className: 'btn btn-success ms-1', id: 'confirm-btn', enter: true,
+                    label: t('orders.send_word'), className: 'btn btn-success ms-1', id: 'confirm-btn', enter: true,
                     action: async () => {
                         btn.disabled = true;
                         try {
@@ -447,14 +447,14 @@ async function setOrderPos(positionId, idx) {
                             });
                             const data = await res.json();
                             if (data.success) {
-                                showToast('success', 'Wysłano do zatwierdzenia');
+                                showToast('success', t('group.submit_for_approval_success'));
                                 setTimeout(() => { window.location.href = data.redirect || '/orders'; }, 800);
                             } else {
-                                showToast('error', data.message || 'Błąd serwera.');
+                                showToast('error', data.message || t('group.error_server'));
                                 btn.disabled = false;
                             }
                         } catch (e) {
-                            showToast('error', 'Błąd połączenia.');
+                            showToast('error', t('group.error_connection'));
                             btn.disabled = false;
                         }
                     }
@@ -480,12 +480,12 @@ async function setOrderPos(positionId, idx) {
                     showToast('success', successLabel);
                     setTimeout(() => { window.location.href = data.redirect || '/group/panel?tab=pending'; }, 900);
                 } else {
-                    showToast('error', data.message || 'Błąd serwera.');
+                    showToast('error', data.message || t('group.error_server'));
                     actionBtn.disabled = false;
                 }
             })
             .catch(() => {
-                showToast('error', 'Błąd połączenia.');
+                showToast('error', t('group.error_connection'));
                 actionBtn.disabled = false;
             });
     }
@@ -494,7 +494,7 @@ async function setOrderPos(positionId, idx) {
         createInfoDialog({
             title, message, parent,
             buttons: [
-                { label: 'Anuluj', className: 'btn btn-secondary me-1', id: 'cancel-btn' },
+              { label: t('orders.abort'), className: 'btn btn-secondary me-1', id: 'cancel-btn' },
                 { label: confirmLabel, className: confirmClass, id: 'confirm-btn', enter: true, action }
             ]
         });
@@ -503,22 +503,22 @@ async function setOrderPos(positionId, idx) {
     if (approveBtn) {
         approveBtn.addEventListener('click', () => {
             openConfirm({
-                title: 'Zatwierdź i wyślij',
-                message: 'Zamówienie zostanie wysłane do centrali. Operacja jest nieodwracalna.',
-                confirmLabel: '✓ Zatwierdź i wyślij',
+                title: t('group.approve_send_title'),
+                message: t('group.approve_send_message'),
+                confirmLabel: `✓ ${t('group.approve_send_btn')}`,
                 confirmClass: 'btn btn-success ms-1',
-                action: () => performAction(`/group/approve-order/${approveBtn.dataset.id}`, approveBtn, 'Zamówienie zatwierdzone.')
+                action: () => performAction(`/group/approve-order/${approveBtn.dataset.id}`, approveBtn, t('group.approve_success'))
             });
         });
     }
     if (rejectBtn) {
         rejectBtn.addEventListener('click', () => {
             openConfirm({
-                title: 'Odrzuć zamówienie',
-                message: 'Zamówienie zostanie cofnięte do statusu „aktywne". Sklep będzie mógł je ponownie edytować.',
-                confirmLabel: 'Odrzuć',
+                title: t('group.modal_reject_title'),
+                message: t('group.modal_reject_body'),
+                confirmLabel: t('group.reject_btn'),
                 confirmClass: 'btn btn-danger ms-1',
-                action: () => performAction(`/group/reject-order/${rejectBtn.dataset.id}`, rejectBtn, 'Zamówienie odrzucone.')
+                action: () => performAction(`/group/reject-order/${rejectBtn.dataset.id}`, rejectBtn, t('group.reject_success'))
             });
         });
     }

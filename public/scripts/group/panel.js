@@ -5,7 +5,7 @@
     // ── Copy credentials ──────────────────────────────────────────────────────
     document.querySelectorAll('.btn-copy-creds').forEach(btn => {
         btn.addEventListener('click', async function() {
-            const val = `PIN: ${this.getAttribute('data-pin')}\nPassword: ${this.getAttribute('data-pass')}`;
+            const val = `${I18N.pinLogin}: ${this.getAttribute('data-pin')}\n${I18N.passwordLabel}: ${this.getAttribute('data-pass')}`;
             let copied = false;
             if (navigator.clipboard && window.isSecureContext) {
                 try {

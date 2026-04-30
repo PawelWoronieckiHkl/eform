@@ -700,73 +700,77 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
     try {
         let extraMail = process.env.EXTRA_MAIL ? process.env.EXTRA_MAIL.split(',') : false;
         const id = req.params.orderId;
-        const status = req.body.status;
-        const response = await db.changeOrderStatus(id, 'sent');
-        await db.updateOrderPriceOnSend(id, req.body.prices);
         const { orderDetails, orderItems } = await db.getOrderDataToSend(req.params.orderId);
 
-        if (orderItems || orderItems.length > 0) {
-            const sender = new OrderSender.OrderSender(req, orderDetails, orderItems);
-            const sendData = await sender.init()
-            await sender.saveToFile();
-
-            const currentUser = ownerService.getCurrentUser(req);
-            const user = await db.getUserData(currentUser?.pin)
-            const clientName = formatClientLabel(user.client_name, user.ident)
-            const photoFile = await db.getUserLogo(currentUser?.pin)
-            const logoPath = path.join(__dirname, '../img/', photoFile)
-            const heads = Object.keys(orderItems[0].json_parameters);
-            let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
-            const productionTimes = currentUser?.orgId ? await db.getGroupDeliveryTimes(currentUser.orgId) : {};
-            const { maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
-            const attachments = await getExtraAttachments(sender.slopePaths);
-            const lang = req.getLocale();
-            const mail = await db.getUserMail(currentUser?.pin)
-            const orderIdx = await db.getUserOrderId(req.params.orderId)
-            let confirmationEmail;
-            log(orderDetails?.contact_info_id, 'ORDER DETAILS CONTACT INFO ID @@@@@@@@@@@@@@@@@')
-            if (orderDetails?.contact_info_id) {
-                const contactInfo = await db.getMailById(orderDetails.contact_info_id);
-                confirmationEmail = contactInfo?.email || mail.user_email;
-            } else {
-                confirmationEmail = mail.user_email;
-            }
-            
-            // Główny odbiorca - tylko organization_email
-            const mainRecipient = mail.organization_email;
-            
-            // UDW (BCC) - pozostałe adresy
-            let bccList = [confirmationEmail, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'].filter(Boolean).flat();
-            
-            const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays)
-            const orgData = await db.getOrgInfo(req.session.user.organization)
-
-            if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev') {
-                bccList = [confirmationEmail, extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu'].filter(Boolean).flat();
-            }
-            
-            mailBot.sendMail(
-                mainRecipient,
-                lang,
-                pdf,
-                attachments,
-                {
-                    klient: clientName,
-                    orderNr: orderIdx,
-                    logoPath: logoPath,
-                    orderDetails: sendData,
-                    organization: orgData
-                },
-                bccList.join(', ')
-            );
-
-        }
-        else {
+        if (!orderItems || orderItems.length === 0) {
             return res.status(400).json({
                 success: false,
                 message: "Nie możesz wysłać pustego zamówienia"
             });
         }
+
+        await db.updateOrderPriceOnSend(id, req.body.prices);
+        const statusChanged = await db.changeOrderStatus(id, 'sent');
+        if (!statusChanged) {
+            return res.status(400).json({
+                success: false,
+                message: "Nie możesz wysłać pustego zamówienia"
+            });
+        }
+
+        const sender = new OrderSender.OrderSender(req, orderDetails, orderItems);
+        const sendData = await sender.init()
+        await sender.saveToFile();
+
+        const currentUser = ownerService.getCurrentUser(req);
+        const user = await db.getUserData(currentUser?.pin)
+        const clientName = formatClientLabel(user.client_name, user.ident)
+        const photoFile = await db.getUserLogo(currentUser?.pin)
+        const logoPath = path.join(__dirname, '../img/', photoFile)
+        const heads = Object.keys(orderItems[0].json_parameters);
+        let { cleanOrderItems, total } = await orderService.jsonTextBackToMap(orderItems);
+        const productionTimes = currentUser?.orgId ? await db.getGroupDeliveryTimes(currentUser.orgId) : {};
+        const { maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
+        const attachments = await getExtraAttachments(sender.slopePaths);
+        const lang = req.getLocale();
+        const mail = await db.getUserMail(currentUser?.pin)
+        const orderIdx = await db.getUserOrderId(req.params.orderId)
+        let confirmationEmail;
+        log(orderDetails?.contact_info_id, 'ORDER DETAILS CONTACT INFO ID @@@@@@@@@@@@@@@@@')
+        if (orderDetails?.contact_info_id) {
+            const contactInfo = await db.getMailById(orderDetails.contact_info_id);
+            confirmationEmail = contactInfo?.email || mail.user_email;
+        } else {
+            confirmationEmail = mail.user_email;
+        }
+
+        // Główny odbiorca - tylko organization_email
+        const mainRecipient = mail.organization_email;
+
+        // UDW (BCC) - pozostałe adresy
+        let bccList = [confirmationEmail, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'].filter(Boolean).flat();
+
+        const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays)
+        const orgData = await db.getOrgInfo(req.session.user.organization)
+
+        if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev') {
+            bccList = [confirmationEmail, extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu'].filter(Boolean).flat();
+        }
+
+        mailBot.sendMail(
+            mainRecipient,
+            lang,
+            pdf,
+            attachments,
+            {
+                klient: clientName,
+                orderNr: orderIdx,
+                logoPath: logoPath,
+                orderDetails: sendData,
+                organization: orgData
+            },
+            bccList.join(', ')
+        );
 
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: "/orders/history" });
     }
@@ -789,7 +793,8 @@ router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res
         sendAddress = await db.duplicateSendAddress(orderDetails.send_address_id);
     }
 
-    const newOrderId = await db.insertNewOrder(orderDetails.commision, orderDetails.delivery_address_id || null, orderDetails.user_id, orderDetails.comment, sendAddress, 0, null, orderDetails.contact_info_id || null);
+    const groupUserId = req.session.user?.isGroupShop ? req.session.user.groupShopId : null;
+    const newOrderId = await db.insertNewOrder(orderDetails.commision, orderDetails.delivery_address_id || null, orderDetails.user_id, orderDetails.comment, sendAddress, 0, null, orderDetails.contact_info_id || null, groupUserId);
     if (!newOrderId) {
         return res.status(500).json({ status: "error", message: "Nie udało się skopiować zamówienia" });
     }
@@ -865,9 +870,6 @@ router.post('/save-order', requireLogin, async (req, res) => {
         if (!id) {
             return res.status(500).json({ status: "error", message: "Nie udało się utworzyć zamówienia. Skontaktuj się z administratorem." });
         }
-        if (groupUserId) {
-            await db.setGroupShopOrderIdx(id, groupUserId);
-        }
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: `/orders/order/${id}` });
     }
     catch (err) {
@@ -880,7 +882,13 @@ router.post('/submit-for-approval/:orderId', requireLogin, checkOrderOwnership, 
         if (!req.session.user?.isGroupShop) {
             return res.status(403).json({ success: false, message: 'Tylko sklep może wysłać zamówienie do zatwierdzenia.' });
         }
-        await db.submitOrderForApproval(req.params.orderId);
+        if (!(await db.orderHasItems(req.params.orderId))) {
+            return res.status(400).json({ success: false, message: 'Nie możesz wysłać pustego zamówienia.' });
+        }
+        const submitted = await db.submitOrderForApproval(req.params.orderId);
+        if (!submitted) {
+            return res.status(400).json({ success: false, message: 'Nie możesz wysłać pustego zamówienia.' });
+        }
         return res.json({ success: true, message: 'Zamówienie wysłane do zatwierdzenia przez centralę.', redirect: '/orders' });
     } catch (err) {
         log(err);

@@ -42,7 +42,7 @@
                                 <tr>
                                     <td>
                                         <a href="/orders/order/{{ order.id }}" target="_blank" class="fw-semibold">
-                                            {{ order.order_idx or order.id }}
+                                            {{ order.order_idx or '—' }}
                                         </a>
                                     </td>
                                     <td>{{ order.shop_name or order.shop_ident }}</td>
