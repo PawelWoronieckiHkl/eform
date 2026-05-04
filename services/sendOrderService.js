@@ -6,6 +6,7 @@ const { KeyObject } = require('crypto');
 const { ordersManager } = require('../utils/saveOrdersOutput');
 const { log } = require('../utils/logging');
 const { formatClientLabel } = require('../utils/formatClient');
+const { getProductionSendSkipClient, isProductionVersion } = require('../utils/productionSendGuard');
 class OrderSender {
 
     constructor(req, order, orderItems) {
@@ -117,7 +118,14 @@ class OrderSender {
         catch (err) {
             log(`Failed to save short JSON file: ${err.message}`);
         }
-        if (!process.env?.PRODUCTION) {
+
+        const ignoredProductionClient = getProductionSendSkipClient(this.data);
+        if (ignoredProductionClient) {
+            log(`Pominięto wysyłkę FTP dla klienta z ignore_mail_list.json: ${ignoredProductionClient}`);
+            return;
+        }
+
+        if (!isProductionVersion()) {
             const filePath = this.fullPath;
 
             try {

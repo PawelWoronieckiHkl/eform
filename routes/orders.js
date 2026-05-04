@@ -19,6 +19,7 @@ const { log } = require('../utils/logging');
 const { availabeLanguages } = require('../config');
 const { translateOrderItems } = require('../services/translationDict/itemTranslator');
 const { buildItemProductionDays, recalcAndSaveMaxProdDays } = require('../services/productionDays');
+const { getProductionSendSkipClient } = require('../utils/productionSendGuard');
 
 
 router.use(async (req, res, next) => {
@@ -720,7 +721,13 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
 
         const sender = new OrderSender.OrderSender(req, orderDetails, orderItems);
         const sendData = await sender.init()
+        const ignoredProductionClient = getProductionSendSkipClient(orderDetails);
         await sender.saveToFile();
+
+        if (ignoredProductionClient) {
+            log(`Pominięto wysyłkę maila dla klienta z ignore_mail_list.json: ${ignoredProductionClient}`);
+            return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: "/orders/history" });
+        }
 
         const currentUser = ownerService.getCurrentUser(req);
         const user = await db.getUserData(currentUser?.pin)

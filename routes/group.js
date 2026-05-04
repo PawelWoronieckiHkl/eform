@@ -12,6 +12,7 @@ const { buildItemProductionDays } = require('../services/productionDays');
 const path = require('path');
 const { log } = require('../utils/logging');
 const { formatClientLabel } = require('../utils/formatClient');
+const { getProductionSendSkipClient } = require('../utils/productionSendGuard');
 
 // ── Middleware: wszystkie trasy wymagają zalogowania i roli 'group' ──────────
 
@@ -277,7 +278,13 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
 
         const sender = new OrderSender.OrderSender(req, orderDetails, orderItems);
         const sendData = await sender.init();
+        const ignoredProductionClient = getProductionSendSkipClient(orderDetails, shop?.ident);
         await sender.saveToFile();
+
+        if (ignoredProductionClient) {
+            log(`Pominięto wysyłkę maila dla klienta z ignore_mail_list.json: ${ignoredProductionClient}`);
+            return res.json({ success: true, message: req.__('group.approve_sent_success'), redirect: '/group/panel?tab=pending' });
+        }
 
         const user = await db.getUserData(currentUser.pin);
         const shopLabel = `${shop.name || shop.ident} (id: ${shop.id})`;
