@@ -11,11 +11,15 @@ function humanizeData(dbResponse) {
     for (let itemIdx = 0; itemIdx < dbResponse.length; itemIdx++) {
         try {
 
-            const createdDate = new Date(dbResponse[itemIdx].created_date);
-            dbResponse[itemIdx].created_date = createdDate.toLocaleDateString('pl-PL');
+            if (dbResponse[itemIdx].created_date) {
+                const createdDate = new Date(dbResponse[itemIdx].created_date);
+                dbResponse[itemIdx].created_date = createdDate.toLocaleDateString('pl-PL');
+            }
 
-            const sentDate = new Date(dbResponse[itemIdx].sent_date)
-            dbResponse[itemIdx].sent_date = sentDate.toLocaleDateString('pl-PL');
+            if (dbResponse[itemIdx].sent_date) {
+                const sentDate = new Date(dbResponse[itemIdx].sent_date)
+                dbResponse[itemIdx].sent_date = sentDate.toLocaleDateString('pl-PL');
+            }
 
             if (dbResponse[itemIdx].delivery_date) {
                 const deliveryDate = new Date(dbResponse[itemIdx].delivery_date);

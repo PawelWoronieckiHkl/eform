@@ -109,7 +109,7 @@ class OrderSender {
         return this.data
     }
 
-    async saveToFile() {
+    async saveToFile(options = {}) {
         try {
             const shortJsonPath = path.join(shortJsonDir, `${process.env.NODE_ENV}_${this.fileName}`);
             await fs.promises.mkdir(path.dirname(shortJsonPath), { recursive: true });
@@ -119,7 +119,7 @@ class OrderSender {
             log(`Failed to save short JSON file: ${err.message}`);
         }
 
-        const ignoredProductionClient = getProductionSendSkipClient(this.data);
+        const ignoredProductionClient = getProductionSendSkipClient(this.data, [], options);
         if (ignoredProductionClient) {
             log(`Pominięto wysyłkę FTP dla klienta z ignore_mail_list.json: ${ignoredProductionClient}`);
             return;
@@ -160,7 +160,7 @@ class OrderSender {
                 });
                 log(`Connected to FTP server: ${ftpConfig.host}`);
                 const result = await client.uploadFrom(filePath, ftpConfig.remotePath);
-                log(`FTP upload result: ${result}`);
+                log(`FTP upload result: ${JSON.stringify(result)}`);
 
                 const remoteDir = path.posix.dirname(ftpConfig.remotePath);
                 for (const attachment of this.attachmentsList) {
@@ -170,7 +170,7 @@ class OrderSender {
                     const attachmentPath = path.join(outputData, attachment);
                     const attachmentRemotePath = path.posix.join(remoteDir, attachment);
                     const attachmentResult = await client.uploadFrom(attachmentPath, attachmentRemotePath);
-                    log(`FTP upload attachment result: ${attachmentResult}`);
+                    log(`FTP upload attachment result: ${JSON.stringify(attachmentResult)}`);
                 }
 
             }

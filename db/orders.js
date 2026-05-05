@@ -72,11 +72,18 @@ async function checkGroupShopOrderOwner(orderId, groupShopId) {
     return order.length > 0;
 }
 
+async function getOrderStatus(orderId) {
+    const query = 'SELECT status FROM \`order\` WHERE id = ?';
+    const rows = await selectQuery(query, orderId);
+    return rows[0]?.status || null;
+}
+
 async function getOrderDetails(orderId) {
     const orderDetailsQuery = `SELECT 
     \`order\`.id,
     \`order\`.commision,
     \`order\`.created_date,
+    \`order\`.status,
     \`order\`.comment,
     \`order\`.delivery_address_id,
     \`order\`.contact_info_id,
@@ -802,6 +809,7 @@ async function updateMaxProdDays(orderId, maxProdDays) {
 module.exports = {
     getOrderWithItems,
     getOrderDetails,
+    getOrderStatus,
     updateOrderDetails,
     getOrderDataToSend,
     deleteOrder,

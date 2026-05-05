@@ -98,7 +98,10 @@
     "status_order_sent": "Order sent",
     "shipping_date_label": "Shipping date",
     "shipping_method_label": "Shipping method",
-    "pred_shipping_date_label": "Estimated shipping date"
+    "pred_shipping_date_label": "Estimated shipping date",
+    "production_order_checkbox": "Real order - send to production",
+    "production_order_warning": "Warning: production order",
+    "production_order_confirm": "This order will be sent to FTP and by email. Are you sure you want to send it?"
   },
   "orders": {
     "title": "Your Orders",

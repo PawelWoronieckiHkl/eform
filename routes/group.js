@@ -12,7 +12,7 @@ const { buildItemProductionDays } = require('../services/productionDays');
 const path = require('path');
 const { log } = require('../utils/logging');
 const { formatClientLabel } = require('../utils/formatClient');
-const { getProductionSendSkipClient } = require('../utils/productionSendGuard');
+const { getProductionSendSkipClient, shouldForceProductionSend } = require('../utils/productionSendGuard');
 
 // ── Middleware: wszystkie trasy wymagają zalogowania i roli 'group' ──────────
 
@@ -266,7 +266,7 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
 
         let extraMail = process.env.EXTRA_MAIL ? process.env.EXTRA_MAIL.split(',') : false;
 
-        const { orderDetails, orderItems } = await db.getOrderDataToSend(orderId);
+        let { orderDetails, orderItems } = await db.getOrderDataToSend(orderId);
         if (!orderItems || orderItems.length === 0) {
             return res.status(400).json({ success: false, message: req.__('group.error_empty_order') });
         }
@@ -276,10 +276,13 @@ router.post('/approve-order/:orderId', requireLogin, requireGroup, async (req, r
             return res.status(400).json({ success: false, message: req.__('group.error_empty_order') });
         }
 
+        ({ orderDetails, orderItems } = await db.getOrderDataToSend(orderId));
+
         const sender = new OrderSender.OrderSender(req, orderDetails, orderItems);
         const sendData = await sender.init();
-        const ignoredProductionClient = getProductionSendSkipClient(orderDetails, shop?.ident);
-        await sender.saveToFile();
+        const forceProductionSend = shouldForceProductionSend(req.body?.productionOrder);
+        const ignoredProductionClient = getProductionSendSkipClient(orderDetails, shop?.ident, { forceProductionSend });
+        await sender.saveToFile({ forceProductionSend });
 
         if (ignoredProductionClient) {
             log(`Pominięto wysyłkę maila dla klienta z ignore_mail_list.json: ${ignoredProductionClient}`);

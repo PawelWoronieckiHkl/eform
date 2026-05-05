@@ -21,6 +21,27 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
+function sentOrderPath(orderId) {
+  return `/orders/history/order/${orderId}`;
+}
+
+async function isOrderSent(orderId) {
+  return (await db.getOrderStatus(orderId)) === 'sent';
+}
+
+async function rejectSentOrderMutation(res, orderId) {
+  if (await isOrderSent(orderId)) {
+    return res.status(403).json({
+      success: false,
+      status: 'error',
+      message: 'Nie można edytować wysłanego zamówienia.',
+      redirect: sentOrderPath(orderId)
+    });
+  }
+
+  return null;
+}
+
 
 function normalizeFilename(filename) {
   if (filename) {
@@ -57,6 +78,11 @@ res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
 router.post('/save', requireLogin, upload.any(), async (req, res) => {
   try {
     const formData = JSON.parse(req.body.data);
+    const sentOrderResponse = await rejectSentOrderMutation(res, formData.order);
+    if (sentOrderResponse) {
+      return sentOrderResponse;
+    }
+
     const total = formData.total;
     const files = req.files || [];
     const result = await db.insertNewForm(formData);
@@ -91,6 +117,16 @@ router.patch('/edit/save', requireLogin, upload.any(), async (req, res) => {
     const formData = JSON.parse(req.body.data);
     const total = formData.total;
     const files = req.files || [];
+    const existingPosition = await db.getPosition(formData.id);
+    if (!existingPosition) {
+      return res.status(404).json({ success: false, error: 'Pozycja nie istnieje' });
+    }
+
+    const sentOrderResponse = await rejectSentOrderMutation(res, existingPosition.order_id);
+    if (sentOrderResponse) {
+      return sentOrderResponse;
+    }
+
     const result = await db.updatePosition(formData, total);
 
     const positionForRecalc = await db.getPosition(formData.id);
@@ -126,6 +162,11 @@ router.delete('/:positionId/delete', requireLogin, async (req, res) => {
     }
 
     const orderId = position.order_id;
+    const sentOrderResponse = await rejectSentOrderMutation(res, orderId);
+    if (sentOrderResponse) {
+      return sentOrderResponse;
+    }
+
     const response = await db.deletePosition(req.params.positionId);
 
     if (response) {
@@ -196,8 +237,12 @@ router.get('/photo', requireLogin, async (req, res) => {
 
 router.get('/:positionId/edit/', requireLogin, async (req, res) => {
   let result = await db.getPosition(req.params.positionId);
-  let orderId = result.order_id;
   if (result) {
+    let orderId = result.order_id;
+    if (await isOrderSent(orderId)) {
+      return res.redirect(sentOrderPath(orderId));
+    }
+
     return res.render('edit_position.njk', { position: result, orderId: orderId })
   }
   else {
@@ -227,7 +272,16 @@ router.get('/:orderId/:positionId/attachments', requireLogin, async (req, res) =
 
 router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
   const position = await db.getPosition(req.params.positionId);
+  if (!position) {
+    return res.status(404).json({ success: false });
+  }
+
   const orderId = position.order_id;
+  const sentOrderResponse = await rejectSentOrderMutation(res, orderId);
+  if (sentOrderResponse) {
+    return sentOrderResponse;
+  }
+
   const result = await db.insertNewForm(
     itemBuilder.buildOrderItemStructure(
       position.order_id,
@@ -421,6 +475,16 @@ router.post('/versions/update/', requireLogin, async (req, res) => {
 router.post('/:id/move-up', requireLogin, async (req, res) => {
   try {
     const positionId = req.params.id;
+    const position = await db.getPosition(positionId);
+    if (!position) {
+      return res.status(404).json({ success: false, message: 'Position not found' });
+    }
+
+    const sentOrderResponse = await rejectSentOrderMutation(res, position.order_id);
+    if (sentOrderResponse) {
+      return sentOrderResponse;
+    }
+
     const result = await db.movePositionUp(positionId);
 
     if (result.success) {
@@ -438,6 +502,16 @@ router.post('/:id/move-up', requireLogin, async (req, res) => {
 router.post('/:id/move-down', requireLogin, async (req, res) => {
   try {
     const positionId = req.params.id;
+    const position = await db.getPosition(positionId);
+    if (!position) {
+      return res.status(404).json({ success: false, message: 'Position not found' });
+    }
+
+    const sentOrderResponse = await rejectSentOrderMutation(res, position.order_id);
+    if (sentOrderResponse) {
+      return sentOrderResponse;
+    }
+
     const result = await db.movePositionDown(positionId);
 
     if (result.success) {
@@ -456,6 +530,16 @@ router.post('/:id/set-idx', requireLogin, async (req, res) => {
   try {
     const positionId = req.params.id;
     const { idx } = req.body;
+    const position = await db.getPosition(positionId);
+    if (!position) {
+      return res.status(404).json({ success: false, message: 'Position not found' });
+    }
+
+    const sentOrderResponse = await rejectSentOrderMutation(res, position.order_id);
+    if (sentOrderResponse) {
+      return sentOrderResponse;
+    }
+
     const result = await db.setPositionIdx(positionId, idx);
 
     if (result.success) {

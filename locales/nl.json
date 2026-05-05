@@ -98,7 +98,10 @@
     "status_order_sent": "Bestelling verzonden",
     "shipping_date_label": "Verzenddatum",
     "shipping_method_label": "Verzendmethode",
-    "pred_shipping_date_label": "Verwachte verzenddatum"
+    "pred_shipping_date_label": "Verwachte verzenddatum",
+    "production_order_checkbox": "Echte bestelling - naar productie sturen",
+    "production_order_warning": "Let op: productiebestelling",
+    "production_order_confirm": "Deze bestelling wordt via FTP en per e-mail verzonden. Weet u zeker dat u wilt verzenden?"
   },
   "orders": {
     "title": "Uw bestellingen",

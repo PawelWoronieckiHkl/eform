@@ -19,7 +19,37 @@ const { log } = require('../utils/logging');
 const { availabeLanguages } = require('../config');
 const { translateOrderItems } = require('../services/translationDict/itemTranslator');
 const { buildItemProductionDays, recalcAndSaveMaxProdDays } = require('../services/productionDays');
-const { getProductionSendSkipClient } = require('../utils/productionSendGuard');
+const { getProductionSendSkipClient, shouldForceProductionSend } = require('../utils/productionSendGuard');
+
+function sentOrderPath(orderId) {
+    return `/orders/history/order/${orderId}`;
+}
+
+async function isSentOrder(orderId) {
+    return (await db.getOrderStatus(orderId)) === 'sent';
+}
+
+async function redirectSentOrder(req, res, orderId = req.params.orderId) {
+    if (await isSentOrder(orderId)) {
+        res.redirect(sentOrderPath(orderId));
+        return true;
+    }
+
+    return false;
+}
+
+async function rejectSentOrderMutation(res, orderId) {
+    if (await isSentOrder(orderId)) {
+        return res.status(403).json({
+            success: false,
+            status: 'error',
+            message: 'Nie można edytować wysłanego zamówienia.',
+            redirect: sentOrderPath(orderId)
+        });
+    }
+
+    return null;
+}
 
 
 router.use(async (req, res, next) => {
@@ -89,6 +119,10 @@ router.get('/search', requireLogin, async (req, res) => {
 });
 
 router.get('/edit/:orderId', requireLogin, async (req, res) => {
+    if (await redirectSentOrder(req, res)) {
+        return;
+    }
+
     const currentUser = ownerService.getCurrentUser(req);
     const orderData = await db.getOrderDetails(req.params.orderId);
     let addr, emails;
@@ -429,9 +463,15 @@ router.get("/add-order", requireLogin, async (req, res) => {
 
 
 router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwnership, async (req, res) => {
+    if (await redirectSentOrder(req, res)) {
+        return;
+    }
+
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
     const clientDiscount = await getPriceAfterDiscount(req.params.orderId);
     const currentUser = ownerService.getCurrentUser(req);
+    const groupOrderShop = orderDetails?.group_user_id ? await db.getGroupUserById(orderDetails.group_user_id) : null;
+    const productionOrderOverrideClient = getProductionSendSkipClient(currentUser, [groupOrderShop, orderDetails]);
     const productionTimes = currentUser?.orgId ? await db.getGroupDeliveryTimes(currentUser.orgId) : {};
     if (orderItems) {
         const heads = Object.keys(orderItems[0].json_parameters);
@@ -453,7 +493,9 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 availableLanguages: availabeLanguages,
                 admin: req.session.user?.isAdmin || false,
                 itemProductionDays,
-                maxProdDays
+                maxProdDays,
+                showProductionOrderOverride: !!productionOrderOverrideClient,
+                productionOrderOverrideClient
             });
             req.session.user.showPricesOnce = false;
             return;
@@ -474,7 +516,9 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 availableLanguages: availabeLanguages,
                 admin: req.session.user?.isAdmin || false,
                 itemProductionDays,
-                maxProdDays
+                maxProdDays,
+                showProductionOrderOverride: !!productionOrderOverrideClient,
+                productionOrderOverrideClient
             });
             return;
         }
@@ -684,7 +728,11 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
 });
 
 
-router.get("/order/:orderId/new-position/", requireLogin, (req, res) => {
+router.get("/order/:orderId/new-position/", requireLogin, async (req, res) => {
+    if (await redirectSentOrder(req, res)) {
+        return;
+    }
+
     res.render("form.njk", { orderId: req.params.orderId });
 });
 
@@ -701,7 +749,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
     try {
         let extraMail = process.env.EXTRA_MAIL ? process.env.EXTRA_MAIL.split(',') : false;
         const id = req.params.orderId;
-        const { orderDetails, orderItems } = await db.getOrderDataToSend(req.params.orderId);
+        let { orderDetails, orderItems } = await db.getOrderDataToSend(req.params.orderId);
 
         if (!orderItems || orderItems.length === 0) {
             return res.status(400).json({
@@ -719,10 +767,13 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             });
         }
 
+        ({ orderDetails, orderItems } = await db.getOrderDataToSend(id));
+
         const sender = new OrderSender.OrderSender(req, orderDetails, orderItems);
         const sendData = await sender.init()
-        const ignoredProductionClient = getProductionSendSkipClient(orderDetails);
-        await sender.saveToFile();
+        const forceProductionSend = shouldForceProductionSend(req.body?.productionOrder);
+        const ignoredProductionClient = getProductionSendSkipClient(orderDetails, [], { forceProductionSend });
+        await sender.saveToFile({ forceProductionSend });
 
         if (ignoredProductionClient) {
             log(`Pominięto wysyłkę maila dla klienta z ignore_mail_list.json: ${ignoredProductionClient}`);
@@ -751,17 +802,17 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             confirmationEmail = mail.user_email;
         }
 
-        // Główny odbiorca - tylko organization_email
-        const mainRecipient = mail.organization_email;
-
-        // UDW (BCC) - pozostałe adresy
-        let bccList = [confirmationEmail, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'].filter(Boolean).flat();
-
         const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays)
         const orgData = await db.getOrgInfo(req.session.user.organization)
 
+        // Główny odbiorca i BCC zależne od środowiska
+        let mainRecipient, bccList;
         if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'dev') {
-            bccList = [confirmationEmail, extraMail, 'pawel.woroniecki@hkl.eu', 'krzysztof.krawczyk@hkl.eu'].filter(Boolean).flat();
+            mainRecipient = 'pawel.woroniecki@hkl.eu';
+            bccList = ['krzysztof.krawczyk@hkl.eu'];
+        } else {
+            mainRecipient = mail.organization_email;
+            bccList = [confirmationEmail, mail.organization_email2, extraMail, 'pawel.woroniecki@hkl.eu'].filter(Boolean).flat();
         }
 
         mailBot.sendMail(
@@ -908,6 +959,11 @@ router.put('/update-order/:orderId', requireLogin, checkOrderOwnership, async (r
     try {
         const { commission, addrId, mailId, orderSendAddress, comment } = req.body;
         const { orderId } = req.params;
+        const sentOrderResponse = await rejectSentOrderMutation(res, orderId);
+        if (sentOrderResponse) {
+            return sentOrderResponse;
+        }
+
         const existingOrder = await db.getOrderDetails(orderId);
         let response = false;
         if (existingOrder) {
@@ -926,6 +982,11 @@ router.put('/update-order/:orderId', requireLogin, checkOrderOwnership, async (r
 
 
 router.delete('/order/:orderId/delete/', requireLogin, checkOrderOwnership, async (req, res) => {
+    const sentOrderResponse = await rejectSentOrderMutation(res, req.params.orderId);
+    if (sentOrderResponse) {
+        return sentOrderResponse;
+    }
+
     let response = await db.deleteOrder(req.params.orderId);
     if (response) {
         return res.status(200).json({

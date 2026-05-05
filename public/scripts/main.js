@@ -83,6 +83,7 @@ export async function buildMainSelect(files) {
 	
 	for (let department of files) {
 		const groups = await window.formsManager.getGroups(department.num);
+		console.log('Znalezione grupy:', groups);
 		if (groups.length > 0) {
 			createElement("option", { value: department.num, text: department.description }, departmentSelect);
 		}
@@ -130,6 +131,7 @@ async function buildGroupSelect(selectedDepartment, asortmentGroupSelect) {
 async function fetchDepartments() {
 	console.log('fetchDepartments')
 	const departments = await window.formsManager.getAvailableForms();
+	console.log('Fetched departments:', departments);
 	return departments;
 }
 

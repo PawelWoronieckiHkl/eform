@@ -98,7 +98,10 @@
     "status_order_sent": "Zamówienie wysłane",
     "shipping_date_label": "Data wysyłki",
     "shipping_method_label": "Sposób wysyłki",
-    "pred_shipping_date_label": "Przewidywana data wysyłki"
+    "pred_shipping_date_label": "Przewidywana data wysyłki",
+    "production_order_checkbox": "Zamówienie prawdziwe - ma trafić do produkcji",
+    "production_order_warning": "Uwaga: zamówienie produkcyjne",
+    "production_order_confirm": "To zamówienie trafi na FTP i zostanie wysłane mailem. Czy na pewno chcesz wysłać?"
   },
   "orders": {
     "title": "Twoje Zamówienia",

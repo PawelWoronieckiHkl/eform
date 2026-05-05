@@ -23,6 +23,8 @@ const shortPrintBtns = document.querySelectorAll('[id="short-print-button"]')
 const discountBtn = document.getElementById('discount-btn');
 const moveUpBtns = document.querySelectorAll('.move-up-btn')
 const moveDownBtns = document.querySelectorAll('.move-down-btn')
+const productionOrderCheckbox = document.getElementById('production-order-checkbox');
+const productionOrderWarning = document.getElementById('production-order-warning');
 getPrices()
 
 export async function deleteItem(path) {
@@ -112,6 +114,8 @@ async function duplicate(btn) {
       setTimeout(() => {
         window.location.href = result.redirect;
       }, 300);
+    } else if (result.redirect) {
+      window.location.href = result.redirect;
     } else {
       showToast('error', result.error || t('order.duplicate_error'));
     }
@@ -123,9 +127,10 @@ async function duplicate(btn) {
 
 export function buildAndShowDialog(btn) {
   const parent = document.getElementById('dialog-container');
+  const productionOrder = isProductionOrderSelected();
   const { buttons, dialog } = createInfoDialog({
     title: `${t('orders.send_order')}`,
-    message: `${t('orders.are_you_sure')}`,
+    message: getSendDialogMessage(t('orders.are_you_sure'), productionOrder),
     buttons: [
       {
         label: `${t('orders.abort')}`,
@@ -134,7 +139,7 @@ export function buildAndShowDialog(btn) {
       },
       {
         label: `${t('orders.send_word')}`,
-        action: () => sendOrder(btn),
+        action: () => sendOrder(btn, { productionOrder }),
         className: "btn btn-success ms-1",
         id: "confirm-btn"
       }
@@ -170,8 +175,28 @@ function getPrices() {
   return prices;
 }
 
+function isProductionOrderSelected() {
+  return !!productionOrderCheckbox?.checked;
+}
 
-async function sendOrder(sendBtn) {
+function getSendDialogMessage(baseMessage, productionOrder) {
+  if (!productionOrder) {
+    return baseMessage;
+  }
+
+  return `<strong>${t('order.production_order_warning')}</strong><br>${t('order.production_order_confirm')}`;
+}
+
+function syncProductionOrderWarning() {
+  if (!productionOrderCheckbox || !productionOrderWarning) {
+    return;
+  }
+
+  productionOrderWarning.classList.toggle('d-none', !productionOrderCheckbox.checked);
+}
+
+
+async function sendOrder(sendBtn, options = {}) {
   const orderId = sendBtn.dataset.id
   const prices = getPrices();
   try {
@@ -180,7 +205,7 @@ async function sendOrder(sendBtn) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ status: 'sent', prices: prices })
+      body: JSON.stringify({ status: 'sent', prices: prices, productionOrder: options.productionOrder === true })
     });
     const result = await response.json();
     console.log(response)
@@ -190,8 +215,9 @@ async function sendOrder(sendBtn) {
         window.location.href = result.redirect;
       }, 600);
 
-    }
-    else {
+    } else if (result.redirect) {
+      window.location.href = result.redirect;
+    } else {
       showToast('error', result.message);
     }
   }
@@ -256,6 +282,11 @@ if (sendBtn) {
     event.stopPropagation();
     buildAndShowDialog(sendBtn)
   });
+}
+
+if (productionOrderCheckbox) {
+  productionOrderCheckbox.addEventListener('change', syncProductionOrderWarning);
+  syncProductionOrderWarning();
 }
 
 lockBtns.forEach(lockBtn => {
@@ -358,6 +389,8 @@ async function movePosition(positionId, direction) {
       setTimeout(() => {
         window.location.reload();
       }, 500);
+    } else if (result.redirect) {
+      window.location.href = result.redirect;
     } else {
       showToast('error', result.message);
     }
@@ -415,7 +448,7 @@ async function setOrderPos(positionId, idx) {
     const result = await response.json();
 
     if (result.success) {
-    } else {
+    } else if (!result.redirect) {
       showToast('error', result.message);
     }
   } catch (error) {
@@ -471,9 +504,14 @@ async function setOrderPos(positionId, idx) {
     if (!approveBtn && !rejectBtn) return;
     const parent = document.getElementById('dialog-container') || document.body;
 
-    function performAction(url, actionBtn, successLabel) {
+    function performAction(url, actionBtn, successLabel, options = {}) {
         actionBtn.disabled = true;
-        fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' })
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ productionOrder: options.productionOrder === true })
+        })
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
@@ -490,12 +528,15 @@ async function setOrderPos(positionId, idx) {
             });
     }
 
-    function openConfirm({ title, message, confirmLabel, confirmClass, action }) {
+    function openConfirm({ title, message, confirmLabel, confirmClass, action, useProductionOrder = false }) {
+        const productionOrder = useProductionOrder && isProductionOrderSelected();
         createInfoDialog({
-            title, message, parent,
+            title,
+            message: getSendDialogMessage(message, productionOrder),
+            parent,
             buttons: [
-              { label: t('orders.abort'), className: 'btn btn-secondary me-1', id: 'cancel-btn' },
-                { label: confirmLabel, className: confirmClass, id: 'confirm-btn', enter: true, action }
+                { label: t('orders.abort'), className: 'btn btn-secondary me-1', id: 'cancel-btn' },
+                { label: confirmLabel, className: confirmClass, id: 'confirm-btn', enter: true, action: () => action({ productionOrder }) }
             ]
         });
     }
@@ -507,7 +548,8 @@ async function setOrderPos(positionId, idx) {
                 message: t('group.approve_send_message'),
                 confirmLabel: `✓ ${t('group.approve_send_btn')}`,
                 confirmClass: 'btn btn-success ms-1',
-                action: () => performAction(`/group/approve-order/${approveBtn.dataset.id}`, approveBtn, t('group.approve_success'))
+                useProductionOrder: true,
+                action: (options) => performAction(`/group/approve-order/${approveBtn.dataset.id}`, approveBtn, t('group.approve_success'), options)
             });
         });
     }

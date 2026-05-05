@@ -27,6 +27,7 @@ export class FormsManager {
         this.postAllPaths()
 
         this.clientData = await this.getOwner();
+        console.log('DEBUG CLIENT DATA', this.clientData, this.departments, this.paths)
         return objects;
     }
 
@@ -190,7 +191,7 @@ export class FormsManager {
 
                 const data = await this.loader.loadData(prodFilePath);
                 const object = this.convertDataToObjects(data)[0];
-
+                console.log('DEBUG GROUP OBJECT', object)
 
                 if (object.paramdict_aliases) {
 

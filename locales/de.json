@@ -98,7 +98,10 @@
     "status_order_sent": "Bestellung versendet",
     "shipping_date_label": "Versanddatum",
     "shipping_method_label": "Versandart",
-    "pred_shipping_date_label": "Voraussichtliches Versanddatum"
+    "pred_shipping_date_label": "Voraussichtliches Versanddatum",
+    "production_order_checkbox": "Echte Bestellung - an die Produktion senden",
+    "production_order_warning": "Achtung: Produktionsbestellung",
+    "production_order_confirm": "Diese Bestellung wird per FTP und E-Mail gesendet. Möchten Sie sie wirklich senden?"
   },
   "orders": {
     "title": "Ihre Bestellungen",

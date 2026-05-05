@@ -407,7 +407,18 @@
                                                                                             {% endblock %}
                                                                                             {% block send_order_btn %}
                                                                                                 {% if not isEmployee %}
-                                                                                                    <div class="d-flex justify-content-end align-items-center w-100">
+                                                                                                    <div class="send-order-actions d-flex justify-content-end align-items-center w-100">
+                                                                                                    {% if showProductionOrderOverride and not isGroupShop %}
+                                                                                                        <div class="production-order-override me-3" data-production-client="{{ productionOrderOverrideClient }}">
+                                                                                                            <div class="form-check production-order-check">
+                                                                                                                <input class="form-check-input" type="checkbox" id="production-order-checkbox" aria-describedby="production-order-warning">
+                                                                                                                <label class="form-check-label" for="production-order-checkbox">{{ __('order.production_order_checkbox') }}</label>
+                                                                                                            </div>
+                                                                                                            <div class="production-order-warning d-none" id="production-order-warning" role="alert" aria-live="polite">
+                                                                                                                {{ __('order.production_order_warning') }}
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    {% endif %}
                                                                                                     {% if isGroupShop %}
                                                                                                         {% if orderDetails.status == 'pending_approval' %}
                                                                                                             <span class="badge bg-warning text-dark me-3 align-self-center" style="font-size:0.95rem;">{{ __('group.status_submitted_for_approval') }}</span>

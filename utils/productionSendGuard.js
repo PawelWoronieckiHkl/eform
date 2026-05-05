@@ -18,6 +18,10 @@ function isProductionVersion() {
     return !!process.env?.PRODUCTION;
 }
 
+function shouldForceProductionSend(value) {
+    return value === true || value === 'true' || value === 1 || value === '1' || value === 'on';
+}
+
 function collectClientKeys(value, keys = []) {
     if (Array.isArray(value)) {
         value.forEach(item => collectClientKeys(item, keys));
@@ -45,8 +49,8 @@ function findIgnoredClientKey(orderOrClient, extraClientKeys = []) {
         .find(value => ignoredClientKeys.has(normalizeClientKey(value))) || null;
 }
 
-function getProductionSendSkipClient(orderOrClient, extraClientKeys = []) {
-    if (!isProductionVersion()) {
+function getProductionSendSkipClient(orderOrClient, extraClientKeys = [], options = {}) {
+    if (!isProductionVersion() || shouldForceProductionSend(options.forceProductionSend)) {
         return null;
     }
 
@@ -56,5 +60,6 @@ function getProductionSendSkipClient(orderOrClient, extraClientKeys = []) {
 module.exports = {
     findIgnoredClientKey,
     getProductionSendSkipClient,
-    isProductionVersion
+    isProductionVersion,
+    shouldForceProductionSend
 };

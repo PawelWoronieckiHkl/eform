@@ -71,6 +71,17 @@
                             </div>
                             {% endif %}
                         {% endblock %}
+                        {% block order_item_link %}
+                            <tr onclick="window.location.href='/orders/history/order/{{ order.id }}'" class="order-row" data-commission="{{ order.commision }}">
+                        {% endblock %}
+                        {% block mobile_order_item_link %}
+                            <div class="mobile-order-card" data-commission="{{ order.commision }}" onclick="window.location.href='/orders/history/order/{{ order.id }}'">
+                        {% endblock %}
+                        {% block mobile_order_actions %}
+                            <div class="mobile-order-actions">
+                                <button class='btn btn-outline-secondary copy-order-btn stop-propagation' data-id='{{ order.id }}' onclick="event.stopPropagation()">{{ __('orders.reorder') }}</button>
+                            </div>
+                        {% endblock %}
                         {% block action_th %}{% endblock %}
                             {% block extra_rows %}
                                 <td>{{ order.sent_date }}</td>
