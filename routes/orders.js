@@ -633,11 +633,15 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
 
         if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
             sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
+        } else {
+            sendData.total = null;
         }
         if (shouldShowPrices && totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
             sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
         } else if (shouldShowPrices && totalPrice.visible && Number(totalPrice.visible) !== 0) {
             sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
+        } else {
+            sendData.total_hidden = null;
         }
 
         const currentUser = ownerService.getCurrentUser(req);
@@ -800,6 +804,19 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             confirmationEmail = contactInfo?.email || mail.user_email;
         } else {
             confirmationEmail = mail.user_email;
+        }
+
+        const totalPrice = await db.getTotal(id);
+        const confLang = require('../services/mailBot/conf');
+        const i18n = confLang(lang);
+        const __ = (key) => i18n.__(key, { locale: lang });
+        if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
+            sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
+        }
+        if (totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
+            sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
+        } else if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
+            sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
         }
 
         const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays)
