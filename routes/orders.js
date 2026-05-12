@@ -810,16 +810,19 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
         const confLang = require('../services/mailBot/conf');
         const i18n = confLang(lang);
         const __ = (key) => i18n.__(key, { locale: lang });
+        const showGoldPrices = currentUser?.orgId != 3;
         if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
             sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
         }
-        if (totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
-            sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
-        } else if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
-            sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
+        if (showGoldPrices) {
+            if (totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
+                sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
+            } else if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
+                sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
+            }
         }
 
-        const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays)
+        const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays, showGoldPrices)
         const orgData = await db.getOrgInfo(req.session.user.organization)
 
         // Główny odbiorca i BCC zależne od środowiska

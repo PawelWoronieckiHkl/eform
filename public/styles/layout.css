@@ -683,13 +683,14 @@
 	.container {
 		max-width: 100% !important;
 		margin: 0 auto;
-		margin-top: 2px !important;
+		margin-top: 25px !important;
 		background-color: var(--bg-surface);
 		border: 1px solid var(--border-default);
 		border-radius: var(--radius-md);
 		box-shadow: var(--shadow-sm);
 		padding: 20px;
 		margin-bottom: 15px;
+		
 	}
 
 	.header {

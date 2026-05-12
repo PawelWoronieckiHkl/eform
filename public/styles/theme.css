@@ -1061,6 +1061,7 @@ dialog::backdrop {
     justify-content: center;
     font-size: 18px;
     padding: 0;
+    margin-bottom: 15px !important;
     margin-right: 8px;
     vertical-align: middle;
     transition: all var(--transition-fast);
@@ -1072,6 +1073,7 @@ dialog::backdrop {
     transform: scale(1.1) rotate(15deg);
     box-shadow: var(--shadow-md);
     border-color: var(--brand-primary);
+    ;
 }
 
 /* ============================================

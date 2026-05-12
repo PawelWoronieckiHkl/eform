@@ -4,89 +4,68 @@ const e = require("express");
 const bcrypt = require('bcryptjs');
 const { log } = require('../utils/logging');
 
-async function connetToDb() {
-    const connection = await mysql.createConnection({
-        host: process.env.DATABASE_HOST || '192.168.0.8',
-        port: process.env.DATABASE_PORT || '8001',
-        user: process.env.DATABASE_USER || 'portal_eform',
-        password: process.env.DATABASE_PASSWORD || 'A5q|:4Ny',
-        database: process.env.DATABASE || 'eform',
+const pool = mysql.createPool({
+    host: process.env.DATABASE_HOST || '192.168.0.8',
+    port: process.env.DATABASE_PORT || '8001',
+    user: process.env.DATABASE_USER || 'portal_eform',
+    password: process.env.DATABASE_PASSWORD || 'A5q|:4Ny',
+    database: process.env.DATABASE || 'eform',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    connectTimeout: 15000,
+});
 
-    });
-    return connection;
+// Returns a pool connection compatible with the legacy connetToDb() API.
+// .connect() is a no-op (pool connections are already connected).
+// .end()     releases the connection back to the pool instead of destroying it.
+async function connetToDb() {
+    const conn = await pool.getConnection();
+    conn.connect = () => Promise.resolve();
+    conn.end = () => { conn.release(); return Promise.resolve(); };
+    return conn;
 }
 
 async function selectQuery(query, data = false) {
-    const connection = await connetToDb();
-    await connection.connect();
     try {
-        let [rows, fields] = ''
-        if (data) {
-            [rows, fields] = await connection.query(query, data);
-        }
-        else {
-            [rows, fields] = await connection.query(query);
-        }
-        if (rows.length > 0) {
-            await connection.end();
-            return rows;
-        } else {
-            await connection.end();
-            return false;
-        }
+        let [rows] = data
+            ? await pool.query(query, data)
+            : await pool.query(query);
+        return rows.length > 0 ? rows : false;
     } catch (err) {
-        await connection.end();
         log('selectQuery error: ' + err);
         return false;
     }
 }
 
 async function insertQuery(query, data) {
-    const connection = await connetToDb();
-    await connection.connect();
     try {
-        const response = await connection.query(query, data)
-        await connection.end()
+        const response = await pool.query(query, data);
         return response;
-    }
-
-    catch (err) {
-        await connection.end();
+    } catch (err) {
         log('insertQuery error: ' + err);
         return false;
     }
 }
-async function updateQuery(query, data) {
-    const connection = await connetToDb();
-    await connection.connect();
-    try {
-        const response = await connection.query(query, data)
-        await connection.end();
-        return response;
-    }
 
-    catch (err) {
-        await connection.end();
+async function updateQuery(query, data) {
+    try {
+        const response = await pool.query(query, data);
+        return response;
+    } catch (err) {
         log('updateQuery error: ' + err);
         return false;
     }
 }
 
-
 async function deleteQuery(query, data) {
-    const connection = await connetToDb();
-    await connection.connect();
     try {
-        const [response] = await connection.query(query, [data])
-
-        if (response.affectedRows) {
-            return true
-        }
-        else { return false };
-    }
-    catch (err) {
+        const [response] = await pool.query(query, [data]);
+        return response.affectedRows ? true : false;
+    } catch (err) {
         log('deleteQuery error: ' + err);
-    };
+        return false;
+    }
 }
 
 

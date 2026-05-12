@@ -30,7 +30,6 @@
                   <th>{{ header }}</th>
                 {% endif %}
               {% endfor %}
-              <th>{{ __('order.comment') }}</th>
               <th>Identyfikator</th>
             </tr>
           </thead>
@@ -46,7 +45,6 @@
                     <td>{{ rowObj.row.row1[header] or '-' }}</td>
                   {% endif %}
                 {% endfor %}
-                <td>{{ rowObj.item.comment or '-' }}</td>
                 <td>{{ rowObj.item.posId or "0" }}</td>
               </tr>
               <tr>
@@ -59,7 +57,7 @@
                   {% endif %}
                 {% endfor %}
               </tr>
-              {% if prices %}
+              {% if prices and showGoldPrices %}
               <tr>
                 {% for header in table.headers1 %}
                   {% if (header in rowObj.item.lockedParams) %}
@@ -77,6 +75,11 @@
                     </td>
                   {% endif %}
                 {% endfor %}
+              </tr>
+              {% endif %}
+              {% if rowObj.item.comment %}
+              <tr>
+                <td class="row-comment" colspan="999"><span class="price-label">{{ __('order.comment') }}:</span> {{ rowObj.item.comment }}</td>
               </tr>
               {% endif %}
               {% set globalIndex = globalIndex + 1 %}

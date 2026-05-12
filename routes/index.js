@@ -94,6 +94,7 @@ router.get('/change-language', (req, res) => {
 
 router.get("/", requireLogin, async (req, res) => {
   const currentUser = ownerService.getCurrentUser(req);
+  console.log(currentUser, 'current user in index.js');
   const mustAcceptRODO = req.session.mustAcceptRODO || false;
   let user, orders, ordersSent;
 
