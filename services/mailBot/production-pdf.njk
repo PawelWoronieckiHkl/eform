@@ -1,0 +1,62 @@
+<div class="page-wrap">
+
+  <div class="doc-header">
+    <img src="{{ logoPath }}" alt="logo" class="logo">
+    <div class="doc-title">
+      <div class="doc-order-nr">Zamówienie nr {{ orderNr }}</div>
+      {% if orderDetails.commision %}
+        <div class="doc-commission">"{{ orderDetails.commision }}"</div>
+      {% endif %}
+      {% if clientName %}
+        <div class="doc-client">Klient: {{ clientName }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if orderDetails.comment %}
+    <div class="global-comment">
+      <span class="comment-label">Uwaga ogólna:</span> {{ orderDetails.comment }}
+    </div>
+  {% endif %}
+
+  {% set globalIndex = 1 %}
+  {% for table in cleanOrderItems %}
+    {% for rowObj in table.rows %}
+
+      <div class="position-card">
+
+        <div class="pos-header">
+          <span class="pos-number">#{{ globalIndex }}</span>
+          <span class="pos-meta">
+            {% if rowObj.item.commision %}<span class="meta-chip highlight">Zlecenie: {{ rowObj.item.commision }}</span>{% endif %}
+          </span>
+        </div>
+
+        <div class="params-grid">
+          {% for header in table.headers1 %}
+            {% if not(header in rowObj.item.lockedParams) %}
+              <div class="param-row">
+                <div class="param-label">{{ header }}</div>
+                <div class="param-value">{{ rowObj.row.row1[header] or '—' }}</div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% if rowObj.item.comment %}
+        <div class="pos-comment">
+          <span class="comment-label">Uwaga:</span> {{ rowObj.item.comment }}
+        </div>
+        {% endif %}
+
+      </div>
+
+      {% set globalIndex = globalIndex + 1 %}
+    {% endfor %}
+  {% endfor %}
+
+  <div class="doc-footer">
+    Liczba pozycji: <strong>{{ totalQuantity if totalQuantity is defined else (globalIndex - 1) }}</strong>
+  </div>
+
+</div>

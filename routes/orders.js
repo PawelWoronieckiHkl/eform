@@ -9,7 +9,7 @@ const ownerService = require('../services/owner.js');
 const mailBot = require('../services/mailBot/mailBot');
 const path = require('path');
 const OrderSender = require("../services/sendOrderService");
-const { generatePdf } = require('../services/mailBot/pdfGenerator');
+const { generatePdf, generateProductionPdf, uploadProductionPdf } = require('../services/mailBot/pdfGenerator');
 const { formatClientLabel } = require('../utils/formatClient');
 const { buildOrderItemStructure } = require('../services/itemBuilder.js');
 const { getPriceAfterDiscount } = require('../services/getDiscount.js');
@@ -849,6 +849,12 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res
             },
             bccList.join(', ')
         );
+
+        // Generuj i wyślij PDF produkcyjny po polsku (fire-and-forget, nie blokuje odpowiedzi)
+        translateOrderItems(orderItems, cleanOrderItems, 'pl')
+            .then(plItems => generateProductionPdf(orderDetails, plItems, logoPath, orderIdx, clientName))
+            .then(prodPdf => uploadProductionPdf(prodPdf, sender.fileName))
+            .catch(err => log('Błąd generowania/wysyłki PDF produkcyjnego:', err));
 
         return res.json({ status: "success", message: "Dane zapisane poprawnie", redirect: "/orders/history" });
     }

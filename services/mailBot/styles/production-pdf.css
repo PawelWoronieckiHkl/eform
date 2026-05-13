@@ -1,0 +1,391 @@
+@page {
+    size: A4 portrait;
+    margin: 8mm 8mm 8mm 8mm;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+/* ─── Nagłówek dokumentu ─────────────────────────────── */
+.page-wrap {
+    width: 100%;
+}
+
+.doc-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    border-bottom: 3px solid #000;
+    padding-bottom: 7px;
+    margin-bottom: 8px;
+}
+
+.logo {
+    width: 56px;
+    flex-shrink: 0;
+}
+
+.doc-title {
+    flex: 1;
+}
+
+.doc-order-nr {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.doc-commission {
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 2px;
+}
+
+.doc-client {
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 3px;
+    color: #333;
+}
+
+/* ─── Uwaga ogólna ───────────────────────────────────── */
+.global-comment {
+    background: #f5f5f5;
+    border: 2px solid #aaa;
+    border-radius: 3px;
+    padding: 7px 10px;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+/* ─── Karta pozycji ──────────────────────────────────── */
+.position-card {
+    border: 2px solid #000;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+    zoom: 0.7;
+}
+
+/* nagłówek karty */
+.pos-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #2c2c2c;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 2px 2px 0 0;
+}
+
+.pos-number {
+    font-size: 21px;
+    font-weight: bold;
+    min-width: 31px;
+    line-height: 1;
+}
+
+.pos-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.meta-chip {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.meta-chip.highlight {
+    background: #f0c040;
+    color: #000;
+    border-color: #e0a800;
+    font-weight: bold;
+}
+
+/* parametry – siatka 2 kolumny */
+.params-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid #ccc;
+}
+
+.param-row {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    min-height: 25px;
+}
+
+.param-row:nth-child(odd) {
+    background: #f7f7f7;
+}
+
+.param-label {
+    flex: 0 0 45%;
+    padding: 5px 7px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #555;
+    border-right: 1px solid #ccc;
+    word-break: normal;
+    hyphens: none;
+}
+
+.param-value {
+    flex: 1;
+    padding: 5px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    word-break: normal;
+    hyphens: none;
+}
+
+/* ─── Wiersz komentarza ──────────────────────────────── */
+.pos-comment {
+    background: #ebebeb;
+    border-top: 2px solid #bbb;
+    padding: 6px 10px;
+    font-size: 18px;
+    min-height: 27px;
+}
+
+.comment-label {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.comment-empty {
+    color: #aaa;
+    font-style: italic;
+}
+
+/* ─── Stopka ─────────────────────────────────────────── */
+.doc-footer {
+    text-align: right;
+    font-size: 13px;
+    border-top: 2px solid #000;
+    padding-top: 6px;
+    margin-top: 3px;
+}
+
+@media print {
+    body { margin: 0; padding: 0; }
+    .position-card { page-break-inside: avoid; }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000;
+    font-size: 17px;
+    margin: 0;
+    padding: 0;
+}
+
+/* ─── Nagłówek dokumentu ─────────────────────────────── */
+.page-wrap {
+    width: 100%;
+}
+
+.doc-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border-bottom: 3px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.logo {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.doc-title {
+    flex: 1;
+}
+
+.doc-order-nr {
+    font-size: 26px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.doc-commission {
+    font-size: 20px;
+    font-style: italic;
+    margin-top: 2px;
+}
+
+.doc-client {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 4px;
+    color: #333;
+}
+
+/* ─── Uwaga ogólna ───────────────────────────────────── */
+.global-comment {
+    background: #fff3cd;
+    border: 2px solid #e0a800;
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 17px;
+    margin-bottom: 14px;
+}
+
+/* ─── Karta pozycji ──────────────────────────────────── */
+.position-card {
+    border: 2px solid #000;
+    border-radius: 4px;
+    margin-bottom: 14px;
+    page-break-inside: avoid;
+}
+
+/* nagłówek karty */
+.pos-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #2c2c2c;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 2px 2px 0 0;
+}
+
+.pos-number {
+    font-size: 30px;
+    font-weight: bold;
+    min-width: 44px;
+    line-height: 1;
+}
+
+.pos-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.meta-chip {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 3px;
+    padding: 3px 10px;
+    font-size: 17px;
+    white-space: nowrap;
+}
+
+.meta-chip.highlight {
+    background: #f0c040;
+    color: #000;
+    border-color: #e0a800;
+    font-weight: bold;
+}
+
+/* parametry – siatka 2 kolumny */
+.params-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid #ccc;
+}
+
+.param-row {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    min-height: 36px;
+}
+
+.param-row:nth-child(odd) {
+    background: #f7f7f7;
+}
+
+.param-label {
+    flex: 0 0 45%;
+    padding: 7px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #555;
+    border-right: 1px solid #ccc;
+    word-break: normal;
+    hyphens: none;
+}
+
+.param-value {
+    flex: 1;
+    padding: 7px 10px;
+    font-size: 17px;
+    font-weight: bold;
+    word-break: normal;
+    hyphens: none;
+}
+
+/* ─── Wiersz komentarza ──────────────────────────────── */
+.pos-comment {
+    background: #ebebeb;
+    border-top: 2px solid #bbb;
+    padding: 8px 14px;
+    font-size: 17px;
+    min-height: 38px;
+}
+
+.comment-label {
+    font-weight: bold;
+    margin-right: 6px;
+}
+
+.comment-empty {
+    color: #aaa;
+    font-style: italic;
+}
+
+/* ─── Stopka ─────────────────────────────────────────── */
+.doc-footer {
+    text-align: right;
+    font-size: 18px;
+    border-top: 2px solid #000;
+    padding-top: 8px;
+    margin-top: 4px;
+}
+
+@media print {
+    body { margin: 0; padding: 0; }
+    .position-card { page-break-inside: avoid; }
+}
+}
+
+.print-total-items {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: right;
+    margin: 4px 0;
+    padding: 4px 5% 4px 10px;
+}
+
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+}
