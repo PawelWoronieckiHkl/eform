@@ -240,8 +240,8 @@ async function uploadProductionPdf(pdfBuffer, jsonFileName) {
   }
 
   // Tryb produkcyjny — upload na FTP
-  if (!process.env.FTP_PDF_HOST) {
-    log('FTP_PDF_HOST not configured, skipping production PDF upload');
+  if (!process.env.FTP_HOST) {
+    log('FTP_HOST not configured, skipping production PDF upload');
     return;
   }
 
@@ -254,9 +254,9 @@ async function uploadProductionPdf(pdfBuffer, jsonFileName) {
   const client = new ftp.Client();
   try {
     await client.access({
-      host: process.env.FTP_PDF_HOST,
-      user: process.env.FTP_PDF_USER,
-      password: process.env.FTP_PDF_PASSWORD,
+      host: process.env.FTP_HOST,
+      user: process.env.FTP_USER,
+      password: process.env.FTP_PASSWORD,
       secure: false,
     });
     await client.ensureDir('/orders-pdf');

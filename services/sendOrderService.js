@@ -145,7 +145,7 @@ class OrderSender {
                 user: process.env.FTP_USER,
                 password: process.env.FTP_PASSWORD,
                 secure: false,
-                remotePath: `/${this.fileName}.json`
+                remotePath: `/orders-out/${this.fileName}.json`
             };
             const filePath = this.fullPath;
 
