@@ -1827,3 +1827,10 @@ fatal: nie znaleziono repozytorium „https://github.com/PawelWrHkl/eform.git/�
 === 2026-05-16 23:19:33 - Koniec (Exit: 0) ===
 === 2026-05-16 23:31:39 - Start ===
 === 2026-05-16 23:31:39 - Dodawanie zmian do commita ===
+[main 9d34653] Automatic commit 2026-05-16 23:31
+ 2 files changed, 67 insertions(+), 5 deletions(-)
+=== 2026-05-16 23:31:39 - Wysyłanie do origin/main ===
+remote: Repository not found.
+fatal: nie znaleziono repozytorium „https://github.com/PawelWrHkl/eform.git/”
+=== 2026-05-16 23:34:57 - Start ===
+=== 2026-05-16 23:34:57 - Dodawanie zmian do commita ===
