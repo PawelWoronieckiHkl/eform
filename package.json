@@ -4,7 +4,9 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "node --openssl-legacy-provider server.js",
-		"dev": "node --watch server.js"
+		"dev": "node --watch server.js",
+		"test": "ROOT_DIR=/tmp/eform-test node --test \"services/orderImport/__tests__/*.test.js\" \"services/formEngine/__tests__/*.test.js\"",
+		"import:orders": "node scripts/runOrderImport.js"
 	},
 	"keywords": [],
 	"author": "Pawel Woroniecki",
@@ -22,6 +24,7 @@
 		"csvtojson": "^2.0.10",
 		"dayjs": "^1.11.18",
 		"dotenv": "^16.4.7",
+		"esbuild": "^0.28.0",
 		"exceljs": "^4.4.0",
 		"express": "^4.21.2",
 		"express-session": "^1.18.1",
@@ -33,6 +36,7 @@
 		"i18next-fs-backend": "^2.6.0",
 		"i18next-http-middleware": "^3.7.4",
 		"intro.js": "^8.3.2",
+		"jsdom": "^27.0.1",
 		"lodash": "^4.17.21",
 		"mammoth": "^1.10.0",
 		"md5": "^2.3.0",

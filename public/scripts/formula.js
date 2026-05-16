@@ -252,6 +252,31 @@ parser.setFunction("USTAW", function (params) {
             defaultsModel[field][parameter] = value;
             parser.setVariable(field, value.toString());
             window.formulaContext[field] = value;
+
+            // If the target field is a text/numeric <input> and the DOM value
+            // is a number, write that number straight into the input's value
+            // so the user sees the default in the form immediately.
+            // Always overwrite when DOM is numeric so a changing DOM is reflected.
+            try {
+                const inputEl = (window.formInputs && window.formInputs[field]) || document.getElementById(field);
+                if (inputEl && inputEl.tagName === 'INPUT' && inputEl.type !== 'file' && inputEl.type !== 'checkbox' && inputEl.type !== 'radio') {
+                    const trimmed = value.trim();
+                    // Accept integers and decimals (with . or , as separator), optional sign.
+                    const isNumeric = trimmed !== '' && /^-?\d+([.,]\d+)?$/.test(trimmed);
+                    if (isNumeric) {
+                        const numericValue = trimmed.replace(',', '.');
+                        if (inputEl.value !== numericValue) {
+                            inputEl.value = numericValue;
+                        }
+                        if (window.formValues) {
+                            window.formValues[field] = numericValue;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('USTAW DOM: nie udało się zapisać wartości do inputu', field, e);
+            }
+
             result = true;
             break;
         default:

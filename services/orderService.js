@@ -87,7 +87,7 @@ async function jsonTextBackToMap(orderItems) {
         continue;
       }
       let value = "-";
-      if (param) {
+      if (param && typeof param === 'object') {
 
         if ("row" in param) {
         }
@@ -100,6 +100,11 @@ async function jsonTextBackToMap(orderItems) {
         } else {
           value = param.option_value;
         }
+      } else if (typeof param === 'string' || typeof param === 'number') {
+        // Legacy rows where the value was stored as a plain scalar instead of
+        // a full {param_description, option_value, …} object. Treat the
+        // scalar itself as the option value to avoid `in`-operator crashes.
+        value = String(param);
       }
 
       // SUB___ params: store in subParamValues, skip main table entirely
@@ -112,7 +117,7 @@ async function jsonTextBackToMap(orderItems) {
         continue;
       }
 
-      if (param) {
+      if (param && typeof param === 'object') {
         if ('locked' in param && 'param_description' in param) {
           if (param.locked) {
             if (!table.locked.includes(param.param_description)) {

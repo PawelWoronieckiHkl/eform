@@ -359,7 +359,31 @@ router.post('/favorites/toggle', requireLogin, async (req, res) => {
 router.get('/:positionId', requireLogin, async (req, res) => {
   let result = await db.getPosition(req.params.positionId);
 
-  const parametersDesc = JSON.parse(result.json_parameters_desc);
+  // `json_parameters_desc` is normally stored DOUBLE-encoded by
+  // db/positions.insertNewForm (the browser pre-stringifies the Map.entries
+  // array, then the DB layer JSON.stringify's it again). The first parse here
+  // returns the inner JSON string, the second turns it into the actual array.
+  // Some legacy rows hold a stringified object literal (`"[object Object]"`)
+  // which would otherwise crash JSON.parse and the whole request — fall back
+  // to an empty array so the page still renders.
+  let parametersDesc = [];
+  if (result && result.json_parameters_desc) {
+    try {
+      parametersDesc = JSON.parse(result.json_parameters_desc);
+      if (typeof parametersDesc === 'string') {
+        parametersDesc = JSON.parse(parametersDesc);
+      }
+      // Older imported rows may store a plain object {KEY: {...}} instead of
+      // the canonical Map.entries array. Normalize so the template's
+      // `for param in parameters` loop always sees [key, value] pairs.
+      if (parametersDesc && !Array.isArray(parametersDesc) && typeof parametersDesc === 'object') {
+        parametersDesc = Object.entries(parametersDesc);
+      }
+    } catch (err) {
+      log(`position ${req.params.positionId}: invalid json_parameters_desc - ${err.message}`);
+      parametersDesc = [];
+    }
+  }
   const values = result.json_parameters
   const parameters_short = result.parameters_short || {};
 
