@@ -1784,3 +1784,39 @@ To add an exception for this directory, call:
 	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
 === 2026-05-15 12:00:01 - Koniec (Exit: 0) ===
 === 2026-05-16 10:35:01 - Start ===
+[main 7ab80f6] Automatic commit 2026-05-16 10:35
+ 25 files changed, 3139 insertions(+), 35 deletions(-)
+ create mode 100644 scripts/runOrderImport.js
+ create mode 100644 services/formEngine/__tests__/smoke.test.js
+ create mode 100644 services/formEngine/bundler.js
+ create mode 100644 services/formEngine/harnessHtml.js
+ create mode 100644 services/formEngine/index.js
+ create mode 100644 services/formEngine/jsdomEnv.js
+ create mode 100644 services/formEngine/resourceLoader.js
+ create mode 100644 services/orderImport/__tests__/orderImporter.test.js
+ create mode 100644 services/orderImport/__tests__/orderValidator.test.js
+ create mode 100644 services/orderImport/__tests__/parameterTranslator.test.js
+ create mode 100644 services/orderImport/ftpClient.js
+ create mode 100644 services/orderImport/index.js
+ create mode 100644 services/orderImport/localCache.js
+ create mode 100644 services/orderImport/orderImporter.js
+ create mode 100644 services/orderImport/orderValidator.js
+ create mode 100644 services/orderImport/parameterTranslator.js
+ create mode 100644 services/orderImport/userResolver.js
+fatal: could not read Username for 'https://github.com': Nie ma takiego urządzenia ani adresu
+=== 2026-05-16 10:35:02 - Koniec (Exit: 0) ===
+=== 2026-05-16 12:00:01 - Start ===
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+fatal: detected dubious ownership in repository at '/home/pawel/projects/eform-project/eform'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/pawel/projects/eform-project/eform
+=== 2026-05-16 12:00:01 - Koniec (Exit: 0) ===
+=== 2026-05-16 23:19:27 - Start ===
