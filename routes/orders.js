@@ -701,8 +701,16 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
             const context = await browser.newContext();
             const page = await context.newPage();
 
+            // Suppress non-critical console messages during PDF generation
+            page.on('console', (msg) => {
+              // Only log critical errors, not warnings or info about missing resources
+              if (msg.type() !== 'error' || !msg.text().includes('net::ERR_NAME_NOT_RESOLVED')) {
+                return;
+              }
+            });
+
             await page.setContent(html, {
-                waitUntil: 'networkidle',
+                waitUntil: 'domcontentloaded',
                 timeout: 30000
             });
 

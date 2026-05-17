@@ -213,7 +213,7 @@
                                                         </div>
                                                         <div class="col-md-9">
                                                             {% block send_phone_input %}
-                                                                <input type="number" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/>
+                                                                <input type="tel" class="form-control" id="sendPhone" pattern="^(?:\+|00)?[\d\s\-().]{6,}$" placeholder="{{ __('new-order.phone_placeholder') }}" value=""/>
                                                             {% endblock send_phone_input %}
                                                         </div>
                                                     </div>

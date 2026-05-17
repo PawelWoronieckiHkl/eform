@@ -11,9 +11,9 @@ const pool = mysql.createPool({
     password: process.env.DATABASE_PASSWORD || 'A5q|:4Ny',
     database: process.env.DATABASE || 'eform',
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: 15,
     queueLimit: 0,
-    connectTimeout: 15000,
+    connectTimeout: 25000,
 });
 
 // Returns a pool connection compatible with the legacy connetToDb() API.

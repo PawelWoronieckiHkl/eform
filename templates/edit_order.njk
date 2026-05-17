@@ -18,7 +18,7 @@
   <input type="text" class="form-control" id="email" value='{{ orderData.email }}' placeholder="{{ __('edit_order.email_placeholder') }}"/>
 {% endblock email_input %}
 {% block phone_input %}
-  <input type="number" class="form-control" id="phone" placeholder="{{ __('edit_order.phone_placeholder') }}" value='{{ orderData.phone }}'/>
+  <input type="tel" class="form-control" id="phone" pattern="^(?:\+|00)?[\d\s\-().]{6,}$" placeholder="{{ __('edit_order.phone_placeholder') }}" value='{{ orderData.phone }}'/>
 {% endblock phone_input %}
 {% block street_input %}
   <input type="text" class="form-control" id="street" placeholder="{{ __('edit_order.street_placeholder') }}" value='{{ orderData.street }}'/>
@@ -42,7 +42,7 @@
   <input type="text" class="form-control" id="sendEmail" placeholder="{{ __('new-order.email_placeholder') }}" value='{{ orderData.send_email }}'/>
 {% endblock send_email_input %}
 {% block send_phone_input %}
-  <input type="number" class="form-control" id="sendPhone" placeholder="{{ __('new-order.phone_placeholder') }}" value='{{ orderData.send_phone }}'/>
+  <input type="tel" class="form-control" id="sendPhone" pattern="^(?:\+|00)?[\d\s\-().]{6,}$" placeholder="{{ __('new-order.phone_placeholder') }}" value='{{ orderData.send_phone }}'/>
 {% endblock send_phone_input %}
 {% block send_street_input %}
   <input type="text" class="form-control" id="sendStreet" placeholder="{{ __('new-order.street_placeholder') }}" value='{{ orderData.send_street }}'/>

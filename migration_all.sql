@@ -145,3 +145,11 @@ ALTER TABLE `user`
 
 ALTER TABLE `user`
   ADD COLUMN `report_configs` JSON DEFAULT NULL;
+
+-- ── 7. Numery telefonów ──────────────────────────────────────────
+
+ALTER TABLE `send_address`
+  MODIFY COLUMN `phone` VARCHAR(50);
+
+ALTER TABLE `order_address`
+  MODIFY COLUMN `phone` VARCHAR(50);

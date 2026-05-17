@@ -34,10 +34,12 @@ export function resetDependences([params, display], name, inputs, values, allOpt
             if (inputs[depParam]?.tagName == 'INPUT' && typeof valueToReset == 'number') {
                 let allValidators = (findAllValidatorsForInput(depParam, values))[0];
                 let validators = allValidators && allValidators[depParam];
+                const min = validators?.MIN2 ?? validators?.MIN;
+                const max = validators?.MAX2 ?? validators?.MAX;
                 if (
                     validators &&
-                    parseInt(validators.MIN) < values[depParam] &&
-                    values[depParam] < parseInt(validators.MAX)
+                    Number(min) < values[depParam] &&
+                    values[depParam] < Number(max)
                 ) {
                     paramsToReset = paramsToReset.filter(param => param !== depParam);
                 }

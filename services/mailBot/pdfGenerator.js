@@ -103,6 +103,14 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
   const context = await browser.newContext();
   const page = await context.newPage();
 
+  // Suppress non-critical console messages during PDF generation
+  page.on('console', (msg) => {
+    // Only log critical errors, not warnings or info about missing resources
+    if (msg.type() !== 'error' || !msg.text().includes('net::ERR_NAME_NOT_RESOLVED')) {
+      return;
+    }
+  });
+
   try {
     await page.setContent(`
   <!DOCTYPE html>
@@ -117,7 +125,7 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
   <body>${htmlFixed}</body>
   </html>
 `, {
-      waitUntil: 'networkidle',
+      waitUntil: 'domcontentloaded',
       timeout: 30000
     });
   } catch (error) {
@@ -202,10 +210,18 @@ async function generateProductionPdf(orderData, cleanOrderItems, logoPath, order
   const context = await browser.newContext();
   const page = await context.newPage();
 
+  // Suppress non-critical console messages during PDF generation
+  page.on('console', (msg) => {
+    // Only log critical errors, not warnings or info about missing resources
+    if (msg.type() !== 'error' || !msg.text().includes('net::ERR_NAME_NOT_RESOLVED')) {
+      return;
+    }
+  });
+
   try {
     await page.setContent(`<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><style>${fs.readFileSync(path.join(__dirname, 'styles/production-pdf.css'), 'utf8')}</style></head>
-<body>${htmlFixed}</body></html>`, { waitUntil: 'networkidle', timeout: 30000 });
+<body>${htmlFixed}</body></html>`, { waitUntil: 'domcontentloaded', timeout: 30000 });
   } catch (error) {
     log('Błąd podczas wstrzykiwania treści (production PDF):', error);
     await browser.close();

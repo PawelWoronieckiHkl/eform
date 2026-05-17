@@ -23,7 +23,9 @@
  * Pure data-in / data-out — easy to unit-test by injecting a `repo` stub.
  */
 
-const defaultRepo = require('../translationDict/dbRepository');
+function getDefaultRepo() {
+  return require('../translationDict/dbRepository');
+}
 
 /**
  * @param {object} parameters       Incoming { key: value } map.
@@ -34,7 +36,7 @@ const defaultRepo = require('../translationDict/dbRepository');
  * @returns {Promise<object>}       Translated parameters map (canonical keys).
  */
 async function translateParametersToCanonical(parameters, groupNumber, lang, opts = {}) {
-  const repo = opts.repo || defaultRepo;
+  const repo = opts.repo || getDefaultRepo();
 
   if (!parameters || typeof parameters !== 'object') return {};
   if (!groupNumber || !lang || lang === 'pl') {

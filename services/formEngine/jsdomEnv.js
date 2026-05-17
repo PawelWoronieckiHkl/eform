@@ -257,6 +257,13 @@ async function bootEngine(opts = {}) {
 
   const virtualConsole = new VirtualConsole();
   virtualConsole.on('jsdomError', (err) => {
+    // Suppress benign errors (missing images, external resources) during form processing
+    const errStr = (err && err.message) ? err.message : String(err);
+    if (errStr.includes('Could not load img') || errStr.includes('cannot read') || 
+        errStr.includes('ENOENT') || errStr.includes('formEngine: cannot read')) {
+      // Silently ignore missing resource files (images, data files) - not critical for form processing
+      return;
+    }
     process.stderr.write(`[jsdom] ${err && err.stack ? err.stack : err}\n`);
   });
   if (process.env.FORM_ENGINE_DEBUG) {

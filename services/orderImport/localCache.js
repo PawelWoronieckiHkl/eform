@@ -15,6 +15,7 @@
 const path = require('path');
 const fs = require('fs').promises;
 const { localImportDir } = require('../../config');
+const { assertSafeOrderFileName } = require('./fileNames');
 
 const SUBDIRS = {
   incoming: 'incoming',
@@ -40,10 +41,12 @@ async function ensureDirs() {
 }
 
 function incomingPathFor(fileName) {
+  assertSafeOrderFileName(fileName);
   return path.join(paths().incoming, fileName);
 }
 
 function timestampedName(fileName) {
+  assertSafeOrderFileName(fileName);
   const ts = new Date().toISOString().replace(/[:.]/g, '-');
   return `${ts}__${fileName}`;
 }

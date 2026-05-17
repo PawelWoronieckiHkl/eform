@@ -55,7 +55,9 @@ test('importResolvedOrder runs the full pipeline with stubs', async () => {
         amount: args[10],
         groupNumber: args[13],
         lang: args[14],
-        jsonValues: args[8]
+        groupName: args[16],
+        jsonValues: args[8],
+        jsonValuesToDisplay: args[9]
       };
     }
   };
@@ -78,6 +80,24 @@ test('importResolvedOrder runs the full pipeline with stubs', async () => {
     displayValuesToWireFormat: (dv) => JSON.stringify(Object.entries(dv || {})),
     stubDisplayEntries: (v) => Object.entries(v || {}).map(([k, val]) => [k, { option_value: String(val) }])
   };
+  const displayBuilder = async ({ values }) => ({
+    KOLOR: {
+      param_description: 'Color',
+      option_value: values.KOLOR,
+      option_description: 'Black',
+      row: '1',
+      locked: false,
+      sub: false
+    },
+    ILOSC: {
+      param_description: 'Quantity',
+      option_value: values.ILOSC,
+      option_description: '',
+      row: '1',
+      locked: false,
+      sub: false
+    }
+  });
 
   const payload = {
     userIdent: 'U1', commission: 'CM-1', comment: 'hi',
@@ -91,7 +111,16 @@ test('importResolvedOrder runs the full pipeline with stubs', async () => {
 
   const res = await importResolvedOrder({
     payload, user, lang: 'de',
-    deps: { orders: ordersDb, positions: positionsDb, itemBuilder, translator, formEngine }
+    deps: {
+      orders: ordersDb,
+      positions: positionsDb,
+      itemBuilder,
+      translator,
+      formEngine,
+      displayBuilder,
+      groupNameResolver: async () => 'COSIFLOR',
+      log: () => {}
+    }
   });
 
   assert.equal(res.orderId, 999);
@@ -107,8 +136,11 @@ test('importResolvedOrder runs the full pipeline with stubs', async () => {
   assert.equal(calls.items[0].order, 999);
   assert.equal(calls.items[0].groupNumber, 'SLOPE');
   assert.equal(calls.items[0].lang, 'de');
+  assert.equal(calls.items[0].groupName, 'COSIFLOR');
   assert.equal(calls.items[0].amount, 3);
   assert.deepEqual(calls.items[0].jsonValues, { KOLOR: 'Black', ILOSC: 3 });
+  assert.match(calls.items[0].jsonValuesToDisplay, /Color/);
+  assert.match(calls.items[0].jsonValuesToDisplay, /Quantity/);
 });
 
 test('importResolvedOrder skips send_address when payload has none', async () => {
@@ -137,6 +169,7 @@ test('importResolvedOrder skips send_address when payload has none', async () =>
     displayValuesToWireFormat: (dv) => JSON.stringify(Object.entries(dv || {})),
     stubDisplayEntries: (v) => Object.entries(v || {}).map(([k, val]) => [k, { option_value: String(val) }])
   };
+  const displayBuilder = async ({ values }) => ({ KOLOR: { option_value: values.KOLOR } });
 
   const res = await importResolvedOrder({
     payload: {
@@ -145,7 +178,16 @@ test('importResolvedOrder skips send_address when payload has none', async () =>
     },
     user: { id: 1 },
     lang: 'pl',
-    deps: { orders: ordersDb, positions: positionsDb, itemBuilder, translator, formEngine }
+    deps: {
+      orders: ordersDb,
+      positions: positionsDb,
+      itemBuilder,
+      translator,
+      formEngine,
+      displayBuilder,
+      groupNameResolver: async () => '',
+      log: () => {}
+    }
   });
 
   assert.equal(sendAddressCalled, false);

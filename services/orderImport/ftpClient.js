@@ -19,13 +19,14 @@ const path = require('path');
 const fs = require('fs').promises;
 const { ftpImportPath } = require('../../config');
 const { log } = require('../../utils/logging');
+const { assertSafeOrderFileName, isSafeOrderFileName } = require('./fileNames');
 
 const FTP_ENABLED = Boolean(
   process.env.FTP_HOST && process.env.FTP_USER && process.env.FTP_PASSWORD
 );
 
 function isJsonFile(name) {
-  return typeof name === 'string' && name.toLowerCase().endsWith('.json');
+  return isSafeOrderFileName(name);
 }
 
 async function withClient(fn) {
@@ -80,6 +81,7 @@ async function listOrderFiles({ localFallbackDir } = {}) {
  * Download a remote JSON file to `localPath`. Returns the local path written.
  */
 async function downloadOrderFile(fileName, localPath, { localFallbackDir } = {}) {
+  assertSafeOrderFileName(fileName);
   await fs.mkdir(path.dirname(localPath), { recursive: true });
 
   if (!FTP_ENABLED) {
@@ -87,6 +89,9 @@ async function downloadOrderFile(fileName, localPath, { localFallbackDir } = {})
       throw new Error('FTP disabled and no localFallbackDir provided');
     }
     const src = path.join(localFallbackDir, fileName);
+    if (path.resolve(src) === path.resolve(localPath)) {
+      return localPath;
+    }
     await fs.copyFile(src, localPath);
     return localPath;
   }
@@ -103,6 +108,7 @@ async function downloadOrderFile(fileName, localPath, { localFallbackDir } = {})
  * to            /<ftpImportPath>/<subdir>/<fileName>.
  */
 async function moveRemoteFile(fileName, subdir, { localFallbackDir } = {}) {
+  assertSafeOrderFileName(fileName);
   if (!FTP_ENABLED) {
     if (!localFallbackDir) return;
     const src = path.join(localFallbackDir, fileName);

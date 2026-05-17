@@ -6,6 +6,8 @@ let success_count = 0;
 
 parser.setVariable("MIN", "MIN");
 parser.setVariable("MAX", "MAX");
+parser.setVariable("MIN2", "MIN2");
+parser.setVariable("MAX2", "MAX2");
 parser.setVariable("DOM", "DOM");
 
 function inList(params) {
@@ -225,7 +227,7 @@ parser.setFunction("USTAW", function (params) {
             delete defaultsModel[field][parameter];
             delete window.formulaContext[field];
             parser.setVariable(field, undefined);
-        } else if (parameter === "MIN" || parameter === "MAX") {
+        } else if (parameter === "MIN" || parameter === "MAX" || parameter === "MIN2" || parameter === "MAX2") {
             delete validatorModel[field][parameter];
         }
         if (validatorModel[field] && Object.keys(validatorModel[field]).length === 0) {
@@ -244,6 +246,14 @@ parser.setFunction("USTAW", function (params) {
             result = true;
             break;
         case "MAX":
+            validatorModel[field][parameter] = Math.round(value);
+            result = true;
+            break;
+        case "MIN2":
+            validatorModel[field][parameter] = Math.round(value);
+            result = true;
+            break;
+        case "MAX2":
             validatorModel[field][parameter] = Math.round(value);
             result = true;
             break;

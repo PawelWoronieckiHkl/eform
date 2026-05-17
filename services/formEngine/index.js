@@ -135,6 +135,156 @@ function displayValuesToObject(displayValues) {
   return out;
 }
 
+function formatNumberForDisplay(value) {
+  const num = parseFloat(value);
+  if (!Number.isFinite(num)) return '0';
+  if (num % 1 === 0) return num.toString();
+  return num.toFixed(2);
+}
+
+function normalizeFormulaValue(result) {
+  if (result === false || result === null || result === undefined || result < 0) {
+    return 0;
+  }
+
+  const numeric = parseFloat(result);
+  if (!Number.isFinite(numeric)) return 0;
+  return parseFloat(numeric.toFixed(2));
+}
+
+function valuesEqual(a, b) {
+  if (a === b) return true;
+  const aNum = Number(a);
+  const bNum = Number(b);
+  return Number.isFinite(aNum) && Number.isFinite(bNum) && Math.abs(aNum - bNum) < 0.000001;
+}
+
+function hasUsableFormulaValue(value) {
+  return value !== undefined && value !== null && value !== '';
+}
+
+function formulaIdentifiers(expression) {
+  const out = new Set();
+  const fnNames = new Set([
+    'AND', 'ORAZ', 'WSROD', 'NIEWSROD', 'WSROD2', 'NIEWSROD2', 'WSROD3', 'NIEWSROD3',
+    'WSRODNIEWSROD', 'ZAWIERA', 'LEFT', 'RIGHT', 'FLOOR', 'CEIL', 'CEILING', 'ZAOKR',
+    'HASLO', 'MIN', 'MAX', 'MIN2', 'MAX2', 'DOM'
+  ]);
+  const source = String(expression || '').toUpperCase();
+  const regex = /\b[A-Z_][A-Z0-9_]*\b/g;
+  let match;
+  while ((match = regex.exec(source)) !== null) {
+    const token = match[0];
+    if (!fnNames.has(token)) out.add(token);
+  }
+  return out;
+}
+
+function buildFormulaContext(values, sourceValues, expression) {
+  const context = { ...(values || {}) };
+
+  for (const [key, value] of Object.entries(sourceValues || {})) {
+    if (!hasUsableFormulaValue(context[key]) && hasUsableFormulaValue(value)) {
+      context[key] = value;
+    }
+  }
+
+  for (const key of formulaIdentifiers(expression)) {
+    if (!hasUsableFormulaValue(context[key])) {
+      context[key] = 0;
+    }
+  }
+
+  return context;
+}
+
+function upsertFormulaDisplayValue(window, param, value) {
+  const displayValues = window.formDisplayValues;
+  if (!displayValues || typeof displayValues.get !== 'function') return;
+
+  const current = displayValues.get(param.NAME) || {};
+  const optionValue = formatNumberForDisplay(value);
+  const locked = Array.isArray(window.lockedParams) && window.lockedParams.includes(param.NAME);
+  const sub = Array.isArray(window.subParams) && window.subParams.includes(param.NAME);
+
+  displayValues.set(param.NAME, {
+    param_description: current.param_description || param.DESCRIPTION || '',
+    sub: current.sub === true || sub,
+    option_value: optionValue,
+    option_description: current.option_description || '',
+    locked: current.locked === true || locked,
+    row: current.row || param.LISTROW || '1',
+    ...(param.LISTSUM === 'true' ? { listsum: true } : {})
+  });
+}
+
+/**
+ * `updateProcedure` calculates formulas for fields that are actively touched by
+ * the replay. Imported payloads often do not contain computed params, so make a
+ * final deterministic pass over every param with FORMULA and persist the same
+ * value/display shape that pricesCalculator.calculateFromFormula would create.
+ */
+function applyFormulaParams(window, sourceValues = {}) {
+  const params = Array.isArray(window.params) ? window.params : [];
+  const values = window.formValues || {};
+  const inputs = window.formInputs || {};
+  const skipped = Array.isArray(window.skipCountParams) ? window.skipCountParams : [];
+  const formulaParams = params.filter((param) => (
+    param
+    && param.NAME
+    && param.FORMULA
+    && param.FORMULA !== '<NULL>'
+    && !skipped.includes(param.NAME)
+  ));
+
+  // Some formulas depend on previous formula fields (e.g. SUMA_BRUTTO uses
+  // CENA_SUMA), so iterate until stable instead of relying on file order only.
+  for (let pass = 0; pass < 5; pass++) {
+    let changed = false;
+
+    for (const param of formulaParams) {
+      let result;
+      try {
+        const formulaContext = buildFormulaContext(values, sourceValues, param.FORMULA);
+        result = window.FormulaHandler.evaluateFormula(param.FORMULA, formulaContext, 'formula');
+      } catch (err) {
+        if (process.env.FORM_ENGINE_DEBUG) {
+          process.stderr.write(`[formEngine] formula failed for ${param.NAME}: ${err.message}\n`);
+        }
+        result = 0;
+      }
+
+      const normalized = normalizeFormulaValue(result);
+      if (!valuesEqual(values[param.NAME], normalized)) {
+        values[param.NAME] = normalized;
+        changed = true;
+      }
+
+      const input = inputs[param.NAME];
+      if (input && 'value' in input) {
+        try { input.value = formatNumberForDisplay(normalized); } catch (_e) { /* read-only */ }
+      }
+      upsertFormulaDisplayValue(window, param, normalized);
+    }
+
+    if (!changed) break;
+  }
+}
+
+function collectFormMeta(window) {
+  const params = Array.isArray(window.params) ? window.params : [];
+  return {
+    params: params.map((param) => ({
+      NAME: param && param.NAME,
+      LISTROW: param && param.LISTROW,
+      LISTSUM: param && param.LISTSUM,
+      FORMROW: param && param.FORMROW
+    })).filter((param) => param.NAME),
+    lockedParams: Array.isArray(window.lockedParams) ? [...window.lockedParams] : [],
+    subParams: Array.isArray(window.subParams) ? [...window.subParams] : []
+  };
+}
+
 /**
  * Convert an in-memory displayValues object (`{KEY: {param_description,...}}`)
  * into the wire format that the UI sends and that the templates expect:
@@ -226,6 +376,8 @@ async function calculatePrices(opts) {
       await new Promise((r) => setTimeout(r, 20));
     }
 
+    applyFormulaParams(env.window, values);
+
     const finalDisplayValues = env.window.formDisplayValues;
     const total = env.window.__engine.getTotal(finalDisplayValues);
 
@@ -237,7 +389,8 @@ async function calculatePrices(opts) {
         total_hidden: total.total_hidden || 0,
         total_sub: total.total_sub || 0
       },
-      shortJson: Object.assign({}, env.window.shortJson || {})
+      shortJson: Object.assign({}, env.window.shortJson || {}),
+      formMeta: collectFormMeta(env.window)
     };
   } finally {
     env.dispose();

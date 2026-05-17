@@ -21,11 +21,17 @@ const positions = () => require('../../db/positions');
 const itemBuilder = () => require('../itemBuilder');
 const formEngine = () => require('../formEngine');
 const { translateParametersToCanonical } = require('./parameterTranslator');
+const {
+  buildDisplayValuesFromDictionary,
+  getProductGroupName
+} = require('./displayValueBuilder');
 const log = (...args) => require('../../utils/logging').log(...args);
 
 function readQuantity(parameters) {
   if (!parameters) return 1;
-  const raw = parameters.ILOSC ?? parameters['ILOŚĆ'] ?? parameters.ilosc;
+  const raw = parameters.ILOSC != null
+    ? parameters.ILOSC
+    : (parameters['ILOŚĆ'] != null ? parameters['ILOŚĆ'] : parameters.ilosc);
   const qty = Number(raw);
   return Number.isFinite(qty) && qty > 0 ? qty : 1;
 }
@@ -64,6 +70,9 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
   const builder = deps.itemBuilder || itemBuilder();
   const translator = deps.translator || translateParametersToCanonical;
   const engine = deps.formEngine || formEngine();
+  const displayBuilder = deps.displayBuilder || buildDisplayValuesFromDictionary;
+  const groupNameResolver = deps.groupNameResolver || getProductGroupName;
+  const logger = deps.log || log;
 
   if (!payload || !user) {
     throw new Error('importResolvedOrder: payload and user are required');
@@ -118,7 +127,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
         values: canonicalParams
       });
     } catch (err) {
-      log(`formEngine.calculatePrices failed for group=${groupNumber}: ${err.message}`);
+      logger(`formEngine.calculatePrices failed for group=${groupNumber}: ${err.message}`);
       priced = {
         values: canonicalParams,
         // Fall back to a synthetic Map-entries array so the row still renders
@@ -133,7 +142,18 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
     // JSON.stringify(Array.from(map.entries())). insertNewForm will JSON.stringify
     // it again, producing the double-encoded shape the GET /:positionId route
     // (and downstream templates) expect.
-    const displayValuesWire = engine.displayValuesToWireFormat(priced.displayValues);
+    const displayValues = await displayBuilder({
+      groupNumber,
+      lang,
+      values: priced.values || canonicalParams,
+      displayValues: priced.displayValues,
+      shortJson: priced.shortJson,
+      formMeta: priced.formMeta
+    });
+    const displayValuesWire = engine.displayValuesToWireFormat(displayValues);
+    const groupName = item.product_description
+      || await groupNameResolver(groupNumber, lang)
+      || '';
 
     const formData = builder.buildOrderItemStructure(
       orderId,                                       // order
@@ -152,7 +172,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       groupNumber,                                   // groupNumber -> asortment_group_number
       lang,                                          // lang
       item.department || '',                         // department
-      item.product_description || '',                // groupName -> group_name
+      groupName,                                     // groupName -> group_name
       priced.shortJson || buildShortJson(canonicalParams)
     );
 
@@ -167,7 +187,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
   await positionsDb.reindexOrderPositions(orderId);
   await positionsDb.updateOrderPrice(orderId, null);
 
-  log(`Imported order id=${orderId} for user=${user.ident} positions=${itemIds.length}`);
+  logger(`Imported order id=${orderId} for user=${user.ident} positions=${itemIds.length}`);
   return { orderId, sendAddressId, itemIds };
 }
 

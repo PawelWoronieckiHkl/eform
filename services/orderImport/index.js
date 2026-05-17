@@ -24,8 +24,35 @@ const cache = require('./localCache');
 const { validateOrderPayload } = require('./orderValidator');
 const { resolveOrderUser } = require('./userResolver');
 const { importResolvedOrder } = require('./orderImporter');
+const { makeTransactionalDeps } = require('./transactionalDb');
 const { connetToDb } = require('../../db/core');
 const { log } = require('../../utils/logging');
+
+const MAX_FILE_ATTEMPTS = 3;
+
+function formatError(err) {
+  if (!err) return 'unknown error';
+  const parts = [];
+  if (err.message) parts.push(err.message);
+  if (err.code) parts.push(`code=${err.code}`);
+  if (err.errno) parts.push(`errno=${err.errno}`);
+  if (err.sqlState) parts.push(`sqlState=${err.sqlState}`);
+  if (err.stack) parts.push(`\n${err.stack}`);
+  return parts.length ? parts.join(' ') : String(err);
+}
+
+function isTransientError(err) {
+  const code = err && err.code;
+  return [
+    'ETIMEDOUT',
+    'ECONNRESET',
+    'ECONNREFUSED',
+    'EAI_AGAIN',
+    'PROTOCOL_CONNECTION_LOST',
+    'ER_LOCK_DEADLOCK',
+    'ER_LOCK_WAIT_TIMEOUT'
+  ].includes(code) || /connect ETIMEDOUT/i.test(err && err.message ? err.message : '');
+}
 
 async function readJson(filePath) {
   const raw = await fs.readFile(filePath, 'utf8');
@@ -45,59 +72,80 @@ async function processOneFile(fileName) {
   };
 
   const paths = cache.paths();
-  const localPath = cache.incomingPathFor(fileName);
+  let localPath;
 
-  // 1. Download (or copy from local fallback) into the incoming dir — this
-  // doubles as the local backup required for audit ("kopia na serwerze").
-  await ftp.downloadOrderFile(fileName, localPath, { localFallbackDir: paths.incoming });
-
-  let conn;
-  try {
-    const payload = await readJson(localPath);
-
-    const validation = validateOrderPayload(payload);
-    if (!validation.ok) {
-      throw new Error(`Validation failed: ${validation.errors.join('; ')}`);
-    }
-
-    const resolved = await resolveOrderUser(validation.data);
-
-    // Single DB transaction so partial inserts don't leave orphan rows.
-    conn = await connetToDb();
-    await conn.beginTransaction();
-    const importResult = await importResolvedOrder({
-      payload: resolved.payload,
-      user: resolved.user,
-      lang: resolved.lang
-    });
-    await conn.commit();
-    await conn.end();
-    conn = null;
-
-    result.ok = true;
-    result.orderId = importResult.orderId;
-
-    await cache.moveToProcessed(localPath);
+  let lastError = null;
+  for (let attempt = 1; attempt <= MAX_FILE_ATTEMPTS; attempt++) {
+    let conn;
     try {
-      await ftp.moveRemoteFile(fileName, 'processed', { localFallbackDir: paths.incoming });
+      localPath = cache.incomingPathFor(fileName);
+
+      // 1. Download (or keep from local fallback) into the incoming dir — this
+      // doubles as the local backup required for audit ("kopia na serwerze").
+      await ftp.downloadOrderFile(fileName, localPath, { localFallbackDir: paths.incoming });
+
+      const payload = await readJson(localPath);
+
+      const validation = validateOrderPayload(payload);
+      if (!validation.ok) {
+        throw new Error(`Validation failed: ${validation.errors.join('; ')}`);
+      }
+
+      const resolved = await resolveOrderUser(validation.data);
+
+      // Single DB transaction so partial inserts don't leave orphan rows.
+      conn = await connetToDb();
+      await conn.beginTransaction();
+      const importResult = await importResolvedOrder({
+        payload: resolved.payload,
+        user: resolved.user,
+        lang: resolved.lang,
+        deps: makeTransactionalDeps(conn)
+      });
+      await conn.commit();
+      await conn.end();
+      conn = null;
+
+      result.ok = true;
+      result.orderId = importResult.orderId;
+
+      await cache.moveToProcessed(localPath);
+      try {
+        await ftp.moveRemoteFile(fileName, 'processed', { localFallbackDir: paths.incoming });
+      } catch (err) {
+        log(`WARN: import OK but FTP move to processed failed for ${fileName}: ${err.message}`);
+      }
+      return result;
     } catch (err) {
-      log(`WARN: import OK but FTP move to processed failed for ${fileName}: ${err.message}`);
+      lastError = err;
+      if (conn) {
+        try { await conn.rollback(); } catch (_e) { /* ignore */ }
+        try { await conn.end(); } catch (_e) { /* ignore */ }
+      }
+      if (attempt < MAX_FILE_ATTEMPTS && isTransientError(err)) {
+        log(`WARN: transient import error for ${fileName}, retry ${attempt}/${MAX_FILE_ATTEMPTS}: ${err.message}`);
+        // Exponential backoff: 1s, 2s, 4s
+        const delayMs = 1000 * Math.pow(2, attempt - 1);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        continue;
+      }
+      break;
     }
-  } catch (err) {
-    result.error = err.message || String(err);
-    if (conn) {
-      try { await conn.rollback(); } catch (_e) { /* ignore */ }
-      try { await conn.end(); } catch (_e) { /* ignore */ }
-    }
-    try {
-      await cache.moveToError(localPath, result.error);
-    } catch (_e) { /* file may already be missing */ }
-    try {
-      await ftp.moveRemoteFile(fileName, 'error', { localFallbackDir: paths.incoming });
-    } catch (mvErr) {
-      log(`WARN: failed to move FTP file ${fileName} to error/: ${mvErr.message}`);
-    }
-    log(`Import failed for ${fileName}: ${result.error}`);
+  }
+
+  result.error = lastError && lastError.message ? lastError.message : String(lastError || 'unknown error');
+  const errorDetails = formatError(lastError);
+  try {
+    if (localPath) await cache.moveToError(localPath, errorDetails);
+  } catch (_e) { /* file may already be missing */ }
+  try {
+    await ftp.moveRemoteFile(fileName, 'error', { localFallbackDir: paths.incoming });
+  } catch (mvErr) {
+    log(`WARN: failed to move FTP file ${fileName} to error/: ${mvErr.message}`);
+  }
+  log(`Import failed for ${fileName}: ${result.error}`);
+  if (lastError && lastError.stack) {
+    log(`Import failure details for ${fileName}: ${formatError(lastError)}`);
   }
 
   return result;
@@ -125,5 +173,5 @@ module.exports = {
   runImport,
   processOneFile,
   // exported for tests
-  _internals: { readJson }
+  _internals: { readJson, formatError, isTransientError }
 };

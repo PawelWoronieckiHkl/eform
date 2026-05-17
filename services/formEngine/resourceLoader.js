@@ -3,6 +3,7 @@
  * locations on disk:
  *
  *   /scripts/<rest>   -> <repoRoot>/public/scripts/<rest>
+ *   /img/<rest>       -> <repoRoot>/public/img/<rest>
  *   /data/<rest>      -> <dataDir>/<rest>
  *
  * Anything else is denied (we don't want jsdom to make outbound HTTP calls).
@@ -47,6 +48,8 @@ class FormEngineResourceLoader extends ResourceLoader {
 
     if (pathname.startsWith('/scripts/')) {
       absPath = path.join(PUBLIC_DIR, pathname.replace(/^\//, ''));
+    } else if (pathname.startsWith('/img/')) {
+      absPath = path.join(PUBLIC_DIR, pathname.replace(/^\//, ''));
     } else if (pathname.startsWith('/data/')) {
       absPath = path.join(dataDir, pathname.replace(/^\/data\//, ''));
     } else {
@@ -56,6 +59,10 @@ class FormEngineResourceLoader extends ResourceLoader {
     }
 
     return fs.readFile(absPath).catch((err) => {
+      // For images, silently return empty buffer if file not found (not critical for form processing)
+      if (pathname.startsWith('/img/') && err.code === 'ENOENT') {
+        return Buffer.from('');
+      }
       const e = new Error(`formEngine: cannot read ${absPath}: ${err.message}`);
       e.code = err.code;
       throw e;

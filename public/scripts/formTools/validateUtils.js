@@ -233,29 +233,63 @@ export function validateFormInput(values, actualInput) {
         return;
     }
 
-    let min = 0;
-    let max = Infinity;
-
-    validatorList.forEach(validator => {
-        const vMin = validator[actualInput.name]?.MIN;
-        const vMax = validator[actualInput.name]?.MAX;
-
-        if (vMin !== undefined) min = Math.max(min, vMin);
-        if (vMax !== undefined) max = Math.min(max, vMax);
-    });
+    const legacyRange = getValidatorsRange(validatorList, actualInput.name, 'MIN', 'MAX');
+    const strictRange = getValidatorsRange(validatorList, actualInput.name, 'MIN2', 'MAX2');
+    const hardRange = strictRange.hasRange ? strictRange : legacyRange;
 
     const value = parseFloat(actualInput.value);
 
     let result;
-    if (value > max || value < min) {
-        result = setInputValid(actualInput, false, min, max);
+    if (isOutsideRange(value, hardRange)) {
+        result = setInputValid(actualInput, false, hardRange.min, hardRange.max);
         return result
-    } else {
+    }
+
+    if (strictRange.hasRange && isOutsideRange(value, legacyRange)) {
+        result = setInputValid(actualInput, true, legacyRange.min, legacyRange.max, 'warning');
+        return result
+    }
+    else {
 
         result = setInputValid(actualInput, true);
         return result
     }
 
+}
+
+function normalizeRangeValue(value) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : undefined;
+}
+
+function getValidatorsRange(validatorList, inputName, minKey, maxKey) {
+    let min = 0;
+    let max = Infinity;
+    let hasRange = false;
+
+    validatorList.forEach(validator => {
+        const rules = validator[inputName];
+        if (!rules) return;
+
+        const vMin = normalizeRangeValue(rules[minKey]);
+        const vMax = normalizeRangeValue(rules[maxKey]);
+
+        if (vMin !== undefined) {
+            min = Math.max(min, vMin);
+            hasRange = true;
+        }
+        if (vMax !== undefined) {
+            max = Math.min(max, vMax);
+            hasRange = true;
+        }
+    });
+
+    return { min, max, hasRange };
+}
+
+function isOutsideRange(value, range) {
+    if (!range.hasRange || !Number.isFinite(value)) return false;
+    return value > range.max || value < range.min;
 }
 
 
@@ -273,7 +307,7 @@ export function findAllValidatorsForInput(actualInput, values) {
     return result;
 }
 
-export function setInputValid(input, isValid, min, max) {
+export function setInputValid(input, isValid, min, max, mode = 'error') {
     let res = isValid;
     const labelId = `${input.id}-label`;
     const existingLabel = document.getElementById(labelId);
@@ -296,6 +330,26 @@ export function setInputValid(input, isValid, min, max) {
     input.classList.remove("invalid-input", "warning-warranty-input");
     const label = document.createElement('label');
 
+    if (mode === 'warning') {
+        label.id = labelId;
+        label.setAttribute('for', input.id);
+        label.classList.add("warning-warranty-label");
+        label.textContent = 'Uwaga, produkcja możliwa aczkolwiek bez gwarancji';
+
+        input.classList.add("warning-warranty-input");
+
+        const icon = document.createElement('span');
+        icon.classList.add('warning-icon', 'has-tooltip');
+        icon.setAttribute('data-tooltip', label.textContent);
+        icon.setAttribute('aria-label', label.textContent);
+        icon.textContent = '⚠';
+        parent.appendChild(icon);
+        parent.appendChild(label);
+
+        inputFlags[input.name] = true;
+        return true;
+    }
+
     if (!isValid) {
         
         label.id = labelId;
@@ -306,18 +360,6 @@ export function setInputValid(input, isValid, min, max) {
             inputFlags[input.name] = false;
             input.classList.add("invalid-input");
             label.textContent = `min: ${min} - max: ${max}`;
-            // 
-            //             // input.classList.add("warning-warranty-input");
-            // label.classList.remove("invalid-label");
-            // label.classList.add("warning-warranty-label");
-            // const icon = document.createElement('span');
-            // icon.classList.add('warning-icon', 'has-tooltip');
-            // 
-            // icon.setAttribute('data-tooltip', t('form.warranty_info'));
-            // icon.textContent = '⚠️';
-            // parent.appendChild(icon);
-            // res = true;
-            // inputFlags[input.name] = true;
 
 
         } else {
@@ -363,6 +405,9 @@ export function validateAllFieldsOnSubmit(inputs, values) {
         const input = inputs[param];
         if (!input) continue;
         let isValid = true;
+        const warningIcon = input.parentNode?.querySelector('.warning-icon');
+        if (warningIcon) warningIcon.remove();
+        input.classList.remove("warning-warranty-input");
 
         if (input.tagName === 'BUTTON') {
             isValid = !!input.value && input.value.trim() !== '';
