@@ -1857,3 +1857,24 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 === 2026-05-16 23:51:27 - Koniec ===
 === 2026-05-17 10:35:01 - Start ===
 === 2026-05-17 10:35:01 - Dodawanie zmian do commita ===
+[main e25eedc] Automatic commit 2026-05-17 10:35
+ 28 files changed, 6289 insertions(+), 103 deletions(-)
+ create mode 100644 import/import_efor.log
+ create mode 100755 import/import_efor.sh
+ create mode 100644 migration_phone_lengths.sql
+ create mode 100644 services/orderImport/__tests__/displayValueBuilder.test.js
+ create mode 100644 services/orderImport/__tests__/ftpClient.test.js
+ create mode 100644 services/orderImport/displayValueBuilder.js
+ create mode 100644 services/orderImport/fileNames.js
+ create mode 100644 services/orderImport/optionValidator.js
+ create mode 100644 services/orderImport/transactionalDb.js
+=== 2026-05-17 10:35:02 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   f13b5cf..e25eedc  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-05-17 10:35:03 - Koniec ===
+=== 2026-05-17 12:00:01 - Start ===
+=== 2026-05-17 12:00:01 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-05-18 10:35:01 - Start ===
+=== 2026-05-18 10:35:01 - Dodawanie zmian do commita ===
