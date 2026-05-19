@@ -20,6 +20,14 @@ module.exports = {
         return i18n.__(key, { locale: lang });
       });
 
+      // Filtr do mnożenia cen przez faktor (wizualny, tylko dla pracownika)
+      env.addFilter('applyFactor', function (value, factor) {
+        if (!factor || factor === 1 || !value) return value;
+        const num = parseFloat(value);
+        if (isNaN(num)) return value;
+        return (num * factor).toFixed(2);
+      });
+
     }
     return env;
   },

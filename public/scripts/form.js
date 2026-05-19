@@ -489,6 +489,7 @@ export async function updateProcedure({
     window.isCalculating = false;
     window.isPriceCalculating = true;
     disableFormButtons(false);
+    applyPriceFactor(params, inputs, values);
     console.log('🔓 Wszystkie obliczenia zakończone, UI odblokowane');
   }
   console.log('display values 123', displayValues);
@@ -596,6 +597,27 @@ export function getTotal(displayValues) {
     }
   }
   return totalObj;
+}
+
+
+/**
+ * Zastosowanie faktora cen — mnożenie wyświetlanych wartości w inputach cenowych.
+ * Faktor jest TYLKO wizualny — values[] (do zapisu) pozostają oryginalne.
+ * Działa tylko gdy window.priceFactor !== 1 i pracownik ma uprawnienie can_see_prices.
+ */
+function applyPriceFactor(params, inputs, values) {
+  const factor = parseFloat(window.priceFactor);
+  if (!factor || factor === 1.0 || window.hidePrices) return;
+
+  for (const param of params) {
+    if ((param.LISTROW == '2' || param.LISTSUM == 'true') && inputs[param.NAME]) {
+      const originalValue = parseFloat(values[param.NAME]);
+      if (!isNaN(originalValue) && originalValue !== 0) {
+        const factoredValue = (originalValue * factor).toFixed(2);
+        inputs[param.NAME].value = factoredValue;
+      }
+    }
+  }
 }
 
 

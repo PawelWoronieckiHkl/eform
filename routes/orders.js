@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { requireLogin, checkOrderOwnership, requireOwner, isOwner } = require('../middleware/loginMixture');
+const { loadEmployeePermissions, requireSendPermission, filterPriceData, filterOrdersByPermission } = require('../middleware/employeePermissions');
 const db = require("../db/db_helper.js");
 const fs = require('fs');
 const adminDb = require("../db/admin/db_helper.js");
@@ -58,6 +59,8 @@ router.use(async (req, res, next) => {
     res.locals.isEmployee = req.session?.user?.isEmployee || false;
     res.locals.isGroup = req.session?.user?.isGroup || req.session?.context_user?.isGroup || false;
     res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
+    res.locals.employeePermissions = req.session?.employeePermissions || null;
+    res.locals.priceFactor = req.session?.employeePermissions?.price_factor || 1.0;
 
     if (req.session?.user?.isOwner) {
         try {
@@ -190,7 +193,7 @@ router.get("/userOrders", requireLogin, requireOwner, async (req, res) => {
     }
 });
 
-router.get("/", requireLogin, async (req, res) => {
+router.get("/", requireLogin, loadEmployeePermissions, filterPriceData, filterOrdersByPermission, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const offset = (page - 1) * limit;
@@ -212,20 +215,29 @@ router.get("/", requireLogin, async (req, res) => {
             totalPages,
             admin: false,
             owner: false,
-            isEmployee: false
+            isEmployee: false,
+            hidePrices: req.hidePrices
         });
     }
 
-    if (req.session.user?.isEmployee) {
-        [orders, totalOrders] = await Promise.all([
-            db.getUserOrders(currentUser.userId, limit, offset, false, false, req.session.employee.id),
-            db.countUserOrders(currentUser.userId, false, false, req.session.employee.id)
-        ]);
-    }
-    else {
+    // Filtrowanie zamówień na podstawie uprawnień pracownika (req.orderFilter)
+    if (req.orderFilter === null) {
+        // Właściciel — widzi wszystkie zamówienia
         [orders, totalOrders] = await Promise.all([
             db.getUserOrders(currentUser.userId, limit, offset),
             db.countUserOrders(currentUser.userId)
+        ]);
+    } else if (req.orderFilter.type === 'all') {
+        // Pracownik z uprawnieniem can_see_all_orders — widzi wszystkie zamówienia klienta
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset),
+            db.countUserOrders(currentUser.userId)
+        ]);
+    } else if (req.orderFilter.type === 'own') {
+        // Pracownik bez uprawnienia — widzi tylko swoje zamówienia
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset, false, false, req.orderFilter.employeeId),
+            db.countUserOrders(currentUser.userId, false, false, req.orderFilter.employeeId)
         ]);
     }
     const totalPages = Math.ceil(totalOrders / limit);
@@ -238,7 +250,7 @@ router.get("/", requireLogin, async (req, res) => {
             admin: req.session.user.isAdmin,
             owner: req.session.user.isOwner,
             totalPages,
-
+            hidePrices: req.hidePrices
         });
     }
     else {
@@ -250,7 +262,8 @@ router.get("/", requireLogin, async (req, res) => {
             totalPages,
             admin: req.session.user.isAdmin,
             owner: req.session.user.isOwner,
-            isEmployee: req.session.user?.isEmployee || false
+            isEmployee: req.session.user?.isEmployee || false,
+            hidePrices: req.hidePrices
         });
     }
 });
@@ -326,7 +339,7 @@ router.get('/organization-orders?:history', requireLogin, requireOwner, async (r
 });
 
 
-router.get("/history", requireLogin, async (req, res) => {
+router.get("/history", requireLogin, loadEmployeePermissions, filterPriceData, filterOrdersByPermission, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 20;
     const offset = (page - 1) * limit;
@@ -344,16 +357,24 @@ router.get("/history", requireLogin, async (req, res) => {
             db.countGroupShopOrders(groupShopId, true)
         ]);
     }
-    else if (req.session.user?.isEmployee) {
-        [orders, totalOrders] = await Promise.all([
-            db.getUserOrders(currentUser.userId, limit, offset, true, false, req.session.employee.id),
-            db.countUserOrders(currentUser.userId, true, false, req.session.employee.id)
-        ]);
-    }
-    else {
+    // Filtrowanie zamówień na podstawie uprawnień pracownika (req.orderFilter)
+    else if (req.orderFilter === null) {
+        // Właściciel — widzi wszystkie zamówienia
         [orders, totalOrders] = await Promise.all([
             db.getUserOrders(currentUser.userId, limit, offset, true),
             db.countUserOrders(currentUser.userId, true)
+        ]);
+    } else if (req.orderFilter.type === 'all') {
+        // Pracownik z uprawnieniem can_see_all_orders — widzi wszystkie zamówienia klienta
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset, true),
+            db.countUserOrders(currentUser.userId, true)
+        ]);
+    } else if (req.orderFilter.type === 'own') {
+        // Pracownik bez uprawnienia — widzi tylko swoje zamówienia
+        [orders, totalOrders] = await Promise.all([
+            db.getUserOrders(currentUser.userId, limit, offset, true, false, req.orderFilter.employeeId),
+            db.countUserOrders(currentUser.userId, true, false, req.orderFilter.employeeId)
         ]);
     }
 
@@ -381,7 +402,8 @@ router.get("/history", requireLogin, async (req, res) => {
             limit,
             totalOrders,
             owner: req.session.user.isOwner,
-            totalPages
+            totalPages,
+            hidePrices: req.hidePrices
         });
     }
     else {
@@ -392,16 +414,25 @@ router.get("/history", requireLogin, async (req, res) => {
             totalOrders,
             totalPages,
             owner: req.session.user.isOwner,
-            isEmployee: req.session.user?.isEmployee || false
+            isEmployee: req.session.user?.isEmployee || false,
+            hidePrices: req.hidePrices
         });
     }
 
 });
 
 
-router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
+router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, loadEmployeePermissions, filterPriceData, async (req, res) => {
 
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
+
+    // Sprawdzenie dostępu pracownika do szczegółów zamówienia
+    if (req.session.user?.isEmployee &&
+        !req.session.employeePermissions?.can_see_all_orders &&
+        orderDetails?.employee_id !== req.session.employee?.id) {
+        return res.status(403).json({ error: "Brak uprawnień do tego zamówienia" });
+    }
+
     const currentUser = ownerService.getCurrentUser(req);
     let statuses = await db.getUserStatuses(currentUser.ident, orderDetails.order_idx);
     statuses = setParcelHref(statuses);
@@ -417,7 +448,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render("order_sent_prices.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, prices: true, totalPrice: totalPrice, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, prices: true, totalPrice: totalPrice, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays, hidePrices: req.hidePrices
                 }
             );
             req.session.user.showPricesOnce = false;
@@ -425,13 +456,13 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, async (
         } else {
             return res.render("order_sent.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, owner: req.session.user.isOwner, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, owner: req.session.user.isOwner, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays, hidePrices: req.hidePrices
                 }
             );
         }
     }
     else {
-        return res.render('order.njk', { orderDetails: orderDetails[0] });
+        return res.render('order.njk', { orderDetails: orderDetails[0], hidePrices: req.hidePrices });
     }
 });
 
@@ -462,12 +493,20 @@ router.get("/add-order", requireLogin, async (req, res) => {
 });
 
 
-router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwnership, async (req, res) => {
+router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwnership, loadEmployeePermissions, filterPriceData, async (req, res) => {
     if (await redirectSentOrder(req, res)) {
         return;
     }
 
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
+
+    // Sprawdzenie dostępu pracownika do szczegółów zamówienia
+    if (req.session.user?.isEmployee &&
+        !req.session.employeePermissions?.can_see_all_orders &&
+        orderDetails?.employee_id !== req.session.employee?.id) {
+        return res.status(403).json({ error: "Brak uprawnień do tego zamówienia" });
+    }
+
     const clientDiscount = await getPriceAfterDiscount(req.params.orderId);
     const currentUser = ownerService.getCurrentUser(req);
     const groupOrderShop = orderDetails?.group_user_id ? await db.getGroupUserById(orderDetails.group_user_id) : null;
@@ -495,7 +534,8 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 itemProductionDays,
                 maxProdDays,
                 showProductionOrderOverride: !!productionOrderOverrideClient,
-                productionOrderOverrideClient
+                productionOrderOverrideClient,
+                hidePrices: req.hidePrices
             });
             req.session.user.showPricesOnce = false;
             return;
@@ -518,12 +558,13 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 itemProductionDays,
                 maxProdDays,
                 showProductionOrderOverride: !!productionOrderOverrideClient,
-                productionOrderOverrideClient
+                productionOrderOverrideClient,
+                hidePrices: req.hidePrices
             });
             return;
         }
     } else {
-        res.render('order.njk', { orderDetails });
+        res.render('order.njk', { orderDetails, hidePrices: req.hidePrices });
     }
 });
 
@@ -545,7 +586,7 @@ router.get('/order/:orderId/discount-info', requireLogin, checkOrderOwnership, a
 });
 
 
-router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
+router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, loadEmployeePermissions, filterPriceData, async (req, res) => {
     try {
         const order = await db.getOrderDataToSend(req.params.orderId);
         const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
@@ -558,7 +599,13 @@ router.get('/order-details/:orderId', requireLogin, checkOrderOwnership, async (
         const currentUser = ownerService.getCurrentUser(req);
         const productionTimes = currentUser?.orgId ? await db.getGroupDeliveryTimes(currentUser.orgId) : {};
         const { maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
-        res.json({ success: true, data: { sendData, totalPrice, cleanOrderItems, total, maxProdDays } });
+
+        // Ukryj dane cenowe gdy pracownik nie ma uprawnienia can_see_prices
+        if (req.hidePrices) {
+            res.json({ success: true, data: { sendData, totalPrice: null, cleanOrderItems, total: null, maxProdDays } });
+        } else {
+            res.json({ success: true, data: { sendData, totalPrice, cleanOrderItems, total, maxProdDays } });
+        }
     } catch (error) {
         log('Error fetching order details:', error);
         res.status(500).json({ success: false, message: 'Error fetching order details' });
@@ -593,7 +640,7 @@ router.post('/order/:orderId/set-discount', requireLogin, checkOrderOwnership, a
 });
 
 
-router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOwnership, async (req, res) => {
+router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOwnership, loadEmployeePermissions, filterPriceData, async (req, res) => {
     try {
         const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
         const order = await db.getOrderDataToSend(req.params.orderId);
@@ -612,7 +659,9 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         const sendData = sender.getData();
         const totalPrice = await db.getTotal(order.orderDetails.id);
         await db.syncTotalPriceIfMissing(order.orderDetails.id, totalPrice, req.__('order.total'), req.__('order.total_hidden'));
-        const shouldShowPrices = req.params.showPrices === 'true';
+        // Employee permission override: if req.hidePrices is set by filterPriceData middleware,
+        // prices are hidden regardless of the URL parameter
+        const shouldShowPrices = req.hidePrices ? false : req.params.showPrices === 'true';
 
         // Admin language override for translated PDF
         const isAdmin = req.session.user?.isAdmin;
@@ -631,7 +680,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         const i18n = confLang(lang);
         const __ = (key) => i18n.__(key, { locale: lang });
 
-        if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
+        if (shouldShowPrices && totalPrice.visible && Number(totalPrice.visible) !== 0) {
             sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
         } else {
             sendData.total = null;
@@ -740,16 +789,16 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
 });
 
 
-router.get("/order/:orderId/new-position/", requireLogin, async (req, res) => {
+router.get("/order/:orderId/new-position/", requireLogin, loadEmployeePermissions, filterPriceData, async (req, res) => {
     if (await redirectSentOrder(req, res)) {
         return;
     }
 
-    res.render("form.njk", { orderId: req.params.orderId });
+    res.render("form.njk", { orderId: req.params.orderId, hidePrices: req.hidePrices });
 });
 
 
-router.post('/send/:orderId', requireLogin, checkOrderOwnership, async (req, res) => {
+router.post('/send/:orderId', requireLogin, checkOrderOwnership, loadEmployeePermissions, requireSendPermission, async (req, res) => {
     // Sklep grupy nie może samodzielnie wysłać — musi zatwierdzić centrala
     if (req.session.user?.isGroupShop) {
         return res.status(403).json({

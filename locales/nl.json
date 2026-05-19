@@ -171,7 +171,14 @@
     "confirm_password": "Wachtwoord bevestigen",
     "no_orders": "Deze medewerker heeft nog geen bestellingen",
     "orders_count": "Aantal bestellingen",
-    "never": "Nooit"
+    "never": "Nooit",
+    "permissions": "Rechten",
+    "can_send_orders": "Bestellingen verzenden",
+    "can_see_prices": "Prijzen zien",
+    "can_see_all_orders": "Alle bestellingen",
+    "no_send_permission": "Geen toestemming om bestellingen te verzenden",
+    "save": "Opslaan",
+    "price_factor": "Prijsfactor"
   },
   "intro": {
     "next": "Volgende →",

@@ -65,6 +65,15 @@ async function handleAuthLogin(req, res, next, pin, password) {
             req.session.user.isEmployee = true;
             req.session.employee = { name: employee.name, surname: employee.surname, id: employee.id, login: employee.login, phone: employee.phone };
 
+            // Załadowanie uprawnień pracownika do sesji przy logowaniu
+            const permissions = await db.getEmployeePermissionsByLogin(pin);
+            req.session.employeePermissions = {
+                can_send_orders: permissions ? permissions.can_send_orders === 1 : false,
+                can_see_prices: permissions ? permissions.can_see_prices === 1 : false,
+                can_see_all_orders: permissions ? permissions.can_see_all_orders === 1 : false,
+                price_factor: permissions ? (parseFloat(permissions.price_factor) || 1.0) : 1.0
+            };
+
             logEmployeeLogin = await db.logEmployeeLogin(employee.id);
 
             req.session.mustAcceptRODO = false;

@@ -110,6 +110,9 @@
                                                 <button class="action-btn action-btn-send p-1 stop-propagation submit-approval-btn" type="button" data-id="{{ order.id }}">
                                                   <img src="/img/send.png" alt="Wyślij do zatwierdzenia"></button>
                                               {% endif %}
+                                            {% elif isEmployee and (not employeePermissions or not employeePermissions.can_send_orders) %}
+                                              <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn" type="button" disabled title="{{ __('employee.no_send_permission') or 'Brak uprawnień do wysyłania zamówień' }}">
+                                                <img src="/img/send.png" alt="{{ __('orders.send') }}"></button>
                                             {% else %}
                                               <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn" type="button" id='send-order' data-id="{{ order.id }}">
     +                                            <img src="/img/send.png" alt="{{ __('orders.send') }}"></button>

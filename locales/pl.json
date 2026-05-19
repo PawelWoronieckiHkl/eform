@@ -183,7 +183,14 @@
     "confirm_password": "Potwierdź hasło",
     "no_orders": "Ten pracownik nie ma jeszcze żadnych zamówień",
     "orders_count": "Liczba zamówień",
-    "never": "Nigdy"
+    "never": "Nigdy",
+    "permissions": "Uprawnienia",
+    "can_send_orders": "Wysyłanie zamówień",
+    "can_see_prices": "Widoczność cen",
+    "can_see_all_orders": "Wszystkie zamówienia",
+    "no_send_permission": "Brak uprawnień do wysyłania zamówień",
+    "save": "Zapisz",
+    "price_factor": "Faktor cen"
   },
   "intro": {
     "next": "Dalej →",

@@ -35,7 +35,7 @@
                                                 <img class='ico' src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
                                             </div>
                                             <div id="generate-container-mobile">
-                                                {% if not isGroup and not isGroupShop %}
+                                                {% if not isGroup and not isGroupShop and not hidePrices %}
                                                 <button id="unlockBtn" class="btn">
                                                     <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                 {% endif %}
@@ -85,11 +85,11 @@
                                                                 </a>
                                                             {% endblock %}
                                                             <div class='d-flex'>
-                                                                {% if not isGroup and not isGroupShop %}
+                                                                {% if not isGroup and not isGroupShop and not hidePrices %}
                                                                 <button class="btn has-tooltip" data-tooltip="{{ __('base.give_discount_tooltip') }}" id='discount-btn'>
                                                                     <img src="/img/sale.png" alt="sale icon" class='icon'></button>
                                                                 {% endif %}
-                                                                    {% if not isGroup and not isGroupShop %}
+                                                                    {% if not isGroup and not isGroupShop and not hidePrices %}
                                                                     <button id="unlockBtn" class="btn">
                                                                         <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                                     {% endif %}
@@ -216,14 +216,14 @@
                                                                                                                 <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                                                                                                             </tr>
                                                                                                             <tr id='price-row'>
-                                                                                                                {% if not isGroupShop %}
+                                                                                                                {% if not isGroupShop and not hidePrices %}
                                                                                                                 {% for header in table.headers2 %}
                                                                                                                     {% if not(header in rowObj.item.lockedParams) %}
                                                                                                                         {% set value = rowObj.row.row2[header] %}
                                                                                                                         {% if value and value != '-' and value != '' %}
                                                                                                                             <td class="price" colspan="2">
                                                                                                                                 <span class="price-label">{{ header }}:</span>
-                                                                                                                                <b>{{ value }}</b>
+                                                                                                                                <b>{{ value | applyFactor(priceFactor) }}</b>
                                                                                                                             </td>
                                                                                                                         {% endif %}
                                                                                                                     {% endif %}
@@ -312,13 +312,13 @@
                                                                                                                             {% endfor %}
                                                                                                                         </div>
                                                                                                                     {% endif %}
-                                                                                                                    {% if table.headers2.length > 0 and not isGroupShop %}
+                                                                                                                    {% if table.headers2.length > 0 and not isGroupShop and not hidePrices %}
                                                                                                                         <div class="mobile-item-prices">
                                                                                                                             {% for header in table.headers2 %}
                                                                                                                             {% if not(header in rowObj.item.lockedParams) %}
                                                                                                                                     <div class="mobile-price-item">
                                                                                                                                         <strong>{{ header }}:</strong>
-                                                                                                                                        <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                                                                                                                                        <b>{{ rowObj.row.row2[header] | applyFactor(priceFactor) or '-' }}</b>
                                                                                                                                     </div>
                                                                                                                                 {% endif %}
                                                                                                                             {% endfor %}
@@ -381,20 +381,20 @@
                                                                                                             </div>
                                                                                                         </div>
                                                                                                     {% endfor %}
-                                                                                                    {% if totalPrice %}
+                                                                                                    {% if totalPrice and not hidePrices %}
                                                                                                         <div id='total-container'>
                                                                                                             <div class="total-price d-flex justify-content-end align-items-center">
                                                                                                                 <span class='total price-label col-3 text-center'>
                                                                                                                     {% if isGroupShop %}
                                                                                                                         {% if totalPrice.sub and totalPrice.sub != 0 %}
-                                                                                                                            {{ __('order.total') }}: {{ totalPrice.sub }}&#8364;
+                                                                                                                            {{ __('order.total') }}: {{ totalPrice.sub | applyFactor(priceFactor) }}&#8364;
                                                                                                                         </span>
                                                                                                                         {% else %}
                                                                                                                             {{ __('order.according_to_price') }}</span>
                                                                                                                         {% endif %}
                                                                                                                     {% else %}
                                                                                                                         {% if totalPrice.visible != '0.00' %}
-                                                                                                                            {{ __('order.total') }}: {{ totalPrice.visible }}&#8364;
+                                                                                                                            {{ __('order.total') }}: {{ totalPrice.visible | applyFactor(priceFactor) }}&#8364;
                                                                                                                         </span>
                                                                                                                         {% else %}
                                                                                                                             {{ __('order.according_to_price') }}</span>
@@ -406,7 +406,7 @@
                                                                                                     {% endif %}
                                                                                             {% endblock %}
                                                                                             {% block send_order_btn %}
-                                                                                                {% if not isEmployee %}
+                                                                                                {% if not isEmployee or (employeePermissions and employeePermissions.can_send_orders) %}
                                                                                                     <div class="send-order-actions d-flex justify-content-end align-items-center w-100">
                                                                                                     {% if showProductionOrderOverride and not isGroupShop %}
                                                                                                         <div class="production-order-override me-3" data-production-client="{{ productionOrderOverrideClient }}">

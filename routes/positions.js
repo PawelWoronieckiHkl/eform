@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const { requireLogin } = require('../middleware/loginMixture');
+const { loadEmployeePermissions, filterPriceData } = require('../middleware/employeePermissions');
 const db = require("../db/db_helper.js");
 const adminDb = require("../db/admin/db_helper.js");
 const ownerService = require('../services/owner.js');
@@ -235,7 +236,7 @@ router.get('/photo', requireLogin, async (req, res) => {
 });
 
 
-router.get('/:positionId/edit/', requireLogin, async (req, res) => {
+router.get('/:positionId/edit/', requireLogin, loadEmployeePermissions, filterPriceData, async (req, res) => {
   let result = await db.getPosition(req.params.positionId);
   if (result) {
     let orderId = result.order_id;
@@ -243,7 +244,7 @@ router.get('/:positionId/edit/', requireLogin, async (req, res) => {
       return res.redirect(sentOrderPath(orderId));
     }
 
-    return res.render('edit_position.njk', { position: result, orderId: orderId })
+    return res.render('edit_position.njk', { position: result, orderId: orderId, hidePrices: req.hidePrices })
   }
   else {
     return res.status(400).json({

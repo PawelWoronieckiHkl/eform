@@ -320,6 +320,8 @@
         window.userLoggedIn = {{ (owner or admin or isEmployee) | dump }};
         window.isGroup = {{ isGroup | dump }};
         window.isGroupShop = {{ isGroupShop | dump }};
+        window.hidePrices = {{ hidePrices | dump }};
+        window.priceFactor = {{ priceFactor | dump | default("1") }};
     </script>
     <script type='module' src="/scripts/intro/main.js"></script><script type='module' src='/scripts/base.js'></script><script type="module" src="/scripts/getEnv.js"></script><script src="/scripts/navActiveState.js"></script><script type="module" src="/scripts/owner/owner.js"></script><script>window.loadTranslations(document.documentElement.lang || 'en');
     window.loadLangs()

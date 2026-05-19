@@ -244,7 +244,7 @@ async function uploadProductionPdf(pdfBuffer, jsonFileName) {
   if (!isProductionVersion()) {
     // Tryb dev/test — zapis lokalny do outputData/pdf_out
     const localDir = path.join(outputData, 'pdf_out');
-    const localPath = path.join(localDir, `${jsonFileName}_pdf.pdf`);
+    const localPath = path.join(localDir, `${jsonFileName}.pdf`);
     try {
       await fs.promises.mkdir(localDir, { recursive: true });
       await fs.promises.writeFile(localPath, pdfBuffer);

@@ -36,6 +36,10 @@
                                             <th>{{ __('employee.login') or 'Login' }}</th>
                                             <th>{{ __('employee.phone') or 'Telefon' }}</th>
                                             <th>{{ __('employee.last_login') or 'Ostatnie logowanie' }}</th>
+                                            <th class="text-center">{{ __('employee.can_send_orders') or 'Wysyłanie zamówień' }}</th>
+                                            <th class="text-center">{{ __('employee.can_see_prices') or 'Widoczność cen' }}</th>
+                                            <th class="text-center">{{ __('employee.price_factor') or 'Faktor cen' }}</th>
+                                            <th class="text-center">{{ __('employee.can_see_all_orders') or 'Wszystkie zamówienia' }}</th>
                                             <th class="text-center">{{ __('employee.actions') or 'Akcje' }}</th>
                                         </tr>
                                     </thead>
@@ -48,6 +52,32 @@
                                                 <td>{{ employee.login }}</td>
                                                 <td>{{ employee.phone or '-' }}</td>
                                                 <td>{{ employee.last_login or __('employee.never') or 'Nigdy' }}</td>
+                                                <td class="text-center">
+                                                    <input type="checkbox" class="form-check-input permission-toggle"
+                                                        data-employee-id="{{ employee.id }}"
+                                                        data-permission="can_send_orders"
+                                                        {% if employee.can_send_orders %}checked{% endif %}>
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="checkbox" class="form-check-input permission-toggle"
+                                                        data-employee-id="{{ employee.id }}"
+                                                        data-permission="can_see_prices"
+                                                        {% if employee.can_see_prices %}checked{% endif %}>
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number" class="form-control form-control-sm price-factor-input"
+                                                        data-employee-id="{{ employee.id }}"
+                                                        value="{{ employee.price_factor or '1.00' }}"
+                                                        min="0.01" max="99.99" step="0.01"
+                                                        style="width: 75px; margin: 0 auto;"
+                                                        {% if not employee.can_see_prices %}disabled{% endif %}>
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="checkbox" class="form-check-input permission-toggle"
+                                                        data-employee-id="{{ employee.id }}"
+                                                        data-permission="can_see_all_orders"
+                                                        {% if employee.can_see_all_orders %}checked{% endif %}>
+                                                </td>
                                                 <td class="text-center">
                                                     <div class="action-buttons">
                                                         <a href="/user/employee/{{ employee.id }}/orders" class="action-btn action-btn-view-orders">

@@ -176,7 +176,14 @@
     "confirm_password": "Confirm Password",
     "no_orders": "This employee has no orders yet",
     "orders_count": "Orders Count",
-    "never": "Never"
+    "never": "Never",
+    "permissions": "Permissions",
+    "can_send_orders": "Send orders",
+    "can_see_prices": "See prices",
+    "can_see_all_orders": "All orders",
+    "no_send_permission": "No permission to send orders",
+    "save": "Save",
+    "price_factor": "Price factor"
   },
   "intro": {
     "next": "Next →",

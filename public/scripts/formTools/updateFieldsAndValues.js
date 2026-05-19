@@ -422,7 +422,7 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
         } else if (shouldEnable) {
             // For isGroupShop: hide ALL row2/listsum price params — they only see SUB___ prices
             const isRowTwo = param.LISTROW == '2' || param.LISTSUM == 'true';
-            if (window.isGroupShop && isRowTwo) {
+            if ((window.isGroupShop || window.hidePrices) && isRowTwo) {
                 paramDiv.style.display = 'none';
                 delete window.enabledParams[param.NAME];
             } else {

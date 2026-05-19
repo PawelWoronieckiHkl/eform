@@ -341,7 +341,8 @@ async function getUserAddresses(userId) {
 
 async function getEmployeesByUserId(userId) {
     const query = `
-        SELECT id, name, surname, last_login, user_id, password, phone, login 
+        SELECT id, name, surname, last_login, user_id, password, phone, login,
+               can_send_orders, can_see_prices, can_see_all_orders, price_factor
         FROM employee 
         WHERE user_id = ?
         ORDER BY surname, name
@@ -358,6 +359,21 @@ async function getEmployeeById(employeeId) {
 }
 
 
+async function getEmployeePermissions(employeeId) {
+    const query = `SELECT can_send_orders, can_see_prices, can_see_all_orders, price_factor FROM employee WHERE id = ?`;
+    const result = await selectQuery(query, [employeeId]);
+    if (result && result.length > 0) {
+        return {
+            can_send_orders: result[0].can_send_orders,
+            can_see_prices: result[0].can_see_prices,
+            can_see_all_orders: result[0].can_see_all_orders,
+            price_factor: parseFloat(result[0].price_factor) || 1.0
+        };
+    }
+    return null;
+}
+
+
 async function getEmployeeByLogin(login) {
     const query = `SELECT * FROM employee WHERE login = ?`;
     const result = await selectQuery(query, [login]);
@@ -365,8 +381,15 @@ async function getEmployeeByLogin(login) {
 }
 
 
+async function getEmployeePermissionsByLogin(login) {
+    const query = `SELECT can_send_orders, can_see_prices, can_see_all_orders, price_factor FROM employee WHERE login = ?`;
+    const result = await selectQuery(query, [login]);
+    return result && result.length > 0 ? result[0] : null;
+}
+
+
 async function addEmployee(employeeData) {
-    const { name, surname, login, password, phone, userId } = employeeData;
+    const { name, surname, login, password, phone, userId, can_send_orders, can_see_prices, can_see_all_orders } = employeeData;
     log('jestem w addEmployee', employeeData)
 
     const checkEmployeeQuery = `SELECT id FROM employee WHERE login = ?`;
@@ -383,13 +406,17 @@ async function addEmployee(employeeData) {
 
     const hashedPassword = bcrypt.hashSync(password, 12);
 
+    const permSendOrders = parseInt(can_send_orders) || 0;
+    const permSeePrices = parseInt(can_see_prices) || 0;
+    const permSeeAllOrders = parseInt(can_see_all_orders) || 0;
+
     const sql = `
-        INSERT INTO employee (name, surname, login, password, phone, user_id)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO employee (name, surname, login, password, phone, user_id, can_send_orders, can_see_prices, can_see_all_orders)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     try {
-        const result = await insertQuery(sql, [name, surname, login, hashedPassword, phone, userId]);
+        const result = await insertQuery(sql, [name, surname, login, hashedPassword, phone, userId, permSendOrders, permSeePrices, permSeeAllOrders]);
         return { insertId: result.insertId, success: true };
     } catch (err) {
         throw new Error('Błąd przy dodawaniu pracownika: ' + err.message);
@@ -472,6 +499,36 @@ async function updateEmployee(employeeId, updatedData) {
 }
 
 
+async function updateEmployeePermissions(employeeId, permissions) {
+    const { can_send_orders, can_see_prices, can_see_all_orders } = permissions;
+    const sql = `UPDATE employee SET can_send_orders = ?, can_see_prices = ?, can_see_all_orders = ? WHERE id = ?`;
+
+    try {
+        const result = await updateQuery(sql, [can_send_orders, can_see_prices, can_see_all_orders, employeeId]);
+        return result;
+    } catch (err) {
+        log('Błąd podczas zapisywania uprawnień:', err);
+        throw new Error('Błąd podczas zapisywania uprawnień');
+    }
+}
+
+
+async function updateEmployeePriceFactor(employeeId, priceFactor) {
+    const factor = parseFloat(priceFactor);
+    if (isNaN(factor) || factor < 0 || factor > 99.99) {
+        throw new Error('Nieprawidłowa wartość faktora cen');
+    }
+    const sql = `UPDATE employee SET price_factor = ? WHERE id = ?`;
+    try {
+        const result = await updateQuery(sql, [factor, employeeId]);
+        return result;
+    } catch (err) {
+        log('Błąd podczas zapisywania faktora cen:', err);
+        throw new Error('Błąd podczas zapisywania faktora cen');
+    }
+}
+
+
 async function getOrgInfo(id) {
     const query = 'SELECT * FROM organization where id like ?'
     let result = await selectQuery(query, id)
@@ -508,9 +565,13 @@ module.exports = {
     uodateFirstLogonInfo,
     getUserIdent,
     updateEmployee,
+    updateEmployeePermissions,
+    updateEmployeePriceFactor,
     getEmployeesByUserId,
     getEmployeeById,
+    getEmployeePermissions,
     getEmployeeByLogin,
+    getEmployeePermissionsByLogin,
     addEmployee,
     deleteEmployee,
     getEmployeeOrders,

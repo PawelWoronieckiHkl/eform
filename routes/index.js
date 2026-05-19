@@ -25,6 +25,8 @@ router.use(async (req, res, next) => {
   res.locals.isEmployee = req.session?.user?.isEmployee || false;
   res.locals.isGroup = req.session?.user?.isGroup || req.session?.context_user?.isGroup || false;
   res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
+  res.locals.employeePermissions = req.session?.employeePermissions || null;
+  res.locals.priceFactor = req.session?.employeePermissions?.price_factor || 1.0;
 
   if (req.session?.user?.isOwner) {
     try {

@@ -27,6 +27,11 @@ form.addEventListener('submit', async (e) => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
+    // Uprawnienia — checkbox: checked = "1", unchecked = "0"
+    data.can_send_orders = document.getElementById('can_send_orders').checked ? '1' : '0';
+    data.can_see_prices = document.getElementById('can_see_prices').checked ? '1' : '0';
+    data.can_see_all_orders = document.getElementById('can_see_all_orders').checked ? '1' : '0';
+
     
     if (!data.name || !data.surname || !data.login || !data.password) {
         showToast('error', 'Wszystkie wymagane pola muszą być wypełnione');

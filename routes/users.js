@@ -388,7 +388,7 @@ router.post('/employee/add', requireLogin, async (req, res) => {
         const currentUser = ownerService.getCurrentUser(req);
         const userId = currentUser.userId;
 
-        const { name, surname, login, password, phone } = req.body;
+        const { name, surname, login, password, phone, can_send_orders, can_see_prices, can_see_all_orders } = req.body;
 
         if (!name || !surname || !login || !password) {
             return res.status(400).json({
@@ -403,7 +403,10 @@ router.post('/employee/add', requireLogin, async (req, res) => {
             login,
             password,
             phone: phone || '',
-            userId
+            userId,
+            can_send_orders: parseInt(can_send_orders) || 0,
+            can_see_prices: parseInt(can_see_prices) || 0,
+            can_see_all_orders: parseInt(can_see_all_orders) || 0
         };
         const employeeId = await db.addEmployee(employeeData);
         if (employeeId.success == false) {
@@ -433,7 +436,8 @@ router.post('/employee/add', requireLogin, async (req, res) => {
 
 router.get('/employee/edit/:id', requireLogin, async (req, res) => {
     const empDetails = await db.getEmployeeById(req.params.id);
-    return res.render("user/edit_employee.njk", { employee: empDetails });
+    const permissions = await db.getEmployeePermissions(req.params.id);
+    return res.render("user/edit_employee.njk", { employee: empDetails, permissions });
 });
 
 
@@ -457,20 +461,31 @@ router.post('/employee/edit/:id', requireLogin, async (req, res) => {
             });
         }
 
-        const { name, surname, login, password, phone } = req.body;
+        const { name, surname, login, password, phone, can_send_orders, can_see_prices, can_see_all_orders } = req.body;
 
-        const updatedData = {
-            name,
-            surname,
-            login,
-            phone: phone || ''
-        };
+        // Aktualizacja danych osobowych — tylko gdy przesłano name (pełna edycja z formularza)
+        if (name) {
+            const updatedData = {
+                name,
+                surname,
+                login,
+                phone: phone || ''
+            };
 
-        if (password && password.trim() !== '') {
-            updatedData.password = password;
+            if (password && password.trim() !== '') {
+                updatedData.password = password;
+            }
+
+            await db.updateEmployee(employeeId, updatedData);
         }
 
-        await db.updateEmployee(employeeId, updatedData);
+        // Aktualizacja uprawnień pracownika
+        const permissions = {
+            can_send_orders: parseInt(can_send_orders) === 1 ? 1 : 0,
+            can_see_prices: parseInt(can_see_prices) === 1 ? 1 : 0,
+            can_see_all_orders: parseInt(can_see_all_orders) === 1 ? 1 : 0
+        };
+        await db.updateEmployeePermissions(employeeId, permissions);
 
         return res.status(200).json({
             success: true,
@@ -482,6 +497,31 @@ router.post('/employee/edit/:id', requireLogin, async (req, res) => {
             success: false,
             message: 'Błąd podczas aktualizacji pracownika'
         });
+    }
+});
+
+
+router.post('/employee/:id/price-factor', requireLogin, async (req, res) => {
+    try {
+        const employeeId = req.params.id;
+        const currentUser = ownerService.getCurrentUser(req);
+        const userId = currentUser.userId;
+        const employee = await db.getEmployeeById(employeeId);
+
+        if (!employee) {
+            return res.status(404).json({ success: false, message: 'Pracownik nie znaleziony' });
+        }
+        if (employee.user_id !== userId) {
+            return res.status(403).json({ success: false, message: 'Brak uprawnień' });
+        }
+
+        const { price_factor } = req.body;
+        await db.updateEmployeePriceFactor(employeeId, price_factor);
+
+        return res.status(200).json({ success: true, message: 'Faktor cen zapisany' });
+    } catch (err) {
+        log('Error updating price factor:', err);
+        return res.status(500).json({ success: false, message: err.message || 'Błąd zapisu' });
     }
 });
 

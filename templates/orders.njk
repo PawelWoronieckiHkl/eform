@@ -69,7 +69,7 @@
                             <th scope="col">{{ __('orders.created_date') }}</th>
                             {% block extra_heads %}{% endblock %}
                             {% block action_th %}
-                              {% if not isEmployee %}
+                              {% if not isEmployee or (employeePermissions and employeePermissions.can_send_orders) %}
                                 <th scope="col ">{{ __('orders.action') }}</th>
                               {% endif %}
                             {% endblock %}
@@ -111,6 +111,11 @@
                                       {% endif %}
                                       </td>
                                     {% endblock buttons_space %}
+                                  {% elif isEmployee and employeePermissions and employeePermissions.can_send_orders %}
+                                    <td class='buttons'>
+                                      <button class="action-btn action-btn-send p-1 stop-propagation send-order-btn has-tooltip" data-tooltip="{{ __('orders.send_order_tooltip') }}" type="button" id='send-order' data-id="{{ order.id }}">
+                                        <img src="/img/send.png" alt="{{ __('orders.send') }}"></button>
+                                    </td>
                                   {% endif %}
                                 </tr>
                               {% endfor %}
@@ -129,6 +134,7 @@
                                 <div class="mobile-order-commission">{{ order.commision }}</div>
                                 {% block mobile_order_actions %}
                                   <div class="mobile-order-actions">
+                                    {% if not isEmployee %}
                                     <button
                                       class="action-btn action-btn-delete delete-position-btn stop-propagation"
                                       data-href='/orders/order/{{ order.id }}/delete'
@@ -139,6 +145,7 @@
                                     <a class="action-btn action-btn-edit stop-propagation" href='/orders/edit/{{ order.id }}'>
                                       {{ __('orders.edit') }}
                                     </a>
+                                    {% endif %}
                                     {% if isGroupShop %}
                                       {% if order.status == 'pending_approval' %}
                                         <span class="badge bg-warning text-dark">{{ __('group.status_submitted_for_approval') }}</span>
@@ -147,7 +154,7 @@
                                           {{ __('group.submit_for_approval_title') }}
                                         </button>
                                       {% endif %}
-                                    {% else %}
+                                    {% elif not isEmployee or (employeePermissions and employeePermissions.can_send_orders) %}
                                       <button class="action-btn action-btn-send stop-propagation send-order-btn" type="button" data-id="{{ order.id }}">
                                         {{ __('orders.send') }}
                                       </button>

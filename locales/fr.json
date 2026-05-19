@@ -171,7 +171,14 @@
     "confirm_password": "Confirmer le mot de passe",
     "no_orders": "Cet employé n'a pas encore de commandes",
     "orders_count": "Nombre de commandes",
-    "never": "Jamais"
+    "never": "Jamais",
+    "permissions": "Autorisations",
+    "can_send_orders": "Envoyer des commandes",
+    "can_see_prices": "Voir les prix",
+    "can_see_all_orders": "Toutes les commandes",
+    "no_send_permission": "Pas d'autorisation pour envoyer des commandes",
+    "save": "Enregistrer",
+    "price_factor": "Facteur de prix"
   },
   "intro": {
     "next": "Suivant →",

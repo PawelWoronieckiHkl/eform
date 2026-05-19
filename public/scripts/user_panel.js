@@ -75,3 +75,86 @@ deleteDialog.addEventListener('click', (e) => {
         employeeToDelete = null;
     }
 });
+
+
+// Obsługa checkboxów uprawnień — natychmiastowy zapis po kliknięciu
+document.querySelectorAll('.permission-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', async (e) => {
+        const employeeId = e.target.dataset.employeeId;
+        const permission = e.target.dataset.permission;
+        const value = e.target.checked ? '1' : '0';
+
+        // Zbierz aktualny stan wszystkich trzech uprawnień dla tego pracownika
+        const row = e.target.closest('tr');
+        const checkboxes = row.querySelectorAll('.permission-toggle');
+        const permissions = {};
+        checkboxes.forEach(cb => {
+            permissions[cb.dataset.permission] = cb.checked ? '1' : '0';
+        });
+
+        // Jeśli zmieniono can_see_prices — toggle disabled na price_factor input
+        if (permission === 'can_see_prices') {
+            const factorInput = row.querySelector('.price-factor-input');
+            if (factorInput) {
+                factorInput.disabled = !e.target.checked;
+            }
+        }
+
+        try {
+            const response = await fetch(`/user/employee/edit/${employeeId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(permissions)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showToast('success', result.message || 'Uprawnienia zapisane');
+            } else {
+                // Cofnij zmianę
+                e.target.checked = !e.target.checked;
+                showToast('error', result.message || 'Błąd zapisu uprawnień');
+            }
+        } catch (error) {
+            // Cofnij zmianę
+            e.target.checked = !e.target.checked;
+            console.error('Error updating permission:', error);
+            showToast('error', 'Błąd zapisu uprawnień');
+        }
+    });
+});
+
+
+// Obsługa pola faktor cen — zapis po zmianie (blur)
+document.querySelectorAll('.price-factor-input').forEach(input => {
+    input.addEventListener('change', async (e) => {
+        const employeeId = e.target.dataset.employeeId;
+        const value = parseFloat(e.target.value);
+
+        if (isNaN(value) || value < 0.01 || value > 99.99) {
+            showToast('error', 'Faktor cen musi być między 0.01 a 99.99');
+            e.target.value = '1.00';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/user/employee/${employeeId}/price-factor`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ price_factor: value })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showToast('success', result.message || 'Faktor cen zapisany');
+            } else {
+                showToast('error', result.message || 'Błąd zapisu faktora cen');
+            }
+        } catch (error) {
+            console.error('Error updating price factor:', error);
+            showToast('error', 'Błąd zapisu faktora cen');
+        }
+    });
+});

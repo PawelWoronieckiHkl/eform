@@ -1,86 +1,106 @@
 {% extends "base.njk" %}
-{% block title %}Dodaj Pracownika{% endblock title %}
+{% block title %}{{ __('employee.add_employee') }}{% endblock title %}
 {% block head %}
     <link rel="stylesheet" href="/styles/add_employee.css">
-    {% endblock head %}
-    {% block key_nav %}
-        window.history.back()
-    {% endblock %}
-    {% block back_link %}
-        <button class="modern-back-btn" onclick="window.history.back()">
-        {% endblock %}
-        {% block content %}
-            <div class="content  col-9 center-content">
-                <div class="row justify-content-center">
-                    <div class="col-md-7 col-lg-5">
-                        <div class="card shadow">
-                            <div class="card-header bg-secondary text-white">
-                                <h3 class="mb-0">
-                                    <i class="fas fa-user-plus"></i>
-                                    {{ __('employee.add_employee') or 'Dodaj Pracownika' }}
-                                </h3>
+{% endblock head %}
+{% block key_nav %}
+    window.history.back()
+{% endblock %}
+{% block back_link %}
+    <button class="modern-back-btn" onclick="window.history.back()">
+{% endblock %}
+{% block content %}
+    <div class="content col-9 center-content">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <!-- Karta danych pracownika -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h3 class="mb-0">
+                            <i class="fas fa-user-plus"></i>
+                            {{ __('employee.add_employee') }}
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="add-employee-form">
+                            <div class="mb-3">
+                                <label for="name" class="form-label required">{{ __('employee.name') }}</label>
+                                <input type="text" class="form-control w-100" id="name" name="name" required placeholder="{{ __('employee.name') }}">
                             </div>
-                            <div class="card-body">
-                                <form id="add-employee-form">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label required">
-                                            {{ __('employee.name') or 'Imię' }}
-                                        </label>
-                                        <input type="text" class="form-control w-100" id="name" name="name" required="required" placeholder="{{ __('employee.name') or 'Wprowadź imię' }}"></div>
-                                        <div class="mb-3">
-                                            <label for="surname" class="form-label required">
-                                                {{ __('employee.surname') or 'Nazwisko' }}
-                                            </label>
-                                            <input type="text" class="form-control w-100" id="surname" name="surname" required="required" placeholder="{{ __('employee.surname') or 'Wprowadź nazwisko' }}"></div>
-                                            <div class="mb-3">
-                                                <label for="login" class="form-label required">
-                                                    {{ __('employee.login') or 'Login' }}
-                                                </label>
-                                                <input type="text" class="form-control w-100" id="login" name="login" required="required" placeholder="{{ __('employee.login') or 'Wprowadź login' }}">
-                                                    <small class="form-text text-muted">
-                                                        {{ __('employee.login_hint') or 'Login będzie używany do logowania' }}
-                                                    </small>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="password" class="form-label required">
-                                                        {{ __('login.password_label') or 'Hasło' }}
-                                                    </label>
-                                                    <div class="input-group">
-                                                        <input type="password" class="form-control" id="password" name="password" required="required" minlength="6" placeholder="{{ __('login.password_label') or 'Wprowadź hasło' }}">
-                                                            <button class="btn btn-outline-secondary" type="button" id="toggle-password">
-                                                                <img class="icon" src='/img/eye.png' id="password-icon"></button>
-                                                            </div>
-                                                            <small class="form-text text-muted">
-                                                                {{ __('employee.password_hint') or 'Minimum 6 znaków' }}
-                                                            </small>
-                                                        </div>
-                                                        <div class="mb-4">
-                                                            <label for="phone" class="form-label">
-                                                                {{ __('employee.phone') or 'Telefon' }}
-                                                            </label>
-                                                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="{{ __('employee.phone') or 'Wprowadź numer telefonu' }}">
-                                                                <small class="form-text text-muted">
-                                                                    {{ __('employee.phone_hint') or 'Opcjonalne' }}
-                                                                </small>
-                                                            </div>
-                                                            <div class="d-grid gap-2 d-md-flex justify-content-md-between">
-                                                                <a href="/user/employee-panel" class="btn btn-secondary">
-                                                                    <i class="fas fa-arrow-left"></i>
-                                                                    {{ __('base.back_button') or 'Wróć' }}
-                                                                </a>
-                                                                <button type="submit" class="btn btn-dark" id="submit-btn">
-                                                                    <i class="fas fa-save"></i>
-                                                                    {{ __('employee.save') or 'Zapisz' }}
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="mb-3">
+                                <label for="surname" class="form-label required">{{ __('employee.surname') }}</label>
+                                <input type="text" class="form-control w-100" id="surname" name="surname" required placeholder="{{ __('employee.surname') }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="login" class="form-label required">{{ __('employee.login') }}</label>
+                                <input type="text" class="form-control w-100" id="login" name="login" required placeholder="{{ __('employee.login') }}">
+                                <small class="form-text text-muted">{{ __('employee.login_hint') }}</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label required">{{ __('login.password_label') or 'Hasło' }}</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" name="password" required minlength="6" placeholder="{{ __('login.password_label') or 'Hasło' }}">
+                                    <button class="btn btn-outline-secondary" type="button" id="toggle-password">
+                                        <img class="icon" src='/img/eye.png' id="password-icon">
+                                    </button>
                                 </div>
-                            {% endblock content %}
-                            {% block scripts %}
-                                <script type="module" src="/scripts/add_employee.js"></script>
-                            {% endblock scripts %}
+                                <small class="form-text text-muted">{{ __('employee.password_hint') }}</small>
+                            </div>
+                            <div class="mb-4">
+                                <label for="phone" class="form-label">{{ __('employee.phone') }}</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" placeholder="{{ __('employee.phone') }}">
+                                <small class="form-text text-muted">{{ __('employee.phone_hint') }}</small>
+                            </div>
+
+                            <!-- Uprawnienia -->
+                            <div class="section-header mb-3">
+                                <h5 class="text-secondary">
+                                    <i class="fas fa-shield-alt"></i>
+                                    {{ __('employee.permissions') }}
+                                </h5>
+                                <hr>
+                            </div>
+                            <div class="mb-4">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="can_send_orders" name="can_send_orders">
+                                    <label class="form-check-label" for="can_send_orders">
+                                        <i class="fas fa-paper-plane text-muted me-1"></i>
+                                        {{ __('employee.can_send_orders') }}
+                                    </label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="can_see_prices" name="can_see_prices">
+                                    <label class="form-check-label" for="can_see_prices">
+                                        <i class="fas fa-euro-sign text-muted me-1"></i>
+                                        {{ __('employee.can_see_prices') }}
+                                    </label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="can_see_all_orders" name="can_see_all_orders">
+                                    <label class="form-check-label" for="can_see_all_orders">
+                                        <i class="fas fa-list text-muted me-1"></i>
+                                        {{ __('employee.can_see_all_orders') }}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                                <a href="/user/employee-panel" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i>
+                                    {{ __('base.back_button') or 'Wróć' }}
+                                </a>
+                                <button type="submit" class="btn btn-dark" id="submit-btn">
+                                    <i class="fas fa-save"></i>
+                                    {{ __('employee.save') }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    <script type="module" src="/scripts/add_employee.js"></script>
+{% endblock scripts %}
