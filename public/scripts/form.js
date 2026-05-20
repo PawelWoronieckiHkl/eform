@@ -120,9 +120,9 @@ export async function generateForm(
     const paramName = param.NAME;
     if (!paramName || paramName.startsWith("_") || !param.DESCRIPTION) return;
 
-    // SUB___ params: only visible for group and groupShop users
+    // SUB___ params: only visible for group, groupShop, canViewSubPrices, and isClient users
     if (paramName.startsWith('SUB___')) {
-      if (!window.isGroup && !window.isGroupShop) return;
+      if (!window.isGroup && !window.isGroupShop && !window.canViewSubPrices && !window.isClient) return;
       // go into sub bucket only — NOT locked
       if (!window.subParams.includes(paramName)) window.subParams.push(paramName);
     }

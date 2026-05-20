@@ -110,9 +110,9 @@ async function jsonTextBackToMap(orderItems) {
       // SUB___ params: store in subParamValues, skip main table entirely
       if (key.startsWith('SUB___')) {
         const isLocked = param && param.locked === true;
-        if (!isLocked && value !== '-' && value !== null && value !== undefined) {
+        if (value !== '-' && value !== null && value !== undefined) {
           const display = param && param.param_description ? param.param_description : key;
-          item.subParamValues.push({ display, value });
+          item.subParamValues.push({ display, value, locked: isLocked });
         }
         continue;
       }

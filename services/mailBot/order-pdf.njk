@@ -48,16 +48,27 @@
                 <td>{{ rowObj.item.posId or "0" }}</td>
               </tr>
               <tr>
-                {% for header in table.headers2 %}
-                  {% if (not(header in rowObj.item.lockedParams)) %}
-                    <td class="price" colspan="2">
-                      <span class="price-label">{{ header }}:</span>
-                      <b>{{ rowObj.row.row2[header] or '-' }}</b>
-                    </td>
-                  {% endif %}
-                {% endfor %}
+                {% if clientView %}
+                  {% for entry in rowObj.item.subParamValues %}
+                    {% if entry.value and entry.value != '-' and entry.value != '' and not entry.locked %}
+                      <td class="price" colspan="2">
+                        <span class="price-label">{{ entry.display }}:</span>
+                        <b>{{ entry.value }}</b>
+                      </td>
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  {% for header in table.headers2 %}
+                    {% if (not(header in rowObj.item.lockedParams)) %}
+                      <td class="price" colspan="2">
+                        <span class="price-label">{{ header }}:</span>
+                        <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                      </td>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
               </tr>
-              {% if prices and showGoldPrices %}
+              {% if prices and showGoldPrices and not clientView %}
               <tr>
                 {% for header in table.headers1 %}
                   {% if (header in rowObj.item.lockedParams) %}
@@ -72,6 +83,18 @@
                     <td class="price" colspan="2">
                       <span class="price-label gold">{{ header }}:</span>
                       <b>{{ rowObj.row.row1[header] or rowObj.row.row2[header] or '-' }}</b>
+                    </td>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+              {% endif %}
+              {% if prices and clientView %}
+              <tr>
+                {% for entry in rowObj.item.subParamValues %}
+                  {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
+                    <td class="price" colspan="2">
+                      <span class="price-label gold">{{ entry.display }}:</span>
+                      <b>{{ entry.value }}</b>
                     </td>
                   {% endif %}
                 {% endfor %}

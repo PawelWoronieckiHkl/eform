@@ -396,9 +396,7 @@ function evaluateFormula(expression, context, type, param = null) {
         window.inputsDefaults = {}
     }
     window.paramPassword = ''
-
     let result = parser.parse(expression);
-
     if (param && expression.includes('HASLO')) {
         if (result.result == true) {
             window.skipCountParams = [...new Set(window.skipCountParams)].filter(p => p !== param);

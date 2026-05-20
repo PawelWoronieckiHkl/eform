@@ -322,6 +322,9 @@
         window.isGroupShop = {{ isGroupShop | dump }};
         window.hidePrices = {{ hidePrices | dump }};
         window.priceFactor = {{ priceFactor | dump | default("1") }};
+        window.canViewSubPrices = {{ canViewSubPrices | dump | default("false") }};
+        window.showSubParams = {{ showSub | dump | default("false") }};
+        window.isClient = {{ isClient | dump | default("false") }};
     </script>
     <script type='module' src="/scripts/intro/main.js"></script><script type='module' src='/scripts/base.js'></script><script type="module" src="/scripts/getEnv.js"></script><script src="/scripts/navActiveState.js"></script><script type="module" src="/scripts/owner/owner.js"></script><script>window.loadTranslations(document.documentElement.lang || 'en');
     window.loadLangs()

@@ -416,6 +416,39 @@ html.nav-collapsed #order-nav {
     margin-bottom: 4px;
 }
 
+/* Sub params locked row — dla klienta po kliknięciu kłódki (ceny SUB.locked) */
+.sub-params-locked-row .sub-params-container {
+    background: rgba(236, 212, 76, 0.13);
+    border: 1px solid rgba(236, 212, 76, 0.45);
+    border-left: 4px solid #c9a747;
+}
+
+.sub-params-locked-row .sub-param-item .sub-param-label {
+    color: #c9a747;
+    background: transparent !important;
+}
+
+.sub-params-locked-row .sub-param-item b {
+    color: #8a6f1f;
+    font-weight: 700;
+}
+
+.mobile-sub-params-locked {
+    background: rgba(236, 212, 76, 0.13) !important;
+    border: 1px solid rgba(236, 212, 76, 0.45) !important;
+    border-left: 4px solid #c9a747 !important;
+    margin-top: 8px;
+}
+
+.mobile-sub-params-locked .mobile-sub-param-item strong {
+    color: #c9a747;
+    background: transparent !important;
+}
+
+.mobile-sub-params-locked .mobile-sub-param-item b {
+    color: #8a6f1f;
+}
+
 #unlockSubBtn.active {
     background: var(--bg-hover, rgba(0,0,0,0.08));
     border-radius: var(--radius-sm);

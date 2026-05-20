@@ -53,6 +53,71 @@ async function rejectSentOrderMutation(res, orderId) {
 }
 
 
+/**
+ * Sprawdza czy `cleanOrderItems` zawiera jakiekolwiek wartości SUB.
+ * Zwraca true jeśli przynajmniej jedna pozycja ma niepuste subParamValues.
+ * Używane do warunkowego włączania widoku SUB cen — stare zamówienia bez SUB
+ * pokazują zwykłe ceny, nowe z SUB pokazują widok SUB.
+ */
+function orderHasSubPrices(cleanOrderItems) {
+    if (!Array.isArray(cleanOrderItems)) return false;
+    for (const table of cleanOrderItems) {
+        if (!table?.rows) continue;
+        for (const rowObj of table.rows) {
+            const subVals = rowObj?.item?.subParamValues;
+            if (Array.isArray(subVals) && subVals.length > 0) return true;
+        }
+    }
+    return false;
+}
+
+
+/**
+ * Wylicza dwa osobne sumy SUB cen z `orderItems`:
+ *  - subVisible: suma SUB params z listsum=true i NIE-locked (zwykły total SUB)
+ *  - subLocked: suma SUB params z listsum=true i locked=true (gold total SUB)
+ * Per pozycja bierzemy ostatnią wartość listsum (overwrite semantics, jak w form.js getTotal).
+ */
+function calcSubTotals(orderItems) {
+    let subVisible = 0;
+    let subLocked = 0;
+    if (!Array.isArray(orderItems)) return { subVisible, subLocked };
+
+    for (const item of orderItems) {
+        let parsed = item?.json_parameters_desc;
+        try {
+            if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+        } catch {
+            parsed = null;
+        }
+        if (!parsed) continue;
+
+        const entries = parsed instanceof Map ? Array.from(parsed.entries()) : (Array.isArray(parsed) ? parsed : Object.entries(parsed));
+
+        let itemVisible = 0;
+        let itemLocked = 0;
+        for (const [key, param] of entries) {
+            if (!key || !key.startsWith('SUB___') || !param || typeof param !== 'object') continue;
+            if (!param.listsum) continue;
+            const val = parseFloat(param.option_value);
+            if (!isFinite(val)) continue;
+            // Overwrite semantics — ostatnia wartość per pozycja wygrywa
+            if (param.locked === true) {
+                itemLocked = val;
+            } else {
+                itemVisible = val;
+            }
+        }
+        subVisible += itemVisible;
+        subLocked += itemLocked;
+    }
+    return {
+        subVisible: parseFloat(subVisible.toFixed(2)),
+        subLocked: parseFloat(subLocked.toFixed(2))
+    };
+}
+
+
 router.use(async (req, res, next) => {
     res.locals.owner = req.session?.user?.isOwner || false;
     res.locals.admin = req.session?.user?.isAdmin || false;
@@ -61,6 +126,13 @@ router.use(async (req, res, next) => {
     res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
     res.locals.employeePermissions = req.session?.employeePermissions || null;
     res.locals.priceFactor = req.session?.employeePermissions?.price_factor || 1.0;
+    // Funkcjonalność SUB cen dla organizacji/klientów — tylko na środowisku testowym (analogicznie do _S spec)
+    const isTestEnv = process.env.NODE_ENV === 'test';
+    // Klienci HKL (orgId≠3) będący właścicielami mogą widzieć SUB ceny po toggle
+    res.locals.canViewSubPrices = isTestEnv && req.session?.user?.isOwner && req.session?.user?.orgId != 3 || false;
+    res.locals.showSub = req.session?.user?.showSubParams || false;
+    // Klienci (orgId≠3, nie-owner) widzą SUB ceny bazowo (jak groupShop)
+    res.locals.isClient = isTestEnv && !req.session?.user?.isOwner && req.session?.user?.orgId != 3 && !req.session?.user?.isEmployee || false;
 
     if (req.session?.user?.isOwner) {
         try {
@@ -444,11 +516,15 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, loadEmp
         const totalPrice = await db.getTotal(orderDetails.id)
         await db.syncTotalPriceIfMissing(orderDetails.id, totalPrice, req.__('order.total'), req.__('order.total_hidden'));
         const { itemProductionDays, maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
+        const hasSubPrices = orderHasSubPrices(cleanOrderItems);
+        const subTotals = calcSubTotals(orderItems);
+        totalPrice.subVisible = subTotals.subVisible;
+        totalPrice.subLocked = subTotals.subLocked;
 
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render("order_sent_prices.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, prices: true, totalPrice: totalPrice, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays, hidePrices: req.hidePrices
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, prices: true, totalPrice: totalPrice, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays, hidePrices: req.hidePrices, hasSubPrices
                 }
             );
             req.session.user.showPricesOnce = false;
@@ -456,7 +532,7 @@ router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, loadEmp
         } else {
             return res.render("order_sent.njk",
                 {
-                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, owner: req.session.user.isOwner, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays, hidePrices: req.hidePrices
+                    orderDetails: orderDetails, orderItems: orderItems, heads: heads, cleanOrderItems: cleanOrderItems, total: total, totalPrice: totalPrice, owner: req.session.user.isOwner, statuses: statuses, admin: req.session.user?.isAdmin || false, availableLanguages: availabeLanguages, itemProductionDays, maxProdDays, hidePrices: req.hidePrices, hasSubPrices
                 }
             );
         }
@@ -518,6 +594,10 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
         const totalPrice = await db.getTotal(orderDetails.id)
         await db.syncTotalPriceIfMissing(orderDetails.id, totalPrice, req.__('order.total'), req.__('order.total_hidden'));
         const { itemProductionDays, maxProdDays } = buildItemProductionDays(cleanOrderItems, productionTimes);
+        const hasSubPrices = orderHasSubPrices(cleanOrderItems);
+        const subTotals = calcSubTotals(orderItems);
+        totalPrice.subVisible = subTotals.subVisible;
+        totalPrice.subLocked = subTotals.subLocked;
 
         if (req.session.user?.showPrices || req.session.user?.showPricesOnce) {
             res.render('order_prices.njk', {
@@ -535,7 +615,8 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 maxProdDays,
                 showProductionOrderOverride: !!productionOrderOverrideClient,
                 productionOrderOverrideClient,
-                hidePrices: req.hidePrices
+                hidePrices: req.hidePrices,
+                hasSubPrices
             });
             req.session.user.showPricesOnce = false;
             return;
@@ -559,7 +640,8 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 maxProdDays,
                 showProductionOrderOverride: !!productionOrderOverrideClient,
                 productionOrderOverrideClient,
-                hidePrices: req.hidePrices
+                hidePrices: req.hidePrices,
+                hasSubPrices
             });
             return;
         }
@@ -680,17 +762,29 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         const i18n = confLang(lang);
         const __ = (key) => i18n.__(key, { locale: lang });
 
-        if (shouldShowPrices && totalPrice.visible && Number(totalPrice.visible) !== 0) {
+        // Klient (orgId≠3, nie-owner) z SUB cenami widzi w PDF SUB params zamiast row2
+        const isTestEnv = process.env.NODE_ENV === 'test';
+        const isClientView = isTestEnv && !req.session.user?.isOwner && req.session.user?.orgId != 3 && !req.session.user?.isEmployee && !req.session.user?.isGroup && !req.session.user?.isGroupShop && orderHasSubPrices(cleanOrderItems);
+
+        if (isClientView && shouldShowPrices) {
+            const subTotals = calcSubTotals(orderItems);
+            sendData.total = (subTotals.subVisible && subTotals.subVisible !== 0)
+                ? `${__('order.total')}: ${subTotals.subVisible}€` : null;
+            sendData.total_hidden = (subTotals.subLocked && subTotals.subLocked !== 0)
+                ? `${__('order.total_hidden')}: ${subTotals.subLocked}€` : null;
+        } else if (shouldShowPrices && totalPrice.visible && Number(totalPrice.visible) !== 0) {
             sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
         } else {
             sendData.total = null;
         }
-        if (shouldShowPrices && totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
-            sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
-        } else if (shouldShowPrices && totalPrice.visible && Number(totalPrice.visible) !== 0) {
-            sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
-        } else {
-            sendData.total_hidden = null;
+        if (!isClientView) {
+            if (shouldShowPrices && totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
+                sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
+            } else if (shouldShowPrices && totalPrice.visible && Number(totalPrice.visible) !== 0) {
+                sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
+            } else {
+                sendData.total_hidden = null;
+            }
         }
 
         const currentUser = ownerService.getCurrentUser(req);
@@ -705,7 +799,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         if (!isShort) {
             // Ujednolicona logika PDF — ten sam template (order-pdf.njk) co w sendMail
             const orderIdx = await db.getUserOrderId(req.params.orderId);
-            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, shouldShowPrices, maxProdDays);
+            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, shouldShowPrices, maxProdDays, true, isClientView);
         } else {
             // Short PDF — osobny template order_to_print_short.njk
             let logoDataUri = null;
@@ -868,18 +962,36 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, loadEmployeePer
         const i18n = confLang(lang);
         const __ = (key) => i18n.__(key, { locale: lang });
         const showGoldPrices = currentUser?.orgId != 3;
-        if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
-            sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
-        }
-        if (showGoldPrices) {
-            if (totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
-                sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
-            } else if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
-                sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
+        // Klient (orgId≠3, nie-owner) z SUB cenami widzi w PDF SUB params zamiast row2
+        const isTestEnv = process.env.NODE_ENV === 'test';
+        const isClientForPdf = isTestEnv && !req.session.user?.isOwner && req.session.user?.orgId != 3 && !req.session.user?.isEmployee && !req.session.user?.isGroup && !req.session.user?.isGroupShop && orderHasSubPrices(cleanOrderItems);
+        if (isClientForPdf) {
+            // Dla klienta zastąp totale w sendData wartościami SUB
+            const subTotals = calcSubTotals(orderItems);
+            if (subTotals.subVisible && subTotals.subVisible !== 0) {
+                sendData.total = `${__('order.total')}: ${subTotals.subVisible}€`;
+            } else {
+                sendData.total = null;
+            }
+            if (subTotals.subLocked && subTotals.subLocked !== 0) {
+                sendData.total_hidden = `${__('order.total_hidden')}: ${subTotals.subLocked}€`;
+            } else {
+                sendData.total_hidden = null;
+            }
+        } else {
+            if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
+                sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
+            }
+            if (showGoldPrices) {
+                if (totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
+                    sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
+                } else if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
+                    sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
+                }
             }
         }
 
-        const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays, showGoldPrices)
+        const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays, showGoldPrices, isClientForPdf)
         const orgData = await db.getOrgInfo(req.session.user.organization)
 
         // Główny odbiorca i BCC zależne od środowiska

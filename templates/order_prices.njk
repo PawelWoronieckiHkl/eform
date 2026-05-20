@@ -127,6 +127,7 @@
                       <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-" }}</td>
                       <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                     </tr>
+                    {% if not (isClient and hasSubPrices) %}
                     <tr id='price-row'>
                       {% set idx = 0 %}
                       {% for header in table.headers2 %}
@@ -180,6 +181,37 @@
                               {% endfor %}
                               </tr>
                                 {% endif %}
+                      {% endif %}
+                      {% if isClient and hasSubPrices and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                        <tr class="sub-params-row" style="display: table-row;">
+                          <td colspan="100%" class="sub-params-cell">
+                            <div class="sub-params-container">
+                              {% for entry in rowObj.item.subParamValues %}
+                                {% if entry.value and entry.value != '-' and entry.value != '' and not entry.locked %}
+                                  <span class="sub-param-item">
+                                    <span class="sub-param-label">{{ entry.display }}:</span>
+                                    <b>{{ entry.value }}</b>
+                                  </span>
+                                {% endif %}
+                              {% endfor %}
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="sub-params-row sub-params-locked-row" style="display: table-row;">
+                          <td colspan="100%" class="sub-params-cell">
+                            <div class="sub-params-container">
+                              {% for entry in rowObj.item.subParamValues %}
+                                {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
+                                  <span class="sub-param-item">
+                                    <span class="sub-param-label">{{ entry.display }}:</span>
+                                    <b>{{ entry.value }}</b>
+                                  </span>
+                                {% endif %}
+                              {% endfor %}
+                            </div>
+                          </td>
+                        </tr>
+                      {% endif %}
                                 {% set globalIndex = globalIndex + 1 %}
                               {% endfor %}
                             </tbody>
@@ -216,13 +248,33 @@
                                       {% endfor %}
                                     </div>
                                   {% endif %}
-                                  {% if table.headers2.length > 0 %}
+                                  {% if table.headers2.length > 0 and not (isClient and hasSubPrices) %}
                                     <div class="mobile-item-prices">
                                       {% for header in table.headers2 %}
                                         {% if not(header in rowObj.item.lockedParams) %}
                                           <div class="mobile-price-item">
                                             <strong>{{ header }}:</strong>
                                             <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                                          </div>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </div>
+                                  {% endif %}
+                                  {% if isClient and hasSubPrices and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                    <div class="mobile-sub-params" style="display: block;">
+                                      {% for entry in rowObj.item.subParamValues %}
+                                        {% if entry.value and entry.value != '-' and entry.value != '' and not entry.locked %}
+                                          <div class="mobile-sub-param-item">
+                                            <strong>{{ entry.display }}:</strong> <b>{{ entry.value }}</b>
+                                          </div>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </div>
+                                    <div class="mobile-sub-params mobile-sub-params-locked" style="display: block;">
+                                      {% for entry in rowObj.item.subParamValues %}
+                                        {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
+                                          <div class="mobile-sub-param-item">
+                                            <strong>{{ entry.display }}:</strong> <b>{{ entry.value }}</b>
                                           </div>
                                         {% endif %}
                                       {% endfor %}
@@ -276,6 +328,22 @@
                           {% endfor %}
                           {% if totalPrice %}
                             <div id='total-container'>
+                              {% if isClient and hasSubPrices %}
+                                <div class="total-price d-flex justify-content-end align-items-center col-12">
+                                  <span class='total price-label col-3 text-center'>
+                                    {% if totalPrice.subVisible and totalPrice.subVisible != 0 %}
+                                      {{ __('order.total') }}: {{ totalPrice.subVisible }}&#8364;</span>
+                                    {% else %}
+                                      {{ __('order.according_to_price') }}</span>
+                                    {% endif %}
+                                </div>
+                                {% if totalPrice.subLocked and totalPrice.subLocked != 0 %}
+                                <div class="total-price d-flex justify-content-end align-items-center col-12">
+                                  <span class='total gold price-label col-3 text-center'>
+                                    {{ __('order.total_hidden') }}: {{ totalPrice.subLocked }}&#8364;</span>
+                                </div>
+                                {% endif %}
+                              {% else %}
                               <div class="total-price d-flex justify-content-end align-items-center col-12">
                                 <span class='total price-label col-3 text-center'>
                                   {% if totalPrice.visible != '0.00' %}
@@ -291,6 +359,7 @@
                               {% else %}
                                 {{ __('order.according_to_price') }}</span>
                             {% endif %}
+                              {% endif %}
                           {% endif %}
                         </div>
                       </div>

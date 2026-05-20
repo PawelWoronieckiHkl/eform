@@ -412,7 +412,8 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
         // SUB___ params: hidden for regular users/group admins; visible for isGroupShop (non-locked, ENABLE formula passes)
         if (key.startsWith('SUB___')) {
             const isLockedSub = window.lockedParams && window.lockedParams.includes(key);
-            if (window.isGroupShop && !isLockedSub && shouldEnable) {
+            const showSubNow = window.isGroupShop || window.isClient || (window.canViewSubPrices && window.showSubParams);
+            if (showSubNow && !isLockedSub && shouldEnable) {
                 paramDiv.style.display = 'grid';
                 window.enabledParams[param.NAME] = true;
             } else {
@@ -420,9 +421,9 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
                 delete window.enabledParams[param.NAME];
             }
         } else if (shouldEnable) {
-            // For isGroupShop: hide ALL row2/listsum price params — they only see SUB___ prices
+            // For isGroupShop/isClient/hidePrices: hide ALL row2/listsum price params — they only see SUB___ prices
             const isRowTwo = param.LISTROW == '2' || param.LISTSUM == 'true';
-            if ((window.isGroupShop || window.hidePrices) && isRowTwo) {
+            if ((window.isGroupShop || window.isClient || window.hidePrices) && isRowTwo) {
                 paramDiv.style.display = 'none';
                 delete window.enabledParams[param.NAME];
             } else {

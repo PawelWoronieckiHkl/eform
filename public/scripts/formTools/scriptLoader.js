@@ -33,6 +33,7 @@ export function loadScript(scriptFile, values, displayValues, groupNumber, allOp
         if (finished) return;
         try {
             if (typeof f === 'function') {
+
                 const result = f(scriptInput);
                 console.log('Wynik funkcji f ze skryptu', result);
                 const roundedResult = roundPrices(result);

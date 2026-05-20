@@ -114,7 +114,6 @@ export function checkIfPriceIsCorrect(values, inputs, displayValues) {
 
 
 export function calculateFromScript(param, values, inputs, displayValues, groupNumber, allOptionsByParameter, key, paramName, onComplete) {
-    
     const wrongValues = ['', 0, null, undefined, NaN];
     const checkParams = ['SZEROKOSC', 'WYSOKOSC'].filter(p => {
         let input = inputs[p];

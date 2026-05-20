@@ -1890,3 +1890,31 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
 === 2026-05-19 10:35:01 - Start ===
 === 2026-05-19 10:35:01 - Dodawanie zmian do commita ===
+[main b53dc95] Automatic commit 2026-05-19 10:35
+ 41 files changed, 18609 insertions(+), 338 deletions(-)
+ create mode 100644 .kiro/specs/employee-permissions/.config.kiro
+ create mode 100644 .kiro/specs/employee-permissions/design.md
+ create mode 100644 .kiro/specs/employee-permissions/requirements.md
+ create mode 100644 .kiro/specs/employee-permissions/tasks.md
+ create mode 100644 .kiro/steering/agents.md
+ create mode 100644 .kiro/steering/product.md
+ create mode 100644 .kiro/steering/structure.md
+ create mode 100644 .kiro/steering/tech.md
+ create mode 100644 middleware/__tests__/filterOrdersByPermission.test.js
+ create mode 100644 middleware/__tests__/filterPriceData.test.js
+ create mode 100644 middleware/employeePermissions.js
+ create mode 100644 migration_employee_permissions.sql
+ create mode 100644 migration_employee_price_factor.sql
+ create mode 100644 migrations/add_employee_permissions.sql
+ rewrite templates/user/add_employee.njk (97%)
+ rewrite templates/user/edit_employee.njk (96%)
+=== 2026-05-19 10:35:01 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   6b79f0c..b53dc95  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-05-19 10:35:03 - Koniec ===
+=== 2026-05-19 12:00:01 - Start ===
+=== 2026-05-19 12:00:01 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-05-20 10:35:01 - Start ===
+=== 2026-05-20 10:35:01 - Dodawanie zmian do commita ===
