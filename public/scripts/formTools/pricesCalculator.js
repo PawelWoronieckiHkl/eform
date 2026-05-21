@@ -134,6 +134,11 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
                     for (const [scriptParamName, scriptValue] of Object.entries(scriptResult)) {
                         console.log('Ustawiamy wartość ze SCRIPT u:', scriptParamName, scriptValue);
 
+                        // ZAWSZE aktualizuj values — nawet dla parametrów bez własnego inputa.
+                        // Bez tego computed values (np. MARSZCZPROC obliczane ze skryptu jako side-effect)
+                        // pozostają w starym stanie i kolejne formuły używają nieaktualnych wartości.
+                        values[scriptParamName] = scriptValue;
+
                         // If param ends with _S and no input exists, create a hidden clone from the parent param
                         const isNewSuffix = _isTestEnv && !inputs[scriptParamName] && scriptParamName.endsWith('_S');
                         if (isNewSuffix) {
@@ -163,7 +168,6 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
                                 inputs[scriptParamName].value = scriptValue;
                             }
 
-                            values[scriptParamName] = scriptValue;
                             buildValuesToDisplay(allOptionsByParameter, strVal, scriptParamName, displayValues, 'INPUT', true);
 
                             // Mirror value to SUB___ variant if it exists (e.g. CENA → SUB___CENA)

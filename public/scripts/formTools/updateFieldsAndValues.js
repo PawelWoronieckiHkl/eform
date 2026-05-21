@@ -466,10 +466,29 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
     }
 
     return new Promise((resolveAll) => {
+        // PRE-PASS: uruchom najpierw formuły (bez SOURCE) — żeby skrypty miały dostęp
+        // do świeżo policzonych wartości tych formuł (np. MARSZCZPROC zależny od FALA).
+        // Bez tego skrypty czytają stare values[] dla parametrów które są tylko formułami.
+        formulaOperations.forEach(operation => {
+            calculateFromFormula(
+                operation.param,
+                values,
+                inputs,
+                displayValues,
+                groupNumber,
+                allOptionsByParameter,
+                operation.key,
+                operation.param.NAME
+            );
+        });
+
         let scriptIndex = 0;
 
         const executeNextScript = () => {
             if (scriptIndex >= scriptOperations.length) {
+                // POST-PASS: ponownie uruchom wszystkie formuły (oryginalne + dodane
+                // w trakcie callbacków skryptów dla SOURCE+FORMULA params) — w razie
+                // gdyby skrypty zmieniły wartości używane przez formuły.
                 formulaOperations.forEach(operation => {
                     calculateFromFormula(
                         operation.param,
@@ -515,18 +534,7 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
             executeNextScript();
         }
         else {
-            formulaOperations.forEach(operation => {
-                calculateFromFormula(
-                    operation.param,
-                    values,
-                    inputs,
-                    displayValues,
-                    groupNumber,
-                    allOptionsByParameter,
-                    operation.key,
-                    operation.param.NAME
-                );
-            });
+            // Brak skryptów — formuły już zostały wykonane w pre-pass, nic więcej nie trzeba
             resolveAll();
         }
     }).then(() => {

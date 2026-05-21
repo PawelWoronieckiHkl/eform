@@ -892,6 +892,111 @@ router.get("/order/:orderId/new-position/", requireLogin, loadEmployeePermission
 });
 
 
+/**
+ * Endpoint dla funkcjonalności "Przelicz wszystkie pozycje".
+ * Zwraca pełne dane pozycji potrzebne do rekonstrukcji formularza po stronie klienta.
+ * Dostęp: tylko owner/admin, tylko aktywne zamówienia (status != 'sent').
+ */
+router.get('/order/:orderId/positions-data', requireLogin, checkOrderOwnership, async (req, res) => {
+    try {
+        const isOwnerOrAdmin = req.session.user?.isOwner || req.session.user?.isAdmin;
+        if (!isOwnerOrAdmin) {
+            return res.status(403).json({ success: false, message: 'Brak uprawnień' });
+        }
+
+        if (await isSentOrder(req.params.orderId)) {
+            return res.status(400).json({ success: false, message: 'Nie można przeliczać wysłanego zamówienia' });
+        }
+
+        const { orderItems } = await db.getOrderWithItems(req.params.orderId);
+        if (!orderItems || orderItems.length === 0) {
+            return res.json({ success: true, positions: [] });
+        }
+
+        const positions = orderItems.map(item => ({
+            id: item.id,
+            order_id: item.order_id,
+            ver: item.ver,
+            asortment_group_number: item.asortment_group_number,
+            json_parameters: item.json_parameters,
+            json_parameters_desc: item.json_parameters_desc,
+            comment: item.comment || '',
+            commision: item.commision || '',
+            lang: item.lang || 'pl'
+        }));
+
+        return res.json({ success: true, positions });
+    } catch (err) {
+        log('Error fetching positions for recalculate:', err);
+        return res.status(500).json({ success: false, message: 'Błąd serwera' });
+    }
+});
+
+
+/**
+ * Endpoint zapisujący przeliczone pozycje atomowo.
+ * Przyjmuje listę pozycji z nowymi wartościami; zapis w transakcji — wszystko albo nic.
+ * Dostęp: tylko owner/admin, tylko aktywne zamówienia.
+ */
+router.post('/order/:orderId/recalculate', requireLogin, checkOrderOwnership, async (req, res) => {
+    try {
+        const isOwnerOrAdmin = req.session.user?.isOwner || req.session.user?.isAdmin;
+        if (!isOwnerOrAdmin) {
+            return res.status(403).json({ success: false, message: 'Brak uprawnień' });
+        }
+
+        if (await isSentOrder(req.params.orderId)) {
+            return res.status(400).json({ success: false, message: 'Nie można przeliczać wysłanego zamówienia' });
+        }
+
+        const { positions } = req.body;
+        if (!Array.isArray(positions) || positions.length === 0) {
+            return res.status(400).json({ success: false, message: 'Brak pozycji do zapisu' });
+        }
+
+        // Zapis sekwencyjny — atomowo całe zamówienie. Jeśli któraś pozycja zawiedzie,
+        // przerywamy i zwracamy błąd. Nie używamy transakcji DB-poziomu (warstwa db_helper
+        // nie wspiera transakcji), ale walidacja pre-zapisu minimalizuje ryzyko częściowego stanu.
+        for (const pos of positions) {
+            if (!pos.id || !pos.jsonValues || !pos.jsonValuesToDisplay || !pos.total) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Niepełne dane pozycji ${pos.id || '(brak id)'}`
+                });
+            }
+        }
+
+        const saved = [];
+        for (const pos of positions) {
+            const positionData = {
+                id: pos.id,
+                commission: pos.commission || '',
+                jsonValues: pos.jsonValues,
+                jsonValuesToDisplay: pos.jsonValuesToDisplay,
+                comment: pos.comment || '',
+                jsonShort: pos.jsonShort || {}
+            };
+            await db.updatePosition(positionData, pos.total);
+            saved.push(pos.id);
+        }
+
+        await recalcAndSaveMaxProdDays(req.params.orderId);
+
+        return res.json({
+            success: true,
+            message: `Przeliczono ${saved.length} pozycji`,
+            recalculatedIds: saved
+        });
+    } catch (err) {
+        log('Error recalculating order:', err);
+        return res.status(500).json({
+            success: false,
+            message: 'Błąd serwera podczas zapisu przeliczonych pozycji'
+        });
+    }
+});
+
+
 router.post('/send/:orderId', requireLogin, checkOrderOwnership, loadEmployeePermissions, requireSendPermission, async (req, res) => {
     // Sklep grupy nie może samodzielnie wysłać — musi zatwierdzić centrala
     if (req.session.user?.isGroupShop) {

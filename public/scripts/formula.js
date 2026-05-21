@@ -396,7 +396,9 @@ function evaluateFormula(expression, context, type, param = null) {
         window.inputsDefaults = {}
     }
     window.paramPassword = ''
+        if (type == 'cena')console.log('siemanko jesteśmy w cenach', parser,'\n', expression)
     let result = parser.parse(expression);
+if (type == 'cena')console.log('siemanko jesteśmy w cenach wynik' ,result, expression)
     if (param && expression.includes('HASLO')) {
         if (result.result == true) {
             window.skipCountParams = [...new Set(window.skipCountParams)].filter(p => p !== param);
