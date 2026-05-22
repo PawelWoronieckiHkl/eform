@@ -101,7 +101,16 @@
     "pred_shipping_date_label": "Przewidywana data wysyłki",
     "production_order_checkbox": "Zamówienie prawdziwe - ma trafić do produkcji",
     "production_order_warning": "Uwaga: zamówienie produkcyjne",
-    "production_order_confirm": "To zamówienie trafi na FTP i zostanie wysłane mailem. Czy na pewno chcesz wysłać?"
+    "production_order_confirm": "To zamówienie trafi na FTP i zostanie wysłane mailem. Czy na pewno chcesz wysłać?",
+    "recalculate_title": "Przelicz zamówienie",
+    "recalculate_confirm": "Czy na pewno chcesz przeliczyć wszystkie pozycje? Ręczne modyfikacje cen zostaną nadpisane.",
+    "recalculate_btn": "Przelicz",
+    "recalculate_progress": "Przeliczanie pozycji",
+    "recalculate_starting": "rozpoczynanie...",
+    "recalculate_saving": "zapisywanie...",
+    "recalculate_no_positions": "Brak pozycji do przeliczenia",
+    "recalculate_no_id": "Brak ID zamówienia",
+    "recalculate_tooltip": "Przelicz wszystkie pozycje"
   },
   "orders": {
     "title": "Twoje Zamówienia",

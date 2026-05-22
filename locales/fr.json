@@ -101,7 +101,16 @@
     "pred_shipping_date_label": "Date d'expédition prévue",
     "production_order_checkbox": "Commande réelle - envoyer en production",
     "production_order_warning": "Attention : commande de production",
-    "production_order_confirm": "Cette commande sera envoyée par FTP et par e-mail. Voulez-vous vraiment l'envoyer ?"
+    "production_order_confirm": "Cette commande sera envoyée par FTP et par e-mail. Voulez-vous vraiment l'envoyer ?",
+    "recalculate_title": "Recalculer la commande",
+    "recalculate_confirm": "Voulez-vous vraiment recalculer toutes les positions ? Les modifications manuelles de prix seront écrasées.",
+    "recalculate_btn": "Recalculer",
+    "recalculate_progress": "Recalcul de la position",
+    "recalculate_starting": "démarrage...",
+    "recalculate_saving": "enregistrement...",
+    "recalculate_no_positions": "Aucune position à recalculer",
+    "recalculate_no_id": "ID de commande manquant",
+    "recalculate_tooltip": "Recalculer toutes les positions"
   },
   "orders": {
     "title": "Vos commandes",

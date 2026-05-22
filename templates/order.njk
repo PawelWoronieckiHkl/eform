@@ -87,7 +87,7 @@
                                                             <div class='d-flex'>
                                                                 {% if owner or admin %}
                                                                 <button class="btn has-tooltip" data-tooltip="{{ __('order.recalculate_tooltip') or 'Przelicz wszystkie pozycje' }}" id="recalculate-order-btn" data-order-id="{{ orderDetails.id }}" type="button">
-                                                                    <span class="icon" style="display:inline-flex; align-items:center; justify-content:center; font-size:24px;">↻</span>
+                                                                    <span  style="display:inline-flex; align-items:center; justify-content:center; font-size:24px;"><img  class="icon" src="/img/recalculate.png" alt=""></span>
                                                                 </button>
                                                                 {% endif %}
                                                                 {% if not isGroup and not isGroupShop and not hidePrices %}

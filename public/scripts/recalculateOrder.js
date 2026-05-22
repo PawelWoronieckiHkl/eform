@@ -18,6 +18,7 @@
 import { generateForm, getTotal, recalculateLastChangedField } from '/scripts/form.js';
 import { FormsManager } from '/scripts/formTools/getAvailableForms.js';
 import { showToast } from '/scripts/components/toast.js';
+import { confirmPrompt } from '/scripts/components/confirmPrompt.js';
 
 /**
  * Wymusza widoczność spinnera na cały czas trwania procesu.
@@ -148,7 +149,7 @@ function showProgress(current, total, message) {
     const label = ensureProgressLabel();
     const overlay = document.getElementById('recalc-overlay');
     const text = message || `${current} / ${total}`;
-    label.textContent = `Przeliczanie pozycji ${text}`;
+    label.textContent = `${t('order.recalculate_progress')} ${text}`;
     if (overlay) overlay.style.display = 'flex';
 }
 
@@ -429,7 +430,7 @@ async function saveRecalculated(orderId, recalculated) {
  */
 export async function recalculateOrder(orderId) {
     if (!orderId) {
-        showToast('error', 'Brak ID zamówienia');
+        showToast('error', t('order.recalculate_no_id'));
         return;
     }
 
@@ -440,14 +441,14 @@ export async function recalculateOrder(orderId) {
         ensureFormHostElements();
         // Pokaż własny overlay z spinnerem i etykietą — niezależny od .hourglass/.overlay
         // które wewnętrznie używa generateForm. Pokazany raz, ukryty w finally.
-        showProgress(0, 0, 'rozpoczynanie...');
+        showProgress(0, 0, t('order.recalculate_starting'));
         const positions = await fetchPositions(orderId);
         if (positions.length === 0) {
-            showToast('info', 'Brak pozycji do przeliczenia');
+            showToast('info', t('order.recalculate_no_positions'));
             return;
         }
 
-        showToast('info', `Przeliczanie ${positions.length} pozycji...`);
+        showToast('info', `${t('order.recalculate_progress')} ${positions.length}...`);
 
         const recalculated = [];
         for (let i = 0; i < positions.length; i++) {
@@ -463,7 +464,7 @@ export async function recalculateOrder(orderId) {
             }
         }
 
-        showProgress(positions.length, positions.length, 'zapisywanie...');
+        showProgress(positions.length, positions.length, t('order.recalculate_saving'));
         // Wszystkie pozycje przeliczone — zapisujemy atomowo
         const saveResult = await saveRecalculated(orderId, recalculated);
         showToast('success', saveResult.message || 'Przeliczono pomyślnie');
@@ -487,12 +488,18 @@ export async function recalculateOrder(orderId) {
 export function initRecalculateButton(orderId) {
     const btn = document.getElementById('recalculate-order-btn');
     if (!btn) return;
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (!confirm('Czy na pewno chcesz przeliczyć wszystkie pozycje? Ręczne modyfikacje (poza adminem) zostaną nadpisane.')) {
-            return;
-        }
+        const confirmed = await confirmPrompt({
+            title: t('order.recalculate_title'),
+            message: t('order.recalculate_confirm'),
+            confirmLabel: t('order.recalculate_btn'),
+            cancelLabel: t('order.cancel'),
+            confirmClass: 'btn btn-dark',
+            cancelClass: 'btn btn-outline-secondary'
+        });
+        if (!confirmed) return;
         recalculateOrder(orderId);
     });
 }

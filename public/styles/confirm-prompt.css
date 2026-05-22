@@ -5,34 +5,103 @@
     transform: translate(-50%, -50%);
     margin: 0;
     border: none;
-    border-radius: var(--radius-2xl);
-    box-shadow: var(--shadow-xl), var(--shadow-glow);
-    padding: 0;
-    min-width: 320px;
-    max-width: min(90vw, 460px);
+    border-radius: 16px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    padding: 20px 10px 10px 10px !important;
+    min-width: 530px;
+    max-width: min(90vw, 640px);
     z-index: 10000;
-    background: var(--bg-glass-strong);
-    backdrop-filter: blur(var(--blur-xl));
-    -webkit-backdrop-filter: blur(var(--blur-xl));
-    animation: scaleIn 0.3s var(--ease-out-expo) both;
+    background: #fff;
+    overflow: hidden;
+    animation: confirmFadeIn 0.25s ease both;
+}
+
+@keyframes confirmFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
 }
 
 #confirm-prompt-dialog::backdrop {
-    background: var(--bg-overlay);
-    backdrop-filter: blur(var(--blur-md));
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     animation: fadeIn 0.2s ease both;
 }
 
+.confirm-prompt__body {
+    padding: 3.5rem 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
 .confirm-prompt__icon {
-    font-size: 2rem;
-    color: var(--color-warning);
+    font-size: 2.5rem;
+    color: #e67e22;
+    margin-bottom: 0.25rem;
 }
 
 .confirm-prompt__title {
     font-weight: 700;
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    text-align: center;
+    margin: 0;
 }
 
 .confirm-prompt__message {
-    color: var(--text-secondary);
+    color: #555;
     font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 340px;
+}
+
+.confirm-prompt__actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 1.25rem 2rem 2rem;
+    width: 100%;
+}
+
+.confirm-prompt__actions .btn {
+    min-width: 120px;
+    padding: 10px 24px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+.confirm-prompt__actions .btn-dark {
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+}
+
+.confirm-prompt__actions .btn-dark:hover {
+    background: #333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-prompt__actions .btn-outline-secondary {
+    background: transparent;
+    color: #555;
+    border: 1.5px solid #ddd;
+}
+
+.confirm-prompt__actions .btn-outline-secondary:hover {
+    background: #f5f5f5;
+    border-color: #bbb;
 }

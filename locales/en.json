@@ -101,7 +101,16 @@
     "pred_shipping_date_label": "Estimated shipping date",
     "production_order_checkbox": "Real order - send to production",
     "production_order_warning": "Warning: production order",
-    "production_order_confirm": "This order will be sent to FTP and by email. Are you sure you want to send it?"
+    "production_order_confirm": "This order will be sent to FTP and by email. Are you sure you want to send it?",
+    "recalculate_title": "Recalculate order",
+    "recalculate_confirm": "Are you sure you want to recalculate all positions? Manual price modifications will be overwritten.",
+    "recalculate_btn": "Recalculate",
+    "recalculate_progress": "Recalculating position",
+    "recalculate_starting": "starting...",
+    "recalculate_saving": "saving...",
+    "recalculate_no_positions": "No positions to recalculate",
+    "recalculate_no_id": "Missing order ID",
+    "recalculate_tooltip": "Recalculate all positions"
   },
   "orders": {
     "title": "Your Orders",

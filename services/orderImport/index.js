@@ -24,6 +24,8 @@ const cache = require('./localCache');
 const { validateOrderPayload } = require('./orderValidator');
 const { resolveOrderUser } = require('./userResolver');
 const { importResolvedOrder } = require('./orderImporter');
+const { resolvePayloadAliases } = require('./aliasResolver');
+const importLogger = require('./importLogger');
 const { makeTransactionalDeps } = require('./transactionalDb');
 const { connetToDb } = require('../../db/core');
 const { log } = require('../../utils/logging');
@@ -91,6 +93,10 @@ async function processOneFile(fileName) {
         throw new Error(`Validation failed: ${validation.errors.join('; ')}`);
       }
 
+      // Resolve client aliases in item parameters before user resolution
+      const { items: resolvedItems, errors: aliasErrors } = await resolvePayloadAliases(validation.data.items);
+      validation.data.items = resolvedItems;
+
       const resolved = await resolveOrderUser(validation.data);
 
       // Single DB transaction so partial inserts don't leave orphan rows.
@@ -108,6 +114,24 @@ async function processOneFile(fileName) {
 
       result.ok = true;
       result.orderId = importResult.orderId;
+
+      // Log import result
+      if (aliasErrors.length > 0) {
+        await importLogger.logPartial({
+          fileName,
+          orderId: importResult.orderId,
+          userIdent: validation.data.userIdent,
+          itemsCount: resolvedItems.length,
+          errorMessage: aliasErrors.join('\n')
+        });
+      } else {
+        await importLogger.logSuccess({
+          fileName,
+          orderId: importResult.orderId,
+          userIdent: validation.data.userIdent,
+          itemsCount: resolvedItems.length
+        });
+      }
 
       await cache.moveToProcessed(localPath);
       try {
@@ -147,6 +171,16 @@ async function processOneFile(fileName) {
   if (lastError && lastError.stack) {
     log(`Import failure details for ${fileName}: ${formatError(lastError)}`);
   }
+
+  // Log error to import_log table
+  try {
+    await importLogger.logError({
+      fileName,
+      userIdent: null,
+      errorMessage: result.error,
+      errorDetails
+    });
+  } catch (_logErr) { /* don't let logging failure mask the real error */ }
 
   return result;
 }

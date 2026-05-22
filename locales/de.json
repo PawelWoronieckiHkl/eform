@@ -101,7 +101,16 @@
     "pred_shipping_date_label": "Voraussichtliches Versanddatum",
     "production_order_checkbox": "Echte Bestellung - an die Produktion senden",
     "production_order_warning": "Achtung: Produktionsbestellung",
-    "production_order_confirm": "Diese Bestellung wird per FTP und E-Mail gesendet. Möchten Sie sie wirklich senden?"
+    "production_order_confirm": "Diese Bestellung wird per FTP und E-Mail gesendet. Möchten Sie sie wirklich senden?",
+    "recalculate_title": "Bestellung neu berechnen",
+    "recalculate_confirm": "Möchten Sie wirklich alle Positionen neu berechnen? Manuelle Preisänderungen werden überschrieben.",
+    "recalculate_btn": "Neu berechnen",
+    "recalculate_progress": "Position wird berechnet",
+    "recalculate_starting": "wird gestartet...",
+    "recalculate_saving": "wird gespeichert...",
+    "recalculate_no_positions": "Keine Positionen zum Neuberechnen",
+    "recalculate_no_id": "Bestell-ID fehlt",
+    "recalculate_tooltip": "Alle Positionen neu berechnen"
   },
   "orders": {
     "title": "Ihre Bestellungen",

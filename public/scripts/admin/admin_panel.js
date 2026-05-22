@@ -101,6 +101,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         groupSyncDiv.innerHTML = '<span class="badge bg-warning fs-6"><i class="bi bi-exclamation-triangle me-1"></i>Sync grup: ' + (data.groupSyncError || 'błąd') + '</span>';
                     }
 
+                    if (data.aliasesSyncSuccess) {
+                        groupSyncDiv.innerHTML += ' <span class="badge bg-success fs-6"><i class="bi bi-check-circle me-1"></i>Aliasy klientów: ' + (data.aliasesTotal || 0) + ' wpisów</span>';
+                    } else if (data.aliasesSyncSuccess === false) {
+                        groupSyncDiv.innerHTML += ' <span class="badge bg-warning fs-6"><i class="bi bi-exclamation-triangle me-1"></i>Aliasy: ' + (data.aliasesSyncError || 'błąd') + '</span>';
+                    }
+
                     let html = '<span class="badge bg-success fs-6 mb-2">Zsynchronizowano: ' + data.totalEntries + ' wpisów</span>';
                     html += '<ul class="list-group list-group-flush mt-2">';
 

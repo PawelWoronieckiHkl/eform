@@ -101,7 +101,16 @@
     "pred_shipping_date_label": "Verwachte verzenddatum",
     "production_order_checkbox": "Echte bestelling - naar productie sturen",
     "production_order_warning": "Let op: productiebestelling",
-    "production_order_confirm": "Deze bestelling wordt via FTP en per e-mail verzonden. Weet u zeker dat u wilt verzenden?"
+    "production_order_confirm": "Deze bestelling wordt via FTP en per e-mail verzonden. Weet u zeker dat u wilt verzenden?",
+    "recalculate_title": "Bestelling herberekenen",
+    "recalculate_confirm": "Weet u zeker dat u alle posities wilt herberekenen? Handmatige prijswijzigingen worden overschreven.",
+    "recalculate_btn": "Herberekenen",
+    "recalculate_progress": "Positie herberekenen",
+    "recalculate_starting": "starten...",
+    "recalculate_saving": "opslaan...",
+    "recalculate_no_positions": "Geen posities om te herberekenen",
+    "recalculate_no_id": "Bestelling-ID ontbreekt",
+    "recalculate_tooltip": "Alle posities herberekenen"
   },
   "orders": {
     "title": "Uw bestellingen",
