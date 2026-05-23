@@ -320,7 +320,10 @@ function displayValuesToWireFormat(displayValues) {
 function stubDisplayEntries(values) {
   const out = [];
   for (const [k, v] of Object.entries(values || {})) {
-    if (k === 'uid' || k.endsWith('___DICT')) continue;
+    if (k === 'uid') continue;
+    if (k.includes('___')) continue;
+    if (k.endsWith('_ALIAS')) continue;
+    if (k.endsWith('_ALIAS_DESCRIPTION')) continue;
     out.push([k, {
       param_description: k,
       sub: false,
@@ -346,7 +349,7 @@ function stubDisplayEntries(values) {
  * @returns {Promise<{values, displayValues, total, shortJson}>}
  */
 async function calculatePrices(opts) {
-  const { groupNumber, version, lang, values = {}, displayValues = null, uid } = opts || {};
+  const { groupNumber, version, lang, values = {}, displayValues = null, uid, singlePass = false } = opts || {};
   if (!groupNumber || !version) {
     throw new Error('formEngine.calculatePrices: groupNumber and version are required');
   }
@@ -368,7 +371,73 @@ async function calculatePrices(opts) {
       false
     );
 
-    await replayValues({ window: env.window, values });
+    if (singlePass) {
+      // Single-pass mode: pre-seed all values, then fire ONE updateProcedure
+      // on the first parameter. This cascades through the full dependency graph.
+      // Then wait for finishFlag (set 1300ms after calculationQueue empties)
+      // exactly like the frontend recalculateOrder.js does.
+      const params = env.window.params || [];
+      const inputs = env.window.formInputs || {};
+
+      // Pre-seed formValues
+      for (const [name, value] of Object.entries(values)) {
+        if (name === 'uid') continue;
+        env.window.formValues[name] = value;
+        const input = inputs[name];
+        if (input && 'value' in input) {
+          try { input.value = value == null ? '' : value; } catch (_e) {}
+        }
+      }
+
+      // Find first real param with a value
+      let firstName = null;
+      for (const p of params) {
+        const n = p && p.NAME;
+        if (!n || n.includes('___')) continue;
+        if (!inputs[n]) continue;
+        if (env.window.formValues[n] === undefined || env.window.formValues[n] === '') continue;
+        firstName = n;
+        break;
+      }
+
+      if (firstName) {
+        await env.window.__engine.updateProcedure({
+          params,
+          inputs,
+          values: env.window.formValues,
+          displayValues: env.window.formDisplayValues,
+          allOptionsByParameter: env.window.allOptionsByParameter || {},
+          options: {},
+          name: firstName,
+          value: env.window.formValues[firstName],
+          groupNumber,
+          tagName: inputs[firstName]?.tagName || 'INPUT',
+          filters: {},
+          calculatedParams: {},
+          flags: {
+            updateInputs: true,
+            validate: true,
+            buildValues: true,
+            updateStates: true,
+            percent: true
+          }
+        });
+      }
+
+      // Wait for finishFlag — same as frontend waitForCalculations()
+      // finishFlag is set via setTimeout 1300ms after calculationQueue empties
+      const waitStart = Date.now();
+      while (Date.now() - waitStart < 10000) {
+        const queueEmpty = !env.window.calculationQueue || env.window.calculationQueue.length === 0;
+        const finished = env.window.finishFlag === true;
+        if (queueEmpty && finished) break;
+        // Also accept: queue empty for >2s (scripts may have already completed)
+        if (queueEmpty && (Date.now() - waitStart > 3000)) break;
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    } else {
+      await replayValues({ window: env.window, values });
+    }
 
     // Drain the calculation queue.
     let safety = 50;

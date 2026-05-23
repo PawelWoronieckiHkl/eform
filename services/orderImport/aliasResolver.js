@@ -1,162 +1,171 @@
 /**
  * Alias Resolver for Order Import
  *
- * Resolves parameter values against the `client_aliases` table:
+ * 3-level validation for each parameter value:
+ *   1. product_group — is the group_number valid?
+ *   2. translation_dictionary (value_key) — is this a known canonical value for this param+group?
+ *   3. client_aliases — is this an alias that maps to a real value?
  *
- * For each parameter value in an item:
- *   1. If the value exists as `value_col` in client_aliases for this group → keep as-is
- *   2. If the value exists as `alias` → replace with the corresponding `value_col`,
- *      and populate <PARAM>_ALIAS and <PARAM>_ALIAS_DESCRIPTION fields
- *   3. If not found anywhere → throw an error with details
- *
- * This runs BEFORE parameterTranslator (which handles language translation).
+ * IMPORTANT: Only parameters that have entries in translation_dictionary (paramdict)
+ * or client_aliases are validated. Parameters without any dictionary entries are
+ * free-form (numeric, calculated, descriptions) and are skipped automatically.
  */
+
+'use strict';
 
 const { connetToDb } = require('../../db/core');
 const { log } = require('../../utils/logging');
 
-/**
- * Load all client_aliases for a given group number into lookup maps.
- * @param {string} groupNumber
- * @returns {Promise<{valueSet: Set<string>, aliasToEntry: Map<string, {value_col, alias, description, parameter, collection}>}>}
- */
-async function loadAliasesForGroup(groupNumber) {
+// ─── Data loaders ────────────────────────────────────────────────────────────
+
+async function loadTranslationDictValues(groupNumber) {
   const conn = await connetToDb();
   try {
     const [rows] = await conn.query(
-      'SELECT value_col, alias, description, parameter, collection FROM client_aliases WHERE group_number = ?',
+      `SELECT param_name, value_key FROM translation_dictionary
+       WHERE group_number = ? AND source_type = 'paramdict'`,
       [groupNumber]
     );
-
-    // Set of all known values (for quick "is this a valid value?" check)
-    const valueSet = new Set();
-    // Map: alias → entry (for reverse lookup when value is actually an alias)
-    const aliasToEntry = new Map();
-    // Map: parameter+value → true (for checking if value exists for specific parameter)
     const paramValueSet = new Set();
-
-    for (const row of rows) {
-      valueSet.add(row.value_col);
-      paramValueSet.add(`${row.parameter}::${row.value_col}`);
-
-      if (row.alias && row.alias !== row.value_col) {
-        // Key by parameter+alias for precise matching
-        const key = `${row.parameter}::${row.alias}`;
-        aliasToEntry.set(key, row);
-      }
+    const dictParams = new Set();
+    for (const r of rows) {
+      paramValueSet.add(`${r.param_name}::${r.value_key}`);
+      dictParams.add(r.param_name);
     }
-
-    return { valueSet, aliasToEntry, paramValueSet };
+    return { paramValueSet, dictParams };
   } finally {
     await conn.end();
   }
 }
 
-/**
- * List of parameter name suffixes/patterns to skip during alias resolution.
- * These are metadata fields, not actual product parameters.
- */
-const SKIP_SUFFIXES = [
-  '_ALIAS', '_ALIAS_DESCRIPTION', '_DESCRIPTION',
-  '___DICT', '___TITLE', '___VISIBLE', '___DESCRIPTION'
-];
+async function loadClientAliases(groupNumber) {
+  const conn = await connetToDb();
+  try {
+    const [rows] = await conn.query(
+      'SELECT value_col, alias, description, parameter FROM client_aliases WHERE group_number = ?',
+      [groupNumber]
+    );
+    const aliasMap = new Map();
+    const valueSet = new Set();
+    const aliasParams = new Set();
+    for (const r of rows) {
+      valueSet.add(`${r.parameter}::${r.value_col}`);
+      aliasParams.add(r.parameter);
+      if (r.alias) {
+        aliasMap.set(`${r.parameter}::${r.alias}`, r);
+      }
+    }
+    return { aliasMap, valueSet, aliasParams };
+  } finally {
+    await conn.end();
+  }
+}
 
-const SKIP_PARAMS = new Set([
-  'ILOSC', 'ILOŚĆ', 'ilosc', 'uid', 'UWAGI', 'KOMENTARZ',
-  'DLUGOSC', 'SZEROKOSC', 'WYSOKOSC', 'PROWIZJA'
-]);
+async function isValidProductGroup(groupNumber) {
+  const conn = await connetToDb();
+  try {
+    const [rows] = await conn.query(
+      'SELECT 1 FROM product_group WHERE group_number = ? LIMIT 1',
+      [groupNumber]
+    );
+    return rows.length > 0;
+  } finally {
+    await conn.end();
+  }
+}
+
+// ─── Skip logic ──────────────────────────────────────────────────────────────
+
+const SKIP_SUFFIXES = ['_ALIAS', '_ALIAS_DESCRIPTION', '___DICT', '___TITLE', '___VISIBLE', '___DESCRIPTION'];
 
 function shouldSkipParam(paramName) {
   if (!paramName) return true;
   if (paramName.startsWith('_')) return true;
-  if (SKIP_PARAMS.has(paramName)) return true;
+  if (paramName === 'uid') return true;
   for (const suffix of SKIP_SUFFIXES) {
     if (paramName.endsWith(suffix)) return true;
   }
-  // Skip numeric-only values (dimensions, quantities)
   return false;
 }
 
-function isNumericValue(value) {
-  if (value === null || value === undefined || value === '') return true;
-  if (typeof value === 'number') return true;
-  if (typeof value === 'object') return true;
-  // Only skip pure numbers (integers/decimals), not codes with hyphens like "10100-50"
-  return /^\d+([.,]\d+)?$/.test(String(value));
-}
+// ─── Main resolver ───────────────────────────────────────────────────────────
 
-/**
- * Resolve aliases in item parameters for a single item.
- *
- * @param {object} parameters - The item's parameters object { KEY: value }
- * @param {string} groupNumber - The product group number
- * @returns {Promise<{resolved: object, errors: string[]}>}
- *   resolved: new parameters object with aliases resolved
- *   errors: array of error messages for values not found anywhere
- */
 async function resolveItemAliases(parameters, groupNumber) {
   if (!parameters || typeof parameters !== 'object') {
-    return { resolved: { ...parameters }, errors: [] };
+    return { resolved: {}, errors: [] };
   }
 
-  const { valueSet, aliasToEntry, paramValueSet } = await loadAliasesForGroup(groupNumber);
-
-  // If no aliases configured for this group, pass through unchanged
-  if (valueSet.size === 0) {
-    return { resolved: { ...parameters }, errors: [] };
+  const groupValid = await isValidProductGroup(groupNumber);
+  if (!groupValid) {
+    return {
+      resolved: { ...parameters },
+      errors: [`Grupa produktowa "${groupNumber}" nie istnieje w product_group`]
+    };
   }
+
+  const { paramValueSet, dictParams } = await loadTranslationDictValues(groupNumber);
+  const { aliasMap, valueSet: clientAliasValues, aliasParams } = await loadClientAliases(groupNumber);
+
+  // Only validate params that have dictionary/alias entries
+  const validatableParams = new Set([...dictParams, ...aliasParams]);
 
   const resolved = {};
   const errors = [];
 
   for (const [paramName, rawValue] of Object.entries(parameters)) {
-    // Copy as-is first
+    // Don't overwrite _ALIAS/_ALIAS_DESCRIPTION already set by resolver
+    if ((paramName.endsWith('_ALIAS') || paramName.endsWith('_ALIAS_DESCRIPTION')) && resolved[paramName] !== undefined) {
+      continue;
+    }
+
+    // Copy as-is
     resolved[paramName] = rawValue;
 
-    // Skip metadata/dimension/numeric params
-    if (shouldSkipParam(paramName) || isNumericValue(rawValue)) continue;
+    // Skip metadata params
+    if (shouldSkipParam(paramName)) continue;
+
+    // Skip params without dictionary entries — free-form/calculated
+    if (!validatableParams.has(paramName)) continue;
+
+    // Skip empty/null/numeric/object values
+    if (rawValue === null || rawValue === undefined || rawValue === '') continue;
+    if (typeof rawValue === 'number' || typeof rawValue === 'boolean' || typeof rawValue === 'object') continue;
 
     const strValue = String(rawValue);
-    if (!strValue || strValue === '<NONE>' || strValue === '<NULL>') continue;
+    if (strValue === '<NONE>' || strValue === '<NULL>') continue;
 
-    // Check 1: Is this value a known VALUE for this parameter?
-    if (paramValueSet.has(`${paramName}::${strValue}`)) {
-      // Value is correct as-is, no alias resolution needed
-      continue;
+    // Handle multi-value fields (pipe-separated)
+    const valueParts = strValue.includes('|') ? strValue.split('|') : [strValue];
+    let allPartsValid = true;
+
+    for (const part of valueParts) {
+      const trimmed = part.trim();
+      if (!trimmed) continue;
+
+      if (paramValueSet.has(`${paramName}::${trimmed}`)) continue;
+      if (clientAliasValues.has(`${paramName}::${trimmed}`)) continue;
+
+      const aliasEntry = aliasMap.get(`${paramName}::${trimmed}`);
+      if (aliasEntry) continue;
+
+      allPartsValid = false;
+      errors.push(`Parametr "${paramName}": wartość "${trimmed}" nie znaleziona w translation_dictionary ani client_aliases (grupa ${groupNumber})`);
     }
 
-    // Check 2: Is this value an ALIAS for this parameter?
-    const aliasKey = `${paramName}::${strValue}`;
-    const aliasEntry = aliasToEntry.get(aliasKey);
-
-    if (aliasEntry) {
-      // Found as alias → replace with the real value, store alias info
-      resolved[paramName] = aliasEntry.value_col;
-      resolved[`${paramName}_ALIAS`] = aliasEntry.alias;
-      resolved[`${paramName}_ALIAS_DESCRIPTION`] = aliasEntry.description || '';
-      continue;
+    // Single-value alias resolution
+    if (!strValue.includes('|') && allPartsValid) {
+      const aliasEntry = aliasMap.get(`${paramName}::${strValue}`);
+      if (aliasEntry) {
+        resolved[paramName] = aliasEntry.value_col;
+        resolved[`${paramName}_ALIAS`] = aliasEntry.alias;
+        resolved[`${paramName}_ALIAS_DESCRIPTION`] = aliasEntry.description || '';
+      }
     }
-
-    // Check 3: Maybe it's a global value (exists in valueSet but not for this specific param)
-    if (valueSet.has(strValue)) {
-      // It's a known value in the system, just not mapped to this specific parameter
-      // Keep as-is — it might be valid from a different context
-      continue;
-    }
-
-    // Not found anywhere — report error but don't block the import
-    errors.push(`Parametr "${paramName}": wartość "${strValue}" nie znaleziona ani jako VALUE ani jako ALIAS w grupie ${groupNumber}`);
   }
 
   return { resolved, errors };
 }
 
-/**
- * Resolve aliases for all items in a payload.
- *
- * @param {Array} items - Array of item objects with .parameters and .product/.asortment
- * @returns {Promise<{items: Array, errors: string[]}>}
- */
 async function resolvePayloadAliases(items) {
   const allErrors = [];
   const resolvedItems = [];
@@ -171,7 +180,6 @@ async function resolvePayloadAliases(items) {
     }
 
     const { resolved, errors } = await resolveItemAliases(item.parameters || {}, groupNumber);
-
     resolvedItems.push({ ...item, parameters: resolved });
 
     for (const err of errors) {
@@ -182,4 +190,4 @@ async function resolvePayloadAliases(items) {
   return { items: resolvedItems, errors: allErrors };
 }
 
-module.exports = { resolveItemAliases, resolvePayloadAliases, loadAliasesForGroup };
+module.exports = { resolveItemAliases, resolvePayloadAliases };

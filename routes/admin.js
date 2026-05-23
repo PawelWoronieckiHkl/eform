@@ -270,4 +270,74 @@ router.delete('/api/reports/configs/:name', requireReportsApiAccess, async (req,
     }
 });
 
+// ─── Import Log (admin view — all imports) ───────────────────────────────────
+
+const { selectQuery } = require('../db/core');
+
+router.get('/import-log', requireLogin, requireAdmin, async (req, res) => {
+    try {
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = 30;
+        const offset = (page - 1) * limit;
+
+        const filters = {
+            status: req.query.status || '',
+            user: req.query.user || '',
+            dateFrom: req.query.dateFrom || '',
+            dateTo: req.query.dateTo || '',
+            sort: req.query.sort || 'newest'
+        };
+
+        let where = '1=1';
+        const params = [];
+
+        if (filters.status) {
+            where += ' AND status = ?';
+            params.push(filters.status);
+        }
+        if (filters.user) {
+            where += ' AND user_ident LIKE ?';
+            params.push(`%${filters.user}%`);
+        }
+        if (filters.dateFrom) {
+            where += ' AND created_at >= ?';
+            params.push(filters.dateFrom);
+        }
+        if (filters.dateTo) {
+            where += ' AND created_at <= ?';
+            params.push(filters.dateTo + ' 23:59:59');
+        }
+
+        let orderBy = 'created_at DESC';
+        if (filters.sort === 'oldest') orderBy = 'created_at ASC';
+        else if (filters.sort === 'status') orderBy = 'status ASC, created_at DESC';
+        else if (filters.sort === 'user') orderBy = 'user_ident ASC, created_at DESC';
+
+        const countRows = await selectQuery(
+            `SELECT COUNT(*) as total FROM import_log WHERE ${where}`, params
+        );
+        const total = countRows ? countRows[0].total : 0;
+        const totalPages = Math.ceil(total / limit);
+
+        const logs = await selectQuery(
+            `SELECT * FROM import_log WHERE ${where} ORDER BY ${orderBy} LIMIT ? OFFSET ?`,
+            [...params, limit, offset]
+        ) || [];
+
+        for (const row of logs) {
+            row.created_at_formatted = formatLoginTime(row.created_at);
+        }
+
+        const pages = [];
+        const start = Math.max(1, page - 3);
+        const end = Math.min(totalPages, page + 3);
+        for (let i = start; i <= end; i++) pages.push(i);
+
+        res.render('admin/import_log.njk', { logs, filters, currentPage: page, totalPages, pages });
+    } catch (error) {
+        log('Error loading import log:', error);
+        res.status(500).render('error.njk', { message: 'Błąd ładowania logów importu' });
+    }
+});
+
 module.exports = router;

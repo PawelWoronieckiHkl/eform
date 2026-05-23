@@ -115,28 +115,22 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       throw new Error(`importResolvedOrder: no app version for group ${groupNumber}`);
     }
 
-    // Run the real form pipeline server-side to obtain prices identical to
-    // those the browser would compute. On failure we fall back to zero so the
-    // import still lands and the row can be re-priced later.
-    let priced;
-    try {
-      priced = await engine.calculatePrices({
-        groupNumber,
-        version,
-        lang,
-        values: canonicalParams
-      });
-    } catch (err) {
-      logger(`formEngine.calculatePrices failed for group=${groupNumber}: ${err.message}`);
-      priced = {
-        values: canonicalParams,
-        // Fall back to a synthetic Map-entries array so the row still renders
-        // correctly in position_sent.njk (which iterates entries via param[0]/param[1]).
-        displayValues: engine.stubDisplayEntries(canonicalParams),
-        total: { total: 0, total_hidden: 0, total_sub: 0 },
-        shortJson: buildShortJson(canonicalParams)
-      };
+    // Skip server-side price calculation — Playwright will recalculate after import.
+    // JSDOM-based calculatePrices hangs for complex groups and blocks the import loop.
+    // Filter out meta-fields from values before persisting — they pollute displayValues.
+    const cleanValues = {};
+    for (const [k, v] of Object.entries(canonicalParams)) {
+      if (k.includes('___')) continue;
+      if (k.endsWith('_ALIAS_DESCRIPTION')) continue;
+      cleanValues[k] = v;
     }
+
+    let priced = {
+      values: cleanValues,
+      displayValues: engine.stubDisplayEntries(cleanValues),
+      total: { total: 0, total_hidden: 0, total_sub: 0 },
+      shortJson: buildShortJson(cleanValues)
+    };
 
     // Persist displayValues in the same wire format the browser sends:
     // JSON.stringify(Array.from(map.entries())). insertNewForm will JSON.stringify

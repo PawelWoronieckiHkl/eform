@@ -95,6 +95,11 @@ async function processOneFile(fileName) {
 
       // Resolve client aliases in item parameters before user resolution
       const { items: resolvedItems, errors: aliasErrors } = await resolvePayloadAliases(validation.data.items);
+
+      if (aliasErrors.length > 0) {
+        throw new Error(`Alias resolution failed:\n${aliasErrors.join('\n')}`);
+      }
+
       validation.data.items = resolvedItems;
 
       const resolved = await resolveOrderUser(validation.data);
@@ -116,21 +121,25 @@ async function processOneFile(fileName) {
       result.orderId = importResult.orderId;
 
       // Log import result
-      if (aliasErrors.length > 0) {
-        await importLogger.logPartial({
-          fileName,
-          orderId: importResult.orderId,
-          userIdent: validation.data.userIdent,
-          itemsCount: resolvedItems.length,
-          errorMessage: aliasErrors.join('\n')
-        });
-      } else {
-        await importLogger.logSuccess({
-          fileName,
-          orderId: importResult.orderId,
-          userIdent: validation.data.userIdent,
-          itemsCount: resolvedItems.length
-        });
+      await importLogger.logSuccess({
+        fileName,
+        orderId: importResult.orderId,
+        userIdent: validation.data.userIdent,
+        itemsCount: resolvedItems.length
+      });
+
+      // Recalculate prices in a real browser (Playwright headless)
+      // This runs AFTER commit so the order data is visible to the browser session.
+      try {
+        const { recalculateOrderInBrowser } = require('./browserRecalculator');
+        const recalcResult = await recalculateOrderInBrowser(importResult.orderId);
+        if (recalcResult.success) {
+          log(`Import+recalculate OK for order ${importResult.orderId}`);
+        } else {
+          log(`WARN: import OK but recalculate failed for order ${importResult.orderId}: ${recalcResult.message}`);
+        }
+      } catch (recalcErr) {
+        log(`WARN: import OK but recalculate error for order ${importResult.orderId}: ${recalcErr.message}`);
       }
 
       await cache.moveToProcessed(localPath);

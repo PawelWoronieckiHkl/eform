@@ -1943,3 +1943,22 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
 === 2026-05-22 10:35:01 - Start ===
 === 2026-05-22 10:35:01 - Dodawanie zmian do commita ===
+[main 31f12b8] Automatic commit 2026-05-22 10:35
+ 21 files changed, 17667 insertions(+), 35 deletions(-)
+ create mode 100644 migration_client_aliases.sql
+ create mode 100644 migration_import_log.sql
+ create mode 100755 public/img/recalculate.png
+ create mode 100644 services/clientAliasesSync.js
+ create mode 100644 services/orderImport/aliasResolver.js
+ create mode 100644 services/orderImport/importLogger.js
+ create mode 100755 update_test.sh
+=== 2026-05-22 10:35:01 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   43dee09..31f12b8  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-05-22 10:35:04 - Koniec ===
+=== 2026-05-22 12:00:02 - Start ===
+=== 2026-05-22 12:00:02 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-05-23 10:35:01 - Start ===
+=== 2026-05-23 10:35:01 - Dodawanie zmian do commita ===
