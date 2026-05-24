@@ -5,6 +5,7 @@
  *   1. product_group — is the group_number valid?
  *   2. translation_dictionary (value_key) — is this a known canonical value for this param+group?
  *   3. client_aliases — is this an alias that maps to a real value?
+ *      Uses paramdict_aliases_config to determine which collection to search.
  *
  * IMPORTANT: Only parameters that have entries in translation_dictionary (paramdict)
  * or client_aliases are validated. Parameters without any dictionary entries are
@@ -38,17 +39,29 @@ async function loadTranslationDictValues(groupNumber) {
   }
 }
 
-async function loadClientAliases(groupNumber) {
+/**
+ * Load client_aliases filtered by the client's collection config.
+ * @param {string} groupNumber
+ * @param {Map<string, string>} paramCollectionMap - parameter → collection for this client
+ */
+async function loadClientAliases(groupNumber, paramCollectionMap) {
   const conn = await connetToDb();
   try {
     const [rows] = await conn.query(
-      'SELECT value_col, alias, description, parameter FROM client_aliases WHERE group_number = ?',
+      'SELECT value_col, alias, description, parameter, collection FROM client_aliases WHERE group_number = ?',
       [groupNumber]
     );
     const aliasMap = new Map();
     const valueSet = new Set();
     const aliasParams = new Set();
+
     for (const r of rows) {
+      // If we have a collection config for this param, only use aliases from that collection
+      const clientCollection = paramCollectionMap.get(r.parameter);
+      if (clientCollection && r.collection.toUpperCase() !== clientCollection.toUpperCase()) {
+        continue;
+      }
+
       valueSet.add(`${r.parameter}::${r.value_col}`);
       aliasParams.add(r.parameter);
       if (r.alias) {
@@ -56,6 +69,47 @@ async function loadClientAliases(groupNumber) {
       }
     }
     return { aliasMap, valueSet, aliasParams };
+  } finally {
+    await conn.end();
+  }
+}
+
+/**
+ * Load the paramdict_aliases_config for a specific org/user/group.
+ * Returns Map<parameter, collection>
+ */
+async function loadParamCollectionConfig(groupNumber, orgIdent, userIdent) {
+  const conn = await connetToDb();
+  try {
+    const [rows] = await conn.query(
+      `SELECT parameter, collection FROM paramdict_aliases_config
+       WHERE group_number = ? AND UPPER(org_ident) = UPPER(?) AND UPPER(user_ident) = UPPER(?)`,
+      [groupNumber, orgIdent, userIdent]
+    );
+    const map = new Map();
+    for (const r of rows) {
+      map.set(r.parameter, r.collection);
+    }
+    return map;
+  } finally {
+    await conn.end();
+  }
+}
+
+/**
+ * Resolve orgIdent and userIdent from the payload's userIdent field.
+ */
+async function resolveUserOrg(userIdent) {
+  const conn = await connetToDb();
+  try {
+    const [rows] = await conn.query(
+      `SELECT u.ident AS userIdent, o.ident AS orgIdent
+       FROM user u
+       JOIN organization o ON o.id = u.organization_id
+       WHERE u.ident = ?`,
+      [userIdent]
+    );
+    return rows.length > 0 ? rows[0] : null;
   } finally {
     await conn.end();
   }
@@ -90,7 +144,7 @@ function shouldSkipParam(paramName) {
 
 // ─── Main resolver ───────────────────────────────────────────────────────────
 
-async function resolveItemAliases(parameters, groupNumber) {
+async function resolveItemAliases(parameters, groupNumber, paramCollectionMap) {
   if (!parameters || typeof parameters !== 'object') {
     return { resolved: {}, errors: [] };
   }
@@ -104,9 +158,8 @@ async function resolveItemAliases(parameters, groupNumber) {
   }
 
   const { paramValueSet, dictParams } = await loadTranslationDictValues(groupNumber);
-  const { aliasMap, valueSet: clientAliasValues, aliasParams } = await loadClientAliases(groupNumber);
+  const { aliasMap, valueSet: clientAliasValues, aliasParams } = await loadClientAliases(groupNumber, paramCollectionMap);
 
-  // Only validate params that have dictionary/alias entries
   const validatableParams = new Set([...dictParams, ...aliasParams]);
 
   const resolved = {};
@@ -118,16 +171,11 @@ async function resolveItemAliases(parameters, groupNumber) {
       continue;
     }
 
-    // Copy as-is
     resolved[paramName] = rawValue;
 
-    // Skip metadata params
     if (shouldSkipParam(paramName)) continue;
-
-    // Skip params without dictionary entries — free-form/calculated
     if (!validatableParams.has(paramName)) continue;
 
-    // Skip empty/null/numeric/object values
     if (rawValue === null || rawValue === undefined || rawValue === '') continue;
     if (typeof rawValue === 'number' || typeof rawValue === 'boolean' || typeof rawValue === 'object') continue;
 
@@ -166,7 +214,12 @@ async function resolveItemAliases(parameters, groupNumber) {
   return { resolved, errors };
 }
 
-async function resolvePayloadAliases(items) {
+async function resolvePayloadAliases(items, userIdent) {
+  // Resolve org/user for collection config lookup
+  const userOrg = userIdent ? await resolveUserOrg(userIdent) : null;
+  const orgIdent = userOrg ? userOrg.orgIdent : '';
+  const resolvedUserIdent = userOrg ? userOrg.userIdent : '';
+
   const allErrors = [];
   const resolvedItems = [];
 
@@ -179,7 +232,12 @@ async function resolvePayloadAliases(items) {
       continue;
     }
 
-    const { resolved, errors } = await resolveItemAliases(item.parameters || {}, groupNumber);
+    // Load collection config for this org/user/group
+    const paramCollectionMap = (orgIdent && resolvedUserIdent)
+      ? await loadParamCollectionConfig(groupNumber, orgIdent, resolvedUserIdent)
+      : new Map();
+
+    const { resolved, errors } = await resolveItemAliases(item.parameters || {}, groupNumber, paramCollectionMap);
     resolvedItems.push({ ...item, parameters: resolved });
 
     for (const err of errors) {
@@ -190,4 +248,4 @@ async function resolvePayloadAliases(items) {
   return { items: resolvedItems, errors: allErrors };
 }
 
-module.exports = { resolveItemAliases, resolvePayloadAliases };
+module.exports = { resolveItemAliases, resolvePayloadAliases, resolveUserOrg };

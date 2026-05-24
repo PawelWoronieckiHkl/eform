@@ -1962,3 +1962,20 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
 === 2026-05-23 10:35:01 - Start ===
 === 2026-05-23 10:35:01 - Dodawanie zmian do commita ===
+[main 6a2c444] Automatic commit 2026-05-23 10:35
+ 15 files changed, 17427 insertions(+), 225 deletions(-)
+ create mode 100644 services/formEngine/scriptRunner.js
+ rewrite services/orderImport/aliasResolver.js (74%)
+ create mode 100644 services/orderImport/browserRecalculator.js
+ create mode 100644 templates/admin/import_log.njk
+ create mode 100644 templates/user/import_log.njk
+=== 2026-05-23 10:35:01 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   31f12b8..6a2c444  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-05-23 10:35:03 - Koniec ===
+=== 2026-05-23 12:00:01 - Start ===
+=== 2026-05-23 12:00:01 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-05-24 10:35:01 - Start ===
+=== 2026-05-24 10:35:01 - Dodawanie zmian do commita ===

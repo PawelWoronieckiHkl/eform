@@ -157,13 +157,15 @@ router.get('/active-sessions', requireLogin, requireAdmin, async (req, res) => {
 const translationDict = require('../services/translationDict');
 const { syncGroupsFromExcel } = require('../services/groupSync');
 const clientAliasesSync = require('../services/clientAliasesSync');
+const paramdictConfigSync = require('../services/paramdictConfigSync');
 
 router.post('/translations/sync', requireLogin, requireAdmin, async (req, res) => {
     try {
-        const [translationResult, groupSyncResult, aliasesResult] = await Promise.allSettled([
+        const [translationResult, groupSyncResult, aliasesResult, configResult] = await Promise.allSettled([
             translationDict.syncAll(),
             syncGroupsFromExcel(),
-            clientAliasesSync.syncAll()
+            clientAliasesSync.syncAll(),
+            paramdictConfigSync.syncAll()
         ]);
 
         const result = translationResult.status === 'fulfilled' ? translationResult.value : {};
@@ -175,11 +177,15 @@ router.post('/translations/sync', requireLogin, requireAdmin, async (req, res) =
             ? { aliasesSyncSuccess: true, aliasesTotal: aliasesResult.value.totalEntries }
             : { aliasesSyncSuccess: false, aliasesSyncError: aliasesResult.reason?.message };
 
+        const config = configResult.status === 'fulfilled'
+            ? { configSyncSuccess: true, configTotal: configResult.value.totalEntries }
+            : { configSyncSuccess: false, configSyncError: configResult.reason?.message };
+
         if (translationResult.status === 'rejected') {
             throw translationResult.reason;
         }
 
-        res.json({ success: true, ...result, ...groupSync, ...aliases });
+        res.json({ success: true, ...result, ...groupSync, ...aliases, ...config });
     } catch (error) {
         log('Error syncing translation dictionary:', error);
         res.status(500).json({ success: false, message: 'Błąd synchronizacji słownika tłumaczeń' });

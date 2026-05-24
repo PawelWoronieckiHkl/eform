@@ -94,7 +94,7 @@ async function processOneFile(fileName) {
       }
 
       // Resolve client aliases in item parameters before user resolution
-      const { items: resolvedItems, errors: aliasErrors } = await resolvePayloadAliases(validation.data.items);
+      const { items: resolvedItems, errors: aliasErrors } = await resolvePayloadAliases(validation.data.items, validation.data.userIdent);
 
       if (aliasErrors.length > 0) {
         throw new Error(`Alias resolution failed:\n${aliasErrors.join('\n')}`);
@@ -134,6 +134,10 @@ async function processOneFile(fileName) {
         const { recalculateOrderInBrowser } = require('./browserRecalculator');
         const recalcResult = await recalculateOrderInBrowser(importResult.orderId);
         if (recalcResult.success) {
+          // After Playwright recalculates (prices are correct but displayValues may lose aliases),
+          // rebuild displayValues server-side using displayValueBuilder which correctly handles aliases.
+          const { rebuildDisplayValuesForOrder } = require('./displayValueRebuilder');
+          await rebuildDisplayValuesForOrder(importResult.orderId);
           log(`Import+recalculate OK for order ${importResult.orderId}`);
         } else {
           log(`WARN: import OK but recalculate failed for order ${importResult.orderId}: ${recalcResult.message}`);
