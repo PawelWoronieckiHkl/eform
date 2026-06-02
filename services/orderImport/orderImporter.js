@@ -21,6 +21,7 @@ const positions = () => require('../../db/positions');
 const itemBuilder = () => require('../itemBuilder');
 const formEngine = () => require('../formEngine');
 const { translateParametersToCanonical } = require('./parameterTranslator');
+const { validateParameterValues } = require('./optionValidator');
 const {
   buildDisplayValuesFromDictionary,
   getProductGroupName
@@ -69,6 +70,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
   const positionsDb = deps.positions || positions();
   const builder = deps.itemBuilder || itemBuilder();
   const translator = deps.translator || translateParametersToCanonical;
+  const optionValidator = deps.optionValidator || validateParameterValues;
   const engine = deps.formEngine || formEngine();
   const displayBuilder = deps.displayBuilder || buildDisplayValuesFromDictionary;
   const groupNameResolver = deps.groupNameResolver || getProductGroupName;
@@ -76,6 +78,27 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
 
   if (!payload || !user) {
     throw new Error('importResolvedOrder: payload and user are required');
+  }
+
+  // 0. Translate + validate every item BEFORE writing anything. This makes the
+  // import fail fast (and prevents orphan order/send_address rows) when any
+  // parameter value is not a valid option for its group. Validation runs on the
+  // canonical params (post-translation) because the option dictionary is keyed
+  // by canonical param_name/value_key. Translated params are reused below so we
+  // don't translate twice.
+  const preparedItems = [];
+  for (const item of payload.items) {
+    const groupNumber = item.product || item.asortment || '';
+    const canonicalParams = await translator(item.parameters || {}, groupNumber, lang);
+
+    const optionCheck = await optionValidator(groupNumber, canonicalParams, lang);
+    if (!optionCheck.ok) {
+      throw new Error(
+        `Parameter validation failed for group ${groupNumber} (item ${item.posid != null ? item.posid : '?'}): ${optionCheck.errors.join('; ')}`
+      );
+    }
+
+    preparedItems.push({ item, groupNumber, canonicalParams });
   }
 
   // 1. Send address — only if any field is non-empty.
@@ -102,10 +125,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
 
   // 3. Items.
   const itemIds = [];
-  for (const item of payload.items) {
-    const groupNumber = item.product || item.asortment || '';
-    const canonicalParams = await translator(item.parameters || {}, groupNumber, lang);
-
+  for (const { item, groupNumber, canonicalParams } of preparedItems) {
     // Resolve form version (mirrors what main.js getAppVersion does in the UI).
     const version = await positionsDb.getAppVersion(
       groupNumber,
@@ -125,9 +145,21 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       cleanValues[k] = v;
     }
 
+    // Load form metadata (LISTROW, FORMROW, lockedParams, subParams) via a
+    // lightweight boot — no updateProcedure, no price calculation. This gives
+    // displayValueBuilder the information it needs to set correct row/locked
+    // on every parameter even before Playwright runs the full recalculation.
+    let formMeta = null;
+    try {
+      formMeta = await engine.getFormMeta({ groupNumber, version, lang });
+    } catch (metaErr) {
+      logger(`getFormMeta failed for group ${groupNumber}: ${metaErr.message} — falling back to stub row/locked`);
+    }
+
     let priced = {
       values: cleanValues,
       displayValues: engine.stubDisplayEntries(cleanValues),
+      formMeta,
       total: { total: 0, total_hidden: 0, total_sub: 0 },
       shortJson: buildShortJson(cleanValues)
     };

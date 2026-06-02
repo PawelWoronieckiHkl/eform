@@ -467,6 +467,42 @@ async function calculatePrices(opts) {
 }
 
 /**
+ * Lightweight metadata loader — boots the engine and runs `generateForm`
+ * (which populates `window.params`, `window.lockedParams`, `window.subParams`)
+ * but does NOT replay values or run any `updateProcedure`. Returns the same
+ * `formMeta` shape as `calculatePrices` so the display-value builder can
+ * assign correct `row` and `locked` values without a full price calculation.
+ *
+ * @param {object} opts
+ * @param {string} opts.groupNumber
+ * @param {string|number} opts.version
+ * @param {string} [opts.lang]
+ * @param {string} [opts.uid]
+ * @returns {Promise<{params, lockedParams, subParams}>}
+ */
+async function getFormMeta({ groupNumber, version, lang, uid } = {}) {
+  if (!groupNumber || !version) {
+    throw new Error('formEngine.getFormMeta: groupNumber and version are required');
+  }
+
+  const env = await bootEngine({ lang: lang || 'pl', uid });
+  try {
+    await env.window.__engine.generateForm(
+      version,
+      groupNumber,
+      {},
+      new env.window.Map(),
+      false,
+      lang || 'pl',
+      false
+    );
+    return collectFormMeta(env.window);
+  } finally {
+    env.dispose();
+  }
+}
+
+/**
  * Recalculate a single existing position by id.
  *
  * - Reads the row via db/positions.getPosition.
@@ -542,6 +578,7 @@ function safeJsonParse(raw, fallback) {
 module.exports = {
   calculatePrices,
   recalculatePosition,
+  getFormMeta,
   // Lower-level helpers exposed for tests / advanced callers.
   bootEngine,
   displayValuesToWireFormat,

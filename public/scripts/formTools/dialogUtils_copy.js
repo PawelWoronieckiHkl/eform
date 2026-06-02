@@ -851,6 +851,10 @@ export class DialogManager {
           if (attrDescText.includes('KUPON')) {
             option.IS_CUPON = true;
           }
+          // Mark coupon fabrics on the tile so the form can persist a coupon flag
+          // into the position values (→ json_parameters) when one is selected.
+          // Only fabric tiles (those with stock STAN) carry this dataset attribute.
+          colorBox.dataset.coupon = (status === 'COUPON' || option.IS_CUPON) ? '1' : '0';
           // Zawsze twórz badge dla statusu
           circleElem = createElement('span', {
             class: ['stock-badge', info.class],

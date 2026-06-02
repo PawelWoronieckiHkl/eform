@@ -28,14 +28,14 @@
                   </div>
                   <div class="orders-topbar-right">
                     {% block site_buttons %}
-                      <a href="/orders/import-log" class="btn btn-light me-2" title="Log importów">
-                        <i class="bi bi-cloud-download" style="font-size:1.5em;"></i>
+                      <a href="/orders/import-log" class="btn btn-light" title="Log importów">
+                        <img src="/img/import.png" alt="import log button" class = 'icon'  >
                       </a>
-                      <a href="/delivery-time" class='btn btn-light' id='delivery-btn'>
+                      <a href="/delivery-time" class='btn btn-light' id='delivery-btn' style="padding: 12px !important;">
                         <img
                           src="/img/fast-delivery.png"
                           alt="delivery bus button"
-                          style='height:50px;width:50px; border:0px white solid !important'></a>
+                          class="icon"></a>
                       {% endblock %}
                     </div>
                   </div>

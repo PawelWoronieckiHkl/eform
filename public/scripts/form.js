@@ -370,6 +370,21 @@ export async function generateForm(
 
   document.getElementById('dialog-confirm').onclick = async () => {
 
+    // Coupon fabric exception: when the chosen fabric is a "kupon" fabric, persist a
+    // marker into the position values (saved into json_parameters). The server uses
+    // it to set the predicted production time to 14 days until the real one arrives.
+    // Captured before getInfoFromDialog() closes the dialog. Only fabric pickers
+    // carry data-coupon, so selecting other BUTTON params won't clear the flag.
+    const activeOptionBoxes = Array.from(document.querySelectorAll('.image-box.active'));
+    const hasCouponData = activeOptionBoxes.some(box => box.dataset.coupon !== undefined);
+    if (hasCouponData) {
+      if (activeOptionBoxes.some(box => box.dataset.coupon === '1')) {
+        values['IS_KUPON'] = '1';
+      } else {
+        delete values['IS_KUPON'];
+      }
+    }
+
     let valueToUpdate;
     let [selectedValue, paramName] = getInfoFromDialog(values, inputs, allOptionsByParameter);
 

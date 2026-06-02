@@ -1,6 +1,63 @@
 const ELECTRIC_EXTRA_DAYS = 5;
+// Coupon ("kupon") fabrics have no real production lead time yet, so we show a
+// fixed estimate until the actual time comes back from production.
+const COUPON_PRODUCTION_DAYS = 14;
+const fs = require('fs');
+const path = require('path');
+const config = require('../config');
 const db = require('../db/db_helper');
 const orderService = require('./orderService');
+
+// Coupon fabrics are flagged in the KOLOR attribute file (the same source the
+// form uses): a material whose INFO column contains "KUPON". This is the
+// authoritative signal, so coupon detection works for existing positions too
+// (independent of any client-side flag). Cached and refreshed on file change.
+const KOLOR_ATTR_FILE = path.join(config.dataDir, 'data', 'paramdictattr-KOLOR-!storage!.txt');
+let _couponCache = { mtimeMs: -1, set: new Set() };
+
+function getCouponMaterials() {
+    try {
+        const stat = fs.statSync(KOLOR_ATTR_FILE);
+        if (stat.mtimeMs === _couponCache.mtimeMs) return _couponCache.set;
+        const raw = fs.readFileSync(KOLOR_ATTR_FILE, 'utf8');
+        const set = new Set();
+        const lines = raw.split(/\r?\n/);
+        // line 0 is the header (MATERIAŁ / STAN / INFO)
+        for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split('\t');
+            if (cols.length < 3) continue;
+            const material = (cols[0] || '').trim();
+            const info = cols[2] || '';
+            if (material && /KUPON/i.test(info)) set.add(material.toUpperCase());
+        }
+        _couponCache = { mtimeMs: stat.mtimeMs, set };
+        return set;
+    } catch (err) {
+        return _couponCache.set;
+    }
+}
+
+function normalizeMaterial(value) {
+    return String(value == null ? '' : value).trim().replace(/~\d+$/, '').toUpperCase();
+}
+
+function isCoupon(jsonParams) {
+    if (!jsonParams) return false;
+
+    // 1) Explicit client flag (set by the form when a coupon fabric is picked).
+    const flag = jsonParams.IS_KUPON;
+    if (flag === '1' || flag === 1 || flag === true || String(flag).toLowerCase() === 'true') {
+        return true;
+    }
+
+    // 2) Authoritative: the chosen KOLOR material is flagged "KUPON" in the
+    //    attribute file. Handles pipe-separated multi-values and ~N suffixes.
+    const kolor = jsonParams.KOLOR;
+    if (!kolor) return false;
+    const couponMaterials = getCouponMaterials();
+    if (couponMaterials.size === 0) return false;
+    return String(kolor).split('|').some((part) => couponMaterials.has(normalizeMaterial(part)));
+}
 
 function isElectric(jsonParams) {
     if (!jsonParams) return false;
@@ -19,10 +76,17 @@ function isSlope(jsonParams) {
 }
 
 function computeItemProductionDays(item, productionTimes) {
+    const jp = item.json_parameters || {};
+
+    // Coupon fabric overrides the normal group/electric calculation with a fixed
+    // 14-day estimate (placeholder until production returns the real lead time).
+    if (isCoupon(jp)) {
+        return COUPON_PRODUCTION_DAYS;
+    }
+
     const groupData = productionTimes[item.asortment_group_number];
     if (!groupData) return null;
 
-    const jp = item.json_parameters || {};
     let days = isSlope(jp) && groupData.slopeDays != null
         ? groupData.slopeDays
         : groupData.days;
@@ -49,7 +113,7 @@ function buildItemProductionDays(cleanOrderItems, productionTimes) {
     return { itemProductionDays: map, maxProdDays };
 }
 
-module.exports = { computeItemProductionDays, buildItemProductionDays, ELECTRIC_EXTRA_DAYS, recalcAndSaveMaxProdDays };
+module.exports = { computeItemProductionDays, buildItemProductionDays, ELECTRIC_EXTRA_DAYS, COUPON_PRODUCTION_DAYS, isCoupon, recalcAndSaveMaxProdDays };
 
 async function recalcAndSaveMaxProdDays(orderId) {
     try {

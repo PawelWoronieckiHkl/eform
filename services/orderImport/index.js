@@ -75,6 +75,9 @@ async function processOneFile(fileName) {
 
   const paths = cache.paths();
   let localPath;
+  // Captured as soon as the payload is parsed so it survives into the error
+  // branch below — otherwise a failed import logs userIdent=null.
+  let userIdent = null;
 
   let lastError = null;
   for (let attempt = 1; attempt <= MAX_FILE_ATTEMPTS; attempt++) {
@@ -87,6 +90,7 @@ async function processOneFile(fileName) {
       await ftp.downloadOrderFile(fileName, localPath, { localFallbackDir: paths.incoming });
 
       const payload = await readJson(localPath);
+      if (payload && payload.userIdent) userIdent = payload.userIdent;
 
       const validation = validateOrderPayload(payload);
       if (!validation.ok) {
@@ -189,7 +193,7 @@ async function processOneFile(fileName) {
   try {
     await importLogger.logError({
       fileName,
-      userIdent: null,
+      userIdent,
       errorMessage: result.error,
       errorDetails
     });

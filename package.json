@@ -6,7 +6,8 @@
 		"start": "node --openssl-legacy-provider server.js",
 		"dev": "node --watch server.js",
 		"test": "ROOT_DIR=/tmp/eform-test node --test \"services/orderImport/__tests__/*.test.js\" \"services/formEngine/__tests__/*.test.js\"",
-		"import:orders": "node scripts/runOrderImport.js"
+		"import:orders": "node scripts/runOrderImport.js",
+		"import:preflight": "node scripts/orderImportPreflight.js"
 	},
 	"keywords": [],
 	"author": "Pawel Woroniecki",

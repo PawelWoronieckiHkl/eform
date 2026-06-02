@@ -195,6 +195,26 @@
 
 .orders-topbar-right {
   justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.orders-topbar-right .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 4px 10px;
+  margin: 0;
+}
+
+.orders-topbar-right .icon {
+  width: 24px;
+  height: 24px;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
 }
 
 .orders-topbar .header {
@@ -359,9 +379,6 @@
 }
 
 #delivery-btn {
-  position: relative;
-  right: 1.5%;
-  top: 5px;
   border: 1px solid rgb(207, 207, 207) !important;
 }
 

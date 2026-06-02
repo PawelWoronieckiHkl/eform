@@ -119,6 +119,7 @@ test('importResolvedOrder runs the full pipeline with stubs', async () => {
       formEngine,
       displayBuilder,
       groupNameResolver: async () => 'COSIFLOR',
+      optionValidator: async () => ({ ok: true, errors: [] }),
       log: () => {}
     }
   });
@@ -186,6 +187,7 @@ test('importResolvedOrder skips send_address when payload has none', async () =>
       formEngine,
       displayBuilder,
       groupNameResolver: async () => '',
+      optionValidator: async () => ({ ok: true, errors: [] }),
       log: () => {}
     }
   });
@@ -193,4 +195,55 @@ test('importResolvedOrder skips send_address when payload has none', async () =>
   assert.equal(sendAddressCalled, false);
   assert.equal(res.sendAddressId, null);
   assert.equal(res.orderId, 5);
+});
+
+test('importResolvedOrder throws and inserts nothing when option validation fails', async () => {
+  const calls = { sendAddress: 0, order: 0, items: 0 };
+  const ordersDb = {
+    async insertSendAddress() { calls.sendAddress += 1; return 1; },
+    async insertNewOrder() { calls.order += 1; return 5; }
+  };
+  const positionsDb = {
+    async insertNewForm() { calls.items += 1; return [{ insertId: 1 }]; },
+    async reindexOrderPositions() {},
+    async updateOrderPrice() {},
+    async getAppVersion() { return '1'; }
+  };
+  const itemBuilder = { buildOrderItemStructure: () => ({}) };
+  const translator = async (p) => p;
+  const formEngine = {
+    displayValuesToWireFormat: (dv) => JSON.stringify(Object.entries(dv || {})),
+    stubDisplayEntries: (v) => Object.entries(v || {}).map(([k, val]) => [k, { option_value: String(val) }])
+  };
+  const displayBuilder = async () => ({});
+
+  await assert.rejects(
+    importResolvedOrder({
+      payload: {
+        userIdent: 'U1',
+        items: [{ product: 'SLOPE', posid: 7, parameters: { KOLOR: 'nieistniejacy' } }]
+      },
+      user: { id: 1, ident: 'U1' },
+      lang: 'pl',
+      deps: {
+        orders: ordersDb,
+        positions: positionsDb,
+        itemBuilder,
+        translator,
+        formEngine,
+        displayBuilder,
+        groupNameResolver: async () => '',
+        optionValidator: async () => ({
+          ok: false,
+          errors: ['Parameter "KOLOR": value "nieistniejacy" not found in available options (group SLOPE)']
+        }),
+        log: () => {}
+      }
+    }),
+    /Parameter validation failed for group SLOPE \(item 7\).*KOLOR.*nieistniejacy/
+  );
+
+  // Hard guarantee: a failed validation must not create the order or its items.
+  assert.equal(calls.order, 0);
+  assert.equal(calls.items, 0);
 });
