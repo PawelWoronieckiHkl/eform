@@ -2089,3 +2089,21 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
 === 2026-06-02 10:35:01 - Start ===
 === 2026-06-02 10:35:01 - Dodawanie zmian do commita ===
+[main d5f39b2] Automatic commit 2026-06-02 10:35
+ 17 files changed, 10470 insertions(+), 210272 deletions(-)
+ rewrite import/import_efor.log (97%)
+ rewrite import/import_efor.sh (67%)
+ create mode 100755 public/img/import.png
+ create mode 100755 scripts/orderImportPreflight.js
+ create mode 100644 services/orderImport/__tests__/preflight.test.js
+ create mode 100644 services/orderImport/preflight.js
+=== 2026-06-02 10:35:01 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   ecb170c..d5f39b2  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-06-02 10:35:03 - Koniec ===
+=== 2026-06-02 12:00:01 - Start ===
+=== 2026-06-02 12:00:01 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-06-03 10:35:01 - Start ===
+=== 2026-06-03 10:35:01 - Dodawanie zmian do commita ===
