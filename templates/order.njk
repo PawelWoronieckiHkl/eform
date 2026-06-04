@@ -175,6 +175,7 @@
                                                                                             </thead>
                                                                                             <tbody>
                                                                                                 {% for rowObj in table.rows %}
+                                                                                                    {% set itemHasSubPrices = rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                                                                                                     {% block item_redirect %}
                                                                                                         <tr style="cursor: pointer display:grid" onclick="window.location.href='/position/{{ rowObj.item.id }}'">
                                                                                                         {% endblock %}
@@ -221,7 +222,7 @@
                                                                                                                 <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                                                                                                             </tr>
                                                                                                             <tr id='price-row'>
-                                                                                                                {% if not isGroupShop and not (isClient and hasSubPrices) and not hidePrices and not (canViewSubPrices and hasSubPrices and not showSub) %}
+                                                                                                                {% if not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub) %}
                                                                                                                 {% for header in table.headers2 %}
                                                                                                                     {% if not(header in rowObj.item.lockedParams) %}
                                                                                                                         {% set value = rowObj.row.row2[header] %}
@@ -235,8 +236,8 @@
                                                                                                                 {% endfor %}
                                                                                                                 {% endif %}
                                                                                                             </tr>
-                                                                                                            {% if (isGroup or isGroupShop or canViewSubPrices or (isClient and hasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
-                                                                                                                <tr class="sub-params-row"{% if showSub or isGroupShop or (isClient and hasSubPrices) or (canViewSubPrices and hasSubPrices and not showSub) %} style="display: table-row;"{% endif %}>
+                                                                                                            {% if (isGroup or isGroupShop or canViewSubPrices or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                                                                                                <tr class="sub-params-row"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub) %} style="display: table-row;"{% endif %}>
                                                                                                                     <td colspan="100%" class="sub-params-cell">
                                                                                                                         <div class="sub-params-container">
                                                                                                                             {% for entry in rowObj.item.subParamValues %}
@@ -280,6 +281,7 @@
                                                                                                     {% set mobileIndex = globalIndex - table.rows.length %}
                                                                                                     {% for rowObj in table.rows %}
                                                                                                         {% set mobileIndex = mobileIndex + 1 %}
+                                                                                                        {% set itemHasSubPrices = rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                                                                                                         <div class="mobile-item-card" data-position-url="/position/{{ rowObj.item.id }}">
                                                                                                             <div class="mobile-item-header">
                                                                                                                 <div class="mobile-item-basic">
@@ -319,7 +321,7 @@
                                                                                                                             {% endfor %}
                                                                                                                         </div>
                                                                                                                     {% endif %}
-                                                                                                                    {% if table.headers2.length > 0 and not isGroupShop and not (isClient and hasSubPrices) and not hidePrices and not (canViewSubPrices and hasSubPrices and not showSub) %}
+                                                                                                                    {% if table.headers2.length > 0 and not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub) %}
                                                                                                                         <div class="mobile-item-prices">
                                                                                                                             {% for header in table.headers2 %}
                                                                                                                             {% if not(header in rowObj.item.lockedParams) %}
@@ -338,8 +340,8 @@
                                                                                                                                 {{ rowObj.item.comment }}
                                                                                                                             </div>
                                                                                                                         {% endif %}
-                                                                                                                        {% if (isGroup or isGroupShop or canViewSubPrices or (isClient and hasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
-                                                                                                                            <div class="mobile-sub-params"{% if showSub or isGroupShop or (isClient and hasSubPrices) or (canViewSubPrices and hasSubPrices and not showSub) %} style="display: block;"{% endif %}>
+                                                                                                                        {% if (isGroup or isGroupShop or canViewSubPrices or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                                                                                                            <div class="mobile-sub-params"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub) %} style="display: block;"{% endif %}>
                                                                                                                                 {% for entry in rowObj.item.subParamValues %}
                                                                                                                                     {% if entry.value and entry.value != '-' and entry.value != '' %}
                                                                                                                                         {% if not entry.locked or prices %}

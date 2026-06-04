@@ -82,10 +82,11 @@
                                                                             {% set isSub = param[1].sub or (param[0] | string).startsWith('SUB___') %}
                                                                             {% set isListsum = param[1].listsum or param[1].row == '2' %}
                                                                             {% set showRow = true %}
-                                                                            {% if isGroupShop and isListsum and not isSub %}
+                                                                            {% set showSubPrices = isGroupShop or isClient %}
+                                                                            {% if showSubPrices and isListsum and not isSub %}
                                                                                 {% set showRow = false %}
                                                                             {% endif %}
-                                                                            {% if not isGroupShop and isSub %}
+                                                                            {% if not showSubPrices and isSub %}
                                                                                 {% set showRow = false %}
                                                                             {% endif %}
                                                                             {% if showRow %}
