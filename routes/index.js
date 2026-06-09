@@ -27,14 +27,6 @@ router.use(async (req, res, next) => {
   res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
   res.locals.employeePermissions = req.session?.employeePermissions || null;
   res.locals.priceFactor = req.session?.employeePermissions?.price_factor || 1.0;
-  // Funkcjonalność SUB cen dla organizacji/klientów — tylko na środowisku testowym (analogicznie do _S spec)
-  const isTestEnv = process.env.NODE_ENV === 'test';
-  // Klienci HKL (orgId≠3) będący właścicielami mogą widzieć SUB ceny po toggle
-  res.locals.canViewSubPrices = isTestEnv && req.session?.user?.isOwner && req.session?.user?.orgId != 3 || false;
-  res.locals.showSub = req.session?.user?.showSubParams || false;
-  // Klienci (orgId≠3, nie-owner) widzą SUB ceny bazowo (jak groupShop)
-  res.locals.isClient = isTestEnv && !req.session?.user?.isOwner && req.session?.user?.orgId != 3 && !req.session?.user?.isEmployee || false;
-
   if (req.session?.user?.isOwner) {
     try {
       // log('Ładowanie użytkowników dla właściciela...');

@@ -126,14 +126,6 @@ router.use(async (req, res, next) => {
     res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
     res.locals.employeePermissions = req.session?.employeePermissions || null;
     res.locals.priceFactor = req.session?.employeePermissions?.price_factor || 1.0;
-    // Funkcjonalność SUB cen dla organizacji/klientów — tylko na środowisku testowym (analogicznie do _S spec)
-    const isTestEnv = process.env.NODE_ENV === 'test';
-    // Klienci HKL (orgId≠3) będący właścicielami mogą widzieć SUB ceny po toggle
-    res.locals.canViewSubPrices = isTestEnv && req.session?.user?.isOwner && req.session?.user?.orgId != 3 || false;
-    res.locals.showSub = req.session?.user?.showSubParams || false;
-    // Klienci (orgId≠3, nie-owner) widzą SUB ceny bazowo (jak groupShop)
-    res.locals.isClient = isTestEnv && !req.session?.user?.isOwner && req.session?.user?.orgId != 3 && !req.session?.user?.isEmployee || false;
-
     if (req.session?.user?.isOwner) {
         try {
             res.locals.users = await db.getUsersByOwner(req);
@@ -762,29 +754,59 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         const i18n = confLang(lang);
         const __ = (key) => i18n.__(key, { locale: lang });
 
-        // Klient (orgId≠3, nie-owner) z SUB cenami widzi w PDF SUB params zamiast row2
+        // Tryb cen PDF — dopasowany do tego, co widzi użytkownik na stronie
+        const { getEffectiveOrgId } = require('../services/subPriceContext');
         const isTestEnv = process.env.NODE_ENV === 'test';
-        const isClientView = isTestEnv && !req.session.user?.isOwner && req.session.user?.orgId != 3 && !req.session.user?.isEmployee && !req.session.user?.isGroup && !req.session.user?.isGroupShop && orderHasSubPrices(cleanOrderItems);
+        const hasSubPrices = orderHasSubPrices(cleanOrderItems);
+        const effectiveOrgId = getEffectiveOrgId(req);
+        const nonHklOrg = effectiveOrgId != null && Number(effectiveOrgId) !== 3;
+        const sessionUser = req.session.user;
+        const contextUser = req.session.context_user;
+        const showSubActive = sessionUser?.showSubParams || false;
 
-        if (isClientView && shouldShowPrices) {
-            const subTotals = calcSubTotals(orderItems);
-            sendData.total = (subTotals.subVisible && subTotals.subVisible !== 0)
-                ? `${__('order.total')}: ${subTotals.subVisible}€` : null;
-            sendData.total_hidden = (subTotals.subLocked && subTotals.subLocked !== 0)
-                ? `${__('order.total_hidden')}: ${subTotals.subLocked}€` : null;
-        } else if (shouldShowPrices && totalPrice.visible && Number(totalPrice.visible) !== 0) {
-            sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
+        // Czysty klient (nie-owner, nie-admin, nie-HKL) → zawsze SUB
+        const isPureClient = isTestEnv
+            && !sessionUser?.isOwner && !sessionUser?.isAdmin
+            && !sessionUser?.isEmployee && !sessionUser?.isGroup && !sessionUser?.isGroupShop
+            && nonHklOrg;
+
+        // Ma dostęp do przełącznika SUB (właściciel org lub admin z kontekstem klienta)
+        const hasSubToggle = isTestEnv && nonHklOrg && (
+            (sessionUser?.isOwner && !sessionUser?.isAdmin) ||
+            (sessionUser?.isAdmin && !!contextUser)
+        );
+
+        // SUB tylko: czysty klient ALBO org-user z keychain nieaktywnym
+        const isClientView = (isPureClient || (hasSubToggle && !showSubActive)) && hasSubPrices;
+        // Oba: org-user z aktywnym keychain
+        const showBothInPdf = hasSubToggle && showSubActive && hasSubPrices;
+
+        if (shouldShowPrices) {
+            const subTotals = (isClientView || showBothInPdf) ? calcSubTotals(orderItems) : null;
+            if (isClientView) {
+                sendData.total = subTotals.subVisible && subTotals.subVisible !== 0
+                    ? `${__('order.total')}: ${subTotals.subVisible}€` : null;
+                sendData.total_hidden = subTotals.subLocked && subTotals.subLocked !== 0
+                    ? `${__('order.total_hidden')}: ${subTotals.subLocked}€` : null;
+            } else if (showBothInPdf) {
+                sendData.total = totalPrice.visible && Number(totalPrice.visible) !== 0
+                    ? `${__('order.total')}: ${totalPrice.visible}€` : null;
+                sendData.total_hidden = subTotals.subLocked && subTotals.subLocked !== 0
+                    ? `${__('order.total_hidden')}: ${subTotals.subLocked}€` : null;
+            } else {
+                sendData.total = totalPrice.visible && Number(totalPrice.visible) !== 0
+                    ? `${__('order.total')}: ${totalPrice.visible}€` : null;
+                if (totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
+                    sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
+                } else if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
+                    sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
+                } else {
+                    sendData.total_hidden = null;
+                }
+            }
         } else {
             sendData.total = null;
-        }
-        if (!isClientView) {
-            if (shouldShowPrices && totalPrice.hidden && Number(totalPrice.hidden) !== 0) {
-                sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
-            } else if (shouldShowPrices && totalPrice.visible && Number(totalPrice.visible) !== 0) {
-                sendData.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
-            } else {
-                sendData.total_hidden = null;
-            }
+            sendData.total_hidden = null;
         }
 
         const currentUser = ownerService.getCurrentUser(req);
@@ -799,7 +821,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         if (!isShort) {
             // Ujednolicona logika PDF — ten sam template (order-pdf.njk) co w sendMail
             const orderIdx = await db.getUserOrderId(req.params.orderId);
-            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, shouldShowPrices, maxProdDays, true, isClientView);
+            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, shouldShowPrices, maxProdDays, true, isClientView, showBothInPdf);
         } else {
             // Short PDF — osobny template order_to_print_short.njk
             let logoDataUri = null;
@@ -820,6 +842,8 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
                 lstripBlocks: true
             });
             env.addGlobal('__', __);
+            const { pdfValueParts } = require('../utils/pdfValueParts');
+            env.addFilter('pdfValueParts', pdfValueParts);
 
             const html = env.render('order_to_print_short.njk', {
                 orderDetails,
@@ -1067,22 +1091,37 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, loadEmployeePer
         const i18n = confLang(lang);
         const __ = (key) => i18n.__(key, { locale: lang });
         const showGoldPrices = currentUser?.orgId != 3;
-        // Klient (orgId≠3, nie-owner) z SUB cenami widzi w PDF SUB params zamiast row2
-        const isTestEnv = process.env.NODE_ENV === 'test';
-        const isClientForPdf = isTestEnv && !req.session.user?.isOwner && req.session.user?.orgId != 3 && !req.session.user?.isEmployee && !req.session.user?.isGroup && !req.session.user?.isGroupShop && orderHasSubPrices(cleanOrderItems);
+        // Tryb cen PDF przy wysyłce maila — taki sam jak widok użytkownika
+        const { getEffectiveOrgId: getOrgIdForMail } = require('../services/subPriceContext');
+        const isTestEnvMail = process.env.NODE_ENV === 'test';
+        const hasSubPricesMail = orderHasSubPrices(cleanOrderItems);
+        const effectiveOrgIdMail = getOrgIdForMail(req);
+        const nonHklOrgMail = effectiveOrgIdMail != null && Number(effectiveOrgIdMail) !== 3;
+        const showSubActiveMail = req.session.user?.showSubParams || false;
+
+        const isPureClientMail = isTestEnvMail
+            && !req.session.user?.isOwner && !req.session.user?.isAdmin
+            && !req.session.user?.isEmployee && !req.session.user?.isGroup && !req.session.user?.isGroupShop
+            && nonHklOrgMail;
+        const hasSubToggleMail = isTestEnvMail && nonHklOrgMail && (
+            (req.session.user?.isOwner && !req.session.user?.isAdmin) ||
+            (req.session.user?.isAdmin && !!req.session.context_user)
+        );
+        const isClientForPdf = (isPureClientMail || (hasSubToggleMail && !showSubActiveMail)) && hasSubPricesMail;
+        const showBothForMail = hasSubToggleMail && showSubActiveMail && hasSubPricesMail;
+
         if (isClientForPdf) {
-            // Dla klienta zastąp totale w sendData wartościami SUB
             const subTotals = calcSubTotals(orderItems);
-            if (subTotals.subVisible && subTotals.subVisible !== 0) {
-                sendData.total = `${__('order.total')}: ${subTotals.subVisible}€`;
-            } else {
-                sendData.total = null;
-            }
-            if (subTotals.subLocked && subTotals.subLocked !== 0) {
-                sendData.total_hidden = `${__('order.total_hidden')}: ${subTotals.subLocked}€`;
-            } else {
-                sendData.total_hidden = null;
-            }
+            sendData.total = subTotals.subVisible && subTotals.subVisible !== 0
+                ? `${__('order.total')}: ${subTotals.subVisible}€` : null;
+            sendData.total_hidden = subTotals.subLocked && subTotals.subLocked !== 0
+                ? `${__('order.total_hidden')}: ${subTotals.subLocked}€` : null;
+        } else if (showBothForMail) {
+            const subTotals = calcSubTotals(orderItems);
+            sendData.total = totalPrice.visible && Number(totalPrice.visible) !== 0
+                ? `${__('order.total')}: ${totalPrice.visible}€` : null;
+            sendData.total_hidden = subTotals.subLocked && subTotals.subLocked !== 0
+                ? `${__('order.total_hidden')}: ${subTotals.subLocked}€` : null;
         } else {
             if (totalPrice.visible && Number(totalPrice.visible) !== 0) {
                 sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
@@ -1096,7 +1135,7 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, loadEmployeePer
             }
         }
 
-        const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays, showGoldPrices, isClientForPdf)
+        const pdf = await generatePdf(orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, true, maxProdDays, showGoldPrices, isClientForPdf, showBothForMail)
         const orgData = await db.getOrgInfo(req.session.user.organization)
 
         // Główny odbiorca i BCC zależne od środowiska

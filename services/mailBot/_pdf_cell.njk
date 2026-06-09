@@ -1,0 +1,9 @@
+{% macro pdfCell(raw) -%}
+{%- set parts = (raw or '-') | pdfValueParts -%}
+<span class="pdf-val">{{ parts.val }}</span>{%- if parts.desc %} - {{ parts.desc }}{%- endif -%}
+{%- endmacro %}
+
+{% macro pdfCellBold(raw) -%}
+{%- set parts = (raw or '-') | pdfValueParts -%}
+<span class="pdf-val">{{ parts.val }}</span>{%- if parts.desc %} - {{ parts.desc }}{%- endif -%}
+{%- endmacro %}

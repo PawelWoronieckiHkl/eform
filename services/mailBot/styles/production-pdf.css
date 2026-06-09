@@ -170,6 +170,10 @@ body {
     margin-right: 4px;
 }
 
+.pdf-val {
+    font-size: 200%;
+}
+
 .comment-empty {
     color: #aaa;
     font-style: italic;

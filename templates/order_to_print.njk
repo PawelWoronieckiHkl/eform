@@ -1,3 +1,4 @@
+{% from "_pdf_cell.njk" import pdfCell, pdfCellBold %}
 {% block title %}{% endblock title %}
 {% block head %}
     <style>
@@ -62,6 +63,9 @@
         }
         .print-table td {
             font-size: 14px;
+        }
+        .pdf-val {
+            font-size: 200%;
         }
         .print-table tr {
             page-break-inside: avoid;
@@ -170,15 +174,15 @@
                 {% endif %}
                 <h2 class="fw-bold print-header text-center p-4">
                     {{ __('order.title') }}
-                    {{ orderDetails.order_idx }}
+                    <span class="pdf-val">{{ orderDetails.order_idx }}</span>
                 </h2>
                 {% if orderDetails.commision %}
-                    <h2 class="print-header-subtitle">"{{ orderDetails.commision }}"</h2>
+                    <h2 class="print-header-subtitle">"<span class="pdf-val">{{ orderDetails.commision }}</span>"</h2>
                 {% endif %}
                 {% if orderDetails.comment %}
                     <div class="print-header-comment">
                         <strong>{{ __('order.comment') }}:</strong>
-                        {{ orderDetails.comment }}
+                        <span class="pdf-val">{{ orderDetails.comment }}</span>
                     </div>
                 {% endif %}
             </div>
@@ -203,25 +207,25 @@
                         <tbody>
                             {% for rowObj in table.rows %}
                                 <tr>
-                                    <td>{{ globalIndex }}</td>
+                                    <td><span class="pdf-val">{{ globalIndex }}</span></td>
                                     {% for header in table.headers1 %}
                                         {% if not(header in rowObj.item.lockedParams) %}
                                             {% block values_representation %}
-                                                <td class="print-td-val">{{ rowObj.row.row1[header] or '-' }}</td>
+                                                <td class="print-td-val">{{ pdfCell(rowObj.row.row1[header]) }}</td>
                                             {% endblock %}
                                         {% endif %}
                                     {% endfor %}
-                                    <td>{{ rowObj.item.department or '-' }}</td>
-                                    <td>{{ rowObj.item.group_name or '-' }}</td>
-                                    <td>{{ rowObj.item.commision or '-' }}</td>
-                                    <td>{{ rowObj.item.comment or '-' }}</td>
+                                    <td>{{ pdfCell(rowObj.item.department) }}</td>
+                                    <td>{{ pdfCell(rowObj.item.group_name) }}</td>
+                                    <td>{{ pdfCell(rowObj.item.commision) }}</td>
+                                    <td>{{ pdfCell(rowObj.item.comment) }}</td>
                                 </tr>
                                 <tr class="print-price-row">
                                     {% for header in table.headers2 %}
                                         {% if not(header in rowObj.item.lockedParams) %}
                                             <td class="print-price" colspan="2">
                                                 <span class="print-price-label">{{ header }}:</span>
-                                                <b>{{ rowObj.row.row2[header] or '-' }}</b>
+                                                <b>{{ pdfCellBold(rowObj.row.row2[header]) }}</b>
                                             </td>
                                         {% endif %}
                                     {% endfor %}
@@ -232,7 +236,7 @@
                                             {% if header in rowObj.item.lockedParams %}
                                                 <td class="print-price" colspan="2">
                                                     <span class="print-price-label">{{ header }}:</span>
-                                                    <b>{{ rowObj.row.row1[header] or rowObj.row.row2[header] or '-' }}</b>
+                                                    <b>{{ pdfCellBold(rowObj.row.row1[header] or rowObj.row.row2[header]) }}</b>
                                                 </td>
                                             {% endif %}
                                         {% endfor %}
@@ -240,7 +244,7 @@
                                             {% if header in rowObj.item.lockedParams %}
                                                 <td class="print-hidden-price" colspan="2">
                                                     <span class="print-price-label">{{ header }}:</span>
-                                                    <b>{{ rowObj.row.row1[header] or rowObj.row.row2[header] or '-' }}</b>
+                                                    <b>{{ pdfCellBold(rowObj.row.row1[header] or rowObj.row.row2[header]) }}</b>
                                                 </td>
                                             {% endif %}
                                         {% endfor %}
@@ -254,18 +258,18 @@
             {% endfor %}
             {% if maxProdDays %}
                 <div class="print-total-items">
-                    {{ __('order.production_time_label') }} {{ maxProdDays }} {{ __('termin.days') }}
+                    {{ __('order.production_time_label') }} <span class="pdf-val">{{ maxProdDays }}</span> {{ __('termin.days') }}
                 </div>
             {% endif %}
             <div class="print-total-items">
-                {{ __('order.total_items') }}: {{ globalIndex - 1 }}
+                {{ __('order.total_items') }}: <span class="pdf-val">{{ globalIndex - 1 }}</span>
             </div>
             {% if totalPrice %}
                 <div id='total-container' style='padding-right: 10%;'>
                     <div class="total-price d-flex justify-content-end align-items-center col-12">
                         <span class='total price-label col-3 text-center'>
                             {% if totalPrice.visible != '0.00' %}
-                                {{ __('order.total') }}: {{ totalPrice.visible }}&#8364;</span>
+                                {{ __('order.total') }}: <span class="pdf-val">{{ totalPrice.visible }}&#8364;</span></span>
                         {% else %}
                             Według cennika</span>
                     {% endif %}
@@ -274,7 +278,7 @@
                     <div class="total-price d-flex justify-content-end align-items-center col-12">
                         <span class='total gold price-label col-3  text-center'>
                             {% if totalPrice.hidden != '0.00' %}
-                                {{ __('order.total_hidden') }}: {{ totalPrice.hidden }}&#8364;</span>
+                                {{ __('order.total_hidden') }}: <span class="pdf-val">{{ totalPrice.hidden }}&#8364;</span></span>
                         {% else %}
                             Według cennika</span>
                     {% endif %}
@@ -285,22 +289,22 @@
     <div class='client-details'>
         <div class="order-details">
             <h3 class='header-3'>{{ __('order.client_data') }}</h3>
-            <div class="order-details-line">{{ __('new-order.client_name') }}: {{ sendData.client }}</div>
-            <div class="order-details-line">{{ __('base.nip') }}: {{ sendData.tax }}</div>
-            <div class="order-details-line">{{ __('orders.created_date') }}: {{ sendData.created_date }}</div>
+            <div class="order-details-line">{{ __('new-order.client_name') }}: <span class="pdf-val">{{ sendData.client }}</span></div>
+            <div class="order-details-line">{{ __('base.nip') }}: <span class="pdf-val">{{ sendData.tax }}</span></div>
+            <div class="order-details-line">{{ __('orders.created_date') }}: <span class="pdf-val">{{ sendData.created_date }}</span></div>
         </div>
         <div class="order-details">
             <h3 class='header-3'>{{ __('order.send_data') }}</h3>
             {% if sendData.name %}
-                <div class="order-details-line">{{ __('order.address_name') }}: {{ sendData.name }}</div>
+                <div class="order-details-line">{{ __('order.address_name') }}: <span class="pdf-val">{{ sendData.name }}</span></div>
             {% endif %}
-            <div class="order-details-line">{{ __('new-order.street') }}: {{ sendData.address }}</div>
-            <div class="order-details-line">{{ __('new-order.city') }}: {{ sendData.zip }}
-                {{ sendData.city }}</div>
-            <div class="order-details-line">{{ __('new-order.country') }}: {{ sendData.country }}</div>
+            <div class="order-details-line">{{ __('new-order.street') }}: <span class="pdf-val">{{ sendData.address }}</span></div>
+            <div class="order-details-line">{{ __('new-order.city') }}: <span class="pdf-val">{{ sendData.zip }}
+                {{ sendData.city }}</span></div>
+            <div class="order-details-line">{{ __('new-order.country') }}: <span class="pdf-val">{{ sendData.country }}</span></div>
             <div class="order-details-line">{{ __('new-order.email_placeholder') }}:
-            {{ sendData.email }}</div>
-            <div class="order-details-line">{{ __('new-order.phone') }}: {{ sendData.phone }}</div>
+            <span class="pdf-val">{{ sendData.email }}</span></div>
+            <div class="order-details-line">{{ __('new-order.phone') }}: <span class="pdf-val">{{ sendData.phone }}</span></div>
         </div>
     </div>
 </div></div>{% block scripts %}

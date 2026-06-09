@@ -136,6 +136,12 @@ app.use((req, res, next) => {
 	next();
 });
 
+const { applySubPriceLocals } = require('./services/subPriceContext');
+app.use((req, res, next) => {
+	applySubPriceLocals(req, res);
+	next();
+});
+
 // ─── intro_needed global middleware ─────────────────────────────────────────
 app.use(async (req, res, next) => {
 	const pin = req.session?.user?.pin;

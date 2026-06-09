@@ -39,7 +39,7 @@
                                                 <button id="unlockBtn" class="btn">
                                                     <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                 {% endif %}
-                                                    {% if isGroup or canViewSubPrices %}
+                                                    {% if isGroup or canViewSubPrices or viewAsOrganization %}
                                                         <button id="unlockSubBtn" class="btn has-tooltip{% if showSub %} active{% endif %}" data-tooltip="{{ __('group.toggle_sub_params_tooltip') }}">
                                                             <img src="/img/key-chain.png" alt="sub params icon" class='icon'></button>
                                                     {% endif %}
@@ -98,7 +98,7 @@
                                                                     <button id="unlockBtn" class="btn">
                                                                         <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                                     {% endif %}
-                                                                        {% if isGroup or canViewSubPrices %}
+                                                                        {% if isGroup or canViewSubPrices or viewAsOrganization %}
                                                                             <button id="unlockSubBtn" class="btn has-tooltip{% if showSub %} active{% endif %}" data-tooltip="{{ __('group.toggle_sub_params_tooltip') }}">
                                                                                 <img src="/img/key-chain.png" alt="sub params icon" class='icon'></button>
                                                                         {% endif %}
@@ -236,7 +236,7 @@
                                                                                                                 {% endfor %}
                                                                                                                 {% endif %}
                                                                                                             </tr>
-                                                                                                            {% if (isGroup or isGroupShop or canViewSubPrices or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                                                                                            {% if (isGroup or isGroupShop or canViewSubPrices or viewAsOrganization or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                                                                                                                 <tr class="sub-params-row"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub) %} style="display: table-row;"{% endif %}>
                                                                                                                     <td colspan="100%" class="sub-params-cell">
                                                                                                                         <div class="sub-params-container">
@@ -340,7 +340,7 @@
                                                                                                                                 {{ rowObj.item.comment }}
                                                                                                                             </div>
                                                                                                                         {% endif %}
-                                                                                                                        {% if (isGroup or isGroupShop or canViewSubPrices or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                                                                                                        {% if (isGroup or isGroupShop or canViewSubPrices or viewAsOrganization or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                                                                                                                             <div class="mobile-sub-params"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub) %} style="display: block;"{% endif %}>
                                                                                                                                 {% for entry in rowObj.item.subParamValues %}
                                                                                                                                     {% if entry.value and entry.value != '-' and entry.value != '' %}

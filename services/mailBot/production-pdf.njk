@@ -1,21 +1,22 @@
+{% from "_pdf_cell.njk" import pdfCell %}
 <div class="page-wrap">
 
   <div class="doc-header">
     <img src="{{ logoPath }}" alt="logo" class="logo">
     <div class="doc-title">
-      <div class="doc-order-nr">Zamówienie nr {{ orderNr }}</div>
+      <div class="doc-order-nr">Zamówienie nr <span class="pdf-val">{{ orderNr }}</span></div>
       {% if orderDetails.commision %}
-        <div class="doc-commission">"{{ orderDetails.commision }}"</div>
+        <div class="doc-commission">"<span class="pdf-val">{{ orderDetails.commision }}</span>"</div>
       {% endif %}
       {% if clientName %}
-        <div class="doc-client">Klient: {{ clientName }}</div>
+        <div class="doc-client">Klient: <span class="pdf-val">{{ clientName }}</span></div>
       {% endif %}
     </div>
   </div>
 
   {% if orderDetails.comment %}
     <div class="global-comment">
-      <span class="comment-label">Uwaga ogólna:</span> {{ orderDetails.comment }}
+      <span class="comment-label">Uwaga ogólna:</span> <span class="pdf-val">{{ orderDetails.comment }}</span>
     </div>
   {% endif %}
 
@@ -28,7 +29,7 @@
         <div class="pos-header">
           <span class="pos-number">#{{ globalIndex }}</span>
           <span class="pos-meta">
-            {% if rowObj.item.commision %}<span class="meta-chip highlight">Zlecenie: {{ rowObj.item.commision }}</span>{% endif %}
+            {% if rowObj.item.commision %}<span class="meta-chip highlight">Zlecenie: <span class="pdf-val">{{ rowObj.item.commision }}</span></span>{% endif %}
           </span>
         </div>
 
@@ -37,7 +38,7 @@
             {% if not(header in rowObj.item.lockedParams) %}
               <div class="param-row">
                 <div class="param-label">{{ header }}</div>
-                <div class="param-value">{{ rowObj.row.row1[header] or '—' }}</div>
+                <div class="param-value">{{ pdfCell(rowObj.row.row1[header]) }}</div>
               </div>
             {% endif %}
           {% endfor %}
@@ -45,7 +46,7 @@
 
         {% if rowObj.item.comment %}
         <div class="pos-comment">
-          <span class="comment-label">Uwaga:</span> {{ rowObj.item.comment }}
+          <span class="comment-label">Uwaga:</span> <span class="pdf-val">{{ rowObj.item.comment }}</span>
         </div>
         {% endif %}
 
@@ -56,7 +57,7 @@
   {% endfor %}
 
   <div class="doc-footer">
-    Liczba pozycji: <strong>{{ totalQuantity if totalQuantity is defined else (globalIndex - 1) }}</strong>
+    Liczba pozycji: <strong class="pdf-val">{{ totalQuantity if totalQuantity is defined else (globalIndex - 1) }}</strong>
   </div>
 
 </div>

@@ -9,6 +9,11 @@ const { localesDir, availabeLanguages, defaultLanguage, outputData } = require('
 const { log } = require('../../utils/logging');
 const { translateToPolish } = require('./commentTranslator');
 const { isProductionVersion } = require('../../utils/productionSendGuard');
+const { pdfValueParts } = require('../../utils/pdfValueParts');
+
+function registerPdfNunjucksFilters(env) {
+  env.addFilter('pdfValueParts', pdfValueParts);
+}
 
 async function generateExcel(orderData) {
   const workbook = new ExcelJS.Workbook();
@@ -24,7 +29,7 @@ async function generateExcel(orderData) {
   return buffer;
 }
 
-async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData, orderIdx, prices = true, maxProdDays = 0, showGoldPrices = true, clientView = false) {
+async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData, orderIdx, prices = true, maxProdDays = 0, showGoldPrices = true, clientView = false, showBoth = false) {
   log('zaczynam', logoPath)
   const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
   const logoDataUri = `data:image/png;base64,${logoBase64}`;
@@ -40,6 +45,7 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
   });
 
   env.addGlobal('__', __);
+  registerPdfNunjucksFilters(env);
   const data = await sendData
   log('sendDAta', data)
 
@@ -80,7 +86,8 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
     maxProdDays: maxProdDays,
     totalQuantity: totalQuantity,
     showGoldPrices: showGoldPrices,
-    clientView: clientView
+    clientView: clientView,
+    showBoth: showBoth
   });
 
   // Prevent single-letter orphans: replace space after single-letter word with non-breaking space
@@ -159,6 +166,7 @@ async function generateProductionPdf(orderData, cleanOrderItems, logoPath, order
     trimBlocks: true,
     lstripBlocks: true
   });
+  registerPdfNunjucksFilters(env);
 
   const readQty = (item) => {
     if (!item) return 1;

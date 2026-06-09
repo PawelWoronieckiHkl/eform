@@ -3,6 +3,7 @@ const { i18n } = require('./server');
 let env = null;
 const { defaultLanguage } = require('./config');
 const { log } = require('./utils/logging');
+const { pdfValueParts } = require('./utils/pdfValueParts');
 module.exports = {
   configure: (app) => {
     if (!env) {
@@ -21,6 +22,8 @@ module.exports = {
       });
 
       // Filtr do mnożenia cen przez faktor (wizualny, tylko dla pracownika)
+      env.addFilter('pdfValueParts', pdfValueParts);
+
       env.addFilter('applyFactor', function (value, factor) {
         if (!factor || factor === 1 || !value) return value;
         const num = parseFloat(value);

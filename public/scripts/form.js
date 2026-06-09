@@ -122,7 +122,7 @@ export async function generateForm(
 
     // SUB___ params: only visible for group, groupShop, canViewSubPrices, and isClient users
     if (paramName.startsWith('SUB___')) {
-      if (!window.isGroup && !window.isGroupShop && !window.canViewSubPrices && !window.isClient) return;
+      if (!window.isGroup && !window.isGroupShop && !window.canViewSubPrices && !window.viewAsOrganization && !window.isClient) return;
       // go into sub bucket only — NOT locked
       if (!window.subParams.includes(paramName)) window.subParams.push(paramName);
     }

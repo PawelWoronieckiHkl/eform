@@ -63,9 +63,6 @@ router.use(async (req, res, next) => {
   res.locals.isEmployee = req.session?.user?.isEmployee || false;
   res.locals.isGroup = req.session?.user?.isGroup || req.session?.context_user?.isGroup || false;
   res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
-  const isTestEnv = process.env.NODE_ENV === 'test';
-  res.locals.isClient = isTestEnv && !req.session?.user?.isOwner && req.session?.user?.orgId != 3 && !req.session?.user?.isEmployee || false;
-
   if (req.session?.user?.isOwner) {
     try {
       res.locals.users = await db.getUsersByOwner(req);
