@@ -29,6 +29,7 @@ const importLogger = require('./importLogger');
 const { makeTransactionalDeps } = require('./transactionalDb');
 const { connetToDb } = require('../../db/core');
 const { log } = require('../../utils/logging');
+const { sendImportSummary } = require('../mailBot/importMailer');
 
 const MAX_FILE_ATTEMPTS = 3;
 
@@ -217,6 +218,13 @@ async function runImport() {
     // eslint-disable-next-line no-await-in-loop
     results.push(await processOneFile(fileName));
   }
+
+  if (results.length > 0) {
+    sendImportSummary(results).catch((err) =>
+      log(`ImportMailer: unexpected error: ${err.message}`)
+    );
+  }
+
   return results;
 }
 

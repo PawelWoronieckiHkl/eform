@@ -138,33 +138,31 @@
     <div class='client-details'>
       <div class="order-details">
         <h2 class='header-3'>{{ __('order.client_data') }}</h2>
-        <div class="order-details-line">{{ __('new-order.client_name') }}: <span class="pdf-val">{{ sendData.client }}</span></div>
-        <div class="order-details-line">{{ __('base.nip') }}: <span class="pdf-val">{{ sendData.tax }}</span></div>
+        <div class="order-details-line">{{ __('new-order.client_name') }}: {{ sendData.client }}</div>
+        <div class="order-details-line">{{ __('base.nip') }}: {{ sendData.tax }}</div>
         {% if sendData.userStreet or sendData.userCity or sendData.userZip %}
-          <div class="order-details-line">{{ __('new-order.street') }}: <span class="pdf-val">{{ sendData.userStreet or '-' }}</span></div>
-          <div class="order-details-line">{{ __('new-order.city') }}: <span class="pdf-val">{{ sendData.userZip }} {{ sendData.userCity }}</span></div>
+          <div class="order-details-line">{{ __('new-order.street') }}: {{ sendData.userStreet or '-' }}</div>
+          <div class="order-details-line">{{ __('new-order.city') }}: {{ sendData.userZip }} {{ sendData.userCity }}</div>
           {% if sendData.userCountry %}
-            <div class="order-details-line">{{ __('new-order.country') }}: <span class="pdf-val">{{ sendData.userCountry }}</span></div>
+            <div class="order-details-line">{{ __('new-order.country') }}: {{ sendData.userCountry }}</div>
           {% endif %}
           {% if sendData.userPhone %}
-            <div class="order-details-line">{{ __('new-order.phone') }}: <span class="pdf-val">{{ sendData.userPhone }}</span></div>
+            <div class="order-details-line">{{ __('new-order.phone') }}: {{ sendData.userPhone }}</div>
           {% endif %}
         {% endif %}
-        <div class="order-details-line">{{ __('orders.created_date') }}: <span class="pdf-val">{{ sendData.created_date }}</span></div>
-        <div class="order-details-line">{{ __('orders.sent_date') }}: <span class="pdf-val">{{ sendData.sentDate }}</span></div>
+        <div class="order-details-line">{{ __('orders.created_date') }}: {{ sendData.created_date }}</div>
+        <div class="order-details-line">{{ __('orders.sent_date') }}: {{ sendData.sentDate }}</div>
       </div>
       <div class="order-details">
         <h2 class='header-3'>{{ __('order.send_data') }}</h2>
         {% if sendData.name %}
-          <div class="order-details-line">{{ __('order.address_name') }}: <span class="pdf-val">{{ sendData.name }}</span></div>
+          <div class="order-details-line">{{ __('order.address_name') }}: {{ sendData.name }}</div>
         {% endif %}
-        <div class="order-details-line">{{ __('new-order.street') }}: <span class="pdf-val">{{ sendData.address }}</span></div>
-        <div class="order-details-line">{{ __('new-order.city') }}: <span class="pdf-val">{{ sendData.zip }}
-          {{ sendData.city }}</span></div>
-        <div class="order-details-line">{{ __('new-order.country') }}: <span class="pdf-val">{{ sendData.country }}</span></div>
-        <div class="order-details-line">{{ __('new-order.email_placeholder') }}:
-        <span class="pdf-val">{{ sendData.email }}</span></div>
-        <div class="order-details-line">{{ __('new-order.phone') }}: <span class="pdf-val">{{ sendData.phone }}</span></div>
+        <div class="order-details-line">{{ __('new-order.street') }}: {{ sendData.address }}</div>
+        <div class="order-details-line">{{ __('new-order.city') }}: {{ sendData.zip }} {{ sendData.city }}</div>
+        <div class="order-details-line">{{ __('new-order.country') }}: {{ sendData.country }}</div>
+        <div class="order-details-line">{{ __('new-order.email_placeholder') }}: {{ sendData.email }}</div>
+        <div class="order-details-line">{{ __('new-order.phone') }}: {{ sendData.phone }}</div>
       </div>
     </div>
   </div>
