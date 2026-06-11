@@ -45,6 +45,118 @@ function buildShortJson(parameters) {
   };
 }
 
+/** Keys that should never be copied from import payloads into json_parameters. */
+function isMetaParameterKey(key) {
+  return key.includes('___') || key.endsWith('_ALIAS_DESCRIPTION');
+}
+
+/** Non-meta params from import JSON used to preserve user-provided values. */
+function extractImportParams(values) {
+  const out = {};
+  for (const [key, val] of Object.entries(values || {})) {
+    if (isMetaParameterKey(key)) continue;
+    if (val === undefined || val === null || val === '') continue;
+    out[key] = val;
+  }
+  return out;
+}
+
+/**
+ * Build json_parameters for DB insert: import params are the base, engine overlays
+ * computed prices and meta flags (___VISIBLE, ___TITLE, …).
+ */
+function buildPersistedParameters(importValues, engineValues) {
+  const out = {};
+  for (const [key, val] of Object.entries(importValues || {})) {
+    if (isMetaParameterKey(key)) continue;
+    out[key] = val;
+  }
+  for (const [key, val] of Object.entries(engineValues || {})) {
+    if (key.includes('___')) {
+      out[key] = val;
+      continue;
+    }
+    if (val !== undefined && val !== null && val !== '') {
+      out[key] = val;
+    }
+  }
+  return out;
+}
+
+/** @deprecated use buildPersistedParameters */
+function mergeImportParameters(engineValues, importValues) {
+  return buildPersistedParameters(importValues, engineValues);
+}
+
+/** Restore params cleared by browser recalculate (Playwright import step). */
+function restoreParametersAfterRecalc(before, after) {
+  const out = { ...(after || {}) };
+  for (const [key, val] of Object.entries(before || {})) {
+    if (isMetaParameterKey(key)) continue;
+    if (val === undefined || val === null || val === '') continue;
+    const current = out[key];
+    if (current === undefined || current === null || current === '') {
+      out[key] = val;
+    }
+  }
+  return out;
+}
+
+async function snapshotOrderParameters(orderId) {
+  const { connetToDb } = require('../../db/core');
+  const conn = await connetToDb();
+  try {
+    const [rows] = await conn.query(
+      'SELECT id, json_parameters FROM order_item WHERE order_id = ? ORDER BY orderpos',
+      [orderId]
+    );
+    const snapshot = new Map();
+    for (const row of rows || []) {
+      let params = row.json_parameters;
+      if (typeof params === 'string') {
+        try { params = JSON.parse(params); } catch { params = {}; }
+      }
+      snapshot.set(row.id, params || {});
+    }
+    return snapshot;
+  } finally {
+    await conn.end();
+  }
+}
+
+async function restoreOrderParametersAfterRecalc(orderId, snapshot) {
+  if (!snapshot || snapshot.size === 0) return 0;
+  const { connetToDb } = require('../../db/core');
+  const conn = await connetToDb();
+  let updated = 0;
+  try {
+    const [rows] = await conn.query(
+      'SELECT id, json_parameters FROM order_item WHERE order_id = ?',
+      [orderId]
+    );
+    for (const row of rows || []) {
+      const before = snapshot.get(row.id);
+      if (!before) continue;
+      let current = row.json_parameters;
+      if (typeof current === 'string') {
+        try { current = JSON.parse(current); } catch { current = {}; }
+      }
+      const merged = restoreParametersAfterRecalc(before, current);
+      const wire = JSON.stringify(merged);
+      if (wire !== JSON.stringify(current || {})) {
+        await conn.query(
+          'UPDATE order_item SET json_parameters = ? WHERE id = ?',
+          [wire, row.id]
+        );
+        updated += 1;
+      }
+    }
+    return updated;
+  } finally {
+    await conn.end();
+  }
+}
+
 function buildSendAddress(payload) {
   return {
     name: payload.name || payload.client || '',
@@ -135,8 +247,6 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       throw new Error(`importResolvedOrder: no app version for group ${groupNumber}`);
     }
 
-    // Skip server-side price calculation — Playwright will recalculate after import.
-    // JSDOM-based calculatePrices hangs for complex groups and blocks the import loop.
     // Filter out meta-fields from values before persisting — they pollute displayValues.
     const cleanValues = {};
     for (const [k, v] of Object.entries(canonicalParams)) {
@@ -145,24 +255,36 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       cleanValues[k] = v;
     }
 
-    // Load form metadata (LISTROW, FORMROW, lockedParams, subParams) via a
-    // lightweight boot — no updateProcedure, no price calculation. This gives
-    // displayValueBuilder the information it needs to set correct row/locked
-    // on every parameter even before Playwright runs the full recalculation.
-    let formMeta = null;
+    // Run the full server-side form engine (singlePass) to get authoritative
+    // row/locked/sub/listsum and real prices. Falls back to lightweight
+    // getFormMeta + stubs when the engine fails (e.g. missing group scripts).
+    let priced;
     try {
-      formMeta = await engine.getFormMeta({ groupNumber, version, lang });
-    } catch (metaErr) {
-      logger(`getFormMeta failed for group ${groupNumber}: ${metaErr.message} — falling back to stub row/locked`);
+      priced = await engine.calculatePrices({
+        groupNumber,
+        version,
+        lang,
+        values: cleanValues,
+        singlePass: true
+      });
+    } catch (calcErr) {
+      logger(`calculatePrices failed for group ${groupNumber}: ${calcErr.message} — falling back to getFormMeta + stub`);
+      let formMeta = null;
+      try {
+        formMeta = await engine.getFormMeta({ groupNumber, version, lang });
+      } catch (metaErr) {
+        logger(`getFormMeta also failed for group ${groupNumber}: ${metaErr.message}`);
+      }
+      priced = {
+        values: cleanValues,
+        displayValues: engine.stubDisplayEntries(cleanValues),
+        formMeta,
+        total: { total: 0, total_hidden: 0, total_sub: 0 },
+        shortJson: buildShortJson(cleanValues)
+      };
     }
 
-    let priced = {
-      values: cleanValues,
-      displayValues: engine.stubDisplayEntries(cleanValues),
-      formMeta,
-      total: { total: 0, total_hidden: 0, total_sub: 0 },
-      shortJson: buildShortJson(cleanValues)
-    };
+    const persistedValues = buildPersistedParameters(cleanValues, priced.values);
 
     // Persist displayValues in the same wire format the browser sends:
     // JSON.stringify(Array.from(map.entries())). insertNewForm will JSON.stringify
@@ -171,10 +293,11 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
     const displayValues = await displayBuilder({
       groupNumber,
       lang,
-      values: priced.values || canonicalParams,
+      values: persistedValues,
       displayValues: priced.displayValues,
-      shortJson: priced.shortJson,
-      formMeta: priced.formMeta
+      shortJson: priced.shortJson || buildShortJson(persistedValues),
+      formMeta: priced.formMeta,
+      importValues: cleanValues
     });
     const displayValuesWire = engine.displayValuesToWireFormat(displayValues);
     const groupName = item.product_description
@@ -190,7 +313,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       priced.total.total_hidden,                     // totalPrice
       item.commission || payload.commission || '',  // name (used as commission alias)
       item.commission || '',                         // commission
-      priced.values,                                 // jsonValues -> json_parameters
+      persistedValues,                             // jsonValues -> json_parameters
       displayValuesWire,                             // jsonValuesToDisplay -> json_parameters_desc
       readQuantity(canonicalParams),                 // amount
       item.comment || '',                            // comment
@@ -199,7 +322,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       lang,                                          // lang
       item.department || '',                         // department
       groupName,                                     // groupName -> group_name
-      priced.shortJson || buildShortJson(canonicalParams)
+      priced.shortJson || buildShortJson(persistedValues)
     );
 
     const result = await positionsDb.insertNewForm(formData);
@@ -217,4 +340,15 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
   return { orderId, sendAddressId, itemIds };
 }
 
-module.exports = { importResolvedOrder, readQuantity, buildShortJson, buildSendAddress };
+module.exports = {
+  importResolvedOrder,
+  readQuantity,
+  buildShortJson,
+  buildSendAddress,
+  buildPersistedParameters,
+  mergeImportParameters,
+  extractImportParams,
+  restoreParametersAfterRecalc,
+  snapshotOrderParameters,
+  restoreOrderParametersAfterRecalc
+};

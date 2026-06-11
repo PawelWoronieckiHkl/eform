@@ -252,5 +252,8 @@
     "order_detail_item_full": "Elk item bevat alle parameters, prijzen en de geschatte productietijd.",
     "dont_show": "Niet meer tonen"
   },
+  "mail": {
+    "import_note": "Deze bestelling is automatisch geïmporteerd uit een extern systeem."
+  },
   "order_detail_item_full": "Elk item bevat alle parameters, prijzen en de geschatte productietijd."
 }

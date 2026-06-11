@@ -252,5 +252,8 @@
     "order_detail_item_full": "Jede Position enthält alle Parameter, Preise und die geschätzte Produktionszeit.",
     "dont_show": "Nicht mehr anzeigen"
   },
+  "mail": {
+    "import_note": "Diese Bestellung wurde automatisch aus einem externen System importiert."
+  },
   "order_detail_item_full": "Jeder Posten enthält alle Parameter, Preise und die voraussichtliche Produktionszeit."
 }

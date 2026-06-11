@@ -42,6 +42,18 @@ function hasValue(value) {
   return value !== undefined && value !== null && value !== '';
 }
 
+function hasImportValue(importValues, paramName) {
+  if (!importValues || !Object.prototype.hasOwnProperty.call(importValues, paramName)) {
+    return false;
+  }
+  const value = importValues[paramName];
+  if (value === null || value === undefined || value === '') return false;
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    return Object.keys(value).length > 0;
+  }
+  return true;
+}
+
 function shouldSkipParam(paramName) {
   if (!paramName || paramName === 'uid') return true;
   if (paramName.startsWith('_')) return true;
@@ -100,7 +112,14 @@ function resolveSub(paramName, existingEntry, formMeta) {
   return paramName.startsWith('SUB___') || subParams.includes(paramName);
 }
 
-function resolveRow(paramName, values, existingEntry, paramMeta, locked) {
+function resolveRow(paramName, values, existingEntry, paramMeta, locked, importValues) {
+  // Params explicitly provided in the import JSON must stay visible in row1/row2
+  // even when the engine marks them disabled (singlePass often sets ___VISIBLE=false).
+  if (hasImportValue(importValues, paramName) && !locked) {
+    if (paramMeta && paramMeta.FORMROW === '0') return '0';
+    return String((paramMeta && paramMeta.LISTROW) || '1');
+  }
+
   if (hasValue(existingEntry && existingEntry.row)) {
     return String(existingEntry.row);
   }
@@ -134,7 +153,7 @@ function buildObjectDisplayValue(value) {
   };
 }
 
-function orderedParamNames(values, shortJson) {
+function orderedParamNames(values, shortJson, importValues) {
   const seen = new Set();
   const result = [];
 
@@ -148,28 +167,37 @@ function orderedParamNames(values, shortJson) {
     shortJson.order.forEach(add);
   }
 
+  Object.keys(importValues || {}).forEach(add);
   Object.keys(values || {}).forEach(add);
   return result;
 }
 
-function mergeEntry(baseEntry, existingEntry) {
+function mergeEntry(baseEntry, existingEntry, paramName, importValues) {
   if (!existingEntry || typeof existingEntry !== 'object') {
     return baseEntry;
   }
 
-  const merged = { ...baseEntry, ...existingEntry };
+  const imported = hasImportValue(importValues, paramName);
+  const merged = imported
+    ? { ...existingEntry, ...baseEntry }
+    : { ...baseEntry, ...existingEntry };
 
   if (!hasValue(existingEntry.param_description)) {
     merged.param_description = baseEntry.param_description;
   }
-  if (!hasValue(existingEntry.option_value) && hasValue(baseEntry.option_value)) {
+  if (imported || (!hasValue(existingEntry.option_value) && hasValue(baseEntry.option_value))) {
     merged.option_value = baseEntry.option_value;
   }
   if (!hasValue(existingEntry.option_description) && hasValue(baseEntry.option_description)) {
     merged.option_description = baseEntry.option_description;
   }
-  if (!hasValue(existingEntry.row)) {
+  if (imported || !hasValue(existingEntry.row)) {
     merged.row = baseEntry.row;
+  }
+  if (imported) {
+    if (hasExistingOwnValue(existingEntry, 'locked')) merged.locked = existingEntry.locked;
+    if (hasExistingOwnValue(existingEntry, 'sub')) merged.sub = existingEntry.sub;
+    if (hasExistingOwnValue(existingEntry, 'listsum')) merged.listsum = existingEntry.listsum;
   }
 
   return merged;
@@ -201,10 +229,12 @@ async function buildDisplayValuesFromDictionary({
   displayValues = null,
   shortJson = null,
   formMeta = null,
+  importValues = null,
   repo = null
 }) {
   const safeLang = normalizeLang(lang);
   const safeValues = values || {};
+  const safeImportValues = importValues || null;
   const existing = normalizeDisplayValues(displayValues);
   const paramMetaMap = buildParamMetaMap(formMeta);
   const translationsRepo = repo || getDefaultTranslationRepo();
@@ -213,17 +243,19 @@ async function buildDisplayValuesFromDictionary({
   const paramdict = (dict && dict.paramdict) || {};
 
   const output = {};
-  const names = orderedParamNames(safeValues, shortJson);
+  const names = orderedParamNames(safeValues, shortJson, safeImportValues);
 
   for (const paramName of names) {
-    const rawValue = safeValues[paramName];
+    const rawValue = hasImportValue(safeImportValues, paramName)
+      ? safeImportValues[paramName]
+      : safeValues[paramName];
     const titleKey = `${paramName}___TITLE`;
     const aliasKey = `${paramName}_ALIAS`;
     const paramMeta = paramMetaMap[paramName] || null;
     const existingEntry = existing[paramName];
     const locked = resolveLocked(paramName, existingEntry, formMeta);
     const sub = resolveSub(paramName, existingEntry, formMeta);
-    const row = resolveRow(paramName, safeValues, existingEntry, paramMeta, locked);
+    const row = resolveRow(paramName, safeValues, existingEntry, paramMeta, locked, safeImportValues);
     const paramDescription = paramsDict[paramName] || safeValues[titleKey] || paramName;
 
     let optionValue = stringifyValue(hasValue(safeValues[aliasKey]) ? safeValues[aliasKey] : rawValue);
@@ -256,7 +288,7 @@ async function buildDisplayValuesFromDictionary({
       baseEntry.listsum = true;
     }
 
-    output[paramName] = mergeEntry(baseEntry, existingEntry);
+    output[paramName] = mergeEntry(baseEntry, existingEntry, paramName, safeImportValues);
   }
 
   for (const [key, value] of Object.entries(existing)) {

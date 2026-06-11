@@ -165,7 +165,8 @@
     "sent_confirmation": "mail.sent_confirmation",
     "see_order": "mail.see_order",
     "footer_1": "mail.footer_1",
-    "footer_2": "mail.footer_2"
+    "footer_2": "mail.footer_2",
+    "import_note": "To zamówienie zostało zaimportowane automatycznie z systemu zewnętrznego."
   },
   "employee": {
     "panel_title": "Zarządzanie Pracownikami",

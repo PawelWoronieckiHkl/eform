@@ -145,7 +145,7 @@
                           {% endif %}
                         {% endfor %}
                       </tr>
-                      {% if total %}
+                      {% if total and not (isOrgAccount or viewAsOrganization) %}
                         <tr id='price-row'>
                           {% set idx = 0 %}
                           {% for header in table.headers1 %}
@@ -203,6 +203,36 @@
                               {% for entry in rowObj.item.subParamValues %}
                                 {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
                                   <span class="sub-param-item">
+                                    <span class="sub-param-label">{{ entry.display }}:</span>
+                                    <b>{{ entry.value }}</b>
+                                  </span>
+                                {% endif %}
+                              {% endfor %}
+                            </div>
+                          </td>
+                        </tr>
+                      {% endif %}
+                      {% if (isOrgAccount or viewAsOrganization) and showSub and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                        <tr class="sub-params-row" style="display: table-row;">
+                          <td colspan="100%" class="sub-params-cell">
+                            <div class="sub-params-container">
+                              {% for entry in rowObj.item.subParamValues %}
+                                {% if entry.value and entry.value != '-' and entry.value != '' and not entry.locked %}
+                                  <span class="sub-param-item">
+                                    <span class="sub-param-label">{{ entry.display }}:</span>
+                                    <b>{{ entry.value }}</b>
+                                  </span>
+                                {% endif %}
+                              {% endfor %}
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="sub-params-row sub-params-locked-row" style="display: table-row;">
+                          <td colspan="100%" class="sub-params-cell">
+                            <div class="sub-params-container">
+                              {% for entry in rowObj.item.subParamValues %}
+                                {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
+                                  <span class="sub-param-item gold">
                                     <span class="sub-param-label">{{ entry.display }}:</span>
                                     <b>{{ entry.value }}</b>
                                   </span>
@@ -280,6 +310,26 @@
                                       {% endfor %}
                                     </div>
                                   {% endif %}
+                                  {% if (isOrgAccount or viewAsOrganization) and showSub and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                    <div class="mobile-sub-params" style="display: block;">
+                                      {% for entry in rowObj.item.subParamValues %}
+                                        {% if entry.value and entry.value != '-' and entry.value != '' and not entry.locked %}
+                                          <div class="mobile-sub-param-item">
+                                            <strong>{{ entry.display }}:</strong> <b>{{ entry.value }}</b>
+                                          </div>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </div>
+                                    <div class="mobile-sub-params mobile-sub-params-locked" style="display: block;">
+                                      {% for entry in rowObj.item.subParamValues %}
+                                        {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
+                                          <div class="mobile-sub-param-item gold">
+                                            <strong>{{ entry.display }}:</strong> <b>{{ entry.value }}</b>
+                                          </div>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </div>
+                                  {% endif %}
                                   {% if rowObj.item.comment %}
                                     <div class="mobile-item-comment">
                                       <strong>{{ __('order.comment') }}:</strong>
@@ -340,7 +390,28 @@
                                 {% if totalPrice.subLocked and totalPrice.subLocked != 0 %}
                                 <div class="total-price d-flex justify-content-end align-items-center col-12">
                                   <span class='total gold price-label col-3 text-center'>
-                                    {{ __('order.total_hidden') }}: {{ totalPrice.subLocked }}&#8364;</span>
+                                    {{ __('order.total_hidden') }}: {{ totalPrice.subLocked }}&#8364; netto</span>
+                                </div>
+                                {% endif %}
+                              {% elif (isOrgAccount or viewAsOrganization) and showSub and hasSubPrices %}
+                                <div class="total-price d-flex justify-content-end align-items-center col-12">
+                                  <span class='total price-label col-3 text-center'>
+                                    {% if totalPrice.visible != '0.00' %}
+                                      {{ __('order.total') }}: {{ totalPrice.visible | applyFactor(priceFactor) }}&#8364;</span>
+                                    {% else %}
+                                      {{ __('order.according_to_price') }}</span>
+                                    {% endif %}
+                                </div>
+                                {% if totalPrice.subVisible and totalPrice.subVisible != 0 %}
+                                <div class="total-price d-flex justify-content-end align-items-center col-12">
+                                  <span class='total price-label col-3 text-center'>
+                                    SUB {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;</span>
+                                </div>
+                                {% endif %}
+                                {% if totalPrice.subLocked and totalPrice.subLocked != 0 %}
+                                <div class="total-price d-flex justify-content-end align-items-center col-12">
+                                  <span class='total gold price-label col-3 text-center'>
+                                    {{ __('order.total_hidden') }}: {{ totalPrice.subLocked | applyFactor(priceFactor) }}&#8364; netto</span>
                                 </div>
                                 {% endif %}
                               {% else %}
@@ -355,7 +426,7 @@
                             <div class="total-price d-flex justify-content-end align-items-center col-12">
                               <span class='total gold price-label col-3  text-center'>
                                 {% if totalPrice.hidden != '0.00' %}
-                                  {{ __('order.total_hidden') }}: {{ totalPrice.hidden }}&#8364;</span>
+                                  {{ __('order.total_hidden') }}: {{ totalPrice.hidden }}&#8364; netto</span>
                               {% else %}
                                 {{ __('order.according_to_price') }}</span>
                             {% endif %}

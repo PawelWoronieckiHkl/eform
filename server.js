@@ -133,6 +133,10 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
 	res.locals.isGroup = req.session?.user?.isGroup || req.session?.context_user?.isGroup || false;
 	res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
+	// Konto organizacyjne: userIdent === orgIdent (użytkownik jest jednocześnie organizacją)
+	const u = req.session?.user;
+	res.locals.isOrgAccount = !!(u && u.ident && u.organization &&
+		u.ident.toLowerCase() === u.organization.toLowerCase());
 	next();
 });
 

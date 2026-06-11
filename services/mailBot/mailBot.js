@@ -20,16 +20,14 @@ const transporter = nodemailer.createTransport({
 });
 
 
-function sendMail(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null) {
-  const i18n = confLang(lang)
-
+function buildMailOptions(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null) {
+  const i18n = confLang(lang);
   const __ = (key) => i18n.__(key, { locale: lang });
-
   const subject = `${__('mail.subject')} #${templateVars.orderNr} - ${templateVars.klient} `;
+
   nunjucks.configure(path.dirname(path.join(__dirname, 'mailTemplate.njk')), {
     autoescape: true
   });
-
 
   const htmlContent = nunjucks.render('mailTemplate.njk', {
     ...templateVars,
@@ -44,18 +42,16 @@ function sendMail(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}
     }
   ];
 
-  // Dodaj logo jako załącznik inline jeśli plik istnieje
   if (fs.existsSync(templateVars.logoPath)) {
     attachments.push({
       filename: 'logo.png',
       path: templateVars.logoPath,
-      cid: 'logo_cid' // musi odpowiadać CID w szablonie
+      cid: 'logo_cid'
     });
   } else {
     log('Plik logo nie istnieje:', templateVars.logoPath);
   }
 
-  // Dodaj dodatkowe załączniki z attachmentsBuffer
   if (attachmentsBuffer && Array.isArray(attachmentsBuffer)) {
     attachmentsBuffer.forEach(attachment => {
       if (attachment.filename && attachment.content) {
@@ -73,26 +69,36 @@ function sendMail(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}
     subject,
     html: htmlContent,
     text: 'Twój klient poczty nie obsługuje wiadomości HTML. Odwiedź https://e-orders.eu',
-    attachments // dodajemy załączniki
+    attachments
   };
 
-  // Dodaj CC jeśli został podany
   if (cc) {
     mailOptions.cc = cc;
   }
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      log('Błąd wysyłki:', error);
-    } else {
-      log('Stylizowany e-mail wysłany:', info.response, to);
-      if (cc) {
-        log('CC:', cc);
+  return mailOptions;
+}
+
+function sendMailAsync(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null) {
+  const mailOptions = buildMailOptions(to, lang, pdfBuffer, attachmentsBuffer, templateVars, cc);
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        log('Błąd wysyłki:', error);
+        reject(error);
+      } else {
+        log('Stylizowany e-mail wysłany:', info.response, to);
+        if (cc) {
+          log('CC:', cc);
+        }
+        resolve(info);
       }
-    }
+    });
   });
 }
 
-// Wysyłka stylizowanego maila
+function sendMail(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null) {
+  sendMailAsync(to, lang, pdfBuffer, attachmentsBuffer, templateVars, cc).catch(() => {});
+}
 
-module.exports = { sendMail }
+module.exports = { sendMail, sendMailAsync };

@@ -71,6 +71,8 @@ async function processOneFile(fileName) {
     file: fileName,
     ok: false,
     orderId: null,
+    sent: false,
+    sendError: null,
     error: null
   };
 
@@ -136,11 +138,21 @@ async function processOneFile(fileName) {
       // Recalculate prices in a real browser (Playwright headless)
       // This runs AFTER commit so the order data is visible to the browser session.
       try {
+        const {
+          snapshotOrderParameters,
+          restoreOrderParametersAfterRecalc
+        } = require('./orderImporter');
+        const paramSnapshot = await snapshotOrderParameters(importResult.orderId);
+
         const { recalculateOrderInBrowser } = require('./browserRecalculator');
         const recalcResult = await recalculateOrderInBrowser(importResult.orderId);
         if (recalcResult.success) {
-          // After Playwright recalculates (prices are correct but displayValues may lose aliases),
-          // rebuild displayValues server-side using displayValueBuilder which correctly handles aliases.
+          // Browser recalculate clears disabled params (WYSOKOSC/SZEROKOSC…) from
+          // json_parameters — restore them from the pre-recalc snapshot.
+          const restored = await restoreOrderParametersAfterRecalc(importResult.orderId, paramSnapshot);
+          if (restored > 0) {
+            log(`Import: restored import params on ${restored} position(s) for order ${importResult.orderId}`);
+          }
           const { rebuildDisplayValuesForOrder } = require('./displayValueRebuilder');
           await rebuildDisplayValuesForOrder(importResult.orderId);
           log(`Import+recalculate OK for order ${importResult.orderId}`);
@@ -150,6 +162,26 @@ async function processOneFile(fileName) {
       } catch (recalcErr) {
         log(`WARN: import OK but recalculate error for order ${importResult.orderId}: ${recalcErr.message}`);
       }
+
+      // try {
+      //   const { sendImportedOrder } = require('./sendAfterImport');
+      //   const sendResult = await sendImportedOrder({
+      //     orderId: importResult.orderId,
+      //     user: resolved.user,
+      //     lang: resolved.lang
+      //   });
+      //   result.sent = !!sendResult.sent;
+      //   if (sendResult.skipped) {
+      //     result.sendError = `skipped: ${sendResult.skipped}`;
+      //     log(`WARN: import OK but send skipped for order ${importResult.orderId}: ${sendResult.skipped}`);
+      //   } else if (sendResult.error) {
+      //     result.sendError = sendResult.error;
+      //     log(`WARN: import OK but send failed for order ${importResult.orderId}: ${sendResult.error}`);
+      //   }
+      // } catch (sendErr) {
+      //   result.sendError = sendErr.message;
+      //   log(`WARN: import OK but send error for order ${importResult.orderId}: ${sendErr.message}`);
+      // }
 
       await cache.moveToProcessed(localPath);
       try {

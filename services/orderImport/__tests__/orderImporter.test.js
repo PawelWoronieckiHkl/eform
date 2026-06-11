@@ -28,6 +28,25 @@ test('buildSendAddress maps payload to send_address columns', () => {
   });
 });
 
+test('buildPersistedParameters keeps all import params and overlays engine prices', () => {
+  const { buildPersistedParameters, restoreParametersAfterRecalc } = require('../orderImporter');
+  const out = buildPersistedParameters(
+    { SZEROKOSC: 1320, WYSOKOSC: 1860, MODEL: 'H50', ILOSC: 1 },
+    { MODEL: 'H50', CENA: 276, SZEROKOSC: '', WYSOKOSC: '', SZEROKOSC___VISIBLE: false }
+  );
+  assert.equal(out.SZEROKOSC, 1320);
+  assert.equal(out.WYSOKOSC, 1860);
+  assert.equal(out.CENA, 276);
+  assert.equal(out.SZEROKOSC___VISIBLE, false);
+
+  const afterRecalc = restoreParametersAfterRecalc(out, {
+    MODEL: 'H50', CENA: 280, ILOSC: 1, SZEROKOSC___VISIBLE: false
+  });
+  assert.equal(afterRecalc.SZEROKOSC, 1320);
+  assert.equal(afterRecalc.WYSOKOSC, 1860);
+  assert.equal(afterRecalc.CENA, 280);
+});
+
 test('importResolvedOrder runs the full pipeline with stubs', async () => {
   const calls = { sendAddress: [], order: [], items: [] };
 

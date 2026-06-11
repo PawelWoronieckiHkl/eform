@@ -35,7 +35,7 @@
                                                 <img class='ico' src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
                                             </div>
                                             <div id="generate-container-mobile">
-                                                {% if not isGroup and not isGroupShop and not hidePrices %}
+                                                {% if not isGroup and not isGroupShop and not hidePrices and (not (isOrgAccount or viewAsOrganization) or showSub) %}
                                                 <button id="unlockBtn" class="btn">
                                                     <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                 {% endif %}
@@ -94,7 +94,7 @@
                                                                 <button class="btn has-tooltip" data-tooltip="{{ __('base.give_discount_tooltip') }}" id='discount-btn'>
                                                                     <img src="/img/sale.png" alt="sale icon" class='icon'></button>
                                                                 {% endif %}
-                                                                    {% if not isGroup and not isGroupShop and not hidePrices %}
+                                                                    {% if not isGroup and not isGroupShop and not hidePrices and (not (isOrgAccount or viewAsOrganization) or showSub) %}
                                                                     <button id="unlockBtn" class="btn">
                                                                         <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                                     {% endif %}
@@ -222,7 +222,7 @@
                                                                                                                 <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                                                                                                             </tr>
                                                                                                             <tr id='price-row'>
-                                                                                                                {% if not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub) %}
+                                                                                                                {% if not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %}
                                                                                                                 {% for header in table.headers2 %}
                                                                                                                     {% if not(header in rowObj.item.lockedParams) %}
                                                                                                                         {% set value = rowObj.row.row2[header] %}
@@ -237,12 +237,13 @@
                                                                                                                 {% endif %}
                                                                                                             </tr>
                                                                                                             {% if (isGroup or isGroupShop or canViewSubPrices or viewAsOrganization or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
-                                                                                                                <tr class="sub-params-row"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub) %} style="display: table-row;"{% endif %}>
+                                                                                                                {% set isOrgView = isOrgAccount or viewAsOrganization %}
+                                                                                                                <tr class="sub-params-row"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %} style="display: table-row;"{% endif %}>
                                                                                                                     <td colspan="100%" class="sub-params-cell">
                                                                                                                         <div class="sub-params-container">
                                                                                                                             {% for entry in rowObj.item.subParamValues %}
                                                                                                                                 {% if entry.value and entry.value != '-' and entry.value != '' %}
-                                                                                                                                    {% if not entry.locked or prices %}
+                                                                                                                                    {% if not entry.locked or (not isOrgView and prices) %}
                                                                                                                                     <span class="sub-param-item{% if entry.locked %} gold{% endif %}">
                                                                                                                                         <span class="sub-param-label">{{ entry.display }}:</span>
                                                                                                                                         <b>{{ entry.value }}</b>
@@ -253,6 +254,22 @@
                                                                                                                         </div>
                                                                                                                     </td>
                                                                                                                 </tr>
+                                                                                                                {% if isOrgView and showSub and prices %}
+                                                                                                                <tr class="sub-params-row" style="display: table-row;">
+                                                                                                                    <td colspan="100%" class="sub-params-cell">
+                                                                                                                        <div class="sub-params-container">
+                                                                                                                            {% for entry in rowObj.item.subParamValues %}
+                                                                                                                                {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
+                                                                                                                                    <span class="sub-param-item gold">
+                                                                                                                                        <span class="sub-param-label">{{ entry.display }}:</span>
+                                                                                                                                        <b>{{ entry.value }}</b>
+                                                                                                                                    </span>
+                                                                                                                                {% endif %}
+                                                                                                                            {% endfor %}
+                                                                                                                        </div>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                {% endif %}
                                                                                                             {% endif %}
                                                                                                             {% set itemProdDays = itemProductionDays[rowObj.item.id] %}
                                                                                                             {% block estimatedProdDate %}
@@ -321,7 +338,7 @@
                                                                                                                             {% endfor %}
                                                                                                                         </div>
                                                                                                                     {% endif %}
-                                                                                                                    {% if table.headers2.length > 0 and not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub) %}
+                                                                                                                    {% if table.headers2.length > 0 and not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %}
                                                                                                                         <div class="mobile-item-prices">
                                                                                                                             {% for header in table.headers2 %}
                                                                                                                             {% if not(header in rowObj.item.lockedParams) %}
@@ -341,10 +358,11 @@
                                                                                                                             </div>
                                                                                                                         {% endif %}
                                                                                                                         {% if (isGroup or isGroupShop or canViewSubPrices or viewAsOrganization or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
-                                                                                                                            <div class="mobile-sub-params"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub) %} style="display: block;"{% endif %}>
+                                                                                                                            {% set isOrgViewM = isOrgAccount or viewAsOrganization %}
+                                                                                                                            <div class="mobile-sub-params"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %} style="display: block;"{% endif %}>
                                                                                                                                 {% for entry in rowObj.item.subParamValues %}
                                                                                                                                     {% if entry.value and entry.value != '-' and entry.value != '' %}
-                                                                                                                                        {% if not entry.locked or prices %}
+                                                                                                                                        {% if not entry.locked or (not isOrgViewM and prices) %}
                                                                                                                                         <div class="mobile-sub-param-item{% if entry.locked %} gold{% endif %}">
                                                                                                                                             <strong>{{ entry.display }}:</strong> <b>{{ entry.value }}</b>
                                                                                                                                         </div>
@@ -352,6 +370,17 @@
                                                                                                                                     {% endif %}
                                                                                                                                 {% endfor %}
                                                                                                                             </div>
+                                                                                                                            {% if isOrgViewM and showSub and prices %}
+                                                                                                                            <div class="mobile-sub-params" style="display: block;">
+                                                                                                                                {% for entry in rowObj.item.subParamValues %}
+                                                                                                                                    {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
+                                                                                                                                        <div class="mobile-sub-param-item gold">
+                                                                                                                                            <strong>{{ entry.display }}:</strong> <b>{{ entry.value }}</b>
+                                                                                                                                        </div>
+                                                                                                                                    {% endif %}
+                                                                                                                                {% endfor %}
+                                                                                                                            </div>
+                                                                                                                            {% endif %}
                                                                                                                         {% endif %}
                                                                                                                         <div class="mobile-item-actions">
                                                                                                                             <div
@@ -396,7 +425,7 @@
                                                                                                         <div id='total-container'>
                                                                                                             <div class="total-price d-flex justify-content-end align-items-center">
                                                                                                                 <span class='total price-label col-3 text-center'>
-                                                                                                                    {% if isGroupShop or (isClient and hasSubPrices) or (canViewSubPrices and hasSubPrices and not showSub) %}
+                                                                                                                    {% if isGroupShop or (isClient and hasSubPrices) or (canViewSubPrices and hasSubPrices and not showSub and not isOrgAccount) %}
                                                                                                                         {% if totalPrice.subVisible and totalPrice.subVisible != 0 %}
                                                                                                                             {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;
                                                                                                                         </span>
@@ -412,10 +441,17 @@
                                                                                                                         {% endif %}
                                                                                                                     {% endif %}
                                                                                                                 </div>
-                                                                                                            {% if canViewSubPrices and hasSubPrices and not showSub and totalPrice.subLocked and totalPrice.subLocked != 0 %}
+                                                                                                            {% if (isOrgAccount or viewAsOrganization) and showSub and hasSubPrices and totalPrice.subVisible and totalPrice.subVisible != 0 %}
+                                                                                                                <div class="total-price d-flex justify-content-end align-items-center">
+                                                                                                                    <span class='total price-label col-3 text-center'>
+                                                                                                                        SUB {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;
+                                                                                                                    </span>
+                                                                                                                </div>
+                                                                                                            {% endif %}
+                                                                                                            {% if (canViewSubPrices and hasSubPrices and not showSub and not isOrgAccount and not viewAsOrganization and totalPrice.subLocked and totalPrice.subLocked != 0) or ((isOrgAccount or viewAsOrganization) and showSub and prices and hasSubPrices and totalPrice.subLocked and totalPrice.subLocked != 0) %}
                                                                                                                 <div class="total-price d-flex justify-content-end align-items-center">
                                                                                                                     <span class='total gold price-label col-3 text-center'>
-                                                                                                                        {{ __('order.total_hidden') }}: {{ totalPrice.subLocked | applyFactor(priceFactor) }}&#8364;
+                                                                                                                        {{ __('order.total_hidden') }}: {{ totalPrice.subLocked | applyFactor(priceFactor) }}&#8364; netto
                                                                                                                     </span>
                                                                                                                 </div>
                                                                                                             {% endif %}

@@ -412,7 +412,7 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
         // SUB___ params: hidden for regular users/group admins; visible for isGroupShop (non-locked, ENABLE formula passes)
         if (key.startsWith('SUB___')) {
             const isLockedSub = window.lockedParams && window.lockedParams.includes(key);
-            const showSubNow = window.isGroupShop || window.isClient || (window.canViewSubPrices && window.showSubParams) || ((window.isGroup || window.viewAsOrganization) && window.showSubParams);
+            const showSubNow = window.isGroupShop || window.isClient || (window.canViewSubPrices && window.showSubParams) || (window.viewAsOrganization && window.showSubParams);
             if (showSubNow && !isLockedSub && shouldEnable) {
                 paramDiv.style.display = 'grid';
                 window.enabledParams[param.NAME] = true;

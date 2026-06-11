@@ -13,6 +13,8 @@
 
 const { connetToDb } = require('../../db/core');
 const { displayValuesToWireFormat } = require('../formEngine');
+const { buildDisplayValuesFromDictionary } = require('./displayValueBuilder');
+const { buildPersistedParameters, extractImportParams } = require('./orderImporter');
 const { log } = require('../../utils/logging');
 
 /**
@@ -24,7 +26,7 @@ async function rebuildDisplayValuesForOrder(orderId) {
   const conn = await connetToDb();
   try {
     const [positions] = await conn.query(
-      'SELECT id, json_parameters, json_parameters_desc FROM order_item WHERE order_id = ?',
+      'SELECT id, asortment_group_number, lang, json_parameters, json_parameters_desc FROM order_item WHERE order_id = ?',
       [orderId]
     );
 
@@ -84,6 +86,28 @@ async function rebuildDisplayValuesForOrder(orderId) {
           'UPDATE order_item SET json_parameters_desc = ? WHERE id = ?',
           [wire, pos.id]
         );
+      }
+
+      // Restore imported config params (e.g. WYSOKOSC/SZEROKOSC) when Playwright
+      // recalc dropped them from displayValues but they remain in json_parameters.
+      const importParams = extractImportParams(values);
+      if (Object.keys(importParams).length > 0 && pos.asortment_group_number) {
+        const displayObject = Object.fromEntries(entries);
+        const rebuilt = await buildDisplayValuesFromDictionary({
+          groupNumber: String(pos.asortment_group_number),
+          lang: pos.lang || 'pl',
+          values: buildPersistedParameters(extractImportParams(values), values),
+          displayValues: displayObject,
+          importValues: extractImportParams(values)
+        });
+        const rebuiltWire = displayValuesToWireFormat(rebuilt);
+        const currentWire = displayValuesToWireFormat(displayObject);
+        if (rebuiltWire !== currentWire) {
+          await conn.query(
+            'UPDATE order_item SET json_parameters_desc = ? WHERE id = ?',
+            [rebuiltWire, pos.id]
+          );
+        }
       }
     }
   } finally {

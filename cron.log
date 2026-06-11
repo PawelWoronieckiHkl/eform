@@ -2195,3 +2195,17 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
 === 2026-06-10 10:35:01 - Start ===
 === 2026-06-10 10:35:01 - Dodawanie zmian do commita ===
+[main ff4b8a6] Automatic commit 2026-06-10 10:35
+ 10 files changed, 11275 insertions(+), 20 deletions(-)
+ create mode 100755 public/img/sub-prices.png
+ create mode 100644 services/mailBot/importMailer.js
+=== 2026-06-10 10:35:01 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   9f68210..ff4b8a6  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-06-10 10:35:03 - Koniec ===
+=== 2026-06-10 12:00:01 - Start ===
+=== 2026-06-10 12:00:01 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-06-11 10:35:01 - Start ===
+=== 2026-06-11 10:35:01 - Dodawanie zmian do commita ===

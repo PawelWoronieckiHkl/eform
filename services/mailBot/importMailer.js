@@ -38,11 +38,17 @@ function buildHtml(results) {
 
   let okRows = '';
   for (const r of ok) {
+    const sendStatus = r.sent
+      ? '<span style="color:#1a7a1a;">✅ wysłane</span>'
+      : (r.sendError
+        ? `<span style="color:#c0392b;">⚠ ${escHtml(r.sendError)}</span>`
+        : '<span style="color:#888;">—</span>');
     okRows += `
       <tr>
         <td style="padding:4px 8px;border:1px solid #ccc;">${escHtml(r.file)}</td>
         <td style="padding:4px 8px;border:1px solid #ccc;color:#1a7a1a;">✅ sukces</td>
         <td style="padding:4px 8px;border:1px solid #ccc;">${r.orderId ?? '—'}</td>
+        <td style="padding:4px 8px;border:1px solid #ccc;">${sendStatus}</td>
         <td style="padding:4px 8px;border:1px solid #ccc;">—</td>
       </tr>`;
   }
@@ -53,6 +59,7 @@ function buildHtml(results) {
       <tr>
         <td style="padding:4px 8px;border:1px solid #ccc;">${escHtml(r.file)}</td>
         <td style="padding:4px 8px;border:1px solid #ccc;color:#c0392b;">❌ błąd</td>
+        <td style="padding:4px 8px;border:1px solid #ccc;">—</td>
         <td style="padding:4px 8px;border:1px solid #ccc;">—</td>
         <td style="padding:4px 8px;border:1px solid #ccc;font-family:monospace;font-size:12px;white-space:pre-wrap;">${escHtml(r.error || 'nieznany błąd')}</td>
       </tr>`;
@@ -73,6 +80,7 @@ function buildHtml(results) {
         <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Plik</th>
         <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Status</th>
         <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Order ID</th>
+        <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Wysyłka</th>
         <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Błąd</th>
       </tr>
     </thead>

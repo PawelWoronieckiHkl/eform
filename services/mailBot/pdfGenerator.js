@@ -8,7 +8,7 @@ const confLang = require('./conf');
 const { localesDir, availabeLanguages, defaultLanguage, outputData } = require('../../config');
 const { log } = require('../../utils/logging');
 const { translateToPolish } = require('./commentTranslator');
-const { isProductionVersion } = require('../../utils/productionSendGuard');
+const { isProductionVersion, shouldForceProductionSend } = require('../../utils/productionSendGuard');
 const { pdfValueParts } = require('../../utils/pdfValueParts');
 
 function registerPdfNunjucksFilters(env) {
@@ -249,8 +249,10 @@ async function generateProductionPdf(orderData, cleanOrderItems, logoPath, order
   return pdfBuffer;
 }
 
-async function uploadProductionPdf(pdfBuffer, jsonFileName) {
-  if (!isProductionVersion()) {
+async function uploadProductionPdf(pdfBuffer, jsonFileName, options = {}) {
+  const useProductionFtp = isProductionVersion() || shouldForceProductionSend(options.forceProductionSend);
+
+  if (!useProductionFtp) {
     // Tryb dev/test — zapis lokalny do outputData/pdf_out
     const localDir = path.join(outputData, 'pdf_out');
     const localPath = path.join(localDir, `${jsonFileName}.pdf`);

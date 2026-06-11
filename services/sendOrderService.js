@@ -6,7 +6,7 @@ const { KeyObject } = require('crypto');
 const { ordersManager } = require('../utils/saveOrdersOutput');
 const { log } = require('../utils/logging');
 const { formatClientLabel } = require('../utils/formatClient');
-const { getProductionSendSkipClient, isProductionVersion } = require('../utils/productionSendGuard');
+const { getProductionSendSkipClient, isProductionVersion, shouldForceProductionSend } = require('../utils/productionSendGuard');
 class OrderSender {
 
     constructor(req, order, orderItems) {
@@ -125,7 +125,9 @@ class OrderSender {
             return;
         }
 
-        if (!isProductionVersion()) {
+        const useProductionFtp = isProductionVersion() || shouldForceProductionSend(options.forceProductionSend);
+
+        if (!useProductionFtp) {
             const filePath = this.fullPath;
 
             try {

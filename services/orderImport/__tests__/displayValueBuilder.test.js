@@ -139,3 +139,63 @@ test('keeps list row for locked fields even when visible flag is false', async (
   assert.equal(out.CENA_RABAT.locked, true);
   assert.equal(out.CENA_RABAT.row, '2');
 });
+
+test('preserves imported dimensions when engine marks them hidden', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '59',
+    lang: 'nl',
+    values: {
+      SZEROKOSC: '',
+      WYSOKOSC: '',
+      SZEROKOSC___VISIBLE: false,
+      WYSOKOSC___VISIBLE: false,
+      MODEL: 'H50',
+      CENA: '276'
+    },
+    displayValues: {
+      CENA: {
+        param_description: 'LISTENPREIS [€]',
+        option_value: '276',
+        option_description: '',
+        locked: false,
+        row: '2',
+        listsum: true
+      }
+    },
+    importValues: {
+      SZEROKOSC: 1320,
+      WYSOKOSC: 1860,
+      MODEL: 'H50',
+      KOLOR: '5711-50'
+    },
+    formMeta: {
+      params: [
+        { NAME: 'SZEROKOSC', LISTROW: '1', FORMROW: '1' },
+        { NAME: 'WYSOKOSC', LISTROW: '1', FORMROW: '1' },
+        { NAME: 'MODEL', LISTROW: '1', FORMROW: '1' },
+        { NAME: 'KOLOR', LISTROW: '1', FORMROW: '1' },
+        { NAME: 'CENA', LISTROW: '2', LISTSUM: 'true', FORMROW: '1' }
+      ],
+      lockedParams: [],
+      subParams: []
+    },
+    repo: fakeRepo({
+      params: {
+        SZEROKOSC: 'BREEDTE [MM]',
+        WYSOKOSC: 'HOOGTE [MM]',
+        MODEL: 'MODEL',
+        KOLOR: 'KLEUR',
+        CENA: 'LISTENPREIS [€]'
+      },
+      paramdict: {}
+    })
+  });
+
+  assert.equal(out.SZEROKOSC.row, '1');
+  assert.equal(out.SZEROKOSC.option_value, '1320');
+  assert.equal(out.WYSOKOSC.row, '1');
+  assert.equal(out.WYSOKOSC.option_value, '1860');
+  assert.equal(out.MODEL.option_value, 'H50');
+  assert.equal(out.CENA.row, '2');
+  assert.equal(out.CENA.option_value, '276');
+});

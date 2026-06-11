@@ -208,6 +208,9 @@
           <div class="comment-container">
             <p class="comment-text">{{ __('mail.sent_confirmation_2_1') }}{{ orderNr }}
               {{ __('mail.sent_confirmation_2_2') }} "{{ orderDetails.commission }}". {{ __('mail.sent_confirmation_2_3') }}</p>
+            {% if isImport %}
+              <p class="comment-text" style="color:#666;font-style:italic;margin-top:12px;">{{ __('mail.import_note') }}</p>
+            {% endif %}
             <p class="comment-text">{{ __('mail.sent_confirmation_3') }}</p>
             {% if organization.company_mail %}
               {{ organization.company_mail }}

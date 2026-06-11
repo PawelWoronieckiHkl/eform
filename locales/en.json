@@ -256,5 +256,8 @@
     "employee_add": "Add a new employee.",
     "order_detail_item_full": "Each item contains all parameters, prices, and estimated production time.",
     "dont_show": "Don't show again"
+  },
+  "mail": {
+    "import_note": "This order was automatically imported from an external system."
   }
 }
