@@ -30,6 +30,16 @@ function isObject(v) {
   return v !== null && typeof v === 'object' && !Array.isArray(v);
 }
 
+function looksLikeDisplayValuesArray(raw) {
+  if (!Array.isArray(raw) || raw.length === 0) return false;
+  const first = raw[0];
+  return Array.isArray(first)
+    && first.length >= 2
+    && typeof first[0] === 'string'
+    && isObject(first[1])
+    && ('option_value' in first[1] || 'param_description' in first[1]);
+}
+
 function validateItem(item, idx, errors) {
   if (!isObject(item)) {
     errors.push(`items[${idx}]: not an object`);
@@ -53,6 +63,26 @@ function validateOrderPayload(raw) {
   const errors = [];
 
   if (!isObject(raw)) {
+    if (looksLikeDisplayValuesArray(raw)) {
+      return {
+        ok: false,
+        errors: [
+          'Payload looks like json_parameters_desc (displayValues array), not an order object. '
+          + 'Import expects { userIdent, items: [...] } — re-upload the full order JSON.'
+        ],
+        data: null
+      };
+    }
+    if (typeof raw === 'string') {
+      return {
+        ok: false,
+        errors: [
+          'Payload is a JSON string, not an order object (double-encoded JSON?). '
+          + 'Import expects { userIdent, items: [...] }.'
+        ],
+        data: null
+      };
+    }
     return { ok: false, errors: ['Payload is not a JSON object'], data: null };
   }
 
@@ -73,4 +103,4 @@ function validateOrderPayload(raw) {
   };
 }
 
-module.exports = { validateOrderPayload };
+module.exports = { validateOrderPayload, looksLikeDisplayValuesArray };

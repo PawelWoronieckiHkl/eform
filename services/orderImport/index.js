@@ -22,6 +22,7 @@ const path = require('path');
 const ftp = require('./ftpClient');
 const cache = require('./localCache');
 const { validateOrderPayload } = require('./orderValidator');
+const { tryRecoverValidOrderPayload } = require('./payloadRecovery');
 const { resolveOrderUser } = require('./userResolver');
 const { importResolvedOrder } = require('./orderImporter');
 const { resolvePayloadAliases } = require('./aliasResolver');
@@ -59,11 +60,21 @@ function isTransientError(err) {
 
 async function readJson(filePath) {
   const raw = await fs.readFile(filePath, 'utf8');
+  let parsed;
   try {
-    return JSON.parse(raw);
+    parsed = JSON.parse(raw);
   } catch (err) {
     throw new Error(`Invalid JSON: ${err.message}`);
   }
+  // Some exporters double-encode the whole order as a JSON string.
+  if (typeof parsed === 'string') {
+    try {
+      parsed = JSON.parse(parsed);
+    } catch (err) {
+      throw new Error(`Invalid JSON (double-encoded): ${err.message}`);
+    }
+  }
+  return parsed;
 }
 
 async function processOneFile(fileName) {
@@ -92,7 +103,15 @@ async function processOneFile(fileName) {
       // doubles as the local backup required for audit ("kopia na serwerze").
       await ftp.downloadOrderFile(fileName, localPath, { localFallbackDir: paths.incoming });
 
-      const payload = await readJson(localPath);
+      const parsed = await readJson(localPath);
+      const recovery = await tryRecoverValidOrderPayload(fileName, parsed, {
+        localProcessedDir: paths.processed
+      });
+      const payload = recovery.payload;
+      if (recovery.recovered) {
+        log(`WARN: ${fileName} on FTP is not a valid order JSON (looks like json_parameters_desc). `
+          + `Recovered last good order payload from ${recovery.source}`);
+      }
       if (payload && payload.userIdent) userIdent = payload.userIdent;
 
       const validation = validateOrderPayload(payload);
@@ -162,27 +181,27 @@ async function processOneFile(fileName) {
       } catch (recalcErr) {
         log(`WARN: import OK but recalculate error for order ${importResult.orderId}: ${recalcErr.message}`);
       }
-
-      // try {
-      //   const { sendImportedOrder } = require('./sendAfterImport');
-      //   const sendResult = await sendImportedOrder({
-      //     orderId: importResult.orderId,
-      //     user: resolved.user,
-      //     lang: resolved.lang
-      //   });
-      //   result.sent = !!sendResult.sent;
-      //   if (sendResult.skipped) {
-      //     result.sendError = `skipped: ${sendResult.skipped}`;
-      //     log(`WARN: import OK but send skipped for order ${importResult.orderId}: ${sendResult.skipped}`);
-      //   } else if (sendResult.error) {
-      //     result.sendError = sendResult.error;
-      //     log(`WARN: import OK but send failed for order ${importResult.orderId}: ${sendResult.error}`);
-      //   }
-      // } catch (sendErr) {
-      //   result.sendError = sendErr.message;
-      //   log(`WARN: import OK but send error for order ${importResult.orderId}: ${sendErr.message}`);
-      // }
-
+// 
+      try {
+        const { sendImportedOrder } = require('./sendAfterImport');
+        const sendResult = await sendImportedOrder({
+          orderId: importResult.orderId,
+          user: resolved.user,
+          lang: resolved.lang
+        });
+        result.sent = !!sendResult.sent;
+        if (sendResult.skipped) {
+          result.sendError = `skipped: ${sendResult.skipped}`;
+          log(`WARN: import OK but send skipped for order ${importResult.orderId}: ${sendResult.skipped}`);
+        } else if (sendResult.error) {
+          result.sendError = sendResult.error;
+          log(`WARN: import OK but send failed for order ${importResult.orderId}: ${sendResult.error}`);
+        }
+      } catch (sendErr) {
+        result.sendError = sendErr.message;
+        log(`WARN: import OK but send error for order ${importResult.orderId}: ${sendErr.message}`);
+      }
+// 
       await cache.moveToProcessed(localPath);
       try {
         await ftp.moveRemoteFile(fileName, 'processed', { localFallbackDir: paths.incoming });

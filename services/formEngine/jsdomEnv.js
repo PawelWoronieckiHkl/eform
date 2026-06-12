@@ -167,7 +167,9 @@ function patchFetch(window, { uid }) {
     }
 
     if (url === '/env' || url.endsWith('/env')) {
-      return Promise.resolve(jsonResponse({ body: { version: 'engine' } }));
+      // Match the Testowa environment so price-script side effects (e.g. *_S spec
+      // fields) are created the same way as in the browser recalculate flow.
+      return Promise.resolve(jsonResponse({ body: { version: 'Testowa' } }));
     }
 
     // /data/* and /scripts/* are also reachable via fetch (DataLoader uses it).

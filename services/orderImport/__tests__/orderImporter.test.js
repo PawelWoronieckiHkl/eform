@@ -74,6 +74,7 @@ test('importResolvedOrder runs the full pipeline with stubs', async () => {
         amount: args[10],
         groupNumber: args[13],
         lang: args[14],
+        department: args[15],
         groupName: args[16],
         jsonValues: args[8],
         jsonValuesToDisplay: args[9]
@@ -138,6 +139,7 @@ test('importResolvedOrder runs the full pipeline with stubs', async () => {
       formEngine,
       displayBuilder,
       groupNameResolver: async () => 'COSIFLOR',
+      departmentNameResolver: async () => 'JALOEZIEËN',
       optionValidator: async () => ({ ok: true, errors: [] }),
       log: () => {}
     }
@@ -156,6 +158,7 @@ test('importResolvedOrder runs the full pipeline with stubs', async () => {
   assert.equal(calls.items[0].order, 999);
   assert.equal(calls.items[0].groupNumber, 'SLOPE');
   assert.equal(calls.items[0].lang, 'de');
+  assert.equal(calls.items[0].department, 'JALOEZIEËN');
   assert.equal(calls.items[0].groupName, 'COSIFLOR');
   assert.equal(calls.items[0].amount, 3);
   assert.deepEqual(calls.items[0].jsonValues, { KOLOR: 'Black', ILOSC: 3 });

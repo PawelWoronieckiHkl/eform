@@ -5,6 +5,7 @@ function buildOrderItemStructure(
 	discount = 0,
 	unitPrice = 0,
 	totalPrice = 0,
+	totalPriceSub = 0,
     name,
 	commission,
 	jsonValues ,
@@ -26,6 +27,7 @@ function buildOrderItemStructure(
     body['discount']= discount;
     body['unitPrice']=unitPrice;
     body['totalPrice']=totalPrice;
+    body['totalPriceSub']=totalPriceSub;
     body['name']=name;
     body['commission']=commission;
     body['jsonValues']=jsonValues;

@@ -56,7 +56,7 @@ test('builds display values from translation dictionary params and paramdict', a
   assert.equal(out.KOLOR___DESCRIPTION, undefined);
 });
 
-test('marks invisible fields with row 0 and preserves existing engine flags', async () => {
+test('keeps price fields on row 2 even when form marks them invisible', async () => {
   const out = await buildDisplayValuesFromDictionary({
     groupNumber: '43',
     lang: 'de',
@@ -65,7 +65,13 @@ test('marks invisible fields with row 0 and preserves existing engine flags', as
       CENA___VISIBLE: false
     },
     displayValues: {
-      CENA: { locked: false }
+      CENA: { locked: false, row: '0' }
+    },
+    formMeta: {
+      params: [{ NAME: 'CENA', LISTROW: '2', FORMROW: '1' }],
+      lockedParams: [],
+      subParams: [],
+      skipCountParams: []
     },
     repo: fakeRepo({
       params: { CENA: 'LISTENPREIS [€]' },
@@ -75,8 +81,35 @@ test('marks invisible fields with row 0 and preserves existing engine flags', as
 
   assert.equal(out.CENA.param_description, 'LISTENPREIS [€]');
   assert.equal(out.CENA.option_value, '276');
-  assert.equal(out.CENA.row, '0');
+  assert.equal(out.CENA.row, '2');
   assert.equal(out.CENA.locked, false);
+});
+
+test('marks invisible config fields with row 0 and preserves existing engine flags', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '43',
+    lang: 'de',
+    values: {
+      MODEL: 'VS1',
+      MODEL___VISIBLE: false
+    },
+    displayValues: {
+      MODEL: { locked: false }
+    },
+    formMeta: {
+      params: [{ NAME: 'MODEL', LISTROW: '1', FORMROW: '1' }],
+      lockedParams: [],
+      subParams: [],
+      skipCountParams: []
+    },
+    repo: fakeRepo({
+      params: { MODEL: 'MODELL' },
+      paramdict: { MODEL: { VS1: 'Verspannt' } }
+    })
+  });
+
+  assert.equal(out.MODEL.row, '0');
+  assert.equal(out.MODEL.option_value, 'VS1');
 });
 
 test('uses form metadata for row, listsum, locked and sub flags', async () => {
@@ -95,7 +128,8 @@ test('uses form metadata for row, listsum, locked and sub flags', async () => {
         { NAME: 'SUB___CENA_RABAT', LISTROW: '2', LISTSUM: 'true', FORMROW: '1' }
       ],
       lockedParams: ['CENA_RABAT'],
-      subParams: ['SUB___CENA_RABAT']
+      subParams: ['SUB___CENA_RABAT'],
+      skipCountParams: []
     },
     repo: fakeRepo({
       params: {
@@ -128,7 +162,8 @@ test('keeps list row for locked fields even when visible flag is false', async (
     formMeta: {
       params: [{ NAME: 'CENA_RABAT', LISTROW: '2', LISTSUM: 'true', FORMROW: '1' }],
       lockedParams: ['CENA_RABAT'],
-      subParams: []
+      subParams: [],
+      skipCountParams: []
     },
     repo: fakeRepo({
       params: { CENA_RABAT: 'RABATT' },
@@ -138,6 +173,463 @@ test('keeps list row for locked fields even when visible flag is false', async (
 
   assert.equal(out.CENA_RABAT.locked, true);
   assert.equal(out.CENA_RABAT.row, '2');
+});
+
+test('omits HASLO-gated and zero surcharge params from displayValues entirely', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '59',
+    lang: 'de',
+    values: {
+      MODEL: 'H50',
+      DOPLATA_EL: 12.5,
+      SUB___DOPLATA_EL: 15,
+      CENA_RABAT: 0
+    },
+    displayValues: [
+      ['CENA_RABAT', {
+        param_description: 'RABATT',
+        option_value: '0%',
+        locked: true,
+        row: '2'
+      }]
+    ],
+    importValues: {
+      MODEL: 'H50',
+      DOPLATA_EL: 12.5,
+      SUB___DOPLATA_EL: 15
+    },
+    formMeta: {
+      params: [
+        { NAME: 'DOPLATA_EL', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'SUB___DOPLATA_EL', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'CENA_RABAT', LISTROW: '2', FORMROW: '1' }
+      ],
+      lockedParams: ['CENA_RABAT'],
+      subParams: ['SUB___DOPLATA_EL'],
+      skipCountParams: ['DOPLATA_EL', 'SUB___DOPLATA_EL', 'DOPLATA_EL_RABAT', 'SUB___DOPLATA_EL_RABAT']
+    },
+    repo: fakeRepo({
+      params: {
+        DOPLATA_EL: 'AUFPREIS EL[€] brutto',
+        SUB___DOPLATA_EL: 'AUFPREIS EL[€] brutto',
+        CENA_RABAT: 'RABATT'
+      },
+      paramdict: {}
+    })
+  });
+
+  assert.equal(out.DOPLATA_EL, undefined);
+  assert.equal(out.DOPLATA_EL_RABAT, undefined);
+  assert.equal(out.SUB___DOPLATA_EL, undefined);
+  assert.equal(out.SUB___DOPLATA_EL_RABAT, undefined);
+  assert.equal(out.CENA_RABAT.row, '2');
+  assert.equal(out.CENA_RABAT.locked, true);
+  assert.equal(out.CENA_RABAT.option_value, '0%');
+});
+
+test('forces locked true on EL_RABAT params even when engine stored locked false', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '59',
+    lang: 'nl',
+    values: {
+      DOPLATA_EL_RABAT: 0,
+      SUB___DOPLATA_EL_RABAT: 0
+    },
+    displayValues: [
+      ['DOPLATA_EL_RABAT', {
+        param_description: 'KORTING EL',
+        option_value: '0%',
+        locked: false,
+        row: '2'
+      }],
+      ['SUB___DOPLATA_EL_RABAT', {
+        param_description: 'KORTING EL SUB',
+        option_value: '0%',
+        locked: false,
+        sub: true,
+        row: '2'
+      }]
+    ],
+    formMeta: {
+      params: [
+        { NAME: 'DOPLATA_EL_RABAT', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'SUB___DOPLATA_EL_RABAT', LISTROW: '2', FORMROW: '1' }
+      ],
+      lockedParams: [],
+      subParams: ['SUB___DOPLATA_EL_RABAT'],
+      skipCountParams: []
+    },
+    repo: fakeRepo({
+      params: {
+        DOPLATA_EL_RABAT: 'KORTING EL',
+        SUB___DOPLATA_EL_RABAT: 'KORTING EL SUB'
+      },
+      paramdict: {}
+    })
+  });
+
+  assert.equal(out.DOPLATA_EL_RABAT.locked, true);
+  assert.equal(out.SUB___DOPLATA_EL_RABAT.locked, true);
+  assert.equal(out.SUB___DOPLATA_EL_RABAT.sub, true);
+});
+
+test('omits zero DOPLATA and matching SUB___ surcharge fields from displayValues', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '59',
+    lang: 'nl',
+    values: {
+      MODEL: 'H50',
+      DOPLATA: 0,
+      DOPLATA_S: '0(SF50)',
+      SUB___DOPLATA: 0,
+      SUB___DOPLATA_S: '0(SF50)',
+      CENA: 59.43
+    },
+    displayValues: [
+      ['CENA', {
+        param_description: 'CATALOGUSPRIJS',
+        option_value: '59.43',
+        locked: false,
+        row: '2'
+      }]
+    ],
+    formMeta: {
+      params: [
+        { NAME: 'DOPLATA', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'SUB___DOPLATA', LISTROW: '2', FORMROW: '1' }
+      ],
+      lockedParams: ['DOPLATA_S', 'SUB___DOPLATA_S'],
+      subParams: ['SUB___DOPLATA', 'SUB___DOPLATA_S'],
+      skipCountParams: []
+    },
+    repo: fakeRepo({
+      params: {
+        DOPLATA: 'MEERPRIJS',
+        SUB___DOPLATA: 'MEERPRIJS SUB',
+        CENA: 'CATALOGUSPRIJS'
+      },
+      paramdict: {}
+    })
+  });
+
+  assert.equal(out.DOPLATA, undefined);
+  assert.equal(out.DOPLATA_S, undefined);
+  assert.equal(out.SUB___DOPLATA, undefined);
+  assert.equal(out.SUB___DOPLATA_S, undefined);
+  assert.equal(out.CENA.option_value, '59.43');
+});
+
+test('omits empty row 1 config params and zero EL surcharges from browser output', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '59',
+    lang: 'nl',
+    values: {
+      MODEL: 'H50',
+      DOPLATA_EL: 0,
+      SUB___DOPLATA_EL: 0,
+      SUB___DOPLATA_EL_RABAT: 0,
+      CENA: 59.43
+    },
+    displayValues: [
+      ['MOTOR', { param_description: 'MOTOR', option_value: '', row: '1', locked: false, sub: false }],
+      ['WYMIAROWANIE_SLOPOW', {
+        param_description: 'AFMETINGEN VOOR SLOPE [MM]',
+        option_value: '',
+        row: '1',
+        locked: false,
+        sub: false
+      }],
+      ['DOPLATA_EL', {
+        param_description: 'PRIJS VOOR EL INCLUSIEF BTW [€]',
+        option_value: '0',
+        row: '2',
+        locked: false,
+        sub: false
+      }],
+      ['SUB___DOPLATA_EL', {
+        param_description: 'PRIJS VOOR EL INCLUSIEF BTW [€]',
+        option_value: '0',
+        row: '2',
+        locked: false,
+        sub: true
+      }],
+      ['SUB___DOPLATA_EL_RABAT', {
+        param_description: 'KORTING OP DE ADVIESVERKOOPPRIJS VOOR EL',
+        option_value: '0',
+        row: '2',
+        locked: true,
+        sub: true
+      }],
+      ['CENA_RABAT_S', {
+        param_description: 'CENA_RABAT_S',
+        option_value: '',
+        row: '2',
+        locked: true,
+        sub: false
+      }],
+      ['CENA', {
+        param_description: 'CATALOGUSPRIJS',
+        option_value: '59.43',
+        row: '2',
+        locked: false,
+        sub: false
+      }]
+    ],
+    formMeta: {
+      params: [
+        { NAME: 'MOTOR', LISTROW: '1', FORMROW: '1' },
+        { NAME: 'WYMIAROWANIE_SLOPOW', LISTROW: '1', FORMROW: '1' },
+        { NAME: 'DOPLATA_EL', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'CENA', LISTROW: '2', FORMROW: '1' }
+      ],
+      lockedParams: ['CENA_RABAT_S', 'SUB___DOPLATA_EL_RABAT'],
+      subParams: ['SUB___DOPLATA_EL', 'SUB___DOPLATA_EL_RABAT'],
+      skipCountParams: []
+    },
+    repo: fakeRepo({
+      params: {
+        MOTOR: 'MOTOR',
+        WYMIAROWANIE_SLOPOW: 'AFMETINGEN VOOR SLOPE [MM]',
+        DOPLATA_EL: 'PRIJS VOOR EL INCLUSIEF BTW [€]',
+        CENA: 'CATALOGUSPRIJS'
+      },
+      paramdict: { MODEL: { H50: '50 MM HOUTEN JALOEZIEËN' } }
+    })
+  });
+
+  assert.equal(out.MOTOR, undefined);
+  assert.equal(out.WYMIAROWANIE_SLOPOW, undefined);
+  assert.equal(out.DOPLATA_EL, undefined);
+  assert.equal(out.SUB___DOPLATA_EL, undefined);
+  assert.equal(out.SUB___DOPLATA_EL_RABAT, undefined);
+  assert.equal(out.CENA_RABAT_S, undefined);
+  assert.equal(out.CENA.option_value, '59.43');
+  assert.equal(out.MODEL.option_value, 'H50');
+});
+
+test('keeps row 0 params when they carry displayable content', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '59',
+    lang: 'de',
+    values: {
+      OPIS_POZYCJI: 'MODEL=H50,MONTAZ=307',
+      OPIS_CENY: 'CENA=100'
+    },
+    repo: fakeRepo({
+      params: {
+        OPIS_POZYCJI: 'OPIS_POZYCJI',
+        OPIS_CENY: 'OPIS_CENY'
+      },
+      paramdict: {}
+    })
+  });
+
+  assert.equal(out.OPIS_POZYCJI.option_value, 'MODEL=H50,MONTAZ=307');
+  assert.equal(out.OPIS_CENY.option_value, 'CENA=100');
+  assert.notEqual(out.OPIS_POZYCJI, undefined);
+  assert.notEqual(out.OPIS_CENY, undefined);
+});
+
+test('preserves engine price rows, locked flags and computed display values over import', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '59',
+    lang: 'de',
+    values: {
+      MODEL: 'H50',
+      CENA: 138.88,
+      CENA_RABAT: 0,
+      SUB___CENA: 481,
+      SUB___CENA_RABAT: 0,
+      SUMA_BRUTTO: 149.58
+    },
+    displayValues: [
+      ['CENA', {
+        param_description: 'LISTENPREIS [€]',
+        option_value: '138.88',
+        option_description: '',
+        locked: false,
+        row: '2'
+      }],
+      ['CENA_RABAT', {
+        param_description: 'RABATT',
+        option_value: '0%',
+        option_description: '',
+        locked: true,
+        row: '2'
+      }],
+      ['SUB___CENA', {
+        param_description: 'LISTENPREIS [€]',
+        option_value: '481',
+        option_description: '',
+        locked: false,
+        sub: true,
+        row: '2'
+      }],
+      ['SUB___CENA_RABAT', {
+        param_description: 'RABATT',
+        option_value: '0%',
+        option_description: '',
+        locked: true,
+        sub: true,
+        row: '2'
+      }],
+      ['SUMA_BRUTTO', {
+        param_description: 'GES.WERT [€]',
+        option_value: '149.58',
+        option_description: '',
+        locked: false,
+        row: '2',
+        listsum: true
+      }]
+    ],
+    importValues: {
+      MODEL: 'H50',
+      CENA: 100,
+      CENA_RABAT: 0,
+      SUB___CENA: 400
+    },
+    formMeta: {
+      params: [
+        { NAME: 'MODEL', LISTROW: '1', FORMROW: '1' },
+        { NAME: 'CENA', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'CENA_RABAT', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'SUB___CENA', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'SUB___CENA_RABAT', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'SUMA_BRUTTO', LISTROW: '2', LISTSUM: 'true', FORMROW: '1' }
+      ],
+      lockedParams: ['CENA_RABAT', 'SUB___CENA_RABAT'],
+      subParams: ['SUB___CENA', 'SUB___CENA_RABAT'],
+      skipCountParams: []
+    },
+    repo: fakeRepo({
+      params: {
+        MODEL: 'MODELL',
+        CENA: 'LISTENPREIS [€]',
+        CENA_RABAT: 'RABATT',
+        SUB___CENA: 'LISTENPREIS [€]',
+        SUB___CENA_RABAT: 'RABATT',
+        SUMA_BRUTTO: 'GES.WERT [€]'
+      },
+      paramdict: { MODEL: { H50: '50 MM HOLZJALOUSIE' } }
+    })
+  });
+
+  assert.equal(out.CENA.row, '2');
+  assert.equal(out.CENA.option_value, '138.88');
+  assert.equal(out.CENA_RABAT.locked, true);
+  assert.equal(out.CENA_RABAT.option_value, '0%');
+  assert.equal(out.SUB___CENA.sub, true);
+  assert.equal(out.SUB___CENA.option_value, '481');
+  assert.equal(out.SUB___CENA_RABAT.locked, true);
+  assert.equal(out.SUB___CENA_RABAT.option_value, '0%');
+  assert.equal(out.SUMA_BRUTTO.listsum, true);
+  assert.equal(out.SUMA_BRUTTO.option_value, '149.58');
+  assert.equal(Object.keys(out)[0], 'CENA');
+});
+
+test('promotes hidden SUB___ listsum prices from row 0 to row 2', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '59',
+    lang: 'nl',
+    values: {
+      CENA: 59.43,
+      CENA_SUMA: 59.43,
+      SUMA_BRUTTO: 59.43,
+      SUB___CENA: 224,
+      SUB___CENA_SUMA: 224,
+      SUB___SUMA_BRUTTO: 224,
+      SUB___CENA_SUMA___VISIBLE: false,
+      SUB___SUMA_BRUTTO___VISIBLE: false
+    },
+    displayValues: [
+      ['SUB___CENA_SUMA', {
+        param_description: 'PRIJS INCLUSIEF BTW PER STUK [€]',
+        option_value: '224',
+        locked: false,
+        sub: true,
+        row: '0'
+      }],
+      ['SUB___SUMA_BRUTTO', {
+        param_description: 'TOTAALPRIJS INCLUSIEF BTW [€]',
+        option_value: '224',
+        locked: false,
+        sub: true,
+        listsum: true,
+        row: '0'
+      }],
+      ['SUB___CENA', {
+        param_description: 'CATALOGUSPRIJS INCLUSIEF BTW [€]',
+        option_value: '224',
+        locked: false,
+        sub: true,
+        row: '2'
+      }]
+    ],
+    formMeta: {
+      params: [
+        { NAME: 'SUB___CENA', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'SUB___CENA_SUMA', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'SUB___SUMA_BRUTTO', LISTROW: '2', LISTSUM: 'true', FORMROW: '1' }
+      ],
+      lockedParams: [],
+      subParams: ['SUB___CENA', 'SUB___CENA_SUMA', 'SUB___SUMA_BRUTTO'],
+      skipCountParams: []
+    },
+    repo: fakeRepo({
+      params: {
+        SUB___CENA: 'CATALOGUSPRIJS INCLUSIEF BTW [€]',
+        SUB___CENA_SUMA: 'PRIJS INCLUSIEF BTW PER STUK [€]',
+        SUB___SUMA_BRUTTO: 'TOTAALPRIJS INCLUSIEF BTW [€]'
+      },
+      paramdict: {}
+    })
+  });
+
+  assert.equal(out.SUB___CENA_SUMA.row, '2');
+  assert.equal(out.SUB___CENA_SUMA.option_value, '224');
+  assert.equal(out.SUB___CENA_SUMA.sub, true);
+  assert.equal(out.SUB___SUMA_BRUTTO.row, '2');
+  assert.equal(out.SUB___SUMA_BRUTTO.listsum, true);
+  assert.equal(out.SUB___CENA.option_value, '224');
+});
+
+test('keeps SUB___ *_S spec fields with sub false', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '59',
+    lang: 'nl',
+    values: {
+      SUB___CENA: 224,
+      SUB___CENA_S: '224(H50PG0)'
+    },
+    displayValues: [
+      ['SUB___CENA_S', {
+        param_description: 'SUB___CENA_S',
+        option_value: '224, (H50PG0)',
+        locked: true,
+        sub: false,
+        row: '2'
+      }]
+    ],
+    formMeta: {
+      params: [
+        { NAME: 'SUB___CENA', LISTROW: '2', FORMROW: '1' },
+        { NAME: 'SUB___CENA_S', LISTROW: '2', FORMROW: '1' }
+      ],
+      lockedParams: ['SUB___CENA_S'],
+      subParams: ['SUB___CENA'],
+      skipCountParams: []
+    },
+    repo: fakeRepo({
+      params: {
+        SUB___CENA: 'CATALOGUSPRIJS',
+        SUB___CENA_S: 'SUB___CENA_S'
+      },
+      paramdict: {}
+    })
+  });
+
+  assert.equal(out.SUB___CENA_S.sub, false);
+  assert.equal(out.SUB___CENA_S.option_value, '224, (H50PG0)');
 });
 
 test('preserves imported dimensions when engine marks them hidden', async () => {
@@ -177,7 +669,8 @@ test('preserves imported dimensions when engine marks them hidden', async () => 
         { NAME: 'CENA', LISTROW: '2', LISTSUM: 'true', FORMROW: '1' }
       ],
       lockedParams: [],
-      subParams: []
+      subParams: [],
+      skipCountParams: []
     },
     repo: fakeRepo({
       params: {

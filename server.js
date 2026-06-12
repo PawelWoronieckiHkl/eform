@@ -135,8 +135,12 @@ app.use((req, res, next) => {
 	res.locals.isGroupShop = req.session?.user?.isGroupShop || false;
 	// Konto organizacyjne: userIdent === orgIdent (użytkownik jest jednocześnie organizacją)
 	const u = req.session?.user;
-	res.locals.isOrgAccount = !!(u && u.ident && u.organization &&
-		u.ident.toLowerCase() === u.organization.toLowerCase());
+	res.locals.isOrgAccount = !!(
+		u &&
+		typeof u.ident === 'string' &&
+		typeof u.organization === 'string' &&
+		u.ident.toLowerCase() === u.organization.toLowerCase()
+	);
 	next();
 });
 

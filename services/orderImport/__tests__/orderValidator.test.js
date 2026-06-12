@@ -8,7 +8,15 @@ const { validateOrderPayload } = require('../orderValidator');
 test('rejects non-object payload', () => {
   const r = validateOrderPayload('nope');
   assert.equal(r.ok, false);
-  assert.match(r.errors[0], /not a JSON object/);
+  assert.match(r.errors[0], /not an order object/);
+});
+
+test('rejects displayValues array mistaken for order payload', () => {
+  const r = validateOrderPayload([
+    ['CENA', { option_value: '59.43', param_description: 'Price' }]
+  ]);
+  assert.equal(r.ok, false);
+  assert.match(r.errors[0], /json_parameters_desc/);
 });
 
 test('requires userIdent and items', () => {

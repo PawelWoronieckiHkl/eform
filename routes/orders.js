@@ -1203,6 +1203,7 @@ router.post('/copy/:orderId', checkOrderOwnership, requireLogin, async (req, res
             item.discount,
             item.unit_price,
             item.total_price,
+            item.total_price_sub,
             item.name,
             item.commision,
             item.json_parameters,

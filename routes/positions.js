@@ -290,6 +290,7 @@ router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
       position.discount,
       position.unit_price,
       position.total_price,
+      position.total_price_sub,
       position.name,
       position.commision,
       position.json_parameters,

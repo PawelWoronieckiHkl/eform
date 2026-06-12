@@ -24,7 +24,8 @@ const { translateParametersToCanonical } = require('./parameterTranslator');
 const { validateParameterValues } = require('./optionValidator');
 const {
   buildDisplayValuesFromDictionary,
-  getProductGroupName
+  getProductGroupName,
+  getDepartmentName
 } = require('./displayValueBuilder');
 const log = (...args) => require('../../utils/logging').log(...args);
 
@@ -186,6 +187,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
   const engine = deps.formEngine || formEngine();
   const displayBuilder = deps.displayBuilder || buildDisplayValuesFromDictionary;
   const groupNameResolver = deps.groupNameResolver || getProductGroupName;
+  const departmentNameResolver = deps.departmentNameResolver || getDepartmentName;
   const logger = deps.log || log;
 
   if (!payload || !user) {
@@ -290,18 +292,27 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
     // JSON.stringify(Array.from(map.entries())). insertNewForm will JSON.stringify
     // it again, producing the double-encoded shape the GET /:positionId route
     // (and downstream templates) expect.
+    const engineDisplayValues = priced.displayValues instanceof Map
+      ? Array.from(priced.displayValues.entries())
+      : Array.isArray(priced.displayValues)
+        ? priced.displayValues
+        : Object.entries(priced.displayValues || {});
+
     const displayValues = await displayBuilder({
       groupNumber,
       lang,
       values: persistedValues,
-      displayValues: priced.displayValues,
+      displayValues: engineDisplayValues,
       shortJson: priced.shortJson || buildShortJson(persistedValues),
       formMeta: priced.formMeta,
       importValues: cleanValues
     });
     const displayValuesWire = engine.displayValuesToWireFormat(displayValues);
-    const groupName = item.product_description
-      || await groupNameResolver(groupNumber, lang)
+    const groupName = await groupNameResolver(groupNumber, lang)
+      || item.product_description
+      || '';
+    const department = await departmentNameResolver(groupNumber, lang)
+      || item.department
       || '';
 
     const formData = builder.buildOrderItemStructure(
@@ -311,6 +322,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       0,                                             // discount
       priced.total.total,                            // unitPrice
       priced.total.total_hidden,                     // totalPrice
+      priced.total.total_sub,                        // totalPriceSub
       item.commission || payload.commission || '',  // name (used as commission alias)
       item.commission || '',                         // commission
       persistedValues,                             // jsonValues -> json_parameters
@@ -320,7 +332,7 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       version,                                       // version
       groupNumber,                                   // groupNumber -> asortment_group_number
       lang,                                          // lang
-      item.department || '',                         // department
+      department,                                    // department (localized from DB)
       groupName,                                     // groupName -> group_name
       priced.shortJson || buildShortJson(persistedValues)
     );

@@ -281,7 +281,8 @@ function collectFormMeta(window) {
       FORMROW: param && param.FORMROW
     })).filter((param) => param.NAME),
     lockedParams: Array.isArray(window.lockedParams) ? [...window.lockedParams] : [],
-    subParams: Array.isArray(window.subParams) ? [...window.subParams] : []
+    subParams: Array.isArray(window.subParams) ? [...window.subParams] : [],
+    skipCountParams: Array.isArray(window.skipCountParams) ? [...window.skipCountParams] : []
   };
 }
 

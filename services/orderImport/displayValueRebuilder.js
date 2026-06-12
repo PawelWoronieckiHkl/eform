@@ -13,7 +13,10 @@
 
 const { connetToDb } = require('../../db/core');
 const { displayValuesToWireFormat } = require('../formEngine');
-const { buildDisplayValuesFromDictionary } = require('./displayValueBuilder');
+const {
+  buildDisplayValuesFromDictionary,
+  _internals: { finalizeDisplayEntry }
+} = require('./displayValueBuilder');
 const { buildPersistedParameters, extractImportParams } = require('./orderImporter');
 const { log } = require('../../utils/logging');
 
@@ -26,7 +29,7 @@ async function rebuildDisplayValuesForOrder(orderId) {
   const conn = await connetToDb();
   try {
     const [positions] = await conn.query(
-      'SELECT id, asortment_group_number, lang, json_parameters, json_parameters_desc FROM order_item WHERE order_id = ?',
+      'SELECT id, asortment_group_number, lang, ver, json_parameters, json_parameters_desc, parameters_short FROM order_item WHERE order_id = ?',
       [orderId]
     );
 
@@ -78,6 +81,12 @@ async function rebuildDisplayValuesForOrder(orderId) {
             changed = true;
           }
         }
+
+        const fixed = finalizeDisplayEntry(entry, paramName);
+        if (fixed.locked !== entry.locked) {
+          entry.locked = fixed.locked;
+          changed = true;
+        }
       }
 
       if (changed) {
@@ -88,17 +97,38 @@ async function rebuildDisplayValuesForOrder(orderId) {
         );
       }
 
-      // Restore imported config params (e.g. WYSOKOSC/SZEROKOSC) when Playwright
-      // recalc dropped them from displayValues but they remain in json_parameters.
-      const importParams = extractImportParams(values);
-      if (Object.keys(importParams).length > 0 && pos.asortment_group_number) {
+      // Rebuild displayValues after Playwright: apply aliases, locked flags and
+      // drop empty / zero-hidden params the browser leaves in the map.
+      if (pos.asortment_group_number) {
         const displayObject = Object.fromEntries(entries);
+        let shortJson = pos.parameters_short;
+        if (typeof shortJson === 'string') {
+          try { shortJson = JSON.parse(shortJson); } catch { shortJson = null; }
+        }
+
+        let formMeta = null;
+        if (pos.ver) {
+          try {
+            const { getFormMeta } = require('../formEngine');
+            formMeta = await getFormMeta({
+              groupNumber: String(pos.asortment_group_number),
+              version: pos.ver,
+              lang: pos.lang || 'pl'
+            });
+          } catch (err) {
+            log(`displayValueRebuilder: getFormMeta failed for position ${pos.id}: ${err.message}`);
+          }
+        }
+
+        const importParams = extractImportParams(values);
         const rebuilt = await buildDisplayValuesFromDictionary({
           groupNumber: String(pos.asortment_group_number),
           lang: pos.lang || 'pl',
-          values: buildPersistedParameters(extractImportParams(values), values),
-          displayValues: displayObject,
-          importValues: extractImportParams(values)
+          values: buildPersistedParameters(importParams, values),
+          displayValues: entries,
+          shortJson,
+          formMeta,
+          importValues: importParams
         });
         const rebuiltWire = displayValuesToWireFormat(rebuilt);
         const currentWire = displayValuesToWireFormat(displayObject);

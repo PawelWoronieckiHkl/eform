@@ -28,6 +28,7 @@ const fs = require('fs').promises;
 const ftp = require('../services/orderImport/ftpClient');
 const cache = require('../services/orderImport/localCache');
 const { preflightPayload } = require('../services/orderImport/preflight');
+const { tryRecoverValidOrderPayload } = require('../services/orderImport/payloadRecovery');
 
 async function readOrderJson(fileName, fallbackDir) {
   // Download to a throwaway temp file so we never touch incoming/processed/error.
@@ -66,7 +67,14 @@ function printStageErrors(report) {
     let payload;
     try {
       // eslint-disable-next-line no-await-in-loop
-      payload = await readOrderJson(fileName, paths.incoming);
+    payload = await readOrderJson(fileName, paths.incoming);
+    const recovery = await tryRecoverValidOrderPayload(fileName, payload, {
+      localProcessedDir: paths.processed
+    });
+    if (recovery.recovered) {
+      console.log(`WARN  ${fileName} — invalid FTP payload, using recovered order from ${recovery.source}`);
+      payload = recovery.payload;
+    }
     } catch (err) {
       rejected++;
       console.log(`FAIL  ${fileName}`);
