@@ -2223,3 +2223,17 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
 === 2026-06-12 10:35:01 - Start ===
 === 2026-06-12 10:35:01 - Dodawanie zmian do commita ===
+[main 569897f] Automatic commit 2026-06-12 10:35
+ 19 files changed, 12921 insertions(+), 86 deletions(-)
+ create mode 100644 services/orderImport/__tests__/payloadRecovery.test.js
+ create mode 100644 services/orderImport/payloadRecovery.js
+=== 2026-06-12 10:35:01 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   523752a..569897f  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-06-12 10:35:04 - Koniec ===
+=== 2026-06-12 12:00:01 - Start ===
+=== 2026-06-12 12:00:01 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-06-13 10:35:01 - Start ===
+=== 2026-06-13 10:35:01 - Dodawanie zmian do commita ===
