@@ -154,7 +154,45 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
   return pdfBuffer;
 }
 
-module.exports = { generateExcel, generatePdf, generateProductionPdf, uploadProductionPdf };
+function renderOrderPdfHtml({
+  orderDetails,
+  cleanOrderItems,
+  sendData,
+  orderNr = 1,
+  prices = true,
+  maxProdDays = 0,
+  totalQuantity,
+  showGoldPrices = true,
+  clientView = false,
+  showBoth = false,
+  lang = 'pl'
+}) {
+  const i18n = confLang(lang);
+  const __ = (key) => i18n.__(key, { locale: lang });
+  const templatesDir = path.dirname(path.join(__dirname, 'order-pdf.njk'));
+  const env = nunjucks.configure(templatesDir, {
+    autoescape: true,
+    trimBlocks: true,
+    lstripBlocks: true
+  });
+  env.addGlobal('__', __);
+  registerPdfNunjucksFilters(env);
+  return env.render('order-pdf.njk', {
+    orderDetails,
+    cleanOrderItems,
+    logoPath: 'data:image/png;base64,test',
+    sendData,
+    orderNr,
+    prices,
+    maxProdDays,
+    totalQuantity,
+    showGoldPrices,
+    clientView,
+    showBoth
+  });
+}
+
+module.exports = { generateExcel, generatePdf, generateProductionPdf, uploadProductionPdf, renderOrderPdfHtml };
 
 async function generateProductionPdf(orderData, cleanOrderItems, logoPath, orderIdx, clientName) {
   const lang = 'pl';

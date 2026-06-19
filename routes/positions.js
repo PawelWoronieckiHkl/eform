@@ -393,7 +393,7 @@ router.get('/:positionId', requireLogin, async (req, res) => {
       return res.render('position_sent.njk', { position: result, parameters: parametersDesc, values: values, parameters_short: parameters_short, isAdmin: req.session.user?.isAdmin })
     }
     else {
-      return res.render('position_sent-prices.njk', { position: result, parameters: parametersDesc, values: values, parameters_short: parameters_short, isAdmin: req.session.user?.isAdmin })
+      return res.render('position_sent-prices.njk', { position: result, parameters: parametersDesc, values: values, parameters_short: parameters_short, isAdmin: req.session.user?.isAdmin, showUnlockedPrices: true })
     }
   }
   else {

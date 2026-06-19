@@ -117,6 +117,25 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- Blokada dostępu -->
+                                    <div class="card admin-card border-danger">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title">
+                                                <i class="bi bi-slash-circle me-2"></i>
+                                                Zablokuj dostęp
+                                            </h5>
+                                            <p class="card-text">Przerwa techniczna — tylko admin może się zalogować. Pozostali użytkownicy zobaczą komunikat na stronie logowania.</p>
+                                            <div class="d-flex align-items-center gap-2 mt-auto flex-wrap">
+                                                <button id="btn-access-lock" class="btn {% if accessBlocked %}btn-success{% else %}btn-danger{% endif %} text-white">
+                                                    <i class="bi {% if accessBlocked %}bi-unlock{% else %}bi-lock{% endif %} me-1"></i>
+                                                    {% if accessBlocked %}Odblokuj dostęp{% else %}Zablokuj dostęp{% endif %}
+                                                </button>
+                                                <span id="access-lock-status" class="badge {% if accessBlocked %}bg-danger{% else %}bg-secondary{% endif %} fs-6">
+                                                    {% if accessBlocked %}Dostęp zablokowany{% else %}Dostęp otwarty{% endif %}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <!-- Słownik tłumaczeń -->
                                     <div class="card admin-card">
                                         <div class="card-body d-flex flex-column">

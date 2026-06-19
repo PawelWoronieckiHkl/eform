@@ -111,6 +111,13 @@ else {
 		}
 	}));
 }
+const { getClientIp } = require('./utils/getClientIp');
+app.use((req, res, next) => {
+	if (req.session?.user?.pin) {
+		req.session.clientIp = getClientIp(req);
+	}
+	next();
+});
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
@@ -169,6 +176,8 @@ app.use(async (req, res, next) => {
 });
 
 app.use(addOrganizationsForAdmin);
+const { enforceAccessLock } = require('./middleware/accessLock');
+app.use(enforceAccessLock);
 app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/group', groupRoutes);

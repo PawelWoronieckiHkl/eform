@@ -77,8 +77,8 @@
                                                                     {% for param in parameters %}
                                                                         {% if param[1]
                                         .option_value and not param[1]
-                                        .option_description and not param[1]
-                                        .locked and param[1].row != '0' %}
+                                        .option_description and (not param[1]
+                                        .locked or showUnlockedPrices) and param[1].row != '0' %}
                                                                             {% set isSub = param[1].sub or (param[0] | string).startsWith('SUB___') %}
                                                                             {% set isListsum = param[1].listsum or param[1].row == '2' %}
                                                                             {% set showRow = true %}

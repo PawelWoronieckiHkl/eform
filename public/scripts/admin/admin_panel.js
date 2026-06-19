@@ -2,6 +2,48 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add home-page class to body (used by CSS for page-specific layout)
     document.body.classList.add('home-page');
 
+    // Access lock toggle
+    const accessLockBtn = document.getElementById('btn-access-lock');
+    const accessLockStatus = document.getElementById('access-lock-status');
+    if (accessLockBtn) {
+        accessLockBtn.addEventListener('click', async function () {
+            const btn = this;
+            const currentlyBlocked = btn.classList.contains('btn-success');
+            const nextBlocked = !currentlyBlocked;
+
+            btn.disabled = true;
+            try {
+                const resp = await fetch('/admin/access-lock', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ blocked: nextBlocked })
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    if (data.blocked) {
+                        btn.className = 'btn btn-success text-white';
+                        btn.innerHTML = '<i class="bi bi-unlock me-1"></i> Odblokuj dostęp';
+                        accessLockStatus.className = 'badge bg-danger fs-6';
+                        accessLockStatus.textContent = 'Dostęp zablokowany';
+                        const logoutInfo = data.loggedOut ? ` Wylogowano ${data.loggedOut} sesji.` : '';
+                        toastr.warning('Dostęp zablokowany — tylko admin może się zalogować.' + logoutInfo);
+                    } else {
+                        btn.className = 'btn btn-danger text-white';
+                        btn.innerHTML = '<i class="bi bi-lock me-1"></i> Zablokuj dostęp';
+                        accessLockStatus.className = 'badge bg-secondary fs-6';
+                        accessLockStatus.textContent = 'Dostęp otwarty';
+                        toastr.success('Dostęp odblokowany');
+                    }
+                } else {
+                    toastr.error('Nie udało się zmienić blokady dostępu');
+                }
+            } catch (e) {
+                toastr.error('Błąd połączenia z serwerem');
+            }
+            btn.disabled = false;
+        });
+    }
+
     // Active sessions panel
     const sessionsBtn = document.getElementById('btn-active-sessions');
     if (sessionsBtn) {
@@ -35,6 +77,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             li.appendChild(document.createTextNode(identText));
 
                             const badges = document.createElement('span');
+                            if (u.ip) {
+                                const b = document.createElement('span');
+                                b.className = 'badge bg-secondary me-1 font-monospace';
+                                b.textContent = u.ip;
+                                badges.appendChild(b);
+                            }
                             if (u.isAdmin) {
                                 const b = document.createElement('span');
                                 b.className = 'badge bg-danger me-1';

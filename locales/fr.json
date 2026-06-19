@@ -56,7 +56,9 @@
     "pin_placeholder": "Saisissez le code PIN",
     "password_label": "Mot de passe",
     "password_placeholder": "Saisissez le mot de passe",
-    "login_button": "Se connecter"
+    "login_button": "Se connecter",
+    "incorrect_data": "Données incorrectes !",
+    "technical_break": "Pause technique — veuillez réessayer plus tard."
   },
   "order": {
     "title": "Commande n°",

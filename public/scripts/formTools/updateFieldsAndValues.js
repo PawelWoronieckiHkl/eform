@@ -7,6 +7,7 @@ import { showToast } from '../components/toast.js';
 import { loadScript } from './scriptLoader.js';
 import { findAllValidatorsForInput, clearDisabledValues } from './validateUtils.js'
 import { calculateFromScript, calculateFromFormula, checkIfPriceIsCorrect } from './pricesCalculator.js';
+import { applySingleParamVisibility } from './createForm.js';
 
 
 
@@ -357,20 +358,12 @@ export async function updateFieldInputs(params, inputs, values, displayValues, a
 }
 
 
-export async function updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value) {
-
-    logFunctionName('updateFieldStates')
+function applyParamVisibilityFromFormulas(params, inputs, values, validateInputs) {
     const disabledParams = new Set();
     for (let key in inputs) {
-        let param;
-        for (let i = 0; i < params.length; i++) {
-            if (params[i].NAME === key) {
-                param = params[i];
-                break;
-            }
-        }
-
+        const param = params.find(p => p.NAME === key);
         if (!param) continue;
+
         let shouldEnable = false;
         try {
             shouldEnable = window.FormulaHandler.evaluateFormula(
@@ -384,17 +377,12 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
                 if (!window.skipCountParams.includes(param.NAME)) {
                     window.skipCountParams.push(param.NAME);
                 }
-            }
-            else if (window.skipCountParams.includes(param.NAME) && shouldEnable) {
-
+            } else if (window.skipCountParams.includes(param.NAME) && shouldEnable) {
                 window.skipCountParams = window.skipCountParams.filter(name => name !== param.NAME);
-
             }
 
             if (shouldEnable == 'password') {
                 shouldEnable = false;
-                // password: ukryte w formularzu, ale nadal liczone
-                // jeśli dodatkowo SUB___ → locked:true (cena sub ukryta)
                 if (key.startsWith('SUB___') && window.lockedParams && !window.lockedParams.includes(key)) {
                     window.lockedParams.push(key);
                 }
@@ -402,45 +390,23 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
                 disabledParams.add(param.NAME);
             }
             if (param.FORMROW == '0') { shouldEnable = false; }
-
-        }
-        catch (error) {
-            showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`)
-        }
-        let paramDiv = inputs[key].parentNode;
-
-        // SUB___ params: hidden for regular users/group admins; visible for isGroupShop (non-locked, ENABLE formula passes)
-        if (key.startsWith('SUB___')) {
-            const isLockedSub = window.lockedParams && window.lockedParams.includes(key);
-            const showSubNow = window.isGroupShop || window.isClient || (window.canViewSubPrices && window.showSubParams) || (window.viewAsOrganization && window.showSubParams);
-            if (showSubNow && !isLockedSub && shouldEnable) {
-                paramDiv.style.display = 'grid';
-                window.enabledParams[param.NAME] = true;
-            } else {
-                paramDiv.style.display = 'none';
-                delete window.enabledParams[param.NAME];
-            }
-        } else if (shouldEnable) {
-            // For isGroupShop/isClient/hidePrices: hide ALL row2/listsum price params — they only see SUB___ prices
-            const isRowTwo = param.LISTROW == '2' || param.LISTSUM == 'true';
-            if ((window.isGroupShop || window.isClient || window.hidePrices) && isRowTwo) {
-                paramDiv.style.display = 'none';
-                delete window.enabledParams[param.NAME];
-            } else {
-                paramDiv.style.display = 'grid';
-                window.enabledParams[param.NAME] = true;
-            }
-        }
-        else {
-            paramDiv.style.display = 'none';
-            delete window.enabledParams[param.NAME]
+        } catch (error) {
+            showToast('error', `Parametr: ${param.VALUE}.  ${error.message}`);
         }
 
-        paramDiv.children[0].innerHTML;
-        if (inputs[key].tagName == 'INPUT') {
+        applySingleParamVisibility(key, param, shouldEnable, inputs);
+
+        if (validateInputs && inputs[key].tagName == 'INPUT') {
             validateFormInput(values, inputs[key]);
         }
     }
+    return disabledParams;
+}
+
+export async function updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, name, value) {
+
+    logFunctionName('updateFieldStates')
+    let disabledParams = applyParamVisibilityFromFormulas(params, inputs, values, true);
     ({ values, displayValues } = clearDisabledValues(values, displayValues))
     const scriptOperations = [];
     const formulaOperations = [];
@@ -538,6 +504,7 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
             resolveAll();
         }
     }).then(() => {
+        applyParamVisibilityFromFormulas(params, inputs, values, false);
         displayValues = checkIfPriceIsCorrect(values, inputs, displayValues);
     });
 }

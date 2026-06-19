@@ -60,7 +60,7 @@ router.get('/translations', (req, res) => {
 });
 
 
-router.get('/env', requireLogin, (req, res) => {
+router.get('/env', (req, res) => {
   const versionsHuman = {
     dev: 'Deweloperska',
     test: "Testowa",

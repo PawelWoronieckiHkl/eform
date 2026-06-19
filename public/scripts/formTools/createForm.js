@@ -279,6 +279,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
 export function fillFields(displayValues, inputs, values) {
 
     for (let input of Object.values(inputs)) {
+        if (!input?.name || isParamLocked(input.name, displayValues)) continue;
         const tag = input.tagName
         const labelData = displayValues.get(input.name)
         console.log('Filling field:', input.name, 'with value from displayValues:', labelData);
@@ -378,6 +379,178 @@ export function checkIfParamHidden(formula, values, param) {
     return isEnabled;
 }
 
+
+/** Row-2 / listsum regular prices hidden (SUB-only view). Matches order.njk rules. */
+export function shouldHideRegularPriceRow(isRowTwo) {
+    if (!isRowTwo) return false;
+    if (window.isGroupShop || window.isClient || window.hidePrices) return true;
+    if (window.canViewSubPrices && !window.showSubParams && !window.viewAsOrganization && !window.isOrgAccount) {
+        return true;
+    }
+    return false;
+}
+
+/** Whether current user context should ever see SUB___ price fields. Matches order.njk. */
+export function canUserSeeSubPrices() {
+    if (window.isGroup || window.isGroupShop || window.isClient) return true;
+    if (window.canViewSubPrices && window.showSubParams) return true;
+    if (window.viewAsOrganization && window.showSubParams) return true;
+    if (window.canViewSubPrices && !window.showSubParams && !window.viewAsOrganization && !window.isOrgAccount) {
+        return true;
+    }
+    return false;
+}
+
+/** Detect password-protected params from ENABLE (HASLO) — merge, never drop saved locked. */
+export function syncLockedParamsFromEnableFormulas(params, values, displayValues) {
+    if (!window.FormulaHandler || !params || !values) return;
+    if (!window.lockedParams) window.lockedParams = [];
+
+    const preserved = new Set(window.lockedParams);
+    if (displayValues) {
+        for (const [key, val] of displayValues) {
+            if (val?.locked) {
+                preserved.add(key);
+                if (!key.startsWith('SUB___')) preserved.add('SUB___' + key);
+            }
+        }
+    }
+
+    for (const param of params) {
+        if (!param?.NAME || !param.ENABLE || param.ENABLE === '<NULL>') continue;
+        try {
+            const result = window.FormulaHandler.evaluateFormula(
+                param.ENABLE,
+                values,
+                'param',
+                param.NAME
+            );
+            if (result === 'password') {
+                preserved.add(param.NAME);
+                if (!param.NAME.startsWith('SUB___')) {
+                    preserved.add('SUB___' + param.NAME);
+                }
+            }
+        } catch (_) { /* ignore — uid/context may be incomplete */ }
+    }
+
+    window.lockedParams = [...preserved];
+}
+
+/** Force-hide all password-locked param rows in the DOM. */
+export function hideLockedParamRows(params, inputs) {
+    if (!params || !inputs) return;
+    for (const param of params) {
+        if (!param?.NAME) continue;
+        if (!isParamLocked(param.NAME)) continue;
+        const input = inputs[param.NAME];
+        if (input?.parentNode) {
+            input.parentNode.style.display = 'none';
+            delete window.enabledParams[param.NAME];
+        }
+    }
+}
+
+/** Restore lockedParams from saved displayValues (incl. SUB___ mirror of base param). */
+export function restoreLockedParamsFromDisplayValues(displayValues) {
+    if (!displayValues) return;
+    if (!window.lockedParams) window.lockedParams = [];
+    for (const [key, val] of displayValues) {
+        if (!key || !val?.locked || window.lockedParams.includes(key)) continue;
+        window.lockedParams.push(key);
+    }
+    for (const [key, val] of displayValues) {
+        if (!key || !val?.locked || key.startsWith('SUB___')) continue;
+        const subKey = 'SUB___' + key;
+        if (displayValues.has(subKey) && !window.lockedParams.includes(subKey)) {
+            window.lockedParams.push(subKey);
+        }
+    }
+}
+
+/** Password-protected param — must stay hidden in the form UI. */
+export function isParamLocked(paramName, displayValues = window.formDisplayValues) {
+    if (!paramName || typeof paramName !== 'string') return false;
+    if (window.lockedParams?.includes(paramName)) return true;
+    if (displayValues?.get?.(paramName)?.locked) return true;
+    if (paramName.startsWith('SUB___')) {
+        const baseName = paramName.slice(6);
+        if (window.lockedParams?.includes(baseName)) return true;
+        if (displayValues?.get?.(baseName)?.locked) return true;
+    }
+    return false;
+}
+
+/** SUB___ price fields visible for current user context. Matches order.njk rules. */
+export function shouldShowSubPriceField(shouldEnable, isLockedSub) {
+    if (!shouldEnable || isLockedSub) return false;
+    return canUserSeeSubPrices();
+}
+
+export function applySingleParamVisibility(key, param, shouldEnable, inputs) {
+    const paramDiv = inputs[key]?.parentNode;
+    if (!paramDiv) return;
+
+    if (key.startsWith('SUB___')) {
+        const isLockedSub = isParamLocked(key);
+        if (shouldShowSubPriceField(shouldEnable, isLockedSub)) {
+            paramDiv.style.display = 'grid';
+            window.enabledParams[param.NAME] = true;
+        } else {
+            paramDiv.style.display = 'none';
+            delete window.enabledParams[param.NAME];
+        }
+    } else if (shouldEnable) {
+        const isRowTwo = param.LISTROW == '2' || param.LISTSUM == 'true';
+        if (shouldHideRegularPriceRow(isRowTwo)) {
+            paramDiv.style.display = 'none';
+            delete window.enabledParams[param.NAME];
+        } else {
+            paramDiv.style.display = 'grid';
+            window.enabledParams[param.NAME] = true;
+        }
+    } else {
+        paramDiv.style.display = 'none';
+        delete window.enabledParams[param.NAME];
+    }
+}
+
+/** Show SUB___ rows immediately (before ENABLE formula / async scripts finish). */
+export function showSubPriceRowsImmediately(params, inputs) {
+    if (!canUserSeeSubPrices() || !params || !inputs) return;
+    for (const param of params) {
+        if (!param?.NAME?.startsWith('SUB___')) continue;
+        if (isParamLocked(param.NAME)) continue;
+        const input = inputs[param.NAME];
+        if (input?.parentNode) {
+            input.parentNode.style.display = 'grid';
+            window.enabledParams[param.NAME] = true;
+        }
+    }
+}
+
+/** Hide regular prices and show SUB___ rows at recalc start (no flash of regular prices). */
+export function applySubPriceLayoutDuringCalc(params, inputs, values, displayValues) {
+    syncLockedParamsFromEnableFormulas(params, values, displayValues);
+    hideRegularPriceRowsDuringCalc(params, inputs);
+    hideLockedParamRows(params, inputs);
+    showSubPriceRowsImmediately(params, inputs);
+}
+
+/** Hide regular price rows immediately when recalc starts (prevents flash before updateFieldStates). */
+export function hideRegularPriceRowsDuringCalc(params, inputs) {
+    if (!params || !inputs) return;
+    for (const param of params) {
+        if (!param?.NAME || param.NAME.startsWith('SUB___')) continue;
+        const isRowTwo = param.LISTROW == '2' || param.LISTSUM == 'true';
+        if (!shouldHideRegularPriceRow(isRowTwo)) continue;
+        const input = inputs[param.NAME];
+        if (input?.parentNode) {
+            input.parentNode.style.display = 'none';
+            delete window.enabledParams[param.NAME];
+        }
+    }
+}
 
 export function hideLocked(inputs, displayValues) {
 

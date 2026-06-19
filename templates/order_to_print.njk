@@ -186,6 +186,8 @@
                     </div>
                 {% endif %}
             </div>
+            {% set clientView = clientView | default(false) %}
+            {% set showBoth = showBoth | default(false) %}
             {% set globalIndex = 1 %}
             {% for table in cleanOrderItems %}
                 <div class="print-table-container">
@@ -221,6 +223,7 @@
                                     <td>{{ pdfCell(rowObj.item.comment) }}</td>
                                 </tr>
                                 <tr class="print-price-row">
+                                    {% if not clientView %}
                                     {% for header in table.headers2 %}
                                         {% if not(header in rowObj.item.lockedParams) %}
                                             <td class="print-price" colspan="2">
@@ -229,8 +232,19 @@
                                             </td>
                                         {% endif %}
                                     {% endfor %}
+                                    {% endif %}
+                                    {% if clientView or showBoth %}
+                                    {% for entry in rowObj.item.subParamValues %}
+                                        {% if entry.value and entry.value != '-' and entry.value != '' and not entry.locked %}
+                                            <td class="print-price" colspan="2">
+                                                <span class="print-price-label">{{ entry.display }}:</span>
+                                                <b>{{ pdfCellBold(entry.value) }}</b>
+                                            </td>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
                                 </tr>
-                                {% if prices %}
+                                {% if prices and not clientView %}
                                     <tr class="print-price-row">
                                         {% for header in table.headers1 %}
                                             {% if header in rowObj.item.lockedParams %}
@@ -250,6 +264,18 @@
                                         {% endfor %}
                                     </tr>
                                 {% endif %}
+                                {% if prices and (clientView or showBoth) %}
+                                    <tr class="print-price-row">
+                                        {% for entry in rowObj.item.subParamValues %}
+                                            {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
+                                                <td class="print-hidden-price" colspan="2">
+                                                    <span class="print-price-label">{{ entry.display }}:</span>
+                                                    <b>{{ pdfCellBold(entry.value) }}</b>
+                                                </td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endif %}
                                 {% set globalIndex = globalIndex + 1 %}
                             {% endfor %}
                         </tbody>
@@ -264,28 +290,64 @@
             <div class="print-total-items">
                 {{ __('order.total_items') }}: <span class="pdf-val">{{ globalIndex - 1 }}</span>
             </div>
-            {% if totalPrice %}
+            {% if prices and sendData and sendData.total %}
+                <div id='total-container' style='padding-right: 10%;'>
+                    <div class="total-price d-flex justify-content-end align-items-center col-12">
+                        <span class='total price-label col-3 text-center'>
+                            {{ sendData.total | replace(__('order.total') + ': ', '') }}
+                        </span>
+                    </div>
+                </div>
+            {% elif totalPrice and not clientView %}
                 <div id='total-container' style='padding-right: 10%;'>
                     <div class="total-price d-flex justify-content-end align-items-center col-12">
                         <span class='total price-label col-3 text-center'>
                             {% if totalPrice.visible != '0.00' %}
-                                {{ __('order.total') }}: <span class="pdf-val">{{ totalPrice.visible }}&#8364;</span></span>
-                        {% else %}
-                            Według cennika</span>
-                    {% endif %}
+                                {{ __('order.total') }}: <span class="pdf-val">{{ totalPrice.visible }}&#8364;</span>
+                            {% else %}
+                                Według cennika
+                            {% endif %}
+                        </span>
+                    </div>
                 </div>
-                {% if prices %}
+            {% elif totalPrice and clientView and totalPrice.subVisible and totalPrice.subVisible != 0 %}
+                <div id='total-container' style='padding-right: 10%;'>
                     <div class="total-price d-flex justify-content-end align-items-center col-12">
-                        <span class='total gold price-label col-3  text-center'>
+                        <span class='total price-label col-3 text-center'>
+                            {{ __('order.total') }}: <span class="pdf-val">{{ totalPrice.subVisible }}&#8364;</span>
+                        </span>
+                    </div>
+                </div>
+            {% endif %}
+            {% if prices and sendData and sendData.total_hidden %}
+                <div id='total-container' style='padding-right: 10%;'>
+                    <div class="total-price d-flex justify-content-end align-items-center col-12">
+                        <span class='total gold price-label col-3 text-center'>
+                            {{ sendData.total_hidden | replace(__('order.total_hidden') + ': ', '') }}
+                        </span>
+                    </div>
+                </div>
+            {% elif prices and not clientView and totalPrice %}
+                <div id='total-container' style='padding-right: 10%;'>
+                    <div class="total-price d-flex justify-content-end align-items-center col-12">
+                        <span class='total gold price-label col-3 text-center'>
                             {% if totalPrice.hidden != '0.00' %}
-                                {{ __('order.total_hidden') }}: <span class="pdf-val">{{ totalPrice.hidden }}&#8364; netto</span></span>
-                        {% else %}
-                            Według cennika</span>
-                    {% endif %}
-                {% endif %}
-            </div>
-        </div>
-    {% endif %}
+                                {{ __('order.total_hidden') }}: <span class="pdf-val">{{ totalPrice.hidden }}&#8364; netto</span>
+                            {% else %}
+                                Według cennika
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            {% elif prices and clientView and totalPrice and totalPrice.subLocked and totalPrice.subLocked != 0 %}
+                <div id='total-container' style='padding-right: 10%;'>
+                    <div class="total-price d-flex justify-content-end align-items-center col-12">
+                        <span class='total gold price-label col-3 text-center'>
+                            {{ __('order.total_hidden') }}: <span class="pdf-val">{{ totalPrice.subLocked }}&#8364; netto</span>
+                        </span>
+                    </div>
+                </div>
+            {% endif %}
     <div class='client-details'>
         <div class="order-details">
             <h3 class='header-3'>{{ __('order.client_data') }}</h3>

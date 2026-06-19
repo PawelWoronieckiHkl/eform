@@ -56,7 +56,9 @@
     "pin_placeholder": "Podaj pin",
     "password_label": "Hasło",
     "password_placeholder": "Podaj hasło",
-    "login_button": "Zaloguj się"
+    "login_button": "Zaloguj się",
+    "incorrect_data": "Niepoprawne Dane!",
+    "technical_break": "Przerwa techniczna — prosimy spróbować później."
   },
   "order": {
     "title": "Zamówienie nr.",

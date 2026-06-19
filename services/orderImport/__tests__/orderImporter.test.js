@@ -69,15 +69,18 @@ test('importResolvedOrder runs the full pipeline with stubs', async () => {
   const itemBuilder = {
     buildOrderItemStructure(...args) {
       // Project to the keys our importer relies on for the assertions.
+      // Signature: order, listPrice, discountPct, discount, unitPrice, totalPrice,
+      // totalPriceSub, name, commission, jsonValues, jsonValuesToDisplay, amount,
+      // comment, version, groupNumber, lang, department, groupName, shortJson
       return {
         order: args[0],
-        amount: args[10],
-        groupNumber: args[13],
-        lang: args[14],
-        department: args[15],
-        groupName: args[16],
-        jsonValues: args[8],
-        jsonValuesToDisplay: args[9]
+        amount: args[11],
+        groupNumber: args[14],
+        lang: args[15],
+        department: args[16],
+        groupName: args[17],
+        jsonValues: args[9],
+        jsonValuesToDisplay: args[10]
       };
     }
   };

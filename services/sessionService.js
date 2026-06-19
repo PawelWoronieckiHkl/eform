@@ -30,7 +30,8 @@ function getActiveSessions() {
                         contextUser: contextIdent,
                         isAdmin: sess.user.isAdmin || false,
                         isOwner: sess.user.isOwner || false,
-                        isEmployee: sess.user.isEmployee || false
+                        isEmployee: sess.user.isEmployee || false,
+                        ip: sess.clientIp || null
                     });
                 }
             }
@@ -39,4 +40,41 @@ function getActiveSessions() {
     });
 }
 
-module.exports = { setStore, getActiveSessions };
+function destroyNonAdminSessions() {
+    return new Promise((resolve, reject) => {
+        if (!sessionStore || typeof sessionStore.all !== 'function') {
+            return resolve(0);
+        }
+        sessionStore.all((err, sessions) => {
+            if (err) return reject(err);
+            const entries = sessions && typeof sessions === 'object'
+                ? Object.entries(sessions)
+                : [];
+            if (entries.length === 0) {
+                return resolve(0);
+            }
+            let pending = 0;
+            let destroyed = 0;
+            let failed = false;
+
+            for (const [sid, sess] of entries) {
+                if (sess?.user?.isAdmin) continue;
+                pending++;
+                sessionStore.destroy(sid, (destroyErr) => {
+                    if (failed) return;
+                    if (destroyErr) {
+                        failed = true;
+                        return reject(destroyErr);
+                    }
+                    destroyed++;
+                    pending--;
+                    if (pending === 0) resolve(destroyed);
+                });
+            }
+
+            if (pending === 0) resolve(0);
+        });
+    });
+}
+
+module.exports = { setStore, getActiveSessions, destroyNonAdminSessions };

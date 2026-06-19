@@ -58,7 +58,9 @@
     "pin_placeholder": "Enter pin",
     "password_label": "Password",
     "password_placeholder": "Enter password",
-    "login_button": "Log in"
+    "login_button": "Log in",
+    "incorrect_data": "Incorrect data!",
+    "technical_break": "Technical break — please try again later."
   },
   "order": {
     "title": "Order No.",

@@ -14,7 +14,7 @@ const { get } = require('lodash');
 const hashUser = require('../utils/hashUser').hashUser;
 const { log } = require('../utils/logging');
 
-
+let clientsUpdateRunning = false;
 
 router.use(async (req, res, next) => {
     res.locals.owner = req.session?.user?.isOwner || false;
@@ -40,8 +40,13 @@ router.get("/login", (req, res) => {
         const loginPath = `${req.baseUrl}/auth/login?pin=admin&password=eforszef123`;
         return res.redirect(loginPath);
     }
-    updateClients()
-    res.render("login.njk");
+    if (!clientsUpdateRunning) {
+        clientsUpdateRunning = true;
+        updateClients()
+            .catch((err) => log('updateClients on login:', err.message))
+            .finally(() => { clientsUpdateRunning = false; });
+    }
+    res.render("login.njk", { message: req.query.message || undefined });
 });
 
 router.get("/org-pwd", requireLogin, requireOwner, async (req, res, next) => {

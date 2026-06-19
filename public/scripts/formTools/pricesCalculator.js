@@ -3,6 +3,7 @@ import { showToast } from "../components/toast.js";
 import { loadScript } from './scriptLoader.js';
 import { buildValuesToDisplay } from "./updateFieldsAndValues.js";
 import { validateFormInput } from "./validateUtils.js";
+import { shouldHideRegularPriceRow } from "./createForm.js";
 import { getEnvVersion } from "../getEnv.js";
 
 let _isTestEnv = false;
@@ -168,14 +169,29 @@ export function calculateFromScript(param, values, inputs, displayValues, groupN
                                 inputs[scriptParamName].value = scriptValue;
                             }
 
-                            buildValuesToDisplay(allOptionsByParameter, strVal, scriptParamName, displayValues, 'INPUT', true);
-
-                            // Mirror value to SUB___ variant if it exists (e.g. CENA → SUB___CENA)
                             const subVariantName = 'SUB___' + scriptParamName;
-                            if (inputs[subVariantName] && !scriptParamName.startsWith('SUB___')) {
-                                inputs[subVariantName].value = scriptValue;
-                                values[subVariantName] = scriptValue;
-                                buildValuesToDisplay(allOptionsByParameter, strVal, subVariantName, displayValues, 'INPUT', true);
+                            const priceParam = window.params?.find(p => p.NAME === scriptParamName);
+                            const isRowTwo = priceParam && (priceParam.LISTROW == '2' || priceParam.LISTSUM == 'true');
+                            const hideRegular = shouldHideRegularPriceRow(isRowTwo);
+
+                            const applyPriceToInput = (name) => {
+                                if (name === scriptParamName) {
+                                    buildValuesToDisplay(allOptionsByParameter, strVal, scriptParamName, displayValues, 'INPUT', true);
+                                    return;
+                                }
+                                if (inputs[name] && !scriptParamName.startsWith('SUB___')) {
+                                    inputs[name].value = scriptValue;
+                                    values[name] = scriptValue;
+                                    buildValuesToDisplay(allOptionsByParameter, strVal, name, displayValues, 'INPUT', true);
+                                }
+                            };
+
+                            if (hideRegular && inputs[subVariantName]) {
+                                applyPriceToInput(subVariantName);
+                                applyPriceToInput(scriptParamName);
+                            } else {
+                                applyPriceToInput(scriptParamName);
+                                applyPriceToInput(subVariantName);
                             }
 
                             // For auto-created _S params, set description from parent with -spec suffix

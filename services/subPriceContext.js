@@ -25,7 +25,6 @@ function getEffectiveOrgId(req) {
  * Client: SUB prices only.
  */
 function applySubPriceLocals(req, res) {
-  const isTestEnv = process.env.NODE_ENV === 'test';
   const sessionUser = req.session?.user;
   const contextUser = req.session?.context_user;
   const effectiveOrgId = getEffectiveOrgId(req);
@@ -35,7 +34,7 @@ function applySubPriceLocals(req, res) {
   let viewAsOrganization = false;
   let isClient = false;
 
-  if (isTestEnv && sessionUser) {
+  if (sessionUser) {
     if (sessionUser.isAdmin && contextUser && nonHklOrg) {
       // Admin + wybrany klient org (np. Luxan) → widok jak organizacja (zwykłe ceny, SUB po keychain)
       viewAsOrganization = true;

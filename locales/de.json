@@ -56,7 +56,9 @@
     "pin_placeholder": "Pin eingeben",
     "password_label": "Passwort",
     "password_placeholder": "Passwort eingeben",
-    "login_button": "Anmelden"
+    "login_button": "Anmelden",
+    "incorrect_data": "Ungültige Daten!",
+    "technical_break": "Technische Pause — bitte versuchen Sie es später erneut."
   },
   "order": {
     "title": "Bestellung Nr.",

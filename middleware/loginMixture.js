@@ -27,11 +27,13 @@ function addOrganizationsForAdmin(req, res, next) {
     }
 
     if (!req.session.user || !req.session.user.isAdmin) {
+      if (res.headersSent) return;
       return originalRender(view, renderOptions, renderCallback);
     }
 
     usersDb.getAllOrganizations()
       .then((orgs) => {
+        if (res.headersSent) return;
         const organizations = Array.isArray(orgs) ? orgs : [];
         renderOptions.organizations = customOrgSorting(organizations);
         renderOptions.admin = true;
@@ -43,6 +45,7 @@ function addOrganizationsForAdmin(req, res, next) {
         originalRender(view, renderOptions, renderCallback);
       })
       .catch((error) => {
+        if (res.headersSent) return;
         log('Error fetching organizations:', error);
         renderOptions.organizations = [];
         renderOptions.admin = true;

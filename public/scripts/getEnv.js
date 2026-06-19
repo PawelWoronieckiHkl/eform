@@ -13,7 +13,7 @@ export async function getEnvVersion() {
 
 
 getEnvVersion().then(version => {
-  if (version) {
+  if (version && version !== 'Produkcyjna') {
     document.getElementById('env-info').textContent = `Wersja ${version}`;
   }
   else {

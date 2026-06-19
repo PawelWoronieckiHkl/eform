@@ -13,9 +13,10 @@ window.loadTranslations = async function (lang) {
       error instanceof SyntaxError &&
       error.message.includes('Unexpected token <')
     ) {
-      window.location.href = '/auth/login'; 
+      if (!window.location.pathname.includes('/user/login')) {
+        window.location.href = '/user/login';
+      }
     } else {
-      
       console.error(error);
     }
   }
@@ -32,7 +33,9 @@ window.loadLangs = async function getLanguages() {
 
     return data.body.lang;
   } catch (error) {
-    window.location.href = '/auth/login'; 
+    if (!window.location.pathname.includes('/user/login')) {
+      window.location.href = '/user/login';
+    }
     console.error('Wystąpił błąd:', error);
     return null;
   }

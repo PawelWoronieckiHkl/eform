@@ -7,9 +7,13 @@ const langManager = require('../services/setLanguage')
 const langVer = require('../services/languageManager')
 const { dataDir, localesDir } = require('../config');
 const { log } = require('../utils/logging');
+const { rejectIfBlockedForLogin } = require('./accessLockAuth');
 
 async function handleAuthLogin(req, res, next, pin, password) {
     try {
+        if (await rejectIfBlockedForLogin(req, res, pin)) {
+            return;
+        }
         const isValid = await checkPassword(pin, password);
         const isEmployeeLogin = await checkEmployeePassword(pin, password);
         if (isValid) {
@@ -154,6 +158,9 @@ async function checkGroupShopPassword(login, password) {
 
 async function handleGroupShopLogin(req, res, next, login, password) {
     try {
+        if (await rejectIfBlockedForLogin(req, res, login)) {
+            return null;
+        }
         const shop = await checkGroupShopPassword(login, password);
         if (!shop) return null; // caller falls through to normal flow
 

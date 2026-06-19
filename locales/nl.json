@@ -56,7 +56,9 @@
     "pin_placeholder": "Voer pin in",
     "password_label": "Wachtwoord",
     "password_placeholder": "Voer wachtwoord in",
-    "login_button": "Inloggen"
+    "login_button": "Inloggen",
+    "incorrect_data": "Ongeldige gegevens!",
+    "technical_break": "Technische pauze — probeer het later opnieuw."
   },
   "order": {
     "title": "Bestelling nr.",

@@ -7,6 +7,7 @@ const db = require("../db/db_helper.js");
 const reportsDb = require("../db/admin/reports.js");
 const { log } = require('../utils/logging');
 const sessionService = require('../services/sessionService');
+const accessLock = require('../services/accessLock');
 
 router.use(async (req, res, next) => {
     if (req.session.user?.isOwner) {
@@ -41,7 +42,27 @@ function requireReportsApiAccess(req, res, next) {
 }
 
 router.get('/', requireLogin, requireAdmin, async (req, res) => {
-    res.render('admin/admin_panel.njk');
+    res.render('admin/admin_panel.njk', { accessBlocked: accessLock.isBlocked() });
+});
+
+router.get('/access-lock', requireLogin, requireAdmin, (req, res) => {
+    res.json({ success: true, blocked: accessLock.isBlocked() });
+});
+
+router.post('/access-lock', requireLogin, requireAdmin, async (req, res) => {
+    try {
+        const blocked = req.body?.blocked === true || req.body?.blocked === 'true';
+        const state = accessLock.setBlocked(blocked);
+        let loggedOut = 0;
+        if (state.blocked) {
+            loggedOut = await sessionService.destroyNonAdminSessions();
+        }
+        log(`Access lock ${state.blocked ? 'ENABLED' : 'DISABLED'} by admin ${req.session.user?.pin || '?'}${state.blocked ? `, logged out ${loggedOut} session(s)` : ''}`);
+        res.json({ success: true, blocked: state.blocked, updatedAt: state.updatedAt, loggedOut });
+    } catch (error) {
+        log('Error toggling access lock:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
 });
 
 router.get('/login-history', requireLogin, requireAdmin, async (req, res) => {

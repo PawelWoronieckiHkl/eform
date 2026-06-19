@@ -25,7 +25,12 @@ import { SourceWindow } from './formTools/slope.js';
 import { applyAttachmentFromServer } from './formTools/attachment.js';
 import { showToast } from "./components/toast.js";
 import { createElement, isEnabled } from "./components/htmlManipulator.js";
-import { hideLocked, hideSub, hideParams } from './formTools/createForm.js'
+import {
+  hideLocked, hideSub, hideParams, shouldHideRegularPriceRow, canUserSeeSubPrices,
+  applySubPriceLayoutDuringCalc, showSubPriceRowsImmediately,
+  restoreLockedParamsFromDisplayValues, syncLockedParamsFromEnableFormulas,
+  isParamLocked, hideLockedParamRows
+} from './formTools/createForm.js'
 import { AttrLoader } from "./formTools/storage.js";
 import { Translator } from "./formTools/fileTranslator.js"
 import { stopSpin, startSpin } from "./components/hourglass.js";
@@ -59,6 +64,10 @@ export async function generateForm(
   window.constValues = {};
   window.lockedParams = [];
   window.subParams = [];
+  window.formDisplayValues = displayValues;
+  if (editFlag && displayValues?.size) {
+    restoreLockedParamsFromDisplayValues(displayValues);
+  }
   window.spin = spin;
   
   window.calculationQueue = [];
@@ -90,8 +99,13 @@ export async function generateForm(
   fillLocalPositionObject();
   data.params = await loader.selectPrices(data.params)
   window.params = data.params;
+  const params = data.params;
   window.actualParam = '';
   window.actualValue = '';
+  if (editFlag) {
+    window.uid = await getUid();
+    syncLockedParamsFromEnableFormulas(params, values, displayValues);
+  }
   const form = document.getElementById("dynamic-form");
   const attachmentContainer = document.getElementById('attachment-container');
   const attachmentsLabel = document.querySelector('.attachment-label');
@@ -128,13 +142,6 @@ export async function generateForm(
     }
 
     const div = createElement('div', { class: [`${param.NAME}-select-area`] }, form);
-
-    // SUB___ param inputs always hidden from form UI
-    if (paramName.startsWith('SUB___')) {
-      div.style.display = 'none';
-    }
-
-
 
     if (param.SOURCE == param.NAME) {
       param.modal = new SourceWindow(1, (sourceValues) => {
@@ -283,21 +290,39 @@ export async function generateForm(
 
 
     if (paramName.startsWith('SUB___')) {
-      // SUB___ always hidden — never show in form UI regardless of ENABLE/FORMROW
-      div.style.display = 'none';
+      if (canUserSeeSubPrices() && !isParamLocked(paramName, displayValues)) {
+        enabledParams[paramName] = true;
+        div.style.display = 'grid';
+        if (editFlag) {
+          inputFlags[paramName] = true;
+          validParams[paramName] = true;
+        }
+      } else {
+        div.style.display = 'none';
+      }
     } else if (!isEnabled(param.ENABLE, values, paramName) || param.FORMROW == '0') {
       div.style.display = 'none'
     }
     else {
-      enabledParams[paramName] = true;
-      div.style.display = 'grid'
-      if (editFlag) {
-        inputFlags[paramName] = true;
-        validParams[paramName] = true;
+      const isRowTwo = param.LISTROW == '2' || param.LISTSUM == 'true';
+      if (!shouldHideRegularPriceRow(isRowTwo)) {
+        enabledParams[paramName] = true;
+        div.style.display = 'grid'
+        if (editFlag) {
+          inputFlags[paramName] = true;
+          validParams[paramName] = true;
+        }
+      } else {
+        div.style.display = 'none';
       }
     }
 
-    if (isEnabled && editFlag && input.type !== 'file') {
+    if (isParamLocked(paramName, displayValues)) {
+      div.style.display = 'none';
+      delete enabledParams[paramName];
+    }
+
+    if (isEnabled && editFlag && input.type !== 'file' && !isParamLocked(paramName, displayValues)) {
       if (values[param.NAME] != '') {
         input.value = values[param.NAME]
       }
@@ -315,9 +340,14 @@ export async function generateForm(
 
 
   const COMMON_PARAMS = { params, inputs, values, displayValues, allOptionsByParameter, groupNumber, calculatedParams };
-  window.uid = await getUid();
+  if (!editFlag) {
+    window.uid = await getUid();
+  }
   console.log('Pobrane UID:', window.uid);
-  if (editFlag) { fillFields(displayValues, inputs, values) }
+  if (editFlag) {
+    fillFields(displayValues, inputs, values);
+    await applySubPriceFieldVisibility(groupNumber);
+  }
 
 
   for (let key in inputs) {
@@ -458,6 +488,7 @@ export async function updateProcedure({
   window.isCalculating = true;
   window.isPriceCalculating = false;
   disableFormButtons(true);
+  applySubPriceLayoutDuringCalc(params, inputs, values, displayValues);
 
   console.log('🔒 updateProcedure rozpoczęte, UI zablokowane');
 
@@ -538,6 +569,26 @@ function disableFormButtons(disable) {
 
 export function isSource(param) {
   return param.SOURCE == param.NAME;
+}
+
+/** Align visible price fields with SUB/client rules (same as after updateProcedure). */
+export async function applySubPriceFieldVisibility(groupNumber) {
+  const params = window.params;
+  const inputs = window.formInputs;
+  const values = window.formValues;
+  const displayValues = window.formDisplayValues;
+  const allOptionsByParameter = window.allOptionsByParameter;
+  if (!params || !inputs || !values || !displayValues) return;
+
+  restoreLockedParamsFromDisplayValues(displayValues);
+  syncLockedParamsFromEnableFormulas(params, values, displayValues);
+  hideLocked(inputs, displayValues);
+  hideSub(inputs, displayValues);
+  hideLockedParamRows(params, inputs);
+  await updateFieldStates(params, inputs, values, displayValues, groupNumber, allOptionsByParameter, '', '');
+  showSubPriceRowsImmediately(params, inputs);
+  hideLockedParamRows(params, inputs);
+  hideParams(params, inputs);
 }
 
 export function buildCommentSpace(destinationNode, comment = '') {
