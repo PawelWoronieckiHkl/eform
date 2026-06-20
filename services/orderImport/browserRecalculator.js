@@ -14,8 +14,9 @@ const { chromium } = require('playwright');
 const { log } = require('../../utils/logging');
 const { connetToDb } = require('../../db/core');
 
-const APP_PORT = process.env.PORT || 3000;
-const APP_URL = `http://localhost:${APP_PORT}`;
+// Always-on app instance for headless recalc — not live dev PORT (8000).
+const APP_URL = process.env.RECALC_APP_URL
+  || `http://localhost:${process.env.RECALC_APP_PORT || 8081}`;
 
 /**
  * Get the owner (user) credentials for an order.

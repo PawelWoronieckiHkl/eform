@@ -7504,3 +7504,1626 @@ Item[3] (group=59): Parametr "KOLOR": wartość "104080" nie znaleziona w transl
 [2026-06-19T08:34:59.637Z] OrderImport daemon: cycle start
 [2026-06-19T08:35:00.693Z] OrderImport: found 0 file(s)
 [2026-06-19T08:35:00.693Z] OrderImport: nothing to do.
+[2026-06-19T08:35:29.671Z] OrderImport daemon: cycle start
+[2026-06-19T08:35:30.901Z] OrderImport: found 0 file(s)
+[2026-06-19T08:35:30.902Z] OrderImport: nothing to do.
+[2026-06-19T08:35:59.686Z] OrderImport daemon: cycle start
+[2026-06-19T08:36:00.659Z] OrderImport: found 0 file(s)
+[2026-06-19T08:36:00.660Z] OrderImport: nothing to do.
+[2026-06-19T08:36:29.696Z] OrderImport daemon: cycle start
+[2026-06-19T08:36:30.718Z] OrderImport: found 0 file(s)
+[2026-06-19T08:36:30.718Z] OrderImport: nothing to do.
+[2026-06-19T08:36:59.723Z] OrderImport daemon: cycle start
+[2026-06-19T08:37:00.696Z] OrderImport: found 0 file(s)
+[2026-06-19T08:37:00.696Z] OrderImport: nothing to do.
+[2026-06-19T08:37:29.752Z] OrderImport daemon: cycle start
+[2026-06-19T08:37:30.706Z] OrderImport: found 0 file(s)
+[2026-06-19T08:37:30.707Z] OrderImport: nothing to do.
+[2026-06-19T08:37:59.767Z] OrderImport daemon: cycle start
+[2026-06-19T08:38:00.712Z] OrderImport: found 0 file(s)
+[2026-06-19T08:38:00.712Z] OrderImport: nothing to do.
+[2026-06-19T08:38:29.774Z] OrderImport daemon: cycle start
+[2026-06-19T08:38:30.683Z] OrderImport: found 0 file(s)
+[2026-06-19T08:38:30.683Z] OrderImport: nothing to do.
+[2026-06-19T08:38:59.802Z] OrderImport daemon: cycle start
+[2026-06-19T08:39:00.747Z] OrderImport: found 0 file(s)
+[2026-06-19T08:39:00.747Z] OrderImport: nothing to do.
+[2026-06-19T08:39:29.830Z] OrderImport daemon: cycle start
+[2026-06-19T08:39:31.203Z] OrderImport: found 0 file(s)
+[2026-06-19T08:39:31.203Z] OrderImport: nothing to do.
+[2026-06-19T08:39:59.858Z] OrderImport daemon: cycle start
+[2026-06-19T08:40:01.378Z] OrderImport: found 0 file(s)
+[2026-06-19T08:40:01.378Z] OrderImport: nothing to do.
+[2026-06-19T08:40:29.884Z] OrderImport daemon: cycle start
+[2026-06-19T08:40:31.189Z] OrderImport: found 0 file(s)
+[2026-06-19T08:40:31.189Z] OrderImport: nothing to do.
+[2026-06-19T08:40:59.912Z] OrderImport daemon: cycle start
+[2026-06-19T08:41:01.254Z] OrderImport: found 0 file(s)
+[2026-06-19T08:41:01.254Z] OrderImport: nothing to do.
+[2026-06-19T08:41:29.932Z] OrderImport daemon: cycle start
+[2026-06-19T08:41:31.291Z] OrderImport: found 0 file(s)
+[2026-06-19T08:41:31.291Z] OrderImport: nothing to do.
+[2026-06-19T08:41:59.949Z] OrderImport daemon: cycle start
+[2026-06-19T08:42:01.384Z] OrderImport: found 0 file(s)
+[2026-06-19T08:42:01.384Z] OrderImport: nothing to do.
+[2026-06-19T08:42:29.975Z] OrderImport daemon: cycle start
+[2026-06-19T08:42:30.904Z] OrderImport: found 0 file(s)
+[2026-06-19T08:42:30.904Z] OrderImport: nothing to do.
+[2026-06-19T08:43:00.003Z] OrderImport daemon: cycle start
+[2026-06-19T08:43:00.992Z] OrderImport: found 0 file(s)
+[2026-06-19T08:43:00.992Z] OrderImport: nothing to do.
+[2026-06-19T08:43:30.032Z] OrderImport daemon: cycle start
+[2026-06-19T08:43:30.955Z] OrderImport: found 0 file(s)
+[2026-06-19T08:43:30.955Z] OrderImport: nothing to do.
+[2026-06-19T08:44:00.059Z] OrderImport daemon: cycle start
+[2026-06-19T08:44:00.969Z] OrderImport: found 0 file(s)
+[2026-06-19T08:44:00.970Z] OrderImport: nothing to do.
+[2026-06-19T08:44:30.084Z] OrderImport daemon: cycle start
+[2026-06-19T08:44:30.973Z] OrderImport: found 0 file(s)
+[2026-06-19T08:44:30.973Z] OrderImport: nothing to do.
+[2026-06-19T08:45:00.102Z] OrderImport daemon: cycle start
+[2026-06-19T08:45:01.177Z] OrderImport: found 0 file(s)
+[2026-06-19T08:45:01.177Z] OrderImport: nothing to do.
+[2026-06-19T08:45:30.127Z] OrderImport daemon: cycle start
+[2026-06-19T08:45:31.980Z] OrderImport: found 2 file(s)
+[2026-06-19T08:45:32.910Z] Import failed for HKL_TCN_271658_REDO_20260619_104507.json: Alias resolution failed:
+Item[0] (group=39): Parametr "STRONA_STEROWANIA": wartość "RR" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+[2026-06-19T08:45:32.911Z] Import failure details for HKL_TCN_271658_REDO_20260619_104507.json: Alias resolution failed:
+Item[0] (group=39): Parametr "STRONA_STEROWANIA": wartość "RR" nie znaleziona w translation_dictionary ani client_aliases (grupa 39) 
+Error: Alias resolution failed:
+Item[0] (group=39): Parametr "STRONA_STEROWANIA": wartość "RR" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+    at processOneFile (/home/pawel/projects/eform-project/eform/services/orderImport/index.js:126:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async runImport (/home/pawel/projects/eform-project/eform/services/orderImport/index.js:270:18)
+    at async Timeout.runCycle [as _onTimeout] (/home/pawel/projects/eform-project/eform/scripts/orderImportDaemon.js:71:21)
+[2026-06-19T08:45:33.873Z] Import failed for HKL_TCN_271784_REDO_20260619_104507.json: Alias resolution failed:
+Item[0] (group=39): Parametr "STRONA_STEROWANIA": wartość "LL" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+Item[1] (group=39): Parametr "STRONA_STEROWANIA": wartość "RR" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+[2026-06-19T08:45:33.873Z] Import failure details for HKL_TCN_271784_REDO_20260619_104507.json: Alias resolution failed:
+Item[0] (group=39): Parametr "STRONA_STEROWANIA": wartość "LL" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+Item[1] (group=39): Parametr "STRONA_STEROWANIA": wartość "RR" nie znaleziona w translation_dictionary ani client_aliases (grupa 39) 
+Error: Alias resolution failed:
+Item[0] (group=39): Parametr "STRONA_STEROWANIA": wartość "LL" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+Item[1] (group=39): Parametr "STRONA_STEROWANIA": wartość "RR" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+    at processOneFile (/home/pawel/projects/eform-project/eform/services/orderImport/index.js:126:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async runImport (/home/pawel/projects/eform-project/eform/services/orderImport/index.js:270:18)
+    at async Timeout.runCycle [as _onTimeout] (/home/pawel/projects/eform-project/eform/scripts/orderImportDaemon.js:71:21)
+[2026-06-19T08:45:33.905Z] FAIL  HKL_TCN_271658_REDO_20260619_104507.json  ->  Alias resolution failed:
+Item[0] (group=39): Parametr "STRONA_STEROWANIA": wartość "RR" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+[2026-06-19T08:45:33.905Z] FAIL  HKL_TCN_271784_REDO_20260619_104507.json  ->  Alias resolution failed:
+Item[0] (group=39): Parametr "STRONA_STEROWANIA": wartość "LL" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+Item[1] (group=39): Parametr "STRONA_STEROWANIA": wartość "RR" nie znaleziona w translation_dictionary ani client_aliases (grupa 39)
+[2026-06-19T08:45:33.905Z] OrderImport: 0/2 imported.
+[2026-06-19T08:45:34.722Z] ImportMailer: summary sent to pawel.woroniecki@hkl.eu,wiktoria.krawczyk1@gmail.com (2 files, 2 failed)
+[2026-06-19T08:46:00.151Z] OrderImport daemon: cycle start
+[2026-06-19T08:46:01.025Z] OrderImport: found 0 file(s)
+[2026-06-19T08:46:01.025Z] OrderImport: nothing to do.
+[2026-06-19T08:46:30.169Z] OrderImport daemon: cycle start
+[2026-06-19T08:46:31.130Z] OrderImport: found 0 file(s)
+[2026-06-19T08:46:31.130Z] OrderImport: nothing to do.
+[2026-06-19T08:47:00.191Z] OrderImport daemon: cycle start
+[2026-06-19T08:47:01.116Z] OrderImport: nothing to do.
+[2026-06-19T08:47:01.116Z] OrderImport: found 0 file(s)
+[2026-06-19T08:47:30.220Z] OrderImport daemon: cycle start
+[2026-06-19T08:47:31.195Z] OrderImport: found 0 file(s)
+[2026-06-19T08:47:31.195Z] OrderImport: nothing to do.
+[2026-06-19T08:48:00.247Z] OrderImport daemon: cycle start
+[2026-06-19T08:48:01.151Z] OrderImport: found 0 file(s)
+[2026-06-19T08:48:01.151Z] OrderImport: nothing to do.
+[2026-06-19T08:48:30.275Z] OrderImport daemon: cycle start
+[2026-06-19T08:48:31.185Z] OrderImport: found 0 file(s)
+[2026-06-19T08:48:31.185Z] OrderImport: nothing to do.
+[2026-06-19T08:49:00.284Z] OrderImport daemon: cycle start
+[2026-06-19T08:49:01.207Z] OrderImport: found 0 file(s)
+[2026-06-19T08:49:01.207Z] OrderImport: nothing to do.
+[2026-06-19T08:49:30.313Z] OrderImport daemon: cycle start
+[2026-06-19T08:49:31.276Z] OrderImport: found 0 file(s)
+[2026-06-19T08:49:31.276Z] OrderImport: nothing to do.
+[2026-06-19T08:50:00.339Z] OrderImport daemon: cycle start
+[2026-06-19T08:50:01.315Z] OrderImport: found 0 file(s)
+[2026-06-19T08:50:01.315Z] OrderImport: nothing to do.
+[2026-06-19T08:50:30.367Z] OrderImport daemon: cycle start
+[2026-06-19T08:50:31.344Z] OrderImport: found 0 file(s)
+[2026-06-19T08:50:31.344Z] OrderImport: nothing to do.
+[2026-06-19T08:51:00.395Z] OrderImport daemon: cycle start
+[2026-06-19T08:51:01.750Z] OrderImport: found 0 file(s)
+[2026-06-19T08:51:01.750Z] OrderImport: nothing to do.
+[2026-06-19T08:51:30.417Z] OrderImport daemon: cycle start
+[2026-06-19T08:51:31.757Z] OrderImport: found 0 file(s)
+[2026-06-19T08:51:31.757Z] OrderImport: nothing to do.
+[2026-06-19T08:52:00.443Z] OrderImport daemon: cycle start
+[2026-06-19T08:52:03.446Z] OrderImport: found 3 file(s)
+[2026-06-19T08:52:08.021Z] Imported order id=2677 for user=TCN positions=2
+[2026-06-19T08:52:08.968Z] browserRecalculator: error for order 2677: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:8000/user/auth/login?pin=admin&password=eforszef123
+Call log:
+  - navigating to "http://localhost:8000/user/auth/login?pin=admin&password=eforszef123", waiting until "load"
+
+[2026-06-19T08:52:09.017Z] WARN: import OK but recalculate failed for order 2677: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:8000/user/auth/login?pin=admin&password=eforszef123
+Call log:
+  - navigating to "http://localhost:8000/user/auth/login?pin=admin&password=eforszef123", waiting until "load"
+
+[2026-06-19T08:52:09.439Z] Connected to FTP server: serwer2560216.home.pl
+[2026-06-19T08:52:09.563Z] FTP upload result: {"code":226,"message":"226-File successfully transferred\n226 0.026 seconds (measured here), 476.93 Kbytes per second"}
+[2026-06-19T08:52:09.657Z] zaczynam /home/pawel/projects/eform-project/eform/img/hkl.png
+[2026-06-19T08:52:09.729Z] sendDAta {
+  "orderno": "48",
+  "orderid": 2677,
+  "commission": "WAARDEN VAN DER",
+  "client": "TAPIJTCENTRUM NEDERLAND B.V.",
+  "organizationIdent": "HKL",
+  "userIdent": "TCN",
+  "created_date": "19.06.2026",
+  "tax": "NL004148496B01",
+  "comment": "INDIEN GEEN VOORRAAD SVP PER OMGAANDE BERICHT BESLIST COMMISSIENUMMER EN/OF -NAAM VERMELDEN Totaal aantal commissies: 3 Met vriendelijke groeten, Tapijtcentrum Nederland bv.",
+  "sentDate": "19.06.2026",
+  "name": "Magazijn Eurogordijn",
+  "address": "Sportlaan 31",
+  "zip": "5683 CS",
+  "city": "Best",
+  "country": "NL",
+  "email": "orders@eurogordijn.nl",
+  "phone": "Telefoon:",
+  "userStreet": "Hoofdstraat 53",
+  "userZip": "5683 AC",
+  "userCity": "Best",
+  "userCountry": "NL",
+  "userPhone": "0031 499 37 32 23",
+  "total": "0",
+  "total_hidden": "0",
+  "items": [
+    {
+      "posid": 6368,
+      "orderpos": 1,
+      "product": "39",
+      "department": "JALOEZIEËN",
+      "product_description": "ALUMINIUM JALOEZIEËN 16/25",
+      "commission": "WAARDEN VAN DER",
+      "parameters": {
+        "AUTOMATYKA___DICT": true,
+        "AUTOMATYKA___TITLE": "HUISAUTOMATISERING",
+        "CENA_KONCOWA": 0,
+        "CENA_KONCOWA___DICT": false,
+        "CENA_KONCOWA___TITLE": "PRIJS EXCL. BTW [€]",
+        "CENA_RABAT___DICT": false,
+        "CENA_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS",
+        "CENA_SUMA": 0,
+        "CENA_SUMA___DICT": false,
+        "CENA_SUMA___TITLE": "PRIJS INCLUSIEF BTW PER STUK [€]",
+        "CENA___DICT": false,
+        "CENA___TITLE": "CATALOGUSPRIJS INCLUSIEF BTW [€]",
+        "DLUGOSC_STER___DICT": true,
+        "DLUGOSC_STER___TITLE": "BEDIENINGSLENGTE [MM]",
+        "DLUGSTER___DICT": false,
+        "DLUGSTER___TITLE": "BEDIENINGSLENGTE [MM]",
+        "DODATKI___DICT": true,
+        "DODATKI___TITLE": "EXTRA'S",
+        "DOPLATA_EL_RABAT___DICT": false,
+        "DOPLATA_EL_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS VOOR EL",
+        "DOPLATA_EL___DICT": false,
+        "DOPLATA_EL___TITLE": "PRIJS VOOR EL INCLUSIEF BTW [€]",
+        "DOPLATA___DICT": false,
+        "DOPLATA___TITLE": "TOESLAGPRIJS INCLUSIEF BTW [€]",
+        "ILOSC": 1,
+        "ILOSC___DICT": false,
+        "ILOSC___TITLE": "AANTAL",
+        "ILOSC___VISIBLE": true,
+        "KOLOR": "4072-25",
+        "KOLOR_ALIAS": "4072-25",
+        "KOLOR_DODATKOWY___DICT": false,
+        "KOLOR_DODATKOWY___TITLE": "KLEUR STOF 2",
+        "KOLOR_STEROWANIA___DICT": false,
+        "KOLOR_STEROWANIA___TITLE": "KLEUR SCHNUR",
+        "KOLOR_SYSTE": "4064_PROF",
+        "KOLOR_SYSTE___DICT": true,
+        "KOLOR_SYSTE___TITLE": "KLEUR PROFIEL",
+        "KOLOR_SYSTE___VISIBLE": true,
+        "KOLOR___DICT": true,
+        "KOLOR___TITLE": "KLEUR van jaloezieën",
+        "KOLOR___VISIBLE": true,
+        "MODEL": "U25SD",
+        "MODEL_DACH___DICT": true,
+        "MODEL_DACH___TITLE": "VENSTER TYPE",
+        "MODEL___DICT": true,
+        "MODEL___TITLE": "MODEL",
+        "MODEL___VISIBLE": true,
+        "MONTAZ": "2",
+        "MONTAZ___DICT": true,
+        "MONTAZ___TITLE": "INSTALLATIETYPE",
+        "MONTAZ___VISIBLE": true,
+        "MOTOR___DICT": true,
+        "MOTOR___TITLE": "MOTOR",
+        "OCHRONA_CHILD_SAFETY": "CS_YES",
+        "OCHRONA_CHILD_SAFETY___DICT": true,
+        "OCHRONA_CHILD_SAFETY___TITLE": "KINDERVEILIGHEIDSSYSTEEM",
+        "OCHRONA_CHILD_SAFETY___VISIBLE": true,
+        "OPIS_CENY___DICT": false,
+        "OPIS_CENY___TITLE": "OPIS_CENY",
+        "OPIS_POZYCJI": "Montagehoogte=2800mm; TCN model_nr=1100; TCN Mon tag=ODD",
+        "OPIS_POZYCJI___DICT": false,
+        "OPIS_POZYCJI___TITLE": "OPIS_POZYCJI",
+        "OPIS_POZYCJI___VISIBLE": false,
+        "OPIS_RABATU___DICT": false,
+        "OPIS_RABATU___TITLE": "OPIS_RABATU",
+        "PILOT___DICT": true,
+        "PILOT___TITLE": "AFSTANDSBEDIENING",
+        "POW": 0.79,
+        "POW___DICT": false,
+        "POW___TITLE": "OPPERVLAKTE [m2]",
+        "PROWADZENIE": "<NONE>",
+        "PROWADZENIE___DICT": true,
+        "PROWADZENIE___TITLE": "ZIJGELEIDING",
+        "PROWADZENIE___VISIBLE": true,
+        "RODZAJ_DACH___DICT": true,
+        "RODZAJ_DACH___TITLE": "MODEL",
+        "ROZMIAR_DACH___DICT": true,
+        "ROZMIAR_DACH___TITLE": "GAFMETING",
+        "SLOPE_TYPE___DICT": true,
+        "SLOPE_TYPE___TITLE": "SLOPE FORM",
+        "STEROWANIE___DICT": false,
+        "STEROWANIE___TITLE": "BEDIENING",
+        "STRONA_LADOWANIA___DICT": true,
+        "STRONA_LADOWANIA___TITLE": "OPLAADSTOPCONTACTZIJDE",
+        "STRONA_STEROWANIA": "4064-25-LL",
+        "STRONA_STEROWANIA___DICT": true,
+        "STRONA_STEROWANIA___TITLE": "BEDIENSEITE",
+        "STRONA_STEROWANIA___VISIBLE": true,
+        "STRONA_WYJSCIA_PRZEWODU___DICT": true,
+        "STRONA_WYJSCIA_PRZEWODU___TITLE": "KABELUITGANGZIJDE",
+        "STRSTERSLOP___DICT": true,
+        "STRSTERSLOP___TITLE": "BEDIENSEITE S",
+        "SUB___CENA_KONCOWA": 0,
+        "SUB___CENA_KONCOWA___TITLE": "PRIJS EXCL. BTW [€]",
+        "SUB___CENA_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS",
+        "SUB___CENA_SUMA": 0,
+        "SUB___CENA_SUMA___TITLE": "PRIJS INCLUSIEF BTW PER STUK [€]",
+        "SUB___CENA___TITLE": "CATALOGUSPRIJS INCLUSIEF BTW [€]",
+        "SUB___DOPLATA_EL_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS VOOR EL",
+        "SUB___DOPLATA_EL___TITLE": "PRIJS VOOR EL INCLUSIEF BTW [€]",
+        "SUB___DOPLATA___TITLE": "TOESLAGPRIJS INCLUSIEF BTW [€]",
+        "SUB___SUMA_BRUTTO": 0,
+        "SUB___SUMA_BRUTTO___TITLE": "TOTAALPRIJS INCLUSIEF BTW [€]",
+        "SUB___WARTOSC_KONCOWA": 0,
+        "SUB___WARTOSC_KONCOWA___TITLE": "TOTAALPRIJS EXCL. BTW [€]",
+        "SUMA_BRUTTO": 0,
+        "SUMA_BRUTTO___DICT": false,
+        "SUMA_BRUTTO___TITLE": "TOTAALPRIJS INCLUSIEF BTW [€]",
+        "SZEROKOSC": 515,
+        "SZEROKOSC_DACH___DICT": false,
+        "SZEROKOSC_DACH___TITLE": "BREEDTE [MM]",
+        "SZEROKOSC___DICT": false,
+        "SZEROKOSC___TITLE": "BREEDTE [MM]",
+        "SZEROKOSC___VISIBLE": false,
+        "TYP_KUR___DICT": true,
+        "TYP_KUR___TITLE": "Krukasuitgang",
+        "WARTOSC_KONCOWA": 0,
+        "WARTOSC_KONCOWA___DICT": false,
+        "WARTOSC_KONCOWA___TITLE": "TOTAALPRIJS EXCL. BTW [€]",
+        "WYMIAROWANIE_SLOPOW___TITLE": "AFMETINGEN VOOR SLOP [MM]",
+        "WYSOKOSC": 1535,
+        "WYSOKOSC_DACH___DICT": false,
+        "WYSOKOSC_DACH___TITLE": "HOOGTE [MM]",
+        "WYSOKOSC_MONTAZU": 0,
+        "WYSOKOSC_MONTAZU___DICT": false,
+        "WYSOKOSC_MONTAZU___TITLE": "MONTAGEHOOGTE [MM]",
+        "WYSOKOSC___DICT": false,
+        "WYSOKOSC___TITLE": "HOOGTE [MM]",
+        "WYSOKOSC___VISIBLE": false,
+        "ZASILANIE___DICT": true,
+        "ZASILANIE___TITLE": "VOEDING",
+        "uid": "engine_1781859124991",
+        "uid___VISIBLE": false
+      },
+      "comment": "Montagehoogte=2800mm; TCN model_nr=1100; TCN Mon tag=ODD"
+    },
+    {
+      "posid": 6369,
+      "orderpos": 2,
+      "product": "39",
+      "department": "JALOEZIEËN",
+      "product_description": "ALUMINIUM JALOEZIEËN 16/25",
+      "commission": "WAARDEN VAN DER",
+      "parameters": {
+        "AUTOMATYKA___DICT": true,
+        "AUTOMATYKA___TITLE": "HUISAUTOMATISERING",
+        "CENA_KONCOWA": 0,
+        "CENA_KONCOWA___DICT": false,
+        "CENA_KONCOWA___TITLE": "PRIJS EXCL. BTW [€]",
+        "CENA_RABAT___DICT": false,
+        "CENA_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS",
+        "CENA_SUMA": 0,
+        "CENA_SUMA___DICT": false,
+        "CENA_SUMA___TITLE": "PRIJS INCLUSIEF BTW PER STUK [€]",
+        "CENA___DICT": false,
+        "CENA___TITLE": "CATALOGUSPRIJS INCLUSIEF BTW [€]",
+        "DLUGOSC_STER___DICT": true,
+        "DLUGOSC_STER___TITLE": "BEDIENINGSLENGTE [MM]",
+        "DLUGSTER___DICT": false,
+        "DLUGSTER___TITLE": "BEDIENINGSLENGTE [MM]",
+        "DODATKI___DICT": true,
+        "DODATKI___TITLE": "EXTRA'S",
+        "DOPLATA_EL_RABAT___DICT": false,
+        "DOPLATA_EL_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS VOOR EL",
+        "DOPLATA_EL___DICT": false,
+        "DOPLATA_EL___TITLE": "PRIJS VOOR EL INCLUSIEF BTW [€]",
+        "DOPLATA___DICT": false,
+        "DOPLATA___TITLE": "TOESLAGPRIJS INCLUSIEF BTW [€]",
+        "ILOSC": 1,
+        "ILOSC___DICT": false,
+        "ILOSC___TITLE": "AANTAL",
+        "ILOSC___VISIBLE": true,
+        "KOLOR": "4072-25",
+        "KOLOR_ALIAS": "4072-25",
+        "KOLOR_DODATKOWY___DICT": false,
+        "KOLOR_DODATKOWY___TITLE": "KLEUR STOF 2",
+        "KOLOR_STEROWANIA___DICT": false,
+        "KOLOR_STEROWANIA___TITLE": "KLEUR SCHNUR",
+        "KOLOR_SYSTE": "4064_PROF",
+        "KOLOR_SYSTE___DICT": true,
+        "KOLOR_SYSTE___TITLE": "KLEUR PROFIEL",
+        "KOLOR_SYSTE___VISIBLE": true,
+        "KOLOR___DICT": true,
+        "KOLOR___TITLE": "KLEUR van jaloezieën",
+        "KOLOR___VISIBLE": true,
+        "MODEL": "U25SD",
+        "MODEL_DACH___DICT": true,
+        "MODEL_DACH___TITLE": "VENSTER TYPE",
+        "MODEL___DICT": true,
+        "MODEL___TITLE": "MODEL",
+        "MODEL___VISIBLE": true,
+        "MONTAZ": "2",
+        "MONTAZ___DICT": true,
+        "MONTAZ___TITLE": "INSTALLATIETYPE",
+        "MONTAZ___VISIBLE": true,
+        "MOTOR___DICT": true,
+        "MOTOR___TITLE": "MOTOR",
+        "OCHRONA_CHILD_SAFETY": "CS_YES",
+        "OCHRONA_CHILD_SAFETY___DICT": true,
+        "OCHRONA_CHILD_SAFETY___TITLE": "KINDERVEILIGHEIDSSYSTEEM",
+        "OCHRONA_CHILD_SAFETY___VISIBLE": true,
+        "OPIS_CENY___DICT": false,
+        "OPIS_CENY___TITLE": "OPIS_CENY",
+        "OPIS_POZYCJI": "Montagehoogte=2800mm; TCN model_nr=1100; TCN Mon tag=ODD",
+        "OPIS_POZYCJI___DICT": false,
+        "OPIS_POZYCJI___TITLE": "OPIS_POZYCJI",
+        "OPIS_POZYCJI___VISIBLE": false,
+        "OPIS_RABATU___DICT": false,
+        "OPIS_RABATU___TITLE": "OPIS_RABATU",
+        "PILOT___DICT": true,
+        "PILOT___TITLE": "AFSTANDSBEDIENING",
+        "POW": 2.19,
+        "POW___DICT": false,
+        "POW___TITLE": "OPPERVLAKTE [m2]",
+        "PROWADZENIE": "<NONE>",
+        "PROWADZENIE___DICT": true,
+        "PROWADZENIE___TITLE": "ZIJGELEIDING",
+        "PROWADZENIE___VISIBLE": true,
+        "RODZAJ_DACH___DICT": true,
+        "RODZAJ_DACH___TITLE": "MODEL",
+        "ROZMIAR_DACH___DICT": true,
+        "ROZMIAR_DACH___TITLE": "GAFMETING",
+        "SLOPE_TYPE___DICT": true,
+        "SLOPE_TYPE___TITLE": "SLOPE FORM",
+        "STEROWANIE___DICT": false,
+        "STEROWANIE___TITLE": "BEDIENING",
+        "STRONA_LADOWANIA___DICT": true,
+        "STRONA_LADOWANIA___TITLE": "OPLAADSTOPCONTACTZIJDE",
+        "STRONA_STEROWANIA": "4064-25-RR",
+        "STRONA_STEROWANIA___DICT": true,
+        "STRONA_STEROWANIA___TITLE": "BEDIENSEITE",
+        "STRONA_STEROWANIA___VISIBLE": true,
+        "STRONA_WYJSCIA_PRZEWODU___DICT": true,
+        "STRONA_WYJSCIA_PRZEWODU___TITLE": "KABELUITGANGZIJDE",
+        "STRSTERSLOP___DICT": true,
+        "STRSTERSLOP___TITLE": "BEDIENSEITE S",
+        "SUB___CENA_KONCOWA": 0,
+        "SUB___CENA_KONCOWA___TITLE": "PRIJS EXCL. BTW [€]",
+        "SUB___CENA_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS",
+        "SUB___CENA_SUMA": 0,
+        "SUB___CENA_SUMA___TITLE": "PRIJS INCLUSIEF BTW PER STUK [€]",
+        "SUB___CENA___TITLE": "CATALOGUSPRIJS INCLUSIEF BTW [€]",
+        "SUB___DOPLATA_EL_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS VOOR EL",
+        "SUB___DOPLATA_EL___TITLE": "PRIJS VOOR EL INCLUSIEF BTW [€]",
+        "SUB___DOPLATA___TITLE": "TOESLAGPRIJS INCLUSIEF BTW [€]",
+        "SUB___SUMA_BRUTTO": 0,
+        "SUB___SUMA_BRUTTO___TITLE": "TOTAALPRIJS INCLUSIEF BTW [€]",
+        "SUB___WARTOSC_KONCOWA": 0,
+        "SUB___WARTOSC_KONCOWA___TITLE": "TOTAALPRIJS EXCL. BTW [€]",
+        "SUMA_BRUTTO": 0,
+        "SUMA_BRUTTO___DICT": false,
+        "SUMA_BRUTTO___TITLE": "TOTAALPRIJS INCLUSIEF BTW [€]",
+        "SZEROKOSC": 1425,
+        "SZEROKOSC_DACH___DICT": false,
+        "SZEROKOSC_DACH___TITLE": "BREEDTE [MM]",
+        "SZEROKOSC___DICT": false,
+        "SZEROKOSC___TITLE": "BREEDTE [MM]",
+        "SZEROKOSC___VISIBLE": false,
+        "TYP_KUR___DICT": true,
+        "TYP_KUR___TITLE": "Krukasuitgang",
+        "WARTOSC_KONCOWA": 0,
+        "WARTOSC_KONCOWA___DICT": false,
+        "WARTOSC_KONCOWA___TITLE": "TOTAALPRIJS EXCL. BTW [€]",
+        "WYMIAROWANIE_SLOPOW___TITLE": "AFMETINGEN VOOR SLOP [MM]",
+        "WYSOKOSC": 1535,
+        "WYSOKOSC_DACH___DICT": false,
+        "WYSOKOSC_DACH___TITLE": "HOOGTE [MM]",
+        "WYSOKOSC_MONTAZU": 0,
+        "WYSOKOSC_MONTAZU___DICT": false,
+        "WYSOKOSC_MONTAZU___TITLE": "MONTAGEHOOGTE [MM]",
+        "WYSOKOSC___DICT": false,
+        "WYSOKOSC___TITLE": "HOOGTE [MM]",
+        "WYSOKOSC___VISIBLE": false,
+        "ZASILANIE___DICT": true,
+        "ZASILANIE___TITLE": "VOEDING",
+        "uid": "engine_1781859126636",
+        "uid___VISIBLE": false
+      },
+      "comment": "Montagehoogte=2800mm; TCN model_nr=1100; TCN Mon tag=ODD"
+    }
+  ]
+}
+[2026-06-19T08:52:11.157Z] Stylizowany e-mail wysłany: 250 2.0.0 Ok: queued as 796C12B2591 pawel.woroniecki@hkl.eu
+[2026-06-19T08:52:11.157Z] CC: krzysztof.krawczyk@hkl.eu
+[2026-06-19T08:52:15.110Z] Production PDF uploaded to FTP: /orders-pdf/HKL_TCN_48_pdf.pdf
+[2026-06-19T08:52:15.110Z] Import send OK for order 2677 (idx=48)
+[2026-06-19T08:52:17.909Z] Imported order id=2678 for user=TCN positions=1
+[2026-06-19T08:52:18.496Z] Connected to FTP server: serwer2560216.home.pl
+[2026-06-19T08:52:18.618Z] FTP upload result: {"code":226,"message":"226-File successfully transferred\n226 0.025 seconds (measured here), 269.01 Kbytes per second"}
+[2026-06-19T08:52:18.688Z] zaczynam /home/pawel/projects/eform-project/eform/img/hkl.png
+[2026-06-19T08:52:18.733Z] sendDAta {
+  "orderno": "49",
+  "orderid": 2678,
+  "commission": "VATHORST",
+  "client": "TAPIJTCENTRUM NEDERLAND B.V.",
+  "organizationIdent": "HKL",
+  "userIdent": "TCN",
+  "created_date": "19.06.2026",
+  "tax": "NL004148496B01",
+  "comment": "INDIEN GEEN VOORRAAD SVP PER OMGAANDE BERICHT BESLIST COMMISSIENUMMER EN/OF -NAAM VERMELDEN Totaal aantal commissies: 3 Met vriendelijke groeten, Tapijtcentrum Nederland bv.",
+  "sentDate": "19.06.2026",
+  "name": "Magazijn Eurogordijn",
+  "address": "Sportlaan 31",
+  "zip": "5683 CS",
+  "city": "Best",
+  "country": "NL",
+  "email": "orders@eurogordijn.nl",
+  "phone": "Telefoon:",
+  "userStreet": "Hoofdstraat 53",
+  "userZip": "5683 AC",
+  "userCity": "Best",
+  "userCountry": "NL",
+  "userPhone": "0031 499 37 32 23",
+  "total": "0",
+  "total_hidden": "0",
+  "items": [
+    {
+      "posid": 6370,
+      "orderpos": 1,
+      "product": "39",
+      "department": "JALOEZIEËN",
+      "product_description": "ALUMINIUM JALOEZIEËN 16/25",
+      "commission": "VATHORST",
+      "parameters": {
+        "AUTOMATYKA___DICT": true,
+        "AUTOMATYKA___TITLE": "HUISAUTOMATISERING",
+        "CENA_KONCOWA": 0,
+        "CENA_KONCOWA___DICT": false,
+        "CENA_KONCOWA___TITLE": "PRIJS EXCL. BTW [€]",
+        "CENA_RABAT___DICT": false,
+        "CENA_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS",
+        "CENA_SUMA": 0,
+        "CENA_SUMA___DICT": false,
+        "CENA_SUMA___TITLE": "PRIJS INCLUSIEF BTW PER STUK [€]",
+        "CENA___DICT": false,
+        "CENA___TITLE": "CATALOGUSPRIJS INCLUSIEF BTW [€]",
+        "DLUGOSC_STER___DICT": true,
+        "DLUGOSC_STER___TITLE": "BEDIENINGSLENGTE [MM]",
+        "DLUGSTER___DICT": false,
+        "DLUGSTER___TITLE": "BEDIENINGSLENGTE [MM]",
+        "DODATKI___DICT": true,
+        "DODATKI___TITLE": "EXTRA'S",
+        "DOPLATA_EL_RABAT___DICT": false,
+        "DOPLATA_EL_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS VOOR EL",
+        "DOPLATA_EL___DICT": false,
+        "DOPLATA_EL___TITLE": "PRIJS VOOR EL INCLUSIEF BTW [€]",
+        "DOPLATA___DICT": false,
+        "DOPLATA___TITLE": "TOESLAGPRIJS INCLUSIEF BTW [€]",
+        "ILOSC": 1,
+        "ILOSC___DICT": false,
+        "ILOSC___TITLE": "AANTAL",
+        "ILOSC___VISIBLE": true,
+        "KOLOR": "4080-25",
+        "KOLOR_ALIAS": "4080-25",
+        "KOLOR_DODATKOWY___DICT": false,
+        "KOLOR_DODATKOWY___TITLE": "KLEUR STOF 2",
+        "KOLOR_STEROWANIA___DICT": false,
+        "KOLOR_STEROWANIA___TITLE": "KLEUR SCHNUR",
+        "KOLOR_SYSTE": "4023_PROF",
+        "KOLOR_SYSTE___DICT": true,
+        "KOLOR_SYSTE___TITLE": "KLEUR PROFIEL",
+        "KOLOR_SYSTE___VISIBLE": true,
+        "KOLOR___DICT": true,
+        "KOLOR___TITLE": "KLEUR van jaloezieën",
+        "KOLOR___VISIBLE": true,
+        "MODEL": "U25MV",
+        "MODEL_DACH___DICT": true,
+        "MODEL_DACH___TITLE": "VENSTER TYPE",
+        "MODEL___DICT": true,
+        "MODEL___TITLE": "MODEL",
+        "MODEL___VISIBLE": true,
+        "MONTAZ": "2",
+        "MONTAZ___DICT": true,
+        "MONTAZ___TITLE": "INSTALLATIETYPE",
+        "MONTAZ___VISIBLE": true,
+        "MOTOR___DICT": true,
+        "MOTOR___TITLE": "MOTOR",
+        "OCHRONA_CHILD_SAFETY": "CS_YES",
+        "OCHRONA_CHILD_SAFETY___DICT": true,
+        "OCHRONA_CHILD_SAFETY___TITLE": "KINDERVEILIGHEIDSSYSTEEM",
+        "OCHRONA_CHILD_SAFETY___VISIBLE": true,
+        "OPIS_CENY___DICT": false,
+        "OPIS_CENY___TITLE": "OPIS_CENY",
+        "OPIS_POZYCJI": "Montagehoogte=2250mm; TCN model_nr=1105; TCN Mon tag=IDD",
+        "OPIS_POZYCJI___DICT": false,
+        "OPIS_POZYCJI___TITLE": "OPIS_POZYCJI",
+        "OPIS_POZYCJI___VISIBLE": false,
+        "OPIS_RABATU___DICT": false,
+        "OPIS_RABATU___TITLE": "OPIS_RABATU",
+        "PILOT___DICT": true,
+        "PILOT___TITLE": "AFSTANDSBEDIENING",
+        "POW": 1.41,
+        "POW___DICT": false,
+        "POW___TITLE": "OPPERVLAKTE [m2]",
+        "PROWADZENIE": "<NONE>",
+        "PROWADZENIE___DICT": true,
+        "PROWADZENIE___TITLE": "ZIJGELEIDING",
+        "PROWADZENIE___VISIBLE": true,
+        "RODZAJ_DACH___DICT": true,
+        "RODZAJ_DACH___TITLE": "MODEL",
+        "ROZMIAR_DACH___DICT": true,
+        "ROZMIAR_DACH___TITLE": "GAFMETING",
+        "SLOPE_TYPE___DICT": true,
+        "SLOPE_TYPE___TITLE": "SLOPE FORM",
+        "STEROWANIE___DICT": false,
+        "STEROWANIE___TITLE": "BEDIENING",
+        "STRONA_LADOWANIA___DICT": true,
+        "STRONA_LADOWANIA___TITLE": "OPLAADSTOPCONTACTZIJDE",
+        "STRONA_STEROWANIA": "4023-25-RR",
+        "STRONA_STEROWANIA___DICT": true,
+        "STRONA_STEROWANIA___TITLE": "BEDIENSEITE",
+        "STRONA_STEROWANIA___VISIBLE": true,
+        "STRONA_WYJSCIA_PRZEWODU___DICT": true,
+        "STRONA_WYJSCIA_PRZEWODU___TITLE": "KABELUITGANGZIJDE",
+        "STRSTERSLOP___DICT": true,
+        "STRSTERSLOP___TITLE": "BEDIENSEITE S",
+        "SUB___CENA_KONCOWA": 0,
+        "SUB___CENA_KONCOWA___TITLE": "PRIJS EXCL. BTW [€]",
+        "SUB___CENA_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS",
+        "SUB___CENA_SUMA": 0,
+        "SUB___CENA_SUMA___TITLE": "PRIJS INCLUSIEF BTW PER STUK [€]",
+        "SUB___CENA___TITLE": "CATALOGUSPRIJS INCLUSIEF BTW [€]",
+        "SUB___DOPLATA_EL_RABAT___TITLE": "KORTING OP DE LIJSTPRIJS VOOR EL",
+        "SUB___DOPLATA_EL___TITLE": "PRIJS VOOR EL INCLUSIEF BTW [€]",
+        "SUB___DOPLATA___TITLE": "TOESLAGPRIJS INCLUSIEF BTW [€]",
+        "SUB___SUMA_BRUTTO": 0,
+        "SUB___SUMA_BRUTTO___TITLE": "TOTAALPRIJS INCLUSIEF BTW [€]",
+        "SUB___WARTOSC_KONCOWA": 0,
+        "SUB___WARTOSC_KONCOWA___TITLE": "TOTAALPRIJS EXCL. BTW [€]",
+        "SUMA_BRUTTO": 0,
+        "SUMA_BRUTTO___DICT": false,
+        "SUMA_BRUTTO___TITLE": "TOTAALPRIJS INCLUSIEF BTW [€]",
+        "SZEROKOSC": 1645,
+        "SZEROKOSC_DACH___DICT": false,
+        "SZEROKOSC_DACH___TITLE": "BREEDTE [MM]",
+        "SZEROKOSC___DICT": false,
+        "SZEROKOSC___TITLE": "BREEDTE [MM]",
+        "SZEROKOSC___VISIBLE": false,
+        "TYP_KUR___DICT": true,
+        "TYP_KUR___TITLE": "Krukasuitgang",
+        "WARTOSC_KONCOWA": 0,
+        "WARTOSC_KONCOWA___DICT": false,
+        "WARTOSC_KONCOWA___TITLE": "TOTAALPRIJS EXCL. BTW [€]",
+        "WYMIAROWANIE_SLOPOW___TITLE": "AFMETINGEN VOOR SLOP [MM]",
+        "WYSOKOSC": 855,
+        "WYSOKOSC_DACH___DICT": false,
+        "WYSOKOSC_DACH___TITLE": "HOOGTE [MM]",
+        "WYSOKOSC_MONTAZU": 0,
+        "WYSOKOSC_MONTAZU___DICT": false,
+        "WYSOKOSC_MONTAZU___TITLE": "MONTAGEHOOGTE [MM]",
+        "WYSOKOSC___DICT": false,
+        "WYSOKOSC___TITLE": "HOOGTE [MM]",
+        "WYSOKOSC___VISIBLE": false,
+        "ZASILANIE___DICT": true,
+        "ZASILANIE___TITLE": "VOEDING",
+        "uid": "engine_1781859136559",
+        "uid___VISIBLE": false
+      },
+      "comment": "Montagehoogte=2250mm; TCN model_nr=1105; TCN Mon tag=IDD"
+    }
+  ]
+}
+[2026-06-19T08:52:19.977Z] Stylizowany e-mail wysłany: 250 2.0.0 Ok: queued as 450752B25AC pawel.woroniecki@hkl.eu
+[2026-06-19T08:52:19.977Z] CC: krzysztof.krawczyk@hkl.eu
+[2026-06-19T08:52:21.700Z] Production PDF uploaded to FTP: /orders-pdf/HKL_TCN_49_pdf.pdf
+[2026-06-19T08:52:21.700Z] Import send OK for order 2678 (idx=49)
+[2026-06-19T08:52:24.380Z] Imported order id=2679 for user=TCN positions=1
+[2026-06-19T08:52:24.956Z] Connected to FTP server: serwer2560216.home.pl
+[2026-06-19T08:52:25.078Z] FTP upload result: {"code":226,"message":"226-File successfully transferred\n226 0.026 seconds (measured here), 239.01 Kbytes per second"}
+[2026-06-19T08:52:25.158Z] zaczynam /home/pawel/projects/eform-project/eform/img/hkl.png
+[2026-06-19T08:52:25.205Z] sendDAta {
+  "orderno": "50",
+  "orderid": 2679,
+  "commission": "SCHREURS",
+  "client": "TAPIJTCENTRUM NEDERLAND B.V.",
+  "organizationIdent": "HKL",
+  "userIdent": "TCN",
+  "created_date": "19.06.2026",
+  "tax": "NL004148496B01",
+  "comment": "INDIEN GEEN VOORRAAD SVP PER OMGAANDE BERICHT BESLIST COMMISSIENUMMER EN/OF -NAAM VERMELDEN Totaal aantal commissies: 3 Met vriendelijke groeten, Tapijtcentrum Nederland bv.",
+  "sentDate": "19.06.2026",
+  "name": "Magazijn Eurogordijn",
+  "address": "Sportlaan 31",
+  "zip": "5683 CS",
+  "city": "Best",
+  "country": "NL",
+  "email": "orders@eurogordijn.nl",
+  "phone": "Telefoon:",
+  "userStreet": "Hoofdstraat 53",
+  "userZip": "5683 AC",
+  "userCity": "Best",
+  "userCountry": "NL",
+  "userPhone": "0031 499 37 32 23",
+  "total": "0",
+  "total_hidden": "0",
+  "items": [
+    {
+      "posid": 6371,
+      "orderpos": 1,
+      "product": "59",
+      "department": "JALOEZIEËN",
+      "product_description": "HOUTENJALOEZIEËN",
+      "commission": "SCHREURS",
+      "parameters": {
+        "AUTOMATYKA___DICT": true,
+        "AUTOMATYKA___TITLE": "HUISAUTOMATISERING",
+        "BLENDA": "IDD",
+        "BLENDA___DICT": true,
+        "BLENDA___TITLE": "KOOF",
+        "BLENDA___VISIBLE": true,
+        "CENA_KONCOWA": 0,
+        "CENA_KONCOWA___DICT": false,
+        "CENA_KONCOWA___TITLE": "PRIJS EXCL. BTW [€]",
+        "CENA_RABAT___DICT": false,
+        "CENA_RABAT___TITLE": "KORTING OP DE ADVIESVERKOOPPRIJS",
+        "CENA_SUMA": 0,
+        "CENA_SUMA___DICT": false,
+        "CENA_SUMA___TITLE": "PRIJS INCLUSIEF BTW PER STUK [€]",
+        "CENA___DICT": false,
+        "CENA___TITLE": "CATALOGUSPRIJS INCLUSIEF BTW [€]",
+        "DLUGOSC_STER": 2500,
+        "DLUGOSC_STER___DICT": false,
+        "DLUGOSC_STER___TITLE": "BEDIENINGSLENGTE [MM]",
+        "DLUGOSC_STER___VISIBLE": true,
+        "DOPLATA_EL_RABAT___DICT": false,
+        "DOPLATA_EL_RABAT___TITLE": "KORTING OP DE ADVIESVERKOOPPRIJS VOOR EL",
+        "DOPLATA_EL___DICT": false,
+        "DOPLATA_EL___TITLE": "PRIJS VOOR EL INCLUSIEF BTW [€]",
+        "DOPLATA___DICT": false,
+        "DOPLATA___TITLE": "MEERPRIJS INCLUSIEF BTW [€]",
+        "ILOSC": 1,
+        "ILOSC___DICT": false,
+        "ILOSC___TITLE": "AANTAL",
+        "ILOSC___VISIBLE": true,
+        "KOLOR": "5717-50",
+        "KOLOR_SYSTE___DICT": false,
+        "KOLOR_SYSTE___TITLE": "KLEUR PROFIEL",
+        "KOLOR_TEXT___DICT": true,
+        "KOLOR_TEXT___TITLE": "KLEUR LADDERKOORD",
+        "KOLOR___DICT": true,
+        "KOLOR___TITLE": "KLEUR HOUTEN LATTEN",
+        "KOLOR___VISIBLE": true,
+        "MODEL": "H50",
+        "MODEL___DICT": true,
+        "MODEL___TITLE": "MODEL",
+        "MODEL___VISIBLE": true,
+        "MONTAZ": "307",
+        "MONTAZ_ALIAS": "307",
+        "MONTAZ___DICT": true,
+        "MONTAZ___TITLE": "INSTALLATIE TYPE",
+        "MONTAZ___VISIBLE": true,
+        "MOTOR___DICT": true,
+        "MOTOR___TITLE": "MOTOR",
+        "OCHRONA_CHILD_SAFETY___DICT": true,
+        "OCHRONA_CHILD_SAFETY___TITLE": "KINDERVEILIGHEIDSSYSTEEM",
+        "OPIS_CENY___DICT": false,
+        "OPIS_CENY___TITLE": "OPIS_CENY",
+        "OPIS_POZYCJI": "Koof met links en rechts een retour!",
+        "OPIS_POZYCJI___DICT": false,
+        "OPIS_POZYCJI___TITLE": "OPIS_POZYCJI",
+        "OPIS_POZYCJI___VISIBLE": false,
+        "OPIS_RABATU___DICT": false,
+        "OPIS_RABATU___TITLE": "OPIS_RABATU",
+        "PILOT___DICT": true,
+        "PILOT___TITLE": "AFSTANDSBEDIENING",
+        "POW": 2.87,
+        "POW___DICT": false,
+        "POW___TITLE": "OPPERVLAKTE [m2]",
+        "PROWADZENIE___DICT": true,
+        "PROWADZENIE___TITLE": "ZIJGELEIDING",
+        "RODZAJ_TEXT___DICT": true,
+        "RODZAJ_TEXT___TITLE": "LADDERKOORD",
+        "SLOPE_TYPE___DICT": true,
+        "SLOPE_TYPE___TITLE": "SLOPE FORM",
+        "STEROWANIE": "S",
+        "STEROWANIE_EL___DICT": false,
+        "STEROWANIE_EL___TITLE": "ELEKTRISCHE BEDIENING",
+        "STEROWANIE___DICT": true,
+        "STEROWANIE___TITLE": "BEDIENING",
+        "STEROWANIE___VISIBLE": true,
+        "STRONA_LADOWANIA___DICT": true,
+        "STRONA_LADOWANIA___TITLE": "OPLAADSTOPCONTACTZIJDE",
+        "STRONA_STEROWANIA": "L",
+        "STRONA_STEROWANIA___DICT": true,
+        "STRONA_STEROWANIA___TITLE": "BEDIENINGSZIJDE",
+        "STRONA_STEROWANIA___VISIBLE": true,
+        "STRONA_WYJSCIA_PRZEWODU___DICT": true,
+        "STRONA_WYJSCIA_PRZEWODU___TITLE": "KABELUITGANGZIJDE",
+        "STRSTERSLOP___DICT": true,
+        "STRSTERSLOP___TITLE": "BEDIENSEITE S",
+        "SUB___CENA_KONCOWA": 0,
+        "SUB___CENA_KONCOWA___TITLE": "PRIJS EXCL. BTW [€]",
+        "SUB___CENA_RABAT___TITLE": "KORTING OP DE ADVIESVERKOOPPRIJS",
+        "SUB___CENA_SUMA": 0,
+        "SUB___CENA_SUMA___TITLE": "PRIJS INCLUSIEF BTW PER STUK [€]",
+        "SUB___CENA___TITLE": "CATALOGUSPRIJS INCLUSIEF BTW [€]",
+        "SUB___DOPLATA_EL_RABAT___TITLE": "KORTING OP DE ADVIESVERKOOPPRIJS VOOR EL",
+        "SUB___DOPLATA_EL___TITLE": "PRIJS VOOR EL INCLUSIEF BTW [€]",
+        "SUB___DOPLATA___TITLE": "MEERPRIJS INCLUSIEF BTW [€]",
+        "SUB___SUMA_BRUTTO": 0,
+        "SUB___SUMA_BRUTTO___TITLE": "TOTAALPRIJS INCLUSIEF BTW [€]",
+        "SUB___WARTOSC_KONCOWA": 0,
+        "SUB___WARTOSC_KONCOWA___TITLE": "TOTAALPRIJS EXCL. BTW [€]",
+        "SUMA_BRUTTO": 0,
+        "SUMA_BRUTTO___DICT": false,
+        "SUMA_BRUTTO___TITLE": "TOTAALPRIJS INCLUSIEF BTW [€]",
+        "SZEROKOSC": 1145,
+        "SZEROKOSC___DICT": false,
+        "SZEROKOSC___TITLE": "BREEDTE [MM]",
+        "SZEROKOSC___VISIBLE": false,
+        "WARTOSC_KONCOWA": 0,
+        "WARTOSC_KONCOWA___DICT": false,
+        "WARTOSC_KONCOWA___TITLE": "TOTAALPRIJS EXCL. BTW [€]",
+        "WYMIAROWANIE_SLOPOW___TITLE": "AFMETINGEN VOOR SLOPE [MM]",
+        "WYSOKOSC": 2510,
+        "WYSOKOSC_MONTAZU___DICT": false,
+        "WYSOKOSC_MONTAZU___TITLE": "MONTAGEHOOGTE [MM]",
+        "WYSOKOSC___DICT": false,
+        "WYSOKOSC___TITLE": "HOOGTE [MM]",
+        "WYSOKOSC___VISIBLE": false,
+        "ZASILANIE___DICT": true,
+        "ZASILANIE___TITLE": "VOEDING",
+        "uid": "engine_1781859143005",
+        "uid___VISIBLE": false
+      },
+      "comment": "Koof met links en rechts een retour!"
+    }
+  ]
+}
+[2026-06-19T08:52:26.457Z] Stylizowany e-mail wysłany: 250 2.0.0 Ok: queued as BC5732B25AC pawel.woroniecki@hkl.eu
+[2026-06-19T08:52:26.457Z] CC: krzysztof.krawczyk@hkl.eu
+[2026-06-19T08:52:28.217Z] Production PDF uploaded to FTP: /orders-pdf/HKL_TCN_50_pdf.pdf
+[2026-06-19T08:52:28.217Z] Import send OK for order 2679 (idx=50)
+[2026-06-19T08:52:28.794Z] OK    HKL_TCN_271784_REDO2_20260619_105141.json  ->  order id=2677
+[2026-06-19T08:52:28.794Z] OK    HKL_TCN_271658_REDO2_20260619_105141.json  ->  order id=2678
+[2026-06-19T08:52:28.794Z] OK    HKL_TCN_271421_REDO2_20260619_105141.json  ->  order id=2679
+[2026-06-19T08:52:28.794Z] OrderImport: 3/3 imported.
+[2026-06-19T08:52:29.691Z] ImportMailer: summary sent to pawel.woroniecki@hkl.eu,wiktoria.krawczyk1@gmail.com (3 files, 0 failed)
+[2026-06-19T08:52:30.444Z] OrderImport daemon: cycle start
+[2026-06-19T08:52:31.808Z] OrderImport: found 0 file(s)
+[2026-06-19T08:52:31.808Z] OrderImport: nothing to do.
+[2026-06-19T08:53:00.451Z] OrderImport daemon: cycle start
+[2026-06-19T08:53:01.393Z] OrderImport: nothing to do.
+[2026-06-19T08:53:01.393Z] OrderImport: found 0 file(s)
+[2026-06-19T08:53:30.453Z] OrderImport daemon: cycle start
+[2026-06-19T08:53:31.363Z] OrderImport: found 0 file(s)
+[2026-06-19T08:53:31.364Z] OrderImport: nothing to do.
+[2026-06-19T08:54:00.454Z] OrderImport daemon: cycle start
+[2026-06-19T08:54:01.867Z] OrderImport: found 0 file(s)
+[2026-06-19T08:54:01.867Z] OrderImport: nothing to do.
+[2026-06-19T08:54:30.459Z] OrderImport daemon: cycle start
+[2026-06-19T08:54:31.820Z] OrderImport: found 0 file(s)
+[2026-06-19T08:54:31.820Z] OrderImport: nothing to do.
+[2026-06-19T08:55:00.463Z] OrderImport daemon: cycle start
+[2026-06-19T08:55:01.868Z] OrderImport: found 0 file(s)
+[2026-06-19T08:55:01.868Z] OrderImport: nothing to do.
+[2026-06-19T08:55:30.465Z] OrderImport daemon: cycle start
+[2026-06-19T08:55:31.915Z] OrderImport: found 0 file(s)
+[2026-06-19T08:55:31.915Z] OrderImport: nothing to do.
+[2026-06-19T08:56:00.487Z] OrderImport daemon: cycle start
+[2026-06-19T08:56:01.371Z] OrderImport: found 0 file(s)
+[2026-06-19T08:56:01.371Z] OrderImport: nothing to do.
+[2026-06-19T08:56:30.515Z] OrderImport daemon: cycle start
+[2026-06-19T08:56:31.486Z] OrderImport: found 0 file(s)
+[2026-06-19T08:56:31.486Z] OrderImport: nothing to do.
+[2026-06-19T08:57:00.539Z] OrderImport daemon: cycle start
+[2026-06-19T08:57:01.430Z] OrderImport: found 0 file(s)
+[2026-06-19T08:57:01.430Z] OrderImport: nothing to do.
+[2026-06-19T08:57:30.552Z] OrderImport daemon: cycle start
+[2026-06-19T08:57:31.462Z] OrderImport: found 0 file(s)
+[2026-06-19T08:57:31.462Z] OrderImport: nothing to do.
+[2026-06-19T08:58:00.579Z] OrderImport daemon: cycle start
+[2026-06-19T08:58:01.482Z] OrderImport: found 0 file(s)
+[2026-06-19T08:58:01.482Z] OrderImport: nothing to do.
+[2026-06-19T08:58:30.607Z] OrderImport daemon: cycle start
+[2026-06-19T08:58:31.529Z] OrderImport: found 0 file(s)
+[2026-06-19T08:58:31.529Z] OrderImport: nothing to do.
+[2026-06-19T08:59:00.636Z] OrderImport daemon: cycle start
+[2026-06-19T08:59:01.542Z] OrderImport: found 0 file(s)
+[2026-06-19T08:59:01.542Z] OrderImport: nothing to do.
+[2026-06-19T08:59:30.665Z] OrderImport daemon: cycle start
+[2026-06-19T08:59:31.576Z] OrderImport: found 0 file(s)
+[2026-06-19T08:59:31.576Z] OrderImport: nothing to do.
+[2026-06-19T09:00:00.691Z] OrderImport daemon: cycle start
+[2026-06-19T09:00:01.794Z] OrderImport: found 0 file(s)
+[2026-06-19T09:00:01.794Z] OrderImport: nothing to do.
+[2026-06-19T09:00:30.719Z] OrderImport daemon: cycle start
+[2026-06-19T09:00:31.658Z] OrderImport: found 0 file(s)
+[2026-06-19T09:00:31.658Z] OrderImport: nothing to do.
+[2026-06-19T09:01:00.747Z] OrderImport daemon: cycle start
+[2026-06-19T09:01:01.690Z] OrderImport: found 0 file(s)
+[2026-06-19T09:01:01.690Z] OrderImport: nothing to do.
+[2026-06-19T09:01:30.775Z] OrderImport daemon: cycle start
+[2026-06-19T09:01:31.697Z] OrderImport: found 0 file(s)
+[2026-06-19T09:01:31.697Z] OrderImport: nothing to do.
+[2026-06-19T09:02:00.803Z] OrderImport daemon: cycle start
+[2026-06-19T09:02:01.695Z] OrderImport: found 0 file(s)
+[2026-06-19T09:02:01.695Z] OrderImport: nothing to do.
+[2026-06-19T09:02:30.828Z] OrderImport daemon: cycle start
+[2026-06-19T09:02:31.738Z] OrderImport: found 0 file(s)
+[2026-06-19T09:02:31.738Z] OrderImport: nothing to do.
+[2026-06-19T09:03:00.855Z] OrderImport daemon: cycle start
+[2026-06-19T09:03:01.802Z] OrderImport: found 0 file(s)
+[2026-06-19T09:03:01.802Z] OrderImport: nothing to do.
+[2026-06-19T09:03:30.879Z] OrderImport daemon: cycle start
+[2026-06-19T09:03:31.793Z] OrderImport: found 0 file(s)
+[2026-06-19T09:03:31.793Z] OrderImport: nothing to do.
+[2026-06-19T09:04:00.907Z] OrderImport daemon: cycle start
+[2026-06-19T09:04:01.857Z] OrderImport: found 0 file(s)
+[2026-06-19T09:04:01.857Z] OrderImport: nothing to do.
+[2026-06-19T09:04:30.934Z] OrderImport daemon: cycle start
+[2026-06-19T09:04:31.829Z] OrderImport: found 0 file(s)
+[2026-06-19T09:04:31.829Z] OrderImport: nothing to do.
+[2026-06-19T09:05:00.959Z] OrderImport daemon: cycle start
+[2026-06-19T09:05:01.991Z] OrderImport: found 0 file(s)
+[2026-06-19T09:05:01.991Z] OrderImport: nothing to do.
+[2026-06-19T09:05:30.987Z] OrderImport daemon: cycle start
+[2026-06-19T09:05:31.891Z] OrderImport: found 0 file(s)
+[2026-06-19T09:05:31.891Z] OrderImport: nothing to do.
+[2026-06-19T09:06:01.003Z] OrderImport daemon: cycle start
+[2026-06-19T09:06:01.937Z] OrderImport: found 0 file(s)
+[2026-06-19T09:06:01.937Z] OrderImport: nothing to do.
+[2026-06-19T09:06:31.032Z] OrderImport daemon: cycle start
+[2026-06-19T09:06:31.937Z] OrderImport: nothing to do.
+[2026-06-19T09:06:31.936Z] OrderImport: found 0 file(s)
+[2026-06-19T09:07:01.059Z] OrderImport daemon: cycle start
+[2026-06-19T09:07:02.067Z] OrderImport: found 0 file(s)
+[2026-06-19T09:07:02.067Z] OrderImport: nothing to do.
+[2026-06-19T09:07:31.087Z] OrderImport daemon: cycle start
+[2026-06-19T09:07:31.992Z] OrderImport: found 0 file(s)
+[2026-06-19T09:07:31.992Z] OrderImport: nothing to do.
+[2026-06-19T09:08:01.094Z] OrderImport daemon: cycle start
+[2026-06-19T09:08:02.021Z] OrderImport: found 0 file(s)
+[2026-06-19T09:08:02.021Z] OrderImport: nothing to do.
+[2026-06-19T09:08:31.115Z] OrderImport daemon: cycle start
+[2026-06-19T09:08:32.071Z] OrderImport: found 0 file(s)
+[2026-06-19T09:08:32.071Z] OrderImport: nothing to do.
+[2026-06-19T09:09:01.139Z] OrderImport daemon: cycle start
+[2026-06-19T09:09:02.038Z] OrderImport: found 0 file(s)
+[2026-06-19T09:09:02.038Z] OrderImport: nothing to do.
+[2026-06-19T09:09:31.155Z] OrderImport daemon: cycle start
+[2026-06-19T09:09:32.120Z] OrderImport: found 0 file(s)
+[2026-06-19T09:09:32.120Z] OrderImport: nothing to do.
+[2026-06-19T09:10:01.184Z] OrderImport daemon: cycle start
+[2026-06-19T09:10:02.739Z] OrderImport: found 0 file(s)
+[2026-06-19T09:10:02.739Z] OrderImport: nothing to do.
+[2026-06-19T09:10:31.212Z] OrderImport daemon: cycle start
+[2026-06-19T09:10:32.527Z] OrderImport: found 0 file(s)
+[2026-06-19T09:10:32.527Z] OrderImport: nothing to do.
+[2026-06-19T09:11:01.241Z] OrderImport daemon: cycle start
+[2026-06-19T09:11:02.555Z] OrderImport: found 0 file(s)
+[2026-06-19T09:11:02.555Z] OrderImport: nothing to do.
+[2026-06-19T09:11:31.267Z] OrderImport daemon: cycle start
+[2026-06-19T09:11:32.621Z] OrderImport: found 0 file(s)
+[2026-06-19T09:11:32.621Z] OrderImport: nothing to do.
+[2026-06-19T09:12:01.296Z] OrderImport daemon: cycle start
+[2026-06-19T09:12:02.619Z] OrderImport: found 0 file(s)
+[2026-06-19T09:12:02.619Z] OrderImport: nothing to do.
+[2026-06-19T09:12:31.323Z] OrderImport daemon: cycle start
+[2026-06-19T09:12:32.662Z] OrderImport: found 0 file(s)
+[2026-06-19T09:12:32.662Z] OrderImport: nothing to do.
+[2026-06-19T09:13:01.347Z] OrderImport daemon: cycle start
+[2026-06-19T09:13:02.266Z] OrderImport: found 0 file(s)
+[2026-06-19T09:13:02.266Z] OrderImport: nothing to do.
+[2026-06-19T09:13:31.375Z] OrderImport daemon: cycle start
+[2026-06-19T09:13:32.304Z] OrderImport: found 0 file(s)
+[2026-06-19T09:13:32.304Z] OrderImport: nothing to do.
+[2026-06-19T09:14:01.403Z] OrderImport daemon: cycle start
+[2026-06-19T09:14:02.300Z] OrderImport: found 0 file(s)
+[2026-06-19T09:14:02.300Z] OrderImport: nothing to do.
+[2026-06-19T09:14:31.430Z] OrderImport daemon: cycle start
+[2026-06-19T09:14:32.334Z] OrderImport: found 0 file(s)
+[2026-06-19T09:14:32.334Z] OrderImport: nothing to do.
+[2026-06-19T09:15:01.459Z] OrderImport daemon: cycle start
+[2026-06-19T09:15:02.480Z] OrderImport: found 0 file(s)
+[2026-06-19T09:15:02.480Z] OrderImport: nothing to do.
+[2026-06-19T09:15:31.487Z] OrderImport daemon: cycle start
+[2026-06-19T09:15:32.485Z] OrderImport: found 0 file(s)
+[2026-06-19T09:15:32.485Z] OrderImport: nothing to do.
+[2026-06-19T09:16:01.515Z] OrderImport daemon: cycle start
+[2026-06-19T09:16:02.528Z] OrderImport: found 0 file(s)
+[2026-06-19T09:16:02.528Z] OrderImport: nothing to do.
+[2026-06-19T09:16:31.544Z] OrderImport daemon: cycle start
+[2026-06-19T09:16:32.503Z] OrderImport: found 0 file(s)
+[2026-06-19T09:16:32.503Z] OrderImport: nothing to do.
+[2026-06-19T09:17:01.543Z] OrderImport daemon: cycle start
+[2026-06-19T09:17:02.540Z] OrderImport: found 0 file(s)
+[2026-06-19T09:17:02.540Z] OrderImport: nothing to do.
+[2026-06-19T09:17:31.559Z] OrderImport daemon: cycle start
+[2026-06-19T09:17:32.467Z] OrderImport: found 0 file(s)
+[2026-06-19T09:17:32.467Z] OrderImport: nothing to do.
+[2026-06-19T09:18:01.564Z] OrderImport daemon: cycle start
+[2026-06-19T09:18:02.511Z] OrderImport: found 0 file(s)
+[2026-06-19T09:18:02.511Z] OrderImport: nothing to do.
+[2026-06-19T09:18:31.567Z] OrderImport daemon: cycle start
+[2026-06-19T09:18:32.510Z] OrderImport: found 0 file(s)
+[2026-06-19T09:18:32.511Z] OrderImport: nothing to do.
+[2026-06-19T09:19:01.579Z] OrderImport daemon: cycle start
+[2026-06-19T09:19:02.557Z] OrderImport: found 0 file(s)
+[2026-06-19T09:19:02.557Z] OrderImport: nothing to do.
+[2026-06-19T09:19:31.604Z] OrderImport daemon: cycle start
+[2026-06-19T09:19:32.544Z] OrderImport: found 0 file(s)
+[2026-06-19T09:19:32.544Z] OrderImport: nothing to do.
+[2026-06-19T09:20:01.632Z] OrderImport daemon: cycle start
+[2026-06-19T09:20:02.657Z] OrderImport: found 0 file(s)
+[2026-06-19T09:20:02.657Z] OrderImport: nothing to do.
+[2026-06-19T09:20:31.635Z] OrderImport daemon: cycle start
+[2026-06-19T09:20:32.540Z] OrderImport: found 0 file(s)
+[2026-06-19T09:20:32.540Z] OrderImport: nothing to do.
+[2026-06-19T09:21:01.663Z] OrderImport daemon: cycle start
+[2026-06-19T09:21:02.610Z] OrderImport: found 0 file(s)
+[2026-06-19T09:21:02.610Z] OrderImport: nothing to do.
+[2026-06-19T09:21:31.687Z] OrderImport daemon: cycle start
+[2026-06-19T09:21:32.663Z] OrderImport: found 0 file(s)
+[2026-06-19T09:21:32.663Z] OrderImport: nothing to do.
+[2026-06-19T09:22:01.715Z] OrderImport daemon: cycle start
+[2026-06-19T09:22:02.737Z] OrderImport: found 0 file(s)
+[2026-06-19T09:22:02.737Z] OrderImport: nothing to do.
+[2026-06-19T09:22:31.743Z] OrderImport daemon: cycle start
+[2026-06-19T09:22:32.682Z] OrderImport: found 0 file(s)
+[2026-06-19T09:22:32.683Z] OrderImport: nothing to do.
+[2026-06-19T09:23:01.770Z] OrderImport daemon: cycle start
+[2026-06-19T09:23:02.795Z] OrderImport: found 0 file(s)
+[2026-06-19T09:23:02.795Z] OrderImport: nothing to do.
+[2026-06-19T09:23:31.795Z] OrderImport daemon: cycle start
+[2026-06-19T09:23:32.761Z] OrderImport: found 0 file(s)
+[2026-06-19T09:23:32.761Z] OrderImport: nothing to do.
+[2026-06-19T09:24:01.821Z] OrderImport daemon: cycle start
+[2026-06-19T09:24:02.778Z] OrderImport: found 0 file(s)
+[2026-06-19T09:24:02.779Z] OrderImport: nothing to do.
+[2026-06-19T09:24:31.847Z] OrderImport daemon: cycle start
+[2026-06-19T09:24:32.815Z] OrderImport: found 0 file(s)
+[2026-06-19T09:24:32.815Z] OrderImport: nothing to do.
+[2026-06-19T09:25:01.876Z] OrderImport daemon: cycle start
+[2026-06-19T09:25:03.035Z] OrderImport: found 0 file(s)
+[2026-06-19T09:25:03.035Z] OrderImport: nothing to do.
+[2026-06-19T09:25:31.903Z] OrderImport daemon: cycle start
+[2026-06-19T09:25:32.871Z] OrderImport: found 0 file(s)
+[2026-06-19T09:25:32.871Z] OrderImport: nothing to do.
+[2026-06-19T09:26:01.931Z] OrderImport daemon: cycle start
+[2026-06-19T09:26:02.910Z] OrderImport: found 0 file(s)
+[2026-06-19T09:26:02.911Z] OrderImport: nothing to do.
+[2026-06-19T09:26:31.960Z] OrderImport daemon: cycle start
+[2026-06-19T09:26:32.892Z] OrderImport: found 0 file(s)
+[2026-06-19T09:26:32.892Z] OrderImport: nothing to do.
+[2026-06-19T09:27:01.970Z] OrderImport daemon: cycle start
+[2026-06-19T09:27:03.383Z] OrderImport: found 0 file(s)
+[2026-06-19T09:27:03.383Z] OrderImport: nothing to do.
+[2026-06-19T09:27:31.995Z] OrderImport daemon: cycle start
+[2026-06-19T09:27:33.290Z] OrderImport: found 0 file(s)
+[2026-06-19T09:27:33.291Z] OrderImport: nothing to do.
+[2026-06-19T09:28:02.023Z] OrderImport daemon: cycle start
+[2026-06-19T09:28:03.369Z] OrderImport: found 0 file(s)
+[2026-06-19T09:28:03.369Z] OrderImport: nothing to do.
+[2026-06-19T09:28:32.051Z] OrderImport daemon: cycle start
+[2026-06-19T09:28:33.380Z] OrderImport: found 0 file(s)
+[2026-06-19T09:28:33.380Z] OrderImport: nothing to do.
+[2026-06-19T09:29:02.079Z] OrderImport daemon: cycle start
+[2026-06-19T09:29:03.409Z] OrderImport: found 0 file(s)
+[2026-06-19T09:29:03.409Z] OrderImport: nothing to do.
+[2026-06-19T09:29:32.080Z] OrderImport daemon: cycle start
+[2026-06-19T09:29:33.410Z] OrderImport: found 0 file(s)
+[2026-06-19T09:29:33.410Z] OrderImport: nothing to do.
+[2026-06-19T09:30:02.108Z] OrderImport daemon: cycle start
+[2026-06-19T09:30:03.635Z] OrderImport: nothing to do.
+[2026-06-19T09:30:03.635Z] OrderImport: found 0 file(s)
+[2026-06-19T09:30:32.135Z] OrderImport daemon: cycle start
+[2026-06-19T09:30:33.474Z] OrderImport: found 0 file(s)
+[2026-06-19T09:30:33.474Z] OrderImport: nothing to do.
+[2026-06-19T09:31:02.163Z] OrderImport daemon: cycle start
+[2026-06-19T09:31:03.506Z] OrderImport: found 0 file(s)
+[2026-06-19T09:31:03.506Z] OrderImport: nothing to do.
+[2026-06-19T09:31:32.191Z] OrderImport daemon: cycle start
+[2026-06-19T09:31:33.517Z] OrderImport: found 0 file(s)
+[2026-06-19T09:31:33.517Z] OrderImport: nothing to do.
+[2026-06-19T09:32:02.208Z] OrderImport daemon: cycle start
+[2026-06-19T09:32:03.518Z] OrderImport: found 0 file(s)
+[2026-06-19T09:32:03.518Z] OrderImport: nothing to do.
+[2026-06-19T09:32:32.235Z] OrderImport daemon: cycle start
+[2026-06-19T09:32:33.541Z] OrderImport: found 0 file(s)
+[2026-06-19T09:32:33.541Z] OrderImport: nothing to do.
+[2026-06-19T09:33:02.251Z] OrderImport daemon: cycle start
+[2026-06-19T09:33:03.192Z] OrderImport: found 0 file(s)
+[2026-06-19T09:33:03.192Z] OrderImport: nothing to do.
+[2026-06-19T09:33:32.263Z] OrderImport daemon: cycle start
+[2026-06-19T09:33:33.186Z] OrderImport: found 0 file(s)
+[2026-06-19T09:33:33.186Z] OrderImport: nothing to do.
+[2026-06-19T09:34:02.267Z] OrderImport daemon: cycle start
+[2026-06-19T09:34:03.682Z] OrderImport: found 0 file(s)
+[2026-06-19T09:34:03.682Z] OrderImport: nothing to do.
+[2026-06-19T09:34:32.296Z] OrderImport daemon: cycle start
+[2026-06-19T09:34:33.625Z] OrderImport: found 0 file(s)
+[2026-06-19T09:34:33.625Z] OrderImport: nothing to do.
+[2026-06-19T09:35:02.323Z] OrderImport daemon: cycle start
+[2026-06-19T09:35:03.783Z] OrderImport: found 0 file(s)
+[2026-06-19T09:35:03.783Z] OrderImport: nothing to do.
+[2026-06-19T09:35:32.351Z] OrderImport daemon: cycle start
+[2026-06-19T09:35:33.692Z] OrderImport: nothing to do.
+[2026-06-19T09:35:33.692Z] OrderImport: found 0 file(s)
+[2026-06-19T09:36:02.379Z] OrderImport daemon: cycle start
+[2026-06-19T09:36:03.727Z] OrderImport: found 0 file(s)
+[2026-06-19T09:36:03.727Z] OrderImport: nothing to do.
+[2026-06-19T09:36:32.389Z] OrderImport daemon: cycle start
+[2026-06-19T09:36:33.736Z] OrderImport: found 0 file(s)
+[2026-06-19T09:36:33.736Z] OrderImport: nothing to do.
+[2026-06-19T09:37:02.415Z] OrderImport daemon: cycle start
+[2026-06-19T09:37:03.767Z] OrderImport: found 0 file(s)
+[2026-06-19T09:37:03.768Z] OrderImport: nothing to do.
+[2026-06-19T09:37:32.444Z] OrderImport daemon: cycle start
+[2026-06-19T09:37:33.334Z] OrderImport: found 0 file(s)
+[2026-06-19T09:37:33.334Z] OrderImport: nothing to do.
+[2026-06-19T09:38:02.471Z] OrderImport daemon: cycle start
+[2026-06-19T09:38:03.407Z] OrderImport: found 0 file(s)
+[2026-06-19T09:38:03.407Z] OrderImport: nothing to do.
+[2026-06-19T09:38:32.500Z] OrderImport daemon: cycle start
+[2026-06-19T09:38:33.442Z] OrderImport: nothing to do.
+[2026-06-19T09:38:33.442Z] OrderImport: found 0 file(s)
+[2026-06-19T09:39:02.513Z] OrderImport daemon: cycle start
+[2026-06-19T09:39:03.433Z] OrderImport: found 0 file(s)
+[2026-06-19T09:39:03.433Z] OrderImport: nothing to do.
+[2026-06-19T09:39:32.539Z] OrderImport daemon: cycle start
+[2026-06-19T09:39:33.481Z] OrderImport: found 0 file(s)
+[2026-06-19T09:39:33.481Z] OrderImport: nothing to do.
+[2026-06-19T09:40:02.567Z] OrderImport daemon: cycle start
+[2026-06-19T09:40:03.736Z] OrderImport: found 0 file(s)
+[2026-06-19T09:40:03.736Z] OrderImport: nothing to do.
+[2026-06-19T09:40:32.595Z] OrderImport daemon: cycle start
+[2026-06-19T09:40:33.549Z] OrderImport: found 0 file(s)
+[2026-06-19T09:40:33.549Z] OrderImport: nothing to do.
+[2026-06-19T09:41:02.623Z] OrderImport daemon: cycle start
+[2026-06-19T09:41:03.561Z] OrderImport: found 0 file(s)
+[2026-06-19T09:41:03.561Z] OrderImport: nothing to do.
+[2026-06-19T09:41:32.651Z] OrderImport daemon: cycle start
+[2026-06-19T09:41:33.594Z] OrderImport: found 0 file(s)
+[2026-06-19T09:41:33.594Z] OrderImport: nothing to do.
+[2026-06-19T09:42:02.674Z] OrderImport daemon: cycle start
+[2026-06-19T09:42:04.040Z] OrderImport: found 0 file(s)
+[2026-06-19T09:42:04.040Z] OrderImport: nothing to do.
+[2026-06-19T09:42:32.677Z] OrderImport daemon: cycle start
+[2026-06-19T09:42:34.068Z] OrderImport: found 0 file(s)
+[2026-06-19T09:42:34.068Z] OrderImport: nothing to do.
+[2026-06-19T09:43:02.679Z] OrderImport daemon: cycle start
+[2026-06-19T09:43:04.001Z] OrderImport: found 0 file(s)
+[2026-06-19T09:43:04.001Z] OrderImport: nothing to do.
+[2026-06-19T09:43:32.707Z] OrderImport daemon: cycle start
+[2026-06-19T09:43:34.054Z] OrderImport: found 0 file(s)
+[2026-06-19T09:43:34.054Z] OrderImport: nothing to do.
+[2026-06-19T09:44:02.732Z] OrderImport daemon: cycle start
+[2026-06-19T09:44:04.056Z] OrderImport: found 0 file(s)
+[2026-06-19T09:44:04.056Z] OrderImport: nothing to do.
+[2026-06-19T09:44:32.745Z] OrderImport daemon: cycle start
+[2026-06-19T09:44:34.068Z] OrderImport: found 0 file(s)
+[2026-06-19T09:44:34.068Z] OrderImport: nothing to do.
+[2026-06-19T09:45:02.767Z] OrderImport daemon: cycle start
+[2026-06-19T09:45:04.339Z] OrderImport: found 0 file(s)
+[2026-06-19T09:45:04.340Z] OrderImport: nothing to do.
+[2026-06-19T09:45:32.795Z] OrderImport daemon: cycle start
+[2026-06-19T09:45:34.172Z] OrderImport: found 0 file(s)
+[2026-06-19T09:45:34.173Z] OrderImport: nothing to do.
+[2026-06-19T09:46:02.823Z] OrderImport daemon: cycle start
+[2026-06-19T09:46:04.185Z] OrderImport: found 0 file(s)
+[2026-06-19T09:46:04.185Z] OrderImport: nothing to do.
+[2026-06-19T09:46:32.851Z] OrderImport daemon: cycle start
+[2026-06-19T09:46:34.178Z] OrderImport: nothing to do.
+[2026-06-19T09:46:34.178Z] OrderImport: found 0 file(s)
+[2026-06-19T09:47:02.879Z] OrderImport daemon: cycle start
+[2026-06-19T09:47:04.213Z] OrderImport: found 0 file(s)
+[2026-06-19T09:47:04.213Z] OrderImport: nothing to do.
+[2026-06-19T09:47:32.888Z] OrderImport daemon: cycle start
+[2026-06-19T09:47:34.257Z] OrderImport: found 0 file(s)
+[2026-06-19T09:47:34.257Z] OrderImport: nothing to do.
+[2026-06-19T09:48:02.915Z] OrderImport daemon: cycle start
+[2026-06-19T09:48:04.246Z] OrderImport: nothing to do.
+[2026-06-19T09:48:04.246Z] OrderImport: found 0 file(s)
+[2026-06-19T09:48:32.943Z] OrderImport daemon: cycle start
+[2026-06-19T09:48:34.243Z] OrderImport: found 0 file(s)
+[2026-06-19T09:48:34.243Z] OrderImport: nothing to do.
+[2026-06-19T09:49:02.956Z] OrderImport daemon: cycle start
+[2026-06-19T09:49:13.877Z] OrderImport: found 0 file(s)
+[2026-06-19T09:49:13.877Z] OrderImport: nothing to do.
+[2026-06-19T09:49:32.975Z] OrderImport daemon: cycle start
+[2026-06-19T09:49:33.909Z] OrderImport: found 0 file(s)
+[2026-06-19T09:49:33.909Z] OrderImport: nothing to do.
+[2026-06-19T09:50:02.984Z] OrderImport daemon: cycle start
+[2026-06-19T09:50:03.931Z] OrderImport: found 0 file(s)
+[2026-06-19T09:50:03.931Z] OrderImport: nothing to do.
+[2026-06-19T09:50:33.011Z] OrderImport daemon: cycle start
+[2026-06-19T09:50:34.350Z] OrderImport: found 0 file(s)
+[2026-06-19T09:50:34.351Z] OrderImport: nothing to do.
+[2026-06-19T09:51:03.040Z] OrderImport daemon: cycle start
+[2026-06-19T09:51:04.385Z] OrderImport: found 0 file(s)
+[2026-06-19T09:51:04.385Z] OrderImport: nothing to do.
+[2026-06-19T09:51:33.055Z] OrderImport daemon: cycle start
+[2026-06-19T09:51:34.389Z] OrderImport: found 0 file(s)
+[2026-06-19T09:51:34.389Z] OrderImport: nothing to do.
+[2026-06-19T09:52:03.057Z] OrderImport daemon: cycle start
+[2026-06-19T09:52:04.403Z] OrderImport: found 0 file(s)
+[2026-06-19T09:52:04.403Z] OrderImport: nothing to do.
+[2026-06-19T09:52:33.083Z] OrderImport daemon: cycle start
+[2026-06-19T09:52:34.475Z] OrderImport: found 0 file(s)
+[2026-06-19T09:52:34.475Z] OrderImport: nothing to do.
+[2026-06-19T09:53:03.111Z] OrderImport daemon: cycle start
+[2026-06-19T09:53:04.461Z] OrderImport: found 0 file(s)
+[2026-06-19T09:53:04.461Z] OrderImport: nothing to do.
+[2026-06-19T09:53:33.128Z] OrderImport daemon: cycle start
+[2026-06-19T09:53:34.468Z] OrderImport: found 0 file(s)
+[2026-06-19T09:53:34.468Z] OrderImport: nothing to do.
+[2026-06-19T09:54:03.156Z] OrderImport daemon: cycle start
+[2026-06-19T09:54:04.484Z] OrderImport: found 0 file(s)
+[2026-06-19T09:54:04.485Z] OrderImport: nothing to do.
+[2026-06-19T09:54:33.181Z] OrderImport daemon: cycle start
+[2026-06-19T09:54:34.490Z] OrderImport: found 0 file(s)
+[2026-06-19T09:54:34.490Z] OrderImport: nothing to do.
+[2026-06-19T09:55:03.207Z] OrderImport daemon: cycle start
+[2026-06-19T09:55:04.628Z] OrderImport: found 0 file(s)
+[2026-06-19T09:55:04.628Z] OrderImport: nothing to do.
+[2026-06-19T09:55:33.235Z] OrderImport daemon: cycle start
+[2026-06-19T09:55:34.570Z] OrderImport: found 0 file(s)
+[2026-06-19T09:55:34.570Z] OrderImport: nothing to do.
+[2026-06-19T09:56:03.263Z] OrderImport daemon: cycle start
+[2026-06-19T09:56:04.608Z] OrderImport: found 0 file(s)
+[2026-06-19T09:56:04.608Z] OrderImport: nothing to do.
+[2026-06-19T09:56:33.284Z] OrderImport daemon: cycle start
+[2026-06-19T09:56:34.678Z] OrderImport: found 0 file(s)
+[2026-06-19T09:56:34.678Z] OrderImport: nothing to do.
+[2026-06-19T09:57:03.287Z] OrderImport daemon: cycle start
+[2026-06-19T09:57:04.648Z] OrderImport: found 0 file(s)
+[2026-06-19T09:57:04.648Z] OrderImport: nothing to do.
+[2026-06-19T09:57:33.314Z] OrderImport daemon: cycle start
+[2026-06-19T09:57:34.664Z] OrderImport: found 0 file(s)
+[2026-06-19T09:57:34.664Z] OrderImport: nothing to do.
+[2026-06-19T09:58:03.317Z] OrderImport daemon: cycle start
+[2026-06-19T09:58:04.649Z] OrderImport: found 0 file(s)
+[2026-06-19T09:58:04.649Z] OrderImport: nothing to do.
+[2026-06-19T09:58:33.341Z] OrderImport daemon: cycle start
+[2026-06-19T09:58:34.692Z] OrderImport: found 0 file(s)
+[2026-06-19T09:58:34.693Z] OrderImport: nothing to do.
+[2026-06-19T09:59:03.344Z] OrderImport daemon: cycle start
+[2026-06-19T09:59:04.699Z] OrderImport: found 0 file(s)
+[2026-06-19T09:59:04.699Z] OrderImport: nothing to do.
+[2026-06-19T09:59:33.349Z] OrderImport daemon: cycle start
+[2026-06-19T09:59:34.761Z] OrderImport: found 0 file(s)
+[2026-06-19T09:59:34.761Z] OrderImport: nothing to do.
+[2026-06-19T10:00:03.375Z] OrderImport daemon: cycle start
+[2026-06-19T10:00:04.938Z] OrderImport: found 0 file(s)
+[2026-06-19T10:00:04.938Z] OrderImport: nothing to do.
+[2026-06-19T10:00:33.398Z] OrderImport daemon: cycle start
+[2026-06-19T10:00:34.715Z] OrderImport: found 0 file(s)
+[2026-06-19T10:00:34.715Z] OrderImport: nothing to do.
+[2026-06-19T10:01:03.410Z] OrderImport daemon: cycle start
+[2026-06-19T10:01:04.782Z] OrderImport: found 0 file(s)
+[2026-06-19T10:01:04.783Z] OrderImport: nothing to do.
+[2026-06-19T10:01:33.435Z] OrderImport daemon: cycle start
+[2026-06-19T10:01:34.787Z] OrderImport: found 0 file(s)
+[2026-06-19T10:01:34.787Z] OrderImport: nothing to do.
+[2026-06-19T10:02:03.461Z] OrderImport daemon: cycle start
+[2026-06-19T10:02:04.802Z] OrderImport: found 0 file(s)
+[2026-06-19T10:02:04.802Z] OrderImport: nothing to do.
+[2026-06-19T10:02:33.475Z] OrderImport daemon: cycle start
+[2026-06-19T10:02:34.826Z] OrderImport: found 0 file(s)
+[2026-06-19T10:02:34.826Z] OrderImport: nothing to do.
+[2026-06-19T10:03:03.503Z] OrderImport daemon: cycle start
+[2026-06-19T10:03:04.862Z] OrderImport: found 0 file(s)
+[2026-06-19T10:03:04.863Z] OrderImport: nothing to do.
+[2026-06-19T10:03:33.531Z] OrderImport daemon: cycle start
+[2026-06-19T10:03:34.854Z] OrderImport: found 0 file(s)
+[2026-06-19T10:03:34.854Z] OrderImport: nothing to do.
+[2026-06-19T10:04:03.552Z] OrderImport daemon: cycle start
+[2026-06-19T10:04:04.901Z] OrderImport: nothing to do.
+[2026-06-19T10:04:04.901Z] OrderImport: found 0 file(s)
+[2026-06-19T10:04:33.579Z] OrderImport daemon: cycle start
+[2026-06-19T10:04:34.924Z] OrderImport: found 0 file(s)
+[2026-06-19T10:04:34.924Z] OrderImport: nothing to do.
+[2026-06-19T10:04:48.867Z] OrderImport daemon started pid=1094121 node=v23.10.0 interval=30s
+[2026-06-19T10:04:48.868Z] OrderImport daemon: cycle start
+[2026-06-19T10:04:50.247Z] OrderImport: found 0 file(s)
+[2026-06-19T10:04:50.247Z] OrderImport: nothing to do.
+[2026-06-19T10:05:18.886Z] OrderImport daemon: cycle start
+[2026-06-19T10:05:20.286Z] OrderImport: found 0 file(s)
+[2026-06-19T10:05:20.286Z] OrderImport: nothing to do.
+[2026-06-19T10:05:48.911Z] OrderImport daemon: cycle start
+[2026-06-19T10:05:50.255Z] OrderImport: found 0 file(s)
+[2026-06-19T10:05:50.255Z] OrderImport: nothing to do.
+[2026-06-19T10:06:18.939Z] OrderImport daemon: cycle start
+[2026-06-19T10:06:20.288Z] OrderImport: found 0 file(s)
+[2026-06-19T10:06:20.288Z] OrderImport: nothing to do.
+[2026-06-19T10:06:48.967Z] OrderImport daemon: cycle start
+[2026-06-19T10:06:50.325Z] OrderImport: found 0 file(s)
+[2026-06-19T10:06:50.325Z] OrderImport: nothing to do.
+[2026-06-19T10:07:18.995Z] OrderImport daemon: cycle start
+[2026-06-19T10:07:20.408Z] OrderImport: found 0 file(s)
+[2026-06-19T10:07:20.408Z] OrderImport: nothing to do.
+[2026-06-19T10:07:48.996Z] OrderImport daemon: cycle start
+[2026-06-19T10:07:50.405Z] OrderImport: found 0 file(s)
+[2026-06-19T10:07:50.405Z] OrderImport: nothing to do.
+[2026-06-19T10:08:19.023Z] OrderImport daemon: cycle start
+[2026-06-19T10:08:20.418Z] OrderImport: found 0 file(s)
+[2026-06-19T10:08:20.418Z] OrderImport: nothing to do.
+[2026-06-19T10:08:49.031Z] OrderImport daemon: cycle start
+[2026-06-19T10:08:50.419Z] OrderImport: found 0 file(s)
+[2026-06-19T10:08:50.419Z] OrderImport: nothing to do.
+[2026-06-19T10:09:19.057Z] OrderImport daemon: cycle start
+[2026-06-19T10:09:20.510Z] OrderImport: found 0 file(s)
+[2026-06-19T10:09:20.511Z] OrderImport: nothing to do.
+[2026-06-19T10:09:49.075Z] OrderImport daemon: cycle start
+[2026-06-19T10:09:50.401Z] OrderImport: found 0 file(s)
+[2026-06-19T10:09:50.401Z] OrderImport: nothing to do.
+[2026-06-19T10:10:19.099Z] OrderImport daemon: cycle start
+[2026-06-19T10:10:20.468Z] OrderImport: found 0 file(s)
+[2026-06-19T10:10:20.468Z] OrderImport: nothing to do.
+[2026-06-19T10:10:49.127Z] OrderImport daemon: cycle start
+[2026-06-19T10:10:50.513Z] OrderImport: found 0 file(s)
+[2026-06-19T10:10:50.513Z] OrderImport: nothing to do.
+[2026-06-19T10:11:19.147Z] OrderImport daemon: cycle start
+[2026-06-19T10:11:20.519Z] OrderImport: found 0 file(s)
+[2026-06-19T10:11:20.519Z] OrderImport: nothing to do.
+[2026-06-19T10:11:49.175Z] OrderImport daemon: cycle start
+[2026-06-19T10:11:50.531Z] OrderImport: found 0 file(s)
+[2026-06-19T10:11:50.531Z] OrderImport: nothing to do.
+[2026-06-19T10:12:19.185Z] OrderImport daemon: cycle start
+[2026-06-19T10:12:20.524Z] OrderImport: found 0 file(s)
+[2026-06-19T10:12:20.524Z] OrderImport: nothing to do.
+[2026-06-19T10:12:49.213Z] OrderImport daemon: cycle start
+[2026-06-19T10:12:50.570Z] OrderImport: found 0 file(s)
+[2026-06-19T10:12:50.570Z] OrderImport: nothing to do.
+[2026-06-19T10:13:19.239Z] OrderImport daemon: cycle start
+[2026-06-19T10:13:20.182Z] OrderImport: found 0 file(s)
+[2026-06-19T10:13:20.182Z] OrderImport: nothing to do.
+[2026-06-19T10:13:49.267Z] OrderImport daemon: cycle start
+[2026-06-19T10:13:50.228Z] OrderImport: nothing to do.
+[2026-06-19T10:13:50.228Z] OrderImport: found 0 file(s)
+[2026-06-19T10:14:19.296Z] OrderImport daemon: cycle start
+[2026-06-19T10:14:20.626Z] OrderImport: found 0 file(s)
+[2026-06-19T10:14:20.626Z] OrderImport: nothing to do.
+[2026-06-19T10:14:49.325Z] OrderImport daemon: cycle start
+[2026-06-19T10:14:50.696Z] OrderImport: found 0 file(s)
+[2026-06-19T10:14:50.696Z] OrderImport: nothing to do.
+[2026-06-19T10:15:19.347Z] OrderImport daemon: cycle start
+[2026-06-19T10:15:20.672Z] OrderImport: found 0 file(s)
+[2026-06-19T10:15:20.672Z] OrderImport: nothing to do.
+[2026-06-19T10:15:49.368Z] OrderImport daemon: cycle start
+[2026-06-19T10:15:50.745Z] OrderImport: found 0 file(s)
+[2026-06-19T10:15:50.745Z] OrderImport: nothing to do.
+[2026-06-19T10:16:19.395Z] OrderImport daemon: cycle start
+[2026-06-19T10:16:20.736Z] OrderImport: found 0 file(s)
+[2026-06-19T10:16:20.736Z] OrderImport: nothing to do.
+[2026-06-19T10:16:49.424Z] OrderImport daemon: cycle start
+[2026-06-19T10:16:50.721Z] OrderImport: found 0 file(s)
+[2026-06-19T10:16:50.721Z] OrderImport: nothing to do.
+[2026-06-19T10:17:19.452Z] OrderImport daemon: cycle start
+[2026-06-19T10:17:20.790Z] OrderImport: found 0 file(s)
+[2026-06-19T10:17:20.790Z] OrderImport: nothing to do.
+[2026-06-19T10:17:49.474Z] OrderImport daemon: cycle start
+[2026-06-19T10:17:50.837Z] OrderImport: found 0 file(s)
+[2026-06-19T10:17:50.838Z] OrderImport: nothing to do.
+[2026-06-19T10:18:19.499Z] OrderImport daemon: cycle start
+[2026-06-19T10:18:20.822Z] OrderImport: found 0 file(s)
+[2026-06-19T10:18:20.822Z] OrderImport: nothing to do.
+[2026-06-19T10:18:49.528Z] OrderImport daemon: cycle start
+[2026-06-19T10:18:50.893Z] OrderImport: found 0 file(s)
+[2026-06-19T10:18:50.893Z] OrderImport: nothing to do.
+[2026-06-19T10:19:19.534Z] OrderImport daemon: cycle start
+[2026-06-19T10:19:20.920Z] OrderImport: found 0 file(s)
+[2026-06-19T10:19:20.920Z] OrderImport: nothing to do.
+[2026-06-19T10:19:49.563Z] OrderImport daemon: cycle start
+[2026-06-19T10:19:50.928Z] OrderImport: found 0 file(s)
+[2026-06-19T10:19:50.928Z] OrderImport: nothing to do.
+[2026-06-19T10:20:19.587Z] OrderImport daemon: cycle start
+[2026-06-19T10:20:20.933Z] OrderImport: found 0 file(s)
+[2026-06-19T10:20:20.933Z] OrderImport: nothing to do.
+[2026-06-19T10:20:49.611Z] OrderImport daemon: cycle start
+[2026-06-19T10:20:50.942Z] OrderImport: found 0 file(s)
+[2026-06-19T10:20:50.942Z] OrderImport: nothing to do.
+[2026-06-19T10:21:19.639Z] OrderImport daemon: cycle start
+[2026-06-19T10:21:21.012Z] OrderImport: found 0 file(s)
+[2026-06-19T10:21:21.012Z] OrderImport: nothing to do.
+[2026-06-19T10:21:49.667Z] OrderImport daemon: cycle start
+[2026-06-19T10:21:51.076Z] OrderImport: found 0 file(s)
+[2026-06-19T10:21:51.076Z] OrderImport: nothing to do.
+[2026-06-19T10:22:19.682Z] OrderImport daemon: cycle start
+[2026-06-19T10:22:20.599Z] OrderImport: found 0 file(s)
+[2026-06-19T10:22:20.599Z] OrderImport: nothing to do.
+[2026-06-19T10:22:49.709Z] OrderImport daemon: cycle start
+[2026-06-19T10:22:50.644Z] OrderImport: found 0 file(s)
+[2026-06-19T10:22:50.644Z] OrderImport: nothing to do.
+[2026-06-19T10:23:19.737Z] OrderImport daemon: cycle start
+[2026-06-19T10:23:20.675Z] OrderImport: found 0 file(s)
+[2026-06-19T10:23:20.675Z] OrderImport: nothing to do.
+[2026-06-19T10:23:49.765Z] OrderImport daemon: cycle start
+[2026-06-19T10:23:50.673Z] OrderImport: nothing to do.
+[2026-06-19T10:23:50.673Z] OrderImport: found 0 file(s)
+[2026-06-19T10:24:19.791Z] OrderImport daemon: cycle start
+[2026-06-19T10:24:20.721Z] OrderImport: found 0 file(s)
+[2026-06-19T10:24:20.721Z] OrderImport: nothing to do.
+[2026-06-19T10:24:49.819Z] OrderImport daemon: cycle start
+[2026-06-19T10:24:50.755Z] OrderImport: found 0 file(s)
+[2026-06-19T10:24:50.755Z] OrderImport: nothing to do.
+[2026-06-19T10:25:19.847Z] OrderImport daemon: cycle start
+[2026-06-19T10:25:20.759Z] OrderImport: found 0 file(s)
+[2026-06-19T10:25:20.760Z] OrderImport: nothing to do.
+[2026-06-19T10:25:49.876Z] OrderImport daemon: cycle start
+[2026-06-19T10:25:50.763Z] OrderImport: found 0 file(s)
+[2026-06-19T10:25:50.763Z] OrderImport: nothing to do.
+[2026-06-19T10:26:19.894Z] OrderImport daemon: cycle start
+[2026-06-19T10:26:20.790Z] OrderImport: found 0 file(s)
+[2026-06-19T10:26:20.791Z] OrderImport: nothing to do.
+[2026-06-19T10:26:49.898Z] OrderImport daemon: cycle start
+[2026-06-19T10:26:50.825Z] OrderImport: found 0 file(s)
+[2026-06-19T10:26:50.826Z] OrderImport: nothing to do.
+[2026-06-19T10:27:19.916Z] OrderImport daemon: cycle start
+[2026-06-19T10:27:20.815Z] OrderImport: found 0 file(s)
+[2026-06-19T10:27:20.815Z] OrderImport: nothing to do.
+[2026-06-19T10:27:49.936Z] OrderImport daemon: cycle start
+[2026-06-19T10:27:50.811Z] OrderImport: found 0 file(s)
+[2026-06-19T10:27:50.811Z] OrderImport: nothing to do.
+[2026-06-19T10:28:19.950Z] OrderImport daemon: cycle start
+[2026-06-19T10:28:20.852Z] OrderImport: found 0 file(s)
+[2026-06-19T10:28:20.852Z] OrderImport: nothing to do.
+[2026-06-19T10:28:49.973Z] OrderImport daemon: cycle start
+[2026-06-19T10:28:50.898Z] OrderImport: found 0 file(s)
+[2026-06-19T10:28:50.899Z] OrderImport: nothing to do.
+[2026-06-19T10:29:19.999Z] OrderImport daemon: cycle start
+[2026-06-19T10:29:20.901Z] OrderImport: found 0 file(s)
+[2026-06-19T10:29:20.901Z] OrderImport: nothing to do.
+[2026-06-19T10:29:50.020Z] OrderImport daemon: cycle start
+[2026-06-19T10:29:50.926Z] OrderImport: found 0 file(s)
+[2026-06-19T10:29:50.926Z] OrderImport: nothing to do.
+[2026-06-19T10:30:20.047Z] OrderImport daemon: cycle start
+[2026-06-19T10:30:21.019Z] OrderImport: found 0 file(s)
+[2026-06-19T10:30:21.019Z] OrderImport: nothing to do.
+[2026-06-19T10:30:50.075Z] OrderImport daemon: cycle start
+[2026-06-19T10:30:50.977Z] OrderImport: found 0 file(s)
+[2026-06-19T10:30:50.977Z] OrderImport: nothing to do.
+[2026-06-19T10:31:20.103Z] OrderImport daemon: cycle start
+[2026-06-19T10:31:21.012Z] OrderImport: found 0 file(s)
+[2026-06-19T10:31:21.013Z] OrderImport: nothing to do.
+[2026-06-19T10:31:50.131Z] OrderImport daemon: cycle start
+[2026-06-19T10:31:51.524Z] OrderImport: found 0 file(s)
+[2026-06-19T10:31:51.524Z] OrderImport: nothing to do.
+[2026-06-19T10:32:20.146Z] OrderImport daemon: cycle start
+[2026-06-19T10:32:21.524Z] OrderImport: found 0 file(s)
+[2026-06-19T10:32:21.524Z] OrderImport: nothing to do.
+[2026-06-19T10:32:50.173Z] OrderImport daemon: cycle start
+[2026-06-19T10:32:51.500Z] OrderImport: found 0 file(s)
+[2026-06-19T10:32:51.500Z] OrderImport: nothing to do.
+[2026-06-19T10:33:20.189Z] OrderImport daemon: cycle start
+[2026-06-19T10:33:21.530Z] OrderImport: found 0 file(s)
+[2026-06-19T10:33:21.530Z] OrderImport: nothing to do.
+[2026-06-19T10:33:50.215Z] OrderImport daemon: cycle start
+[2026-06-19T10:33:51.563Z] OrderImport: found 0 file(s)
+[2026-06-19T10:33:51.563Z] OrderImport: nothing to do.
+[2026-06-19T10:34:20.243Z] OrderImport daemon: cycle start
+[2026-06-19T10:34:21.599Z] OrderImport: found 0 file(s)
+[2026-06-19T10:34:21.599Z] OrderImport: nothing to do.
+[2026-06-19T10:34:50.272Z] OrderImport daemon: cycle start
+[2026-06-19T10:34:51.556Z] OrderImport: found 0 file(s)
+[2026-06-19T10:34:51.556Z] OrderImport: nothing to do.
+[2026-06-19T10:35:20.298Z] OrderImport daemon: cycle start
+[2026-06-19T10:35:21.240Z] OrderImport: found 0 file(s)
+[2026-06-19T10:35:21.240Z] OrderImport: nothing to do.
+[2026-06-19T10:35:50.323Z] OrderImport daemon: cycle start
+[2026-06-19T10:35:51.722Z] OrderImport: found 0 file(s)
+[2026-06-19T10:35:51.722Z] OrderImport: nothing to do.
+[2026-06-19T10:36:20.351Z] OrderImport daemon: cycle start
+[2026-06-19T10:36:21.754Z] OrderImport: found 0 file(s)
+[2026-06-19T10:36:21.754Z] OrderImport: nothing to do.
+[2026-06-19T10:36:50.379Z] OrderImport daemon: cycle start
+[2026-06-19T10:36:51.713Z] OrderImport: found 0 file(s)
+[2026-06-19T10:36:51.713Z] OrderImport: nothing to do.
+[2026-06-19T10:37:20.408Z] OrderImport daemon: cycle start
+[2026-06-19T10:37:21.739Z] OrderImport: found 0 file(s)
+[2026-06-19T10:37:21.739Z] OrderImport: nothing to do.
+[2026-06-19T10:37:50.435Z] OrderImport daemon: cycle start
+[2026-06-19T10:37:51.751Z] OrderImport: found 0 file(s)
+[2026-06-19T10:37:51.751Z] OrderImport: nothing to do.
+[2026-06-19T10:38:20.451Z] OrderImport daemon: cycle start
+[2026-06-19T10:38:21.809Z] OrderImport: found 0 file(s)
+[2026-06-19T10:38:21.809Z] OrderImport: nothing to do.
+[2026-06-19T10:38:50.479Z] OrderImport daemon: cycle start
+[2026-06-19T10:38:51.822Z] OrderImport: found 0 file(s)
+[2026-06-19T10:38:51.822Z] OrderImport: nothing to do.
+[2026-06-19T10:39:20.504Z] OrderImport daemon: cycle start
+[2026-06-19T10:39:21.840Z] OrderImport: found 0 file(s)
+[2026-06-19T10:39:21.840Z] OrderImport: nothing to do.
+[2026-06-19T10:39:50.519Z] OrderImport daemon: cycle start
+[2026-06-19T10:39:51.892Z] OrderImport: found 0 file(s)
+[2026-06-19T10:39:51.892Z] OrderImport: nothing to do.
+[2026-06-19T10:40:20.547Z] OrderImport daemon: cycle start
+[2026-06-19T10:40:22.000Z] OrderImport: found 0 file(s)
+[2026-06-19T10:40:22.000Z] OrderImport: nothing to do.
+[2026-06-19T10:40:50.571Z] OrderImport daemon: cycle start
+[2026-06-19T10:40:51.996Z] OrderImport: found 0 file(s)
+[2026-06-19T10:40:51.996Z] OrderImport: nothing to do.
+[2026-06-19T10:41:20.585Z] OrderImport daemon: cycle start
+[2026-06-19T10:41:22.010Z] OrderImport: found 0 file(s)
+[2026-06-19T10:41:22.010Z] OrderImport: nothing to do.
+[2026-06-19T10:41:50.597Z] OrderImport daemon: cycle start
+[2026-06-19T10:41:51.949Z] OrderImport: found 0 file(s)
+[2026-06-19T10:41:51.949Z] OrderImport: nothing to do.
+[2026-06-19T10:42:20.623Z] OrderImport daemon: cycle start
+[2026-06-19T10:42:21.992Z] OrderImport: found 0 file(s)
+[2026-06-19T10:42:21.993Z] OrderImport: nothing to do.
+[2026-06-19T10:42:50.647Z] OrderImport daemon: cycle start
+[2026-06-19T10:42:51.975Z] OrderImport: found 0 file(s)
+[2026-06-19T10:42:51.975Z] OrderImport: nothing to do.
+[2026-06-19T10:43:20.669Z] OrderImport daemon: cycle start
+[2026-06-19T10:43:22.064Z] OrderImport: found 0 file(s)
+[2026-06-19T10:43:22.064Z] OrderImport: nothing to do.
+[2026-06-19T10:43:50.698Z] OrderImport daemon: cycle start
+[2026-06-19T10:43:52.085Z] OrderImport: found 0 file(s)
+[2026-06-19T10:43:52.085Z] OrderImport: nothing to do.
+[2026-06-19T10:44:20.723Z] OrderImport daemon: cycle start
+[2026-06-19T10:44:22.123Z] OrderImport: found 0 file(s)
+[2026-06-19T10:44:22.123Z] OrderImport: nothing to do.
+[2026-06-19T10:44:50.751Z] OrderImport daemon: cycle start
+[2026-06-19T10:44:52.111Z] OrderImport: found 0 file(s)
+[2026-06-19T10:44:52.111Z] OrderImport: nothing to do.
+[2026-06-19T10:45:20.767Z] OrderImport daemon: cycle start
+[2026-06-19T10:45:22.090Z] OrderImport: found 0 file(s)
+[2026-06-19T10:45:22.091Z] OrderImport: nothing to do.
+[2026-06-19T10:45:50.795Z] OrderImport daemon: cycle start
+[2026-06-19T10:45:52.119Z] OrderImport: found 0 file(s)
+[2026-06-19T10:45:52.119Z] OrderImport: nothing to do.
+[2026-06-19T10:46:20.822Z] OrderImport daemon: cycle start
+[2026-06-19T10:46:22.173Z] OrderImport: found 0 file(s)
+[2026-06-19T10:46:22.173Z] OrderImport: nothing to do.
+[2026-06-19T10:46:50.847Z] OrderImport daemon: cycle start
+[2026-06-19T10:46:52.198Z] OrderImport: found 0 file(s)
+[2026-06-19T10:46:52.198Z] OrderImport: nothing to do.
+[2026-06-19T10:47:20.864Z] OrderImport daemon: cycle start
+[2026-06-19T10:47:22.236Z] OrderImport: found 0 file(s)
+[2026-06-19T10:47:22.236Z] OrderImport: nothing to do.
+[2026-06-19T10:47:50.891Z] OrderImport daemon: cycle start
+[2026-06-19T10:47:52.212Z] OrderImport: found 0 file(s)
+[2026-06-19T10:47:52.212Z] OrderImport: nothing to do.
+[2026-06-19T10:48:20.919Z] OrderImport daemon: cycle start
+[2026-06-19T10:48:22.260Z] OrderImport: found 0 file(s)
+[2026-06-19T10:48:22.260Z] OrderImport: nothing to do.
+[2026-06-19T10:48:50.947Z] OrderImport daemon: cycle start
+[2026-06-19T10:48:52.270Z] OrderImport: found 0 file(s)
+[2026-06-19T10:48:52.270Z] OrderImport: nothing to do.
+[2026-06-19T10:49:20.976Z] OrderImport daemon: cycle start
+[2026-06-19T10:49:22.323Z] OrderImport: found 0 file(s)
+[2026-06-19T10:49:22.323Z] OrderImport: nothing to do.
+[2026-06-19T10:49:50.977Z] OrderImport daemon: cycle start
+[2026-06-19T10:49:52.302Z] OrderImport: found 0 file(s)
+[2026-06-19T10:49:52.302Z] OrderImport: nothing to do.
+[2026-06-19T10:50:21.003Z] OrderImport daemon: cycle start
+[2026-06-19T10:50:22.327Z] OrderImport: found 0 file(s)
+[2026-06-19T10:50:22.327Z] OrderImport: nothing to do.
+[2026-06-19T10:50:51.003Z] OrderImport daemon: cycle start
+[2026-06-19T10:50:52.330Z] OrderImport: found 0 file(s)
+[2026-06-19T10:50:52.330Z] OrderImport: nothing to do.
+[2026-06-19T10:51:21.008Z] OrderImport daemon: cycle start
+[2026-06-19T10:51:22.329Z] OrderImport: found 0 file(s)
+[2026-06-19T10:51:22.329Z] OrderImport: nothing to do.
+[2026-06-19T10:51:51.035Z] OrderImport daemon: cycle start
+[2026-06-19T10:51:52.375Z] OrderImport: found 0 file(s)
+[2026-06-19T10:51:52.375Z] OrderImport: nothing to do.
+[2026-06-19T10:52:21.064Z] OrderImport daemon: cycle start
+[2026-06-19T10:52:22.407Z] OrderImport: found 0 file(s)
+[2026-06-19T10:52:22.407Z] OrderImport: nothing to do.
+[2026-06-19T10:52:51.091Z] OrderImport daemon: cycle start
+[2026-06-19T10:52:52.471Z] OrderImport: found 0 file(s)
+[2026-06-19T10:52:52.471Z] OrderImport: nothing to do.
+[2026-06-19T10:53:21.119Z] OrderImport daemon: cycle start
+[2026-06-19T10:53:22.472Z] OrderImport: nothing to do.
+[2026-06-19T10:53:22.472Z] OrderImport: found 0 file(s)
+[2026-06-19T10:53:51.147Z] OrderImport daemon: cycle start
+[2026-06-19T10:53:52.508Z] OrderImport: found 0 file(s)
+[2026-06-19T10:53:52.509Z] OrderImport: nothing to do.
+[2026-06-19T10:54:21.175Z] OrderImport daemon: cycle start
+[2026-06-19T10:54:22.525Z] OrderImport: found 0 file(s)
+[2026-06-19T10:54:22.525Z] OrderImport: nothing to do.
+[2026-06-19T10:54:51.203Z] OrderImport daemon: cycle start
+[2026-06-19T10:54:52.536Z] OrderImport: found 0 file(s)
+[2026-06-19T10:54:52.536Z] OrderImport: nothing to do.
+[2026-06-19T10:55:21.227Z] OrderImport daemon: cycle start
+[2026-06-19T10:55:22.645Z] OrderImport: found 0 file(s)
+[2026-06-19T10:55:22.645Z] OrderImport: nothing to do.
+[2026-06-19T10:55:51.247Z] OrderImport daemon: cycle start
+[2026-06-19T10:55:52.649Z] OrderImport: found 0 file(s)
+[2026-06-19T10:55:52.649Z] OrderImport: nothing to do.
+[2026-06-19T10:56:21.275Z] OrderImport daemon: cycle start
+[2026-06-19T10:56:22.621Z] OrderImport: found 0 file(s)
+[2026-06-19T10:56:22.621Z] OrderImport: nothing to do.
+[2026-06-19T10:56:51.303Z] OrderImport daemon: cycle start
+[2026-06-19T10:56:52.592Z] OrderImport: found 0 file(s)
+[2026-06-19T10:56:52.592Z] OrderImport: nothing to do.
+[2026-06-19T10:57:21.332Z] OrderImport daemon: cycle start
+[2026-06-19T10:57:22.661Z] OrderImport: found 0 file(s)
+[2026-06-19T10:57:22.661Z] OrderImport: nothing to do.
+[2026-06-19T10:57:51.344Z] OrderImport daemon: cycle start
+[2026-06-19T10:57:52.677Z] OrderImport: found 0 file(s)
+[2026-06-19T10:57:52.677Z] OrderImport: nothing to do.
+[2026-06-19T10:58:21.364Z] OrderImport daemon: cycle start
+[2026-06-19T10:58:22.770Z] OrderImport: found 0 file(s)
+[2026-06-19T10:58:22.770Z] OrderImport: nothing to do.
+[2026-06-19T10:58:51.386Z] OrderImport daemon: cycle start
+[2026-06-19T10:58:52.728Z] OrderImport: found 0 file(s)
+[2026-06-19T10:58:52.728Z] OrderImport: nothing to do.
+[2026-06-19T10:59:21.411Z] OrderImport daemon: cycle start
+[2026-06-19T10:59:22.730Z] OrderImport: found 0 file(s)
+[2026-06-19T10:59:22.730Z] OrderImport: nothing to do.
+[2026-06-19T10:59:51.435Z] OrderImport daemon: cycle start
+[2026-06-19T10:59:52.752Z] OrderImport: found 0 file(s)
+[2026-06-19T10:59:52.753Z] OrderImport: nothing to do.
+[2026-06-19T11:00:21.463Z] OrderImport daemon: cycle start
+[2026-06-19T11:00:22.837Z] OrderImport: found 0 file(s)
+[2026-06-19T11:00:22.837Z] OrderImport: nothing to do.
+[2026-06-19T11:00:51.485Z] OrderImport daemon: cycle start
+[2026-06-19T11:00:52.835Z] OrderImport: found 0 file(s)
+[2026-06-19T11:00:52.835Z] OrderImport: nothing to do.
+[2026-06-19T11:01:21.511Z] OrderImport daemon: cycle start
+[2026-06-19T11:01:22.874Z] OrderImport: found 0 file(s)
+[2026-06-19T11:01:22.874Z] OrderImport: nothing to do.
+[2026-06-19T11:01:51.539Z] OrderImport daemon: cycle start
+[2026-06-19T11:01:52.862Z] OrderImport: nothing to do.
+[2026-06-19T11:01:52.861Z] OrderImport: found 0 file(s)
+[2026-06-19T11:02:21.562Z] OrderImport daemon: cycle start
+[2026-06-19T11:02:22.877Z] OrderImport: found 0 file(s)
+[2026-06-19T11:02:22.877Z] OrderImport: nothing to do.
+[2026-06-19T11:02:51.586Z] OrderImport daemon: cycle start
+[2026-06-19T11:02:52.911Z] OrderImport: nothing to do.
+[2026-06-19T11:02:52.911Z] OrderImport: found 0 file(s)
+[2026-06-19T11:03:21.614Z] OrderImport daemon: cycle start
+[2026-06-19T11:03:22.976Z] OrderImport: found 0 file(s)
+[2026-06-19T11:03:22.976Z] OrderImport: nothing to do.
+[2026-06-19T11:03:51.639Z] OrderImport daemon: cycle start
+[2026-06-19T11:03:52.970Z] OrderImport: found 0 file(s)
+[2026-06-19T11:03:52.970Z] OrderImport: nothing to do.
+[2026-06-19T11:04:21.668Z] OrderImport daemon: cycle start
+[2026-06-19T11:04:22.989Z] OrderImport: found 0 file(s)
+[2026-06-19T11:04:22.989Z] OrderImport: nothing to do.
+[2026-06-19T11:04:51.695Z] OrderImport daemon: cycle start
+[2026-06-19T11:04:53.028Z] OrderImport: found 0 file(s)
+[2026-06-19T11:04:53.028Z] OrderImport: nothing to do.
+[2026-06-19T11:05:21.722Z] OrderImport daemon: cycle start
+[2026-06-19T11:05:23.065Z] OrderImport: nothing to do.
+[2026-06-19T11:05:23.065Z] OrderImport: found 0 file(s)
+[2026-06-19T11:05:51.748Z] OrderImport daemon: cycle start
+[2026-06-19T11:05:53.085Z] OrderImport: found 0 file(s)
+[2026-06-19T11:05:53.085Z] OrderImport: nothing to do.
+[2026-06-19T11:06:21.775Z] OrderImport daemon: cycle start
+[2026-06-19T11:06:23.094Z] OrderImport: found 0 file(s)
+[2026-06-19T11:06:23.094Z] OrderImport: nothing to do.
+[2026-06-19T11:06:51.800Z] OrderImport daemon: cycle start

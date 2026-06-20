@@ -2310,3 +2310,32 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
 === 2026-06-19 10:35:01 - Start ===
 === 2026-06-19 10:35:01 - Dodawanie zmian do commita ===
+[main eedb62d] Automatic commit 2026-06-19 10:35
+ 52 files changed, 22306 insertions(+), 344 deletions(-)
+ create mode 100644 import/import.log
+ create mode 100644 import/import.pid
+ rewrite import/import_efor.sh (97%)
+ create mode 100644 middleware/accessLock.js
+ create mode 100644 scripts/orderImportDaemon.js
+ create mode 100644 services/__tests__/fixtures/subPriceOrder.js
+ create mode 100644 services/__tests__/orderServiceSubPrices.test.js
+ create mode 100644 services/__tests__/subPriceConsistency.test.js
+ create mode 100644 services/__tests__/subPriceContext.test.js
+ create mode 100644 services/__tests__/subPrices.test.js
+ create mode 100644 services/accessLock.js
+ create mode 100644 services/accessLockAuth.js
+ create mode 100644 services/mailBot/__tests__/orderPdfSubPrices.test.js
+ create mode 100644 services/subPrices.js
+ rewrite templates/position_sent-prices.njk (95%)
+ create mode 100755 update.sh
+ create mode 100644 utils/getClientIp.js
+=== 2026-06-19 10:35:02 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   f302ca5..eedb62d  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-06-19 10:35:04 - Koniec ===
+=== 2026-06-19 12:00:01 - Start ===
+=== 2026-06-19 12:00:01 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-06-20 10:35:01 - Start ===
+=== 2026-06-20 10:35:01 - Dodawanie zmian do commita ===
