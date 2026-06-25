@@ -1,5 +1,22 @@
 const { getEffectiveOrgId } = require('./subPriceContext');
 
+const HKL_ORG_ID = 3;
+
+/**
+ * Bazowa kwota do rabatu klienta: HKL → zwykłe ceny, inne org → SUB___ (subVisible).
+ */
+function resolveDiscountBaseTotal(orgId, totals, subTotals) {
+  const isHkl = orgId == null || Number(orgId) === HKL_ORG_ID;
+  if (isHkl) {
+    return parseFloat(totals?.visible) || 0;
+  }
+  const subVisible = subTotals?.subVisible ?? parseFloat(totals?.sub);
+  if (subVisible != null && !Number.isNaN(subVisible) && Number(subVisible) !== 0) {
+    return Number(subVisible);
+  }
+  return parseFloat(totals?.visible) || 0;
+}
+
 /**
  * Zwraca true jeśli przynajmniej jedna pozycja ma niepuste subParamValues.
  */
@@ -134,8 +151,10 @@ function buildPdfSendDataTotals({
 }
 
 module.exports = {
+  HKL_ORG_ID,
   orderHasSubPrices,
   calcSubTotals,
+  resolveDiscountBaseTotal,
   resolveSubPricePdfView,
   buildPdfSendDataTotals
 };

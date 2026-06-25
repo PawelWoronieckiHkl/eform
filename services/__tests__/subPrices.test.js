@@ -6,6 +6,7 @@ const assert = require('node:assert/strict');
 const {
   orderHasSubPrices,
   calcSubTotals,
+  resolveDiscountBaseTotal,
   resolveSubPricePdfView,
   buildPdfSendDataTotals
 } = require('../subPrices');
@@ -150,4 +151,19 @@ test('buildPdfSendDataTotals — regular view without gold prices hides total_hi
   });
   assert.equal(totals.total, `order.total: ${REGULAR_SUMA}€`);
   assert.equal(totals.total_hidden, null);
+});
+
+test('resolveDiscountBaseTotal — HKL uses regular visible total', () => {
+  const base = resolveDiscountBaseTotal(3, { visible: 500, sub: 300 }, { subVisible: 390 });
+  assert.equal(base, 500);
+});
+
+test('resolveDiscountBaseTotal — non-HKL uses SUB subVisible', () => {
+  const base = resolveDiscountBaseTotal(42, { visible: 500, sub: 300 }, { subVisible: 390 });
+  assert.equal(base, 390);
+});
+
+test('resolveDiscountBaseTotal — non-HKL falls back to totals.sub when subTotals missing', () => {
+  const base = resolveDiscountBaseTotal(42, { visible: 500, sub: 280 }, null);
+  assert.equal(base, 280);
 });

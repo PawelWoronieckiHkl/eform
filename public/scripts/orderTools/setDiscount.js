@@ -2,12 +2,37 @@ import { showToast } from "../components/toast.js";
 import { createInfoDialog, createElement } from "../components/htmlManipulator.js";
 
 
+const HKL_ORG_ID = 3;
+
+function getOrderOrgId() {
+    const el = document.getElementById('order-title') || document.getElementById('order-title-mobile');
+    const orgId = el?.dataset.orgId;
+    if (orgId == null || orgId === '') return HKL_ORG_ID;
+    const parsed = parseInt(orgId, 10);
+    return Number.isNaN(parsed) ? HKL_ORG_ID : parsed;
+}
+
+function parsePriceText(text) {
+    const priceText = text.replace(/[^\d.,-]/g, '').replace(',', '.');
+    const priceValue = parseFloat(priceText);
+    return isNaN(priceValue) ? 0 : priceValue;
+}
+
 export function getTotal() {
+    const orgId = getOrderOrgId();
+    const totalContainer = document.getElementById('total-container');
+
+    // Non-HKL: rabat liczony od sumy SUB___ (nie od zwykłych cen na stronie org)
+    if (orgId !== HKL_ORG_ID && totalContainer?.dataset.subTotal != null) {
+        const subTotal = parseFloat(totalContainer.dataset.subTotal);
+        if (!Number.isNaN(subTotal) && subTotal !== 0) {
+            return subTotal;
+        }
+    }
+
     const totalPrice = document.querySelector('.total');
     if (totalPrice) {
-        const priceText = totalPrice.textContent.replace(/[^\d.,-]/g, '').replace(',', '.');
-        const priceValue = parseFloat(priceText);
-        return isNaN(priceValue) ? 0 : priceValue;
+        return parsePriceText(totalPrice.textContent);
     }
     return 0;
 }

@@ -63,7 +63,7 @@
                                                     {% block order_space %}
                                                         <div class="floating-order w-50 d-none d-md-block" id='desktop-floating-order'>
                                                         {% endblock %}
-                                                        <h2 class="fw-bold header text-center" id='order-title' data-id="{{ orderDetails.id }}">
+                                                        <h2 class="fw-bold header text-center" id='order-title' data-id="{{ orderDetails.id }}" data-org-id="{{ orderDetails.organization_id }}">
                                                             {% block order_title %}
                                                                 {{ __('order.title') }}
                                                             {% endblock %}
@@ -126,7 +126,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="floating-order w-100 mobile d-block d-md-none">
-                                                                            <h2 class="fw-bold header text-center p-4" id='order-title-mobile' data-id="{{ orderDetails.id }}">
+                                                                            <h2 class="fw-bold header text-center p-4" id='order-title-mobile' data-id="{{ orderDetails.id }}" data-org-id="{{ orderDetails.organization_id }}">
                                                                                 {{ __('order.title') }}
                                                                                 {{ orderDetails.order_idx }} <br/>
                                                                                 {% if orderDetails.commision %}
@@ -221,21 +221,25 @@
                                                                                                                 <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-" }}</td>
                                                                                                                 <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                                                                                                             </tr>
-                                                                                                            <tr id='price-row'>
-                                                                                                                {% if not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %}
-                                                                                                                {% for header in table.headers2 %}
-                                                                                                                    {% if not(header in rowObj.item.lockedParams) %}
-                                                                                                                        {% set value = rowObj.row.row2[header] %}
-                                                                                                                        {% if value and value != '-' and value != '' %}
-                                                                                                                            <td class="price" colspan="2">
-                                                                                                                                <span class="price-label">{{ header }}:</span>
-                                                                                                                                <b>{{ value | applyFactor(priceFactor) }}</b>
-                                                                                                                            </td>
-                                                                                                                        {% endif %}
-                                                                                                                    {% endif %}
-                                                                                                                {% endfor %}
-                                                                                                                {% endif %}
+                                                                                                            {% if not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %}
+                                                                                                            <tr id='price-row' class="price-row">
+                                                                                                                <td colspan="100%" class="sub-params-cell">
+                                                                                                                    <div class="sub-params-container">
+                                                                                                                        {% for header in table.headers2 %}
+                                                                                                                            {% if not(header in rowObj.item.lockedParams) %}
+                                                                                                                                {% set value = rowObj.row.row2[header] %}
+                                                                                                                                {% if value and value != '-' and value != '' %}
+                                                                                                                                    <span class="sub-param-item">
+                                                                                                                                        <span class="sub-param-label">{{ header }}:</span>
+                                                                                                                                        <b class="sub-param-value">{{ value | applyFactor(priceFactor) }}</b>
+                                                                                                                                    </span>
+                                                                                                                                {% endif %}
+                                                                                                                            {% endif %}
+                                                                                                                        {% endfor %}
+                                                                                                                    </div>
+                                                                                                                </td>
                                                                                                             </tr>
+                                                                                                            {% endif %}
                                                                                                             {% if (isGroup or isGroupShop or canViewSubPrices or viewAsOrganization or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                                                                                                                 {% set isOrgView = isOrgAccount or viewAsOrganization %}
                                                                                                                 <tr class="sub-params-row"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %} style="display: table-row;"{% endif %}>
@@ -246,7 +250,7 @@
                                                                                                                                     {% if not entry.locked or (not isOrgView and prices) %}
                                                                                                                                     <span class="sub-param-item{% if entry.locked %} gold{% endif %}">
                                                                                                                                         <span class="sub-param-label">{{ entry.display }}:</span>
-                                                                                                                                        <b>{{ entry.value }}</b>
+                                                                                                                                        <b class="sub-param-value">{{ entry.value }}</b>
                                                                                                                                     </span>
                                                                                                                                     {% endif %}
                                                                                                                                 {% endif %}
@@ -262,7 +266,7 @@
                                                                                                                                 {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
                                                                                                                                     <span class="sub-param-item gold">
                                                                                                                                         <span class="sub-param-label">{{ entry.display }}:</span>
-                                                                                                                                        <b>{{ entry.value }}</b>
+                                                                                                                                        <b class="sub-param-value">{{ entry.value }}</b>
                                                                                                                                     </span>
                                                                                                                                 {% endif %}
                                                                                                                             {% endfor %}
@@ -339,12 +343,12 @@
                                                                                                                         </div>
                                                                                                                     {% endif %}
                                                                                                                     {% if table.headers2.length > 0 and not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %}
-                                                                                                                        <div class="mobile-item-prices">
+                                                                                                                        <div class="mobile-sub-params mobile-item-prices">
                                                                                                                             {% for header in table.headers2 %}
                                                                                                                             {% if not(header in rowObj.item.lockedParams) %}
-                                                                                                                                    <div class="mobile-price-item">
+                                                                                                                                    <div class="mobile-sub-param-item">
                                                                                                                                         <strong>{{ header }}:</strong>
-                                                                                                                                        <b>{{ rowObj.row.row2[header] | applyFactor(priceFactor) or '-' }}</b>
+                                                                                                                                        <b class="sub-param-value">{{ rowObj.row.row2[header] | applyFactor(priceFactor) or '-' }}</b>
                                                                                                                                     </div>
                                                                                                                                 {% endif %}
                                                                                                                             {% endfor %}
@@ -364,7 +368,7 @@
                                                                                                                                     {% if entry.value and entry.value != '-' and entry.value != '' %}
                                                                                                                                         {% if not entry.locked or (not isOrgViewM and prices) %}
                                                                                                                                         <div class="mobile-sub-param-item{% if entry.locked %} gold{% endif %}">
-                                                                                                                                            <strong>{{ entry.display }}:</strong> <b>{{ entry.value }}</b>
+                                                                                                                                            <strong>{{ entry.display }}:</strong> <b class="sub-param-value">{{ entry.value }}</b>
                                                                                                                                         </div>
                                                                                                                                         {% endif %}
                                                                                                                                     {% endif %}
@@ -375,7 +379,7 @@
                                                                                                                                 {% for entry in rowObj.item.subParamValues %}
                                                                                                                                     {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
                                                                                                                                         <div class="mobile-sub-param-item gold">
-                                                                                                                                            <strong>{{ entry.display }}:</strong> <b>{{ entry.value }}</b>
+                                                                                                                                            <strong>{{ entry.display }}:</strong> <b class="sub-param-value">{{ entry.value }}</b>
                                                                                                                                         </div>
                                                                                                                                     {% endif %}
                                                                                                                                 {% endfor %}
@@ -422,28 +426,27 @@
                                                                                                         </div>
                                                                                                     {% endfor %}
                                                                                                     {% if totalPrice and not hidePrices %}
-                                                                                                        <div id='total-container'>
+                                                                                                        <div id='total-container' data-sub-total="{{ totalPrice.subVisible or 0 }}">
                                                                                                             <div class="total-price d-flex justify-content-end align-items-center">
-                                                                                                                <span class='total price-label col-3 text-center'>
+                                                                                                                <span class='total price-label col-3 text-center{% if isGroupShop or (isClient and hasSubPrices) or (canViewSubPrices and hasSubPrices and not showSub and not isOrgAccount) %} sub-total{% endif %}'>
                                                                                                                     {% if isGroupShop or (isClient and hasSubPrices) or (canViewSubPrices and hasSubPrices and not showSub and not isOrgAccount) %}
                                                                                                                         {% if totalPrice.subVisible and totalPrice.subVisible != 0 %}
                                                                                                                             {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;
-                                                                                                                        </span>
                                                                                                                         {% else %}
-                                                                                                                            {{ __('order.according_to_price') }}</span>
+                                                                                                                            {{ __('order.according_to_price') }}
                                                                                                                         {% endif %}
                                                                                                                     {% else %}
                                                                                                                         {% if totalPrice.visible != '0.00' %}
                                                                                                                             {{ __('order.total') }}: {{ totalPrice.visible | applyFactor(priceFactor) }}&#8364;
-                                                                                                                        </span>
                                                                                                                         {% else %}
-                                                                                                                            {{ __('order.according_to_price') }}</span>
+                                                                                                                            {{ __('order.according_to_price') }}
                                                                                                                         {% endif %}
                                                                                                                     {% endif %}
-                                                                                                                </div>
+                                                                                                                </span>
+                                                                                                            </div>
                                                                                                             {% if (isOrgAccount or viewAsOrganization) and showSub and hasSubPrices and totalPrice.subVisible and totalPrice.subVisible != 0 %}
                                                                                                                 <div class="total-price d-flex justify-content-end align-items-center">
-                                                                                                                    <span class='total price-label col-3 text-center'>
+                                                                                                                    <span class='total price-label sub-total col-3 text-center'>
                                                                                                                         SUB {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;
                                                                                                                     </span>
                                                                                                                 </div>

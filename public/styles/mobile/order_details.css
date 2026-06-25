@@ -348,6 +348,7 @@
     .mobile-item-details,
     .mobile-item-specs,
     .mobile-item-prices,
+    .mobile-sub-params.mobile-item-prices,
     .mobile-item-comment {
         display: none !important;
         opacity: 0 !important;
@@ -358,6 +359,7 @@
     .mobile-item-card.expanded .mobile-item-details,
     .mobile-item-card.expanded .mobile-item-specs,
     .mobile-item-card.expanded .mobile-item-prices,
+    .mobile-item-card.expanded .mobile-sub-params.mobile-item-prices,
     .mobile-item-card.expanded .mobile-item-comment {
         display: block !important;
         opacity: 1 !important;

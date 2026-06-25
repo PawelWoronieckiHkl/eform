@@ -163,19 +163,22 @@
                                                       <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-" }}</td>
                                                       <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                                                     </tr>
-                                                    <tr id='price-row'>
-                                                      <td colspan="1" class="price"></td>
-                                                      {% for header in table.headers2 %}
-                                                        {% if (not(header in rowObj.item.lockedParams)) %}
-                                                          {% set value = rowObj.row.row2[header] %}
-                                                          {% if value and value != '-' and value != '' and (value | float or value == '0') %}
-                                                            <td class="price" colspan="2">
-                                                              <span class="price-label">{{ header }}:</span>
-                                                              <b>{{ value }}</b>
-                                                            </td>
-                                                          {% endif %}
-                                                        {% endif %}
-                                                      {% endfor %}
+                                                    <tr class="price-row">
+                                                      <td colspan="100%" class="sub-params-cell">
+                                                        <div class="sub-params-container">
+                                                          {% for header in table.headers2 %}
+                                                            {% if (not(header in rowObj.item.lockedParams)) %}
+                                                              {% set value = rowObj.row.row2[header] %}
+                                                              {% if value and value != '-' and value != '' and (value | float or value == '0') %}
+                                                                <span class="sub-param-item">
+                                                                  <span class="sub-param-label">{{ header }}:</span>
+                                                                  <b class="sub-param-value">{{ value }}</b>
+                                                                </span>
+                                                              {% endif %}
+                                                            {% endif %}
+                                                          {% endfor %}
+                                                        </div>
+                                                      </td>
                                                     </tr>
                                                     {% set globalIndex = globalIndex + 1 %}
                                                   {% endfor %}
