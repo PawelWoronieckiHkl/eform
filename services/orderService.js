@@ -1,5 +1,30 @@
 const _ = require("n_");
 
+function isRabatParamName(key) {
+  return !!key && String(key).includes('RABAT');
+}
+
+function isZeroRabatDisplayValue(value) {
+  if (value === undefined || value === null || value === '-' || value === '') return true;
+  const str = String(value).trim();
+  const mainPart = str.split('-')[0].trim();
+  if (mainPart.includes('%')) {
+    const n = parseFloat(mainPart.replace('%', '').replace(',', '.'));
+    return Number.isFinite(n) && Math.abs(n) < 0.000001;
+  }
+  const cleaned = mainPart.replace(/[^\d.,-]/g, '').replace(',', '.');
+  if (cleaned === '' || cleaned === '-') return true;
+  const n = parseFloat(cleaned);
+  return Number.isFinite(n) && Math.abs(n) < 0.000001;
+}
+
+function paramOptionValue(param) {
+  if (param == null) return null;
+  if (typeof param === 'object' && 'option_value' in param) return param.option_value;
+  if (typeof param === 'string' || typeof param === 'number') return String(param);
+  return null;
+}
+
 async function jsonTextBackToMap(orderItems) {
   let total = {}
   let cleanOrderItems = [];
@@ -32,6 +57,7 @@ async function jsonTextBackToMap(orderItems) {
 
     for (const [key, param] of jsonParameters.entries()) {
       if (key.startsWith('SUB___')) continue; // handled separately in subParamValues
+      if (isRabatParamName(key) && isZeroRabatDisplayValue(paramOptionValue(param))) continue;
 
       const display = param && param.param_description ? param.param_description : key;
       const headerKey = display + "||" + key;
@@ -109,11 +135,18 @@ async function jsonTextBackToMap(orderItems) {
 
       // SUB___ params: store in subParamValues, skip main table entirely
       if (key.startsWith('SUB___')) {
+        if (isRabatParamName(key) && isZeroRabatDisplayValue(value)) {
+          continue;
+        }
         const isLocked = param && param.locked === true;
         if (value !== '-' && value !== null && value !== undefined) {
           const display = param && param.param_description ? param.param_description : key;
           item.subParamValues.push({ display, value, locked: isLocked });
         }
+        continue;
+      }
+
+      if (isRabatParamName(key) && isZeroRabatDisplayValue(value)) {
         continue;
       }
 

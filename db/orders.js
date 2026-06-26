@@ -78,6 +78,12 @@ async function getOrderStatus(orderId) {
     return rows[0]?.status || null;
 }
 
+async function getOrderOwnerIdent(orderId) {
+    const query = `SELECT u.ident FROM \`order\` o JOIN \`user\` u ON u.id = o.user_id WHERE o.id = ?`;
+    const rows = await selectQuery(query, orderId);
+    return rows[0]?.ident || null;
+}
+
 async function getOrderDetails(orderId) {
     const orderDetailsQuery = `SELECT 
     \`order\`.id,
@@ -810,6 +816,7 @@ module.exports = {
     getOrderWithItems,
     getOrderDetails,
     getOrderStatus,
+    getOrderOwnerIdent,
     updateOrderDetails,
     getOrderDataToSend,
     deleteOrder,

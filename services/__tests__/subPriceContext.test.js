@@ -43,7 +43,21 @@ test('applySubPriceLocals — client account gets isClient and canViewSubPrices=
   assert.equal(res.locals.showSub, false);
 });
 
-test('applySubPriceLocals — org owner gets canViewSubPrices for non-HKL org', () => {
+test('applySubPriceLocals — org owner without keychain sees SUB-only (no catalog prices)', () => {
+  const req = {
+    session: {
+      user: { orgId: 42, isOwner: true, isAdmin: false, showSubParams: false }
+    }
+  };
+  const res = mockRes();
+  applySubPriceLocals(req, res);
+  assert.equal(res.locals.canViewSubPrices, true);
+  assert.equal(res.locals.hasSubPriceToggle, true);
+  assert.equal(res.locals.showCatalogPrices, false);
+  assert.equal(res.locals.showSub, false);
+});
+
+test('applySubPriceLocals — org owner with keychain sees catalog + SUB prices', () => {
   const req = {
     session: {
       user: { orgId: 42, isOwner: true, isAdmin: false, showSubParams: true }
@@ -52,11 +66,11 @@ test('applySubPriceLocals — org owner gets canViewSubPrices for non-HKL org', 
   const res = mockRes();
   applySubPriceLocals(req, res);
   assert.equal(res.locals.canViewSubPrices, true);
-  assert.equal(res.locals.isClient, false);
+  assert.equal(res.locals.showCatalogPrices, true);
   assert.equal(res.locals.showSub, true);
 });
 
-test('applySubPriceLocals — admin with client context gets viewAsOrganization', () => {
+test('applySubPriceLocals — admin with client context gets viewAsOrganization and SUB-first toggle', () => {
   const req = {
     session: {
       user: { isAdmin: true, organization: '3', orgId: 3, showSubParams: false },
@@ -67,6 +81,8 @@ test('applySubPriceLocals — admin with client context gets viewAsOrganization'
   applySubPriceLocals(req, res);
   assert.equal(res.locals.viewAsOrganization, true);
   assert.equal(res.locals.canViewSubPrices, false);
+  assert.equal(res.locals.hasSubPriceToggle, true);
+  assert.equal(res.locals.showCatalogPrices, false);
   assert.equal(res.locals.selectedUserIdent, 'luxan');
 });
 

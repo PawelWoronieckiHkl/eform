@@ -260,6 +260,12 @@
     "dont_show": "Don't show again"
   },
   "mail": {
-    "import_note": "This order was automatically imported from an external system."
+    "import_note": "This order was automatically imported from an external system.",
+    "correction_subject": "PRICE CORRECTION – order",
+    "correction_title": "Order Price Correction",
+    "correction_body_1": "We would like to inform you that the prices in your order no. {{orderNr}} have been corrected by the administrator.",
+    "correction_body_2": "The updated, corrected prices can be found in the attached PDF. Please treat this correction as the binding version of your order.",
+    "correction_body_3": "If you have any questions regarding the price correction, please contact us:",
+    "correction_commission": "Commission:"
   }
 }

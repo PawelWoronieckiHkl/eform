@@ -80,9 +80,14 @@
                         {% block mobile_order_actions %}
                             <div class="mobile-order-actions">
                                 <button class='btn btn-outline-secondary copy-order-btn stop-propagation' data-id='{{ order.id }}' onclick="event.stopPropagation()">{{ __('orders.reorder') }}</button>
+                                {% if isAdmin %}
+                                <button class="btn btn-sm btn-warning open-correction-btn stop-propagation ms-1" data-order-id="{{ order.id }}" onclick="event.stopPropagation()" title="Korekta zlecenia">
+                                    <i class="bi bi-pencil-square me-1"></i>Korekta
+                                </button>
+                                {% endif %}
                             </div>
                         {% endblock %}
-                        {% block action_th %}{% endblock %}
+                        {% block action_th %}{% if isAdmin %}<th scope="col"></th>{% endif %}{% endblock %}
                             {% block extra_rows %}
                                 <td>{{ order.sent_date }}</td>
                                 <th scope="row" data-prod-status="{{ order.prod_status or '' }}">{{ __(order.prod_status) if order.prod_status else __('order.status_order_sent') }}</th>
@@ -137,6 +142,13 @@
                                 <td>
                                     <button class='btn btn-outline-secondary w-50 copy-order-btn' data-id='{{ order.id }}' onclick="event.stopPropagation()">{{ __('orders.reorder') }}</button>
                                 </td>
+                                {% if isAdmin %}
+                                <td onclick="event.stopPropagation()">
+                                    <button class="btn btn-sm btn-warning open-correction-btn stop-propagation" data-order-id="{{ order.id }}" title="Korekta zlecenia">
+                                        <i class="bi bi-pencil-square me-1"></i>Korekta
+                                    </button>
+                                </td>
+                                {% endif %}
                             {% endblock %}
                             {% block buttons_space %}{% endblock buttons_space %}
                             {% block empty %}
@@ -147,5 +159,8 @@
                             {% endblock empty %}
                             {% block scripts %}
                                 <script type="module" src="/scripts/orders.js"></script>
+                                {% if isAdmin %}
+                                <script type="module" src="/scripts/admin/orderCorrections.js"></script>
+                                {% endif %}
                             {% endblock scripts %}
                         </tr>

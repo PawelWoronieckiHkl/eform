@@ -222,9 +222,7 @@ test('omits HASLO-gated and zero surcharge params from displayValues entirely', 
   assert.equal(out.DOPLATA_EL_RABAT, undefined);
   assert.equal(out.SUB___DOPLATA_EL, undefined);
   assert.equal(out.SUB___DOPLATA_EL_RABAT, undefined);
-  assert.equal(out.CENA_RABAT.row, '2');
-  assert.equal(out.CENA_RABAT.locked, true);
-  assert.equal(out.CENA_RABAT.option_value, '0%');
+  assert.equal(out.CENA_RABAT, undefined);
 });
 
 test('forces locked true on EL_RABAT params even when engine stored locked false', async () => {
@@ -268,9 +266,8 @@ test('forces locked true on EL_RABAT params even when engine stored locked false
     })
   });
 
-  assert.equal(out.DOPLATA_EL_RABAT.locked, true);
-  assert.equal(out.SUB___DOPLATA_EL_RABAT.locked, true);
-  assert.equal(out.SUB___DOPLATA_EL_RABAT.sub, true);
+  assert.equal(out.DOPLATA_EL_RABAT, undefined);
+  assert.equal(out.SUB___DOPLATA_EL_RABAT, undefined);
 });
 
 test('omits zero DOPLATA and matching SUB___ surcharge fields from displayValues', async () => {
@@ -516,12 +513,10 @@ test('preserves engine price rows, locked flags and computed display values over
 
   assert.equal(out.CENA.row, '2');
   assert.equal(out.CENA.option_value, '138.88');
-  assert.equal(out.CENA_RABAT.locked, true);
-  assert.equal(out.CENA_RABAT.option_value, '0%');
+  assert.equal(out.CENA_RABAT, undefined);
   assert.equal(out.SUB___CENA.sub, true);
   assert.equal(out.SUB___CENA.option_value, '481');
-  assert.equal(out.SUB___CENA_RABAT.locked, true);
-  assert.equal(out.SUB___CENA_RABAT.option_value, '0%');
+  assert.equal(out.SUB___CENA_RABAT, undefined);
   assert.equal(out.SUMA_BRUTTO.listsum, true);
   assert.equal(out.SUMA_BRUTTO.option_value, '149.58');
   assert.equal(Object.keys(out)[0], 'CENA');

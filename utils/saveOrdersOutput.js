@@ -41,15 +41,20 @@ class ordersManager {
         this.sendFileName = '';
     }
 
-    setOutputPath(req, orderId, orderNo, orderpos) {
-
-        this.user = ownerService.getCurrentUser(req);
-        this.userIdent = this.user ? this.user.ident : 'unknown_user';
-        this.orgIdent = this.user ? this.user.organization : 'unknown_org';
+    setOutputPath(req, orderId, orderNo, orderpos, overrides = {}) {
+        if (overrides.orgIdent && overrides.userIdent) {
+            this.userIdent = overrides.userIdent;
+            this.orgIdent = overrides.orgIdent;
+        } else {
+            this.user = ownerService.getCurrentUser(req);
+            this.userIdent = this.user ? this.user.ident : 'unknown_user';
+            this.orgIdent = this.user ? this.user.organization : 'unknown_org';
+        }
         this.orderId = orderId || 'unknown_order';
         this.orderNo = orderNo || 'unknown_orderNo';
         this.orderpos = orderpos || 'unknown_pos';
         this.output_path = outputData;
+        this.fileNameSuffix = overrides.fileNameSuffix || '';
     }
 
     async mkDir() {
@@ -177,14 +182,14 @@ class ordersManager {
 
     }
 
-    async setJsonFileName(orderPos, posId) {
+    async setJsonFileName(orderPos, posId, suffix = '') {
         if (orderPos || posId) {
             if (posId) {
                 this.posId = posId;
             }
             await this.changeAttachmentFileNames(orderPos, posId);
         }
-        this.fileName = `${this.orgIdent}_${this.userIdent}_${this.orderNo}`;
+        this.fileName = `${this.orgIdent}_${this.userIdent}_${this.orderNo}${suffix}`;
 
         this.fullPath = `${this.output_path}/${this.fileName}.json`;
         console.log('JSON file name set to:', this.fullPath);

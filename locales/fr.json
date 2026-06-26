@@ -255,7 +255,13 @@
     "dont_show": "Ne plus afficher"
   },
   "mail": {
-    "import_note": "Cette commande a été importée automatiquement depuis un système externe."
+    "import_note": "Cette commande a été importée automatiquement depuis un système externe.",
+    "correction_subject": "CORRECTION DE PRIX – commande",
+    "correction_title": "Correction des prix de commande",
+    "correction_body_1": "Nous vous informons que les prix de votre commande n° {{orderNr}} ont été corrigés par l'administrateur.",
+    "correction_body_2": "Les prix mis à jour et corrigés se trouvent dans le PDF joint. Veuillez considérer cette correction comme la version définitive de votre commande.",
+    "correction_body_3": "Pour toute question concernant la correction de prix, n'hésitez pas à nous contacter :",
+    "correction_commission": "Commission :"
   },
   "order_detail_item_full": "Chaque article contient tous les paramètres, prix et le délai de production estimé."
 }

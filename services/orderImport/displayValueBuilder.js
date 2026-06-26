@@ -148,8 +148,12 @@ function isZeroElRabatParam(paramName) {
 function isEffectivelyZeroValue(value) {
   if (value === undefined || value === null || value === '') return true;
   const asString = String(value).trim();
-  if (asString.includes('%')) return false;
-  const num = Number(asString);
+  const percentMatch = asString.match(/^(-?\d+(?:[.,]\d+)?)\s*%$/);
+  if (percentMatch) {
+    const num = Number(percentMatch[1].replace(',', '.'));
+    return Number.isFinite(num) && Math.abs(num) < 0.000001;
+  }
+  const num = Number(asString.replace(',', '.'));
   return Number.isFinite(num) && Math.abs(num) < 0.000001;
 }
 
@@ -171,7 +175,13 @@ function shouldHideZeroSurcharge(paramName, values) {
 }
 
 function shouldHideZeroFromDisplayEntry(paramName, entry) {
-  const optionValue = entry && entry.option_value;
+  if (!entry) return false;
+  const optionValue = entry.option_value;
+
+  if (isLockedRabatParam(paramName)) {
+    if (!hasValue(optionValue)) return true;
+    return isEffectivelyZeroValue(optionValue);
+  }
 
   if (isZeroSurchargeBaseParam(paramName) || isZeroElSurchargeParam(paramName)) {
     return isEffectivelyZeroValue(optionValue);

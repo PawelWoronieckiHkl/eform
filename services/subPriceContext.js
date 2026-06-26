@@ -21,8 +21,8 @@ function getEffectiveOrgId(req) {
 
 /**
  * Set res.locals for SUB price visibility (org vs client view).
- * Org/owner/admin-with-context: regular prices + keychain for SUB.
- * Client: SUB prices only.
+ * Klient: tylko SUB___.
+ * Org owner / admin z kontekstem (nie-HKL): domyślnie SUB___, po keychain także ceny katalogowe.
  */
 function applySubPriceLocals(req, res) {
   const sessionUser = req.session?.user;
@@ -36,7 +36,6 @@ function applySubPriceLocals(req, res) {
 
   if (sessionUser) {
     if (sessionUser.isAdmin && contextUser && nonHklOrg) {
-      // Admin + wybrany klient org (np. Luxan) → widok jak organizacja (zwykłe ceny, SUB po keychain)
       viewAsOrganization = true;
     } else if (sessionUser.isOwner && !sessionUser.isAdmin) {
       const orgId = contextUser?.orgId ?? sessionUser.orgId;
@@ -50,10 +49,25 @@ function applySubPriceLocals(req, res) {
       && Number(sessionUser.orgId) !== 3;
   }
 
+  const showSub = sessionUser?.showSubParams || false;
+  const hasSubPriceToggle = nonHklOrg && (
+    (sessionUser?.isOwner && !sessionUser?.isAdmin) ||
+    (sessionUser?.isAdmin && !!contextUser)
+  );
+
+  let showCatalogPrices = true;
+  if (isClient) {
+    showCatalogPrices = false;
+  } else if (hasSubPriceToggle) {
+    showCatalogPrices = showSub;
+  }
+
   res.locals.canViewSubPrices = canViewSubPrices;
   res.locals.viewAsOrganization = viewAsOrganization;
   res.locals.isClient = isClient;
-  res.locals.showSub = sessionUser?.showSubParams || false;
+  res.locals.showSub = showSub;
+  res.locals.hasSubPriceToggle = hasSubPriceToggle;
+  res.locals.showCatalogPrices = showCatalogPrices;
 
   if (contextUser) {
     res.locals.selectedUser = {

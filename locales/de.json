@@ -255,7 +255,13 @@
     "dont_show": "Nicht mehr anzeigen"
   },
   "mail": {
-    "import_note": "Diese Bestellung wurde automatisch aus einem externen System importiert."
+    "import_note": "Diese Bestellung wurde automatisch aus einem externen System importiert.",
+    "correction_subject": "PREISKORREKTUR – Bestellung",
+    "correction_title": "Preiskorrektur der Bestellung",
+    "correction_body_1": "Wir möchten Sie informieren, dass die Preise in Ihrer Bestellung Nr. {{orderNr}} vom Administrator korrigiert wurden.",
+    "correction_body_2": "Die aktualisierten, korrigierten Preise finden Sie in der beigefügten PDF-Datei. Bitte betrachten Sie diese Korrektur als verbindliche Version Ihrer Bestellung.",
+    "correction_body_3": "Bei Fragen zur Preiskorrektur wenden Sie sich bitte an:",
+    "correction_commission": "Auftrag:"
   },
   "order_detail_item_full": "Jeder Posten enthält alle Parameter, Preise und die voraussichtliche Produktionszeit."
 }

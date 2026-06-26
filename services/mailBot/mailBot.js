@@ -20,16 +20,16 @@ const transporter = nodemailer.createTransport({
 });
 
 
-function buildMailOptions(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null) {
+function buildMailOptions(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null, templateName = 'mailTemplate.njk', subjectKey = 'mail.subject') {
   const i18n = confLang(lang);
-  const __ = (key) => i18n.__(key, { locale: lang });
-  const subject = `${__('mail.subject')} #${templateVars.orderNr} - ${templateVars.klient} `;
+  const __ = (key, opts) => i18n.__(key, { locale: lang, ...opts });
+  const subject = `${__(subjectKey)} #${templateVars.orderNr} - ${templateVars.klient} `;
 
-  nunjucks.configure(path.dirname(path.join(__dirname, 'mailTemplate.njk')), {
+  nunjucks.configure(path.dirname(path.join(__dirname, templateName)), {
     autoescape: true
   });
 
-  const htmlContent = nunjucks.render('mailTemplate.njk', {
+  const htmlContent = nunjucks.render(templateName, {
     ...templateVars,
     __
   });
@@ -79,8 +79,8 @@ function buildMailOptions(to, lang, pdfBuffer, attachmentsBuffer = [], templateV
   return mailOptions;
 }
 
-function sendMailAsync(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null) {
-  const mailOptions = buildMailOptions(to, lang, pdfBuffer, attachmentsBuffer, templateVars, cc);
+function sendMailAsync(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null, templateName = 'mailTemplate.njk', subjectKey = 'mail.subject') {
+  const mailOptions = buildMailOptions(to, lang, pdfBuffer, attachmentsBuffer, templateVars, cc, templateName, subjectKey);
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -101,4 +101,17 @@ function sendMail(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}
   sendMailAsync(to, lang, pdfBuffer, attachmentsBuffer, templateVars, cc).catch(() => {});
 }
 
-module.exports = { sendMail, sendMailAsync };
+function sendCorrectionMail(to, lang, pdfBuffer, attachmentsBuffer = [], templateVars = {}, cc = null) {
+  sendMailAsync(
+    to,
+    lang,
+    pdfBuffer,
+    attachmentsBuffer,
+    templateVars,
+    cc,
+    'correctionMailTemplate.njk',
+    'mail.correction_subject'
+  ).catch(() => {});
+}
+
+module.exports = { sendMail, sendMailAsync, sendCorrectionMail };

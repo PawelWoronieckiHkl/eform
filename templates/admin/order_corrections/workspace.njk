@@ -1,0 +1,34 @@
+{% extends "order.njk" %}
+
+{% block order_title %}
+    Korekta —
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="/styles/admin/order_corrections.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+{% endblock head %}
+
+
+{% block send_order_btn %}
+    <div class="send-order-actions d-flex justify-content-end align-items-center w-100 gap-2">
+        <button class="btn btn-outline-danger p-2 stop-propagation" type="button" id="abort-correction-btn" data-id="{{ orderDetails.id }}">
+            <p class="mb-0"><i class="bi bi-x-circle me-1"></i>Anuluj korektę</p>
+        </button>
+        <button class="btn btn-warning p-2 stop-propagation" type="button" id="submit-correction-btn" data-id="{{ orderDetails.id }}">
+            <p class="mb-0"><i class="bi bi-send-check me-1"></i>Wyślij korektę</p>
+        </button>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        window.correctionMode = true;
+        window.correctionApiBase = '/admin/order-corrections/{{ orderDetails.id }}';
+    </script>
+    <script type='module' src="/scripts/order.js"></script>
+    <script type='module' src="/scripts/recalculateOrder.js"></script>
+    <script type="module" src="/scripts/admin/orderCorrectionWorkspace.js"></script>
+    <script src="/scripts/mobileCards.js"></script>
+{% endblock scripts %}

@@ -13,9 +13,9 @@ async function getPriceAfterDiscount(orderId) {
         baseTotal = resolveDiscountBaseTotal(orgId, totals, subTotals);
     }
 
-    const discountPercentage = discount.client_discount_percentage;
-    const discountValue = discount.client_discount_value;
-    if (discountPercentage && discountPercentage > 0) {
+    const discountPercentage = parseFloat(discount.client_discount_percentage);
+    const discountValue = parseFloat(discount.client_discount_value);
+    if (Number.isFinite(discountPercentage) && discountPercentage > 0) {
         let result = baseTotal - (baseTotal * (discountPercentage / 100));
         return {
             result: result.toFixed(2),
@@ -24,7 +24,7 @@ async function getPriceAfterDiscount(orderId) {
             baseTotal: baseTotal.toFixed(2)
         };
     }
-    if (discountValue && discountValue > 0) {
+    if (Number.isFinite(discountValue) && discountValue > 0) {
         let result = baseTotal - discountValue;
         return {
             result: result.toFixed(2),

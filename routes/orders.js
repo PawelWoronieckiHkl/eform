@@ -21,6 +21,7 @@ const { availabeLanguages } = require('../config');
 const { translateOrderItems } = require('../services/translationDict/itemTranslator');
 const { buildItemProductionDays, recalcAndSaveMaxProdDays } = require('../services/productionDays');
 const { getProductionSendSkipClient, shouldForceProductionSend } = require('../utils/productionSendGuard');
+const { getOrderMutationBlock, shouldRedirectFromActiveOrderView } = require('../utils/orderStatusGuard');
 
 function sentOrderPath(orderId) {
     return `/orders/history/order/${orderId}`;
@@ -31,24 +32,19 @@ async function isSentOrder(orderId) {
 }
 
 async function redirectSentOrder(req, res, orderId = req.params.orderId) {
-    if (await isSentOrder(orderId)) {
-        res.redirect(sentOrderPath(orderId));
+    const redirectInfo = await shouldRedirectFromActiveOrderView(orderId, req.session.user);
+    if (redirectInfo?.redirect) {
+        res.redirect(redirectInfo.redirect);
         return true;
     }
-
     return false;
 }
 
-async function rejectSentOrderMutation(res, orderId) {
-    if (await isSentOrder(orderId)) {
-        return res.status(403).json({
-            success: false,
-            status: 'error',
-            message: 'Nie można edytować wysłanego zamówienia.',
-            redirect: sentOrderPath(orderId)
-        });
+async function rejectSentOrderMutation(res, orderId, req) {
+    const block = await getOrderMutationBlock(orderId, req?.session?.user);
+    if (block) {
+        return res.status(403).json(block);
     }
-
     return null;
 }
 
@@ -409,6 +405,7 @@ router.get("/history", requireLogin, loadEmployeePermissions, filterPriceData, f
             limit,
             totalOrders,
             owner: req.session.user.isOwner,
+            isAdmin: req.session.user?.isAdmin || false,
             totalPages,
             hidePrices: req.hidePrices
         });
@@ -421,6 +418,7 @@ router.get("/history", requireLogin, loadEmployeePermissions, filterPriceData, f
             totalOrders,
             totalPages,
             owner: req.session.user.isOwner,
+            isAdmin: req.session.user?.isAdmin || false,
             isEmployee: req.session.user?.isEmployee || false,
             hidePrices: req.hidePrices
         });
@@ -432,6 +430,12 @@ router.get("/history", requireLogin, loadEmployeePermissions, filterPriceData, f
 router.get('/history/order/:orderId', requireLogin, checkOrderOwnership, loadEmployeePermissions, filterPriceData, async (req, res) => {
 
     const { orderDetails, orderItems } = await db.getOrderWithItems(req.params.orderId);
+
+    if (orderDetails?.status === 'correction' && !req.session.user?.isAdmin) {
+        return res.status(503).render('error.njk', {
+            message: 'Zamówienie jest tymczasowo niedostępne — trwa korekta administracyjna.'
+        });
+    }
 
     // Sprawdzenie dostępu pracownika do szczegółów zamówienia
     if (req.session.user?.isEmployee &&
@@ -580,6 +584,7 @@ router.get('/order/:orderId/:prices(true|false)?', requireLogin, checkOrderOwner
                 productionOrderOverrideClient,
                 hidePrices: req.hidePrices,
                 hasSubPrices,
+                prices: false,
                 clientView: isClientView,
                 showBoth: showBothInPdf
             });
@@ -1184,7 +1189,7 @@ router.put('/update-order/:orderId', requireLogin, checkOrderOwnership, async (r
     try {
         const { commission, addrId, mailId, orderSendAddress, comment } = req.body;
         const { orderId } = req.params;
-        const sentOrderResponse = await rejectSentOrderMutation(res, orderId);
+        const sentOrderResponse = await rejectSentOrderMutation(res, orderId, req);
         if (sentOrderResponse) {
             return sentOrderResponse;
         }
@@ -1207,7 +1212,7 @@ router.put('/update-order/:orderId', requireLogin, checkOrderOwnership, async (r
 
 
 router.delete('/order/:orderId/delete/', requireLogin, checkOrderOwnership, async (req, res) => {
-    const sentOrderResponse = await rejectSentOrderMutation(res, req.params.orderId);
+    const sentOrderResponse = await rejectSentOrderMutation(res, req.params.orderId, req);
     if (sentOrderResponse) {
         return sentOrderResponse;
     }

@@ -325,6 +325,8 @@
         window.canViewSubPrices = {{ canViewSubPrices | dump | default("false") }};
         window.viewAsOrganization = {{ viewAsOrganization | dump | default("false") }};
         window.showSubParams = {{ showSub | dump | default("false") }};
+        window.hasSubPriceToggle = {{ hasSubPriceToggle | dump | default("false") }};
+        window.showCatalogPrices = {{ showCatalogPrices | dump | default("true") }};
         window.isClient = {{ isClient | dump | default("false") }};
         window.isOrgAccount = {{ isOrgAccount | dump | default("false") }};
     </script>

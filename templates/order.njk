@@ -35,7 +35,7 @@
                                                 <img class='ico' src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
                                             </div>
                                             <div id="generate-container-mobile">
-                                                {% if not isGroup and not isGroupShop and not hidePrices and (not (isOrgAccount or viewAsOrganization) or showSub) %}
+                                                {% if not isGroup and not isGroupShop and not hidePrices and (not hasSubPriceToggle or showCatalogPrices) %}
                                                 <button id="unlockBtn" class="btn">
                                                     <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                 {% endif %}
@@ -94,7 +94,7 @@
                                                                 <button class="btn has-tooltip" data-tooltip="{{ __('base.give_discount_tooltip') }}" id='discount-btn'>
                                                                     <img src="/img/sale.png" alt="sale icon" class='icon'></button>
                                                                 {% endif %}
-                                                                    {% if not isGroup and not isGroupShop and not hidePrices and (not (isOrgAccount or viewAsOrganization) or showSub) %}
+                                                                    {% if not isGroup and not isGroupShop and not hidePrices and (not hasSubPriceToggle or showCatalogPrices) %}
                                                                     <button id="unlockBtn" class="btn">
                                                                         <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                                     {% endif %}
@@ -221,7 +221,7 @@
                                                                                                                 <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-" }}</td>
                                                                                                                 <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                                                                                                             </tr>
-                                                                                                            {% if not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %}
+                                                                                                            {% if not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (hasSubPriceToggle and itemHasSubPrices and not showCatalogPrices) %}
                                                                                                             <tr id='price-row' class="price-row">
                                                                                                                 <td colspan="100%" class="sub-params-cell">
                                                                                                                     <div class="sub-params-container">
@@ -242,7 +242,7 @@
                                                                                                             {% endif %}
                                                                                                             {% if (isGroup or isGroupShop or canViewSubPrices or viewAsOrganization or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                                                                                                                 {% set isOrgView = isOrgAccount or viewAsOrganization %}
-                                                                                                                <tr class="sub-params-row"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %} style="display: table-row;"{% endif %}>
+                                                                                                                <tr class="sub-params-row"{% if isGroupShop or (isClient and itemHasSubPrices) or (hasSubPriceToggle and itemHasSubPrices) or (isGroup and showSub) %} style="display: table-row;"{% endif %}>
                                                                                                                     <td colspan="100%" class="sub-params-cell">
                                                                                                                         <div class="sub-params-container">
                                                                                                                             {% for entry in rowObj.item.subParamValues %}
@@ -258,7 +258,7 @@
                                                                                                                         </div>
                                                                                                                     </td>
                                                                                                                 </tr>
-                                                                                                                {% if isOrgView and showSub and prices %}
+                                                                                                                {% if isOrgView and showCatalogPrices and prices %}
                                                                                                                 <tr class="sub-params-row" style="display: table-row;">
                                                                                                                     <td colspan="100%" class="sub-params-cell">
                                                                                                                         <div class="sub-params-container">
@@ -342,7 +342,7 @@
                                                                                                                             {% endfor %}
                                                                                                                         </div>
                                                                                                                     {% endif %}
-                                                                                                                    {% if table.headers2.length > 0 and not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %}
+                                                                                                                    {% if table.headers2.length > 0 and not isGroupShop and not (isClient and itemHasSubPrices) and not hidePrices and not (hasSubPriceToggle and itemHasSubPrices and not showCatalogPrices) %}
                                                                                                                         <div class="mobile-sub-params mobile-item-prices">
                                                                                                                             {% for header in table.headers2 %}
                                                                                                                             {% if not(header in rowObj.item.lockedParams) %}
@@ -363,7 +363,7 @@
                                                                                                                         {% endif %}
                                                                                                                         {% if (isGroup or isGroupShop or canViewSubPrices or viewAsOrganization or (isClient and itemHasSubPrices)) and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                                                                                                                             {% set isOrgViewM = isOrgAccount or viewAsOrganization %}
-                                                                                                                            <div class="mobile-sub-params"{% if showSub or isGroupShop or (isClient and itemHasSubPrices) or (canViewSubPrices and itemHasSubPrices and not showSub and not isOrgAccount) %} style="display: block;"{% endif %}>
+                                                                                                                            <div class="mobile-sub-params"{% if isGroupShop or (isClient and itemHasSubPrices) or (hasSubPriceToggle and itemHasSubPrices) or (isGroup and showSub) %} style="display: block;"{% endif %}>
                                                                                                                                 {% for entry in rowObj.item.subParamValues %}
                                                                                                                                     {% if entry.value and entry.value != '-' and entry.value != '' %}
                                                                                                                                         {% if not entry.locked or (not isOrgViewM and prices) %}
@@ -374,7 +374,7 @@
                                                                                                                                     {% endif %}
                                                                                                                                 {% endfor %}
                                                                                                                             </div>
-                                                                                                                            {% if isOrgViewM and showSub and prices %}
+                                                                                                                            {% if isOrgViewM and showCatalogPrices and prices %}
                                                                                                                             <div class="mobile-sub-params" style="display: block;">
                                                                                                                                 {% for entry in rowObj.item.subParamValues %}
                                                                                                                                     {% if entry.value and entry.value != '-' and entry.value != '' and entry.locked %}
@@ -426,32 +426,32 @@
                                                                                                         </div>
                                                                                                     {% endfor %}
                                                                                                     {% if totalPrice and not hidePrices %}
-                                                                                                        <div id='total-container' data-sub-total="{{ totalPrice.subVisible or 0 }}">
+                                                                                                        <div id='total-container' data-sub-total="{{ totalPrice.subVisible or 0 }}" data-prices-unlocked="{{ 'true' if prices else 'false' }}">
                                                                                                             <div class="total-price d-flex justify-content-end align-items-center">
-                                                                                                                <span class='total price-label col-3 text-center{% if isGroupShop or (isClient and hasSubPrices) or (canViewSubPrices and hasSubPrices and not showSub and not isOrgAccount) %} sub-total{% endif %}'>
-                                                                                                                    {% if isGroupShop or (isClient and hasSubPrices) or (canViewSubPrices and hasSubPrices and not showSub and not isOrgAccount) %}
+                                                                                                                <span class='total price-label col-3 text-center{% if isGroupShop or (isClient and hasSubPrices) or (hasSubPriceToggle and hasSubPrices and not showCatalogPrices) %} sub-total{% endif %}'>
+                                                                                                                    {% if isGroupShop or (isClient and hasSubPrices) or (hasSubPriceToggle and hasSubPrices and not showCatalogPrices) %}
                                                                                                                         {% if totalPrice.subVisible and totalPrice.subVisible != 0 %}
-                                                                                                                            {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;
+                                                                                                                        {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364; 
                                                                                                                         {% else %}
                                                                                                                             {{ __('order.according_to_price') }}
                                                                                                                         {% endif %}
                                                                                                                     {% else %}
                                                                                                                         {% if totalPrice.visible != '0.00' %}
-                                                                                                                            {{ __('order.total') }}: {{ totalPrice.visible | applyFactor(priceFactor) }}&#8364;
+                                                                                                                        HKL {{ __('order.total') }}: {{ totalPrice.visible | applyFactor(priceFactor) }}&#8364;
                                                                                                                         {% else %}
                                                                                                                             {{ __('order.according_to_price') }}
                                                                                                                         {% endif %}
                                                                                                                     {% endif %}
                                                                                                                 </span>
                                                                                                             </div>
-                                                                                                            {% if (isOrgAccount or viewAsOrganization) and showSub and hasSubPrices and totalPrice.subVisible and totalPrice.subVisible != 0 %}
+                                                                                                            {% if hasSubPriceToggle and showCatalogPrices and hasSubPrices and totalPrice.subVisible and totalPrice.subVisible != 0 %}
                                                                                                                 <div class="total-price d-flex justify-content-end align-items-center">
                                                                                                                     <span class='total price-label sub-total col-3 text-center'>
-                                                                                                                        SUB {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;
+                                                                                                                        {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;
                                                                                                                     </span>
                                                                                                                 </div>
                                                                                                             {% endif %}
-                                                                                                            {% if (canViewSubPrices and hasSubPrices and not showSub and not isOrgAccount and not viewAsOrganization and totalPrice.subLocked and totalPrice.subLocked != 0) or ((isOrgAccount or viewAsOrganization) and showSub and prices and hasSubPrices and totalPrice.subLocked and totalPrice.subLocked != 0) %}
+                                                                                                            {% if hasSubPriceToggle and hasSubPrices and totalPrice.subLocked and totalPrice.subLocked != 0 and prices %}
                                                                                                                 <div class="total-price d-flex justify-content-end align-items-center">
                                                                                                                     <span class='total gold price-label col-3 text-center'>
                                                                                                                         {{ __('order.total_hidden') }}: {{ totalPrice.subLocked | applyFactor(priceFactor) }}&#8364; netto

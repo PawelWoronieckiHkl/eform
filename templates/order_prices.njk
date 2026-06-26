@@ -127,7 +127,7 @@
                       <td>{{ rowObj.item.commision | truncate(20, true, "...") or "-" }}</td>
                       <td>{{ rowObj.item.comment | truncate(30, true, "...") }}</td>
                     </tr>
-                    {% if not (isClient and hasSubPrices) %}
+                    {% if not (isClient and hasSubPrices) and showCatalogPrices %}
                     <tr class="price-row">
                       <td colspan="100%" class="sub-params-cell">
                         <div class="sub-params-container">
@@ -145,7 +145,7 @@
                         </div>
                       </td>
                     </tr>
-                      {% if total and not (isOrgAccount or viewAsOrganization) %}
+                      {% if total and not hasSubPriceToggle %}
                         <tr class="price-row sub-params-locked-row">
                           <td colspan="100%" class="sub-params-cell">
                             <div class="sub-params-container">
@@ -206,7 +206,7 @@
                           </td>
                         </tr>
                       {% endif %}
-                      {% if (isOrgAccount or viewAsOrganization) and showSub and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                      {% if hasSubPriceToggle and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                         <tr class="sub-params-row" style="display: table-row;">
                           <td colspan="100%" class="sub-params-cell">
                             <div class="sub-params-container">
@@ -236,6 +236,20 @@
                           </td>
                         </tr>
                       {% endif %}
+                      {% set itemProdDays = itemProductionDays[rowObj.item.id] %}
+                      <tr class="prod-time-row">
+                        <td colspan="100%">
+                          <div class="prod-time-row-cell">
+                            <span class="prod-time-label">{{ __('order.production_time_label') }}</span>
+                            {% if itemProdDays %}
+                              <span class="prod-days-item">{{ itemProdDays }} {{ __('termin.days') }}</span>
+                              <span class="prod-days-max">/ {{ maxProdDays }} {{ __('termin.days') }}</span>
+                            {% else %}
+                              <span class="text-muted">-</span>
+                            {% endif %}
+                          </div>
+                        </td>
+                      </tr>
                                 {% set globalIndex = globalIndex + 1 %}
                               {% endfor %}
                             </tbody>
@@ -259,6 +273,15 @@
                                     <br>
                                       {{ rowObj.item.department or '-' }}
                                     </div>
+                                  {% set itemProdDays = itemProductionDays[rowObj.item.id] %}
+                                  {% if itemProdDays %}
+                                    <div class="mobile-item-detail">
+                                      <strong>{{ __('order.production_time_short_label') }}</strong>
+                                      <br>
+                                        <span class="prod-days-item">{{ itemProdDays }} {{ __('termin.days') }}</span>
+                                        <span class="prod-days-max">({{ __('order.commission_time_prefix') }} {{ maxProdDays }} {{ __('termin.days') }})</span>
+                                    </div>
+                                  {% endif %}
                                   </div>
                                   {% if table.headers1.length > 0 %}
                                     <div class="mobile-item-specs">
@@ -272,7 +295,7 @@
                                       {% endfor %}
                                     </div>
                                   {% endif %}
-                                  {% if table.headers2.length > 0 and not (isClient and hasSubPrices) %}
+                                  {% if table.headers2.length > 0 and not (isClient and hasSubPrices) and showCatalogPrices %}
                                     <div class="mobile-sub-params mobile-item-prices">
                                       {% for header in table.headers2 %}
                                         {% if not(header in rowObj.item.lockedParams) %}
@@ -304,7 +327,7 @@
                                       {% endfor %}
                                     </div>
                                   {% endif %}
-                                  {% if (isOrgAccount or viewAsOrganization) and showSub and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                  {% if hasSubPriceToggle and rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                                     <div class="mobile-sub-params" style="display: block;">
                                       {% for entry in rowObj.item.subParamValues %}
                                         {% if entry.value and entry.value != '-' and entry.value != '' and not entry.locked %}
@@ -371,12 +394,12 @@
                             </div>
                           {% endfor %}
                           {% if totalPrice %}
-                            <div id='total-container'>
+                            <div id='total-container' data-sub-total="{{ totalPrice.subVisible or 0 }}" data-prices-unlocked="true">
                               {% if isClient and hasSubPrices %}
                                 <div class="total-price d-flex justify-content-end align-items-center col-12">
                                   <span class='total price-label sub-total col-3 text-center p-price'>
                                     {% if totalPrice.subVisible and totalPrice.subVisible != 0 %}
-                                      {{ __('order.total') }}: {{ totalPrice.subVisible }}&#8364;</span>
+                                    HKL {{ __('order.total') }}: {{ totalPrice.subVisible }}&#8364;</span>
                                     {% else %}
                                       {{ __('order.according_to_price') }}</span>
                                     {% endif %}
@@ -387,19 +410,21 @@
                                     {{ __('order.total_hidden') }}: {{ totalPrice.subLocked }}&#8364; netto</span>
                                 </div>
                                 {% endif %}
-                              {% elif (isOrgAccount or viewAsOrganization) and showSub and hasSubPrices %}
+                              {% elif hasSubPriceToggle and hasSubPrices %}
+                                {% if showCatalogPrices %}
                                 <div class="total-price d-flex justify-content-end align-items-center col-12">
                                   <span class='total price-label col-3 text-center'>
                                     {% if totalPrice.visible != '0.00' %}
-                                      {{ __('order.total') }}: {{ totalPrice.visible | applyFactor(priceFactor) }}&#8364;</span>
+                                      HKL {{ __('order.total') }}: {{ totalPrice.visible | applyFactor(priceFactor) }}&#8364;</span>
                                     {% else %}
                                       {{ __('order.according_to_price') }}</span>
                                     {% endif %}
                                 </div>
+                                {% endif %}
                                 {% if totalPrice.subVisible and totalPrice.subVisible != 0 %}
                                 <div class="total-price d-flex justify-content-end align-items-center col-12">
                                   <span class='total price-label sub-total col-3 text-center'>
-                                    SUB {{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;</span>
+                                    {% if showCatalogPrices %}{% endif %}{{ __('order.total') }}: {{ totalPrice.subVisible | applyFactor(priceFactor) }}&#8364;</span>
                                 </div>
                                 {% endif %}
                                 {% if totalPrice.subLocked and totalPrice.subLocked != 0 %}
@@ -412,7 +437,7 @@
                               <div class="total-price d-flex justify-content-end align-items-center col-12">
                                 <span class='total price-label col-3 text-center'>
                                   {% if totalPrice.visible != '0.00' %}
-                                    {{ __('order.total') }}: {{ totalPrice.visible }}&#8364;</span>
+                                    HKL{{ __('order.total') }}: {{ totalPrice.visible }}&#8364;</span>
                                 {% else %}
                                   {{ __('order.according_to_price') }}</span>
                               {% endif %}

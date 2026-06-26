@@ -50,7 +50,7 @@ async function insertQuery(query, data) {
 
 async function updateQuery(query, data) {
     try {
-        const response = await pool.query(query, data);
+        const [response] = await pool.query(query, data);
         return response;
     } catch (err) {
         log('updateQuery error: ' + err);

@@ -8,6 +8,7 @@ const reportsDb = require("../db/admin/reports.js");
 const { log } = require('../utils/logging');
 const sessionService = require('../services/sessionService');
 const accessLock = require('../services/accessLock');
+const orderCorrectionsRoutes = require('./admin/orderCorrections');
 
 router.use(async (req, res, next) => {
     if (req.session.user?.isOwner) {
@@ -40,6 +41,8 @@ function requireReportsApiAccess(req, res, next) {
 
     next();
 }
+
+router.use('/order-corrections', orderCorrectionsRoutes);
 
 router.get('/', requireLogin, requireAdmin, async (req, res) => {
     res.render('admin/admin_panel.njk', { accessBlocked: accessLock.isBlocked() });

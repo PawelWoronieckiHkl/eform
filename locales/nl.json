@@ -255,7 +255,13 @@
     "dont_show": "Niet meer tonen"
   },
   "mail": {
-    "import_note": "Deze bestelling is automatisch geïmporteerd uit een extern systeem."
+    "import_note": "Deze bestelling is automatisch geïmporteerd uit een extern systeem.",
+    "correction_subject": "PRIJSCORRECTIE – bestelling",
+    "correction_title": "Prijscorrectie van bestelling",
+    "correction_body_1": "Wij informeren u dat de prijzen in uw bestelling nr. {{orderNr}} door de beheerder zijn gecorrigeerd.",
+    "correction_body_2": "De bijgewerkte, gecorrigeerde prijzen vindt u in de bijgevoegde PDF. Beschouw deze correctie als de bindende versie van uw bestelling.",
+    "correction_body_3": "Neem bij vragen over de prijscorrectie contact met ons op:",
+    "correction_commission": "Opdracht:"
   },
   "order_detail_item_full": "Elk item bevat alle parameters, prijzen en de geschatte productietijd."
 }

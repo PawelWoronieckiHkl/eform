@@ -28,7 +28,14 @@ test('jsonTextBackToMap extracts SUB___ params into subParamValues, not main tab
   const headerDisplays = cleanOrderItems[0].headers2;
   assert.ok(headerDisplays.includes('Cena katalogowa [€]'));
   assert.ok(!headerDisplays.some((h) => h.includes('SUB')));
+  assert.ok(!headerDisplays.some((h) => h.toLowerCase().includes('rabat')));
   assert.equal(row.row.row2['Cena katalogowa [€]'], REGULAR_CENA);
+});
+
+test('jsonTextBackToMap omits zero-percent RABAT from price rows', async () => {
+  const { cleanOrderItems } = await orderService.jsonTextBackToMap([makeOrderItem()]);
+  const headers2 = cleanOrderItems[0].headers2;
+  assert.ok(!headers2.some((h) => h.toLowerCase().includes('rabat') && !h.toLowerCase().includes('sub')));
 });
 
 test('jsonTextBackToMap skips empty SUB___ values', async () => {

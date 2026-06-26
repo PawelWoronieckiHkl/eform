@@ -80,6 +80,7 @@ test('org owner without keychain: page locals + PDF both in SUB-only mode', asyn
   const view = resolveSubPricePdfView(req, true);
   assert.equal(res.locals.canViewSubPrices, true);
   assert.equal(res.locals.showSub, false);
+  assert.equal(res.locals.showCatalogPrices, false);
   assert.equal(view.isClientView, true);
   assert.equal(view.showBoth, false);
 
@@ -111,6 +112,7 @@ test('org owner with keychain: page showSub + PDF showBoth stay aligned', async 
 
   const view = resolveSubPricePdfView(req, true);
   assert.equal(res.locals.showSub, true);
+  assert.equal(res.locals.showCatalogPrices, true);
   assert.equal(view.showBoth, true);
 
   const pdfTotals = buildPdfSendDataTotals({

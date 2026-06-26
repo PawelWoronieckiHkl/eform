@@ -168,7 +168,13 @@
     "see_order": "mail.see_order",
     "footer_1": "mail.footer_1",
     "footer_2": "mail.footer_2",
-    "import_note": "To zamówienie zostało zaimportowane automatycznie z systemu zewnętrznego."
+    "import_note": "To zamówienie zostało zaimportowane automatycznie z systemu zewnętrznego.",
+    "correction_subject": "KOREKTA CEN – zamówienie",
+    "correction_title": "Korekta cen zamówienia",
+    "correction_body_1": "Uprzejmie informujemy, że ceny w Twoim zamówieniu nr {{orderNr}} zostały skorygowane przez administratora.",
+    "correction_body_2": "Aktualne, poprawione ceny znajdziesz w załączonym pliku PDF. Prosimy traktować tę korektę jako obowiązującą wersję zamówienia.",
+    "correction_body_3": "W razie pytań dotyczących korekty cen prosimy o kontakt:",
+    "correction_commission": "Zlecenie:"
   },
   "employee": {
     "panel_title": "Zarządzanie Pracownikami",

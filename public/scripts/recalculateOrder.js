@@ -296,10 +296,20 @@ function resetFormHost() {
 }
 
 /**
+ * API base for recalculate endpoints — correction mode uses admin routes.
+ */
+function getRecalculateApiBase(orderId) {
+    if (window.correctionMode && window.correctionApiBase) {
+        return window.correctionApiBase;
+    }
+    return `/orders/order/${orderId}`;
+}
+
+/**
  * Pobiera listę pozycji do przeliczenia z backendu.
  */
 async function fetchPositions(orderId) {
-    const response = await fetch(`/orders/order/${orderId}/positions-data`, {
+    const response = await fetch(`${getRecalculateApiBase(orderId)}/positions-data`, {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
     });
@@ -413,7 +423,7 @@ async function recalculatePosition(position) {
  * Wysyła przeliczone pozycje do backendu (atomowo).
  */
 async function saveRecalculated(orderId, recalculated) {
-    const response = await fetch(`/orders/order/${orderId}/recalculate`, {
+    const response = await fetch(`${getRecalculateApiBase(orderId)}/recalculate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ positions: recalculated })

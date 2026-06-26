@@ -9,7 +9,8 @@ const { formatClientLabel } = require('../utils/formatClient');
 const { getProductionSendSkipClient, isProductionVersion, shouldForceProductionSend } = require('../utils/productionSendGuard');
 class OrderSender {
 
-    constructor(req, order, orderItems) {
+    constructor(req, order, orderItems, options = {}) {
+        this.options = options;
         this.orderItems = orderItems;
         this.slopePaths = [];
         this.shortItems = [];
@@ -86,7 +87,12 @@ class OrderSender {
             idx++;
         }
         this.ordersManagerInstance = new ordersManager();
-        this.ordersManagerInstance.setOutputPath(req, this.data.orderid, this.data.orderno);
+        const pathOverrides = {
+            orgIdent: options.orgIdent || order.org_ident,
+            userIdent: options.userIdent || order.user_ident,
+            fileNameSuffix: options.fileNameSuffix || ''
+        };
+        this.ordersManagerInstance.setOutputPath(req, this.data.orderid, this.data.orderno, undefined, pathOverrides);
     }
 
     async init() {
@@ -97,7 +103,8 @@ class OrderSender {
                 this.attachmentsList.push(positionAttachment);
             }
         }
-        const result = await this.ordersManagerInstance.setJsonFileName();
+        const suffix = this.options.fileNameSuffix || '';
+        const result = await this.ordersManagerInstance.setJsonFileName(undefined, undefined, suffix);
         this.fileName = result.fileName;
         this.fullPath = result.fullPath;
 

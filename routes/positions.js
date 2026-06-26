@@ -4,6 +4,7 @@ const multer = require('multer');
 const { requireLogin } = require('../middleware/loginMixture');
 const { loadEmployeePermissions, filterPriceData } = require('../middleware/employeePermissions');
 const db = require("../db/db_helper.js");
+const { getOrderMutationBlock } = require('../utils/orderStatusGuard');
 const adminDb = require("../db/admin/db_helper.js");
 const ownerService = require('../services/owner.js');
 const fs = require('fs');
@@ -26,20 +27,11 @@ function sentOrderPath(orderId) {
   return `/orders/history/order/${orderId}`;
 }
 
-async function isOrderSent(orderId) {
-  return (await db.getOrderStatus(orderId)) === 'sent';
-}
-
-async function rejectSentOrderMutation(res, orderId) {
-  if (await isOrderSent(orderId)) {
-    return res.status(403).json({
-      success: false,
-      status: 'error',
-      message: 'Nie można edytować wysłanego zamówienia.',
-      redirect: sentOrderPath(orderId)
-    });
+async function rejectSentOrderMutation(res, orderId, req) {
+  const block = await getOrderMutationBlock(orderId, req?.session?.user);
+  if (block) {
+    return res.status(403).json(block);
   }
-
   return null;
 }
 
@@ -78,7 +70,7 @@ router.use(async (req, res, next) => {
 router.post('/save', requireLogin, upload.any(), async (req, res) => {
   try {
     const formData = JSON.parse(req.body.data);
-    const sentOrderResponse = await rejectSentOrderMutation(res, formData.order);
+    const sentOrderResponse = await rejectSentOrderMutation(res, formData.order, req);
     if (sentOrderResponse) {
       return sentOrderResponse;
     }
@@ -122,7 +114,7 @@ router.patch('/edit/save', requireLogin, upload.any(), async (req, res) => {
       return res.status(404).json({ success: false, error: 'Pozycja nie istnieje' });
     }
 
-    const sentOrderResponse = await rejectSentOrderMutation(res, existingPosition.order_id);
+    const sentOrderResponse = await rejectSentOrderMutation(res, existingPosition.order_id, req);
     if (sentOrderResponse) {
       return sentOrderResponse;
     }
@@ -162,7 +154,7 @@ router.delete('/:positionId/delete', requireLogin, async (req, res) => {
     }
 
     const orderId = position.order_id;
-    const sentOrderResponse = await rejectSentOrderMutation(res, orderId);
+    const sentOrderResponse = await rejectSentOrderMutation(res, orderId, req);
     if (sentOrderResponse) {
       return sentOrderResponse;
     }
@@ -277,7 +269,7 @@ router.post('/:positionId/duplicate/', requireLogin, async (req, res) => {
   }
 
   const orderId = position.order_id;
-  const sentOrderResponse = await rejectSentOrderMutation(res, orderId);
+  const sentOrderResponse = await rejectSentOrderMutation(res, orderId, req);
   if (sentOrderResponse) {
     return sentOrderResponse;
   }
@@ -505,7 +497,7 @@ router.post('/:id/move-up', requireLogin, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Position not found' });
     }
 
-    const sentOrderResponse = await rejectSentOrderMutation(res, position.order_id);
+    const sentOrderResponse = await rejectSentOrderMutation(res, position.order_id, req);
     if (sentOrderResponse) {
       return sentOrderResponse;
     }
@@ -532,7 +524,7 @@ router.post('/:id/move-down', requireLogin, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Position not found' });
     }
 
-    const sentOrderResponse = await rejectSentOrderMutation(res, position.order_id);
+    const sentOrderResponse = await rejectSentOrderMutation(res, position.order_id, req);
     if (sentOrderResponse) {
       return sentOrderResponse;
     }
@@ -560,7 +552,7 @@ router.post('/:id/set-idx', requireLogin, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Position not found' });
     }
 
-    const sentOrderResponse = await rejectSentOrderMutation(res, position.order_id);
+    const sentOrderResponse = await rejectSentOrderMutation(res, position.order_id, req);
     if (sentOrderResponse) {
       return sentOrderResponse;
     }

@@ -1,0 +1,36 @@
+.correction-banner {
+    border-left: 4px solid #ffc107;
+}
+
+.correction-banner code {
+    background: rgba(0, 0, 0, 0.06);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+}
+
+.open-correction-btn:disabled {
+    opacity: 0.7;
+}
+
+#submit-correction-btn p {
+    margin: 0;
+    font-weight: 600;
+}
+
+#abort-correction-btn p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.in-correction-item {
+    margin-right: 0.25rem;
+}
+
+.in-correction-item .cancel-correction-btn {
+    line-height: 1;
+    text-decoration: none;
+}
+
+.in-correction-item .cancel-correction-btn:hover {
+    opacity: 0.8;
+}

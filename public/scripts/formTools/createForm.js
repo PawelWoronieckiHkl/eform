@@ -384,20 +384,14 @@ export function checkIfParamHidden(formula, values, param) {
 export function shouldHideRegularPriceRow(isRowTwo) {
     if (!isRowTwo) return false;
     if (window.isGroupShop || window.isClient || window.hidePrices) return true;
-    if (window.canViewSubPrices && !window.showSubParams && !window.viewAsOrganization && !window.isOrgAccount) {
-        return true;
-    }
+    if (window.hasSubPriceToggle && !window.showCatalogPrices) return true;
     return false;
 }
 
 /** Whether current user context should ever see SUB___ price fields. Matches order.njk. */
 export function canUserSeeSubPrices() {
     if (window.isGroup || window.isGroupShop || window.isClient) return true;
-    if (window.canViewSubPrices && window.showSubParams) return true;
-    if (window.viewAsOrganization && window.showSubParams) return true;
-    if (window.canViewSubPrices && !window.showSubParams && !window.viewAsOrganization && !window.isOrgAccount) {
-        return true;
-    }
+    if (window.hasSubPriceToggle) return true;
     return false;
 }
 

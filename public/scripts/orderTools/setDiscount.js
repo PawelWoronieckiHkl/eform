@@ -335,6 +335,11 @@ export async function fetchCurrentDiscount() {
 }
 
 export async function updateDiscountDisplay() {
+    const totalContainer = document.getElementById('total-container');
+    if (totalContainer?.dataset.pricesUnlocked !== 'true') {
+        return;
+    }
+
     const discountInfo = await fetchCurrentDiscount()
     let type = '';
     if (discountInfo.type == 'percentage') {
@@ -344,10 +349,18 @@ export async function updateDiscountDisplay() {
         type = '€'
     }
     else if (discountInfo.type == 'none') {
+        const discontSpace = document.getElementById('discount-space');
+        if (discontSpace) discontSpace.remove();
         return;
     }
 
-    const totalContainer = document.getElementById('total-container');
+    const discountAmount = parseFloat(discountInfo.discountValue);
+    if (!Number.isFinite(discountAmount) || discountAmount <= 0) {
+        const discontSpace = document.getElementById('discount-space');
+        if (discontSpace) discontSpace.remove();
+        return;
+    }
+
     const discontSpace = document.getElementById('discount-space')
     if (discontSpace){
         discontSpace.remove();
