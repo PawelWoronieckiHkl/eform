@@ -532,7 +532,6 @@
 		animation: gradient-shift 3s ease infinite;
 		color: white;
 		box-shadow: var(--shadow-md), 0 6px 25px var(--brand-primary-glow);
-		transform: translateX(4px) translateY(-2px);
 	}
 
 	.nav-icon {
@@ -563,7 +562,6 @@
 		background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
 		color: var(--text-on-brand);
 		box-shadow: 0 6px 16px var(--color-error-glow);
-		transform: translateX(4px) translateY(-2px);
 	}
 
 	.desktop-nav .custom-nav-link.context-button::before {
@@ -593,7 +591,6 @@
 	}
 
 	.action-btn:hover {
-		transform: translateY(-2px);
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	}
 

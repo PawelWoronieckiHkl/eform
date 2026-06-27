@@ -112,7 +112,16 @@
     "recalculate_saving": "opslaan...",
     "recalculate_no_positions": "Geen posities om te herberekenen",
     "recalculate_no_id": "Bestelling-ID ontbreekt",
-    "recalculate_tooltip": "Alle posities herberekenen"
+    "recalculate_tooltip": "Alle posities herberekenen",
+    "set_discount_for_order": "Korting instellen voor bestelling",
+    "order_value": "Bestelwaarde",
+    "current_discount": "Huidige korting",
+    "percent_discount": "Procentuele korting",
+    "amount_discount": "Bedragkorting",
+    "discount_amount": "Kortingsbedrag",
+    "total_after_discount": "Bedrag na korting",
+    "apply_discount": "Korting toepassen",
+    "discount": "Korting"
   },
   "orders": {
     "title": "Uw bestellingen",

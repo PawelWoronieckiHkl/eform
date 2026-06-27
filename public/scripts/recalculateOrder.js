@@ -20,6 +20,20 @@ import { FormsManager } from '/scripts/formTools/getAvailableForms.js';
 import { showToast } from '/scripts/components/toast.js';
 import { confirmPrompt } from '/scripts/components/confirmPrompt.js';
 
+async function getLatestVersion(groupNumber) {
+    try {
+        const response = await fetch(`/position/version/${groupNumber}/`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        return data.version || null;
+    } catch (err) {
+        console.error('[recalculate] Błąd pobierania wersji:', err);
+        return null;
+    }
+}
+
 /**
  * Wymusza widoczność spinnera na cały czas trwania procesu.
  * Używa `setProperty('display', 'block', 'important')` — `stopSpin()` w hourglass.js
@@ -296,6 +310,50 @@ function resetFormHost() {
 }
 
 /**
+ * Dla użytkowników niebędących klientem generateForm pomija tworzenie inputów
+ * SUB___. Bez nich applyPriceToInput nie woła buildValuesToDisplay dla SUB___
+ * i wpisy te wypadają z json_parameters_desc. Przywracamy je, kopiując wartość
+ * z obliczonego bazowego parametru (SUB___CENA ← CENA, itd.).
+ */
+/**
+ * Po waitForCalculations() skrypty cennikowe zaktualizowały window.lockedParams
+ * i window.subParams. buildValuesToDisplay ustawia locked/sub tylko przy tworzeniu
+ * nowego wpisu (gdy entry jeszcze nie istnieje). Dla istniejących wpisów (przekazanych
+ * przez stare valuesToDisplay) locked/sub pozostają z poprzedniego zapisu.
+ * Przywracamy je tutaj z globalnych list.
+ */
+function syncLockedAndSubFlags(displayValues) {
+    const locked = window.lockedParams || [];
+    const sub = window.subParams || [];
+    for (const [key, entry] of displayValues) {
+        if (!entry || typeof entry !== 'object') continue;
+        entry.locked = locked.includes(key);
+        entry.sub = sub.includes(key);
+    }
+}
+
+function syncSubPriceDisplayEntries(displayValues) {
+    const params = window.params || [];
+    const locked = window.lockedParams || [];
+    const sub = window.subParams || [];
+    for (const param of params) {
+        if (!param?.NAME?.startsWith('SUB___')) continue;
+        const baseParamName = param.NAME.slice(6);
+        const baseEntry = displayValues.get(baseParamName);
+        if (!baseEntry?.option_value) continue;
+        const existing = displayValues.get(param.NAME) || {};
+        displayValues.set(param.NAME, {
+            param_description: existing.param_description || baseEntry.param_description || '',
+            locked: locked.includes(param.NAME),
+            sub: true,
+            option_value: baseEntry.option_value,
+            option_description: '',
+            row: existing.row || param.LISTROW || '1'
+        });
+    }
+}
+
+/**
  * API base for recalculate endpoints — correction mode uses admin routes.
  */
 function getRecalculateApiBase(orderId) {
@@ -324,6 +382,7 @@ async function fetchPositions(orderId) {
 
 /**
  * Rekonstruuje formularz dla pojedynczej pozycji i zwraca przeliczone dane.
+ * Logika jest identyczna z admin_edit_form.js (init + forceRecalculation).
  */
 async function recalculatePosition(position) {
     resetFormHost();
@@ -337,7 +396,6 @@ async function recalculatePosition(position) {
 
     let valuesToDisplayList = position.json_parameters_desc;
     if (typeof valuesToDisplayList === 'string') {
-        // json_parameters_desc bywa double-encoded — próbujemy raz, potem drugi raz
         try {
             valuesToDisplayList = JSON.parse(valuesToDisplayList);
             if (typeof valuesToDisplayList === 'string') {
@@ -349,18 +407,23 @@ async function recalculatePosition(position) {
     }
     if (!Array.isArray(valuesToDisplayList)) valuesToDisplayList = [];
 
+    // Buduj mapę displayValues i zeruj locked — stare blokady nie mogą przenosić się
+    // na nowy formularz (chcemy obliczenia od zera jak przy nowej pozycji).
     const valuesToDisplay = new Map(valuesToDisplayList);
-    const groupNumber = position.asortment_group_number;
-    const version = position.ver;
+    for (const entry of valuesToDisplay.values()) {
+        if (entry && typeof entry === 'object') entry.locked = false;
+    }
+
+    const groupNumber = String(position.asortment_group_number);
+    const latestVersion = await getLatestVersion(groupNumber) || position.ver;
     const lang = position.lang || 'pl';
 
-    // FormsManager — pełna inicjalizacja jak w edit_form.js.
-    // setCurrentGroup wymaga aby groupsDetails było załadowane przez getGroups(department.num).
-    if (!window.formsManager) {
-        window.formsManager = new FormsManager();
-    }
+    // Zawsze tworzymy świeżą instancję FormsManager dla każdej pozycji —
+    // identycznie jak admin_edit_form.js. Reużywanie między pozycjami może
+    // pozostawić stale state (cached groups, current group pointer) z poprzedniej pozycji.
+    window.formsManager = new FormsManager();
     const departments = await window.formsManager.getAvailableForms();
-    const department = departments.find(d => Array.isArray(d.products) && d.products.includes(groupNumber));
+    const department = departments.find(d => d.products?.includes(groupNumber));
     if (!department) {
         throw new Error(`Nie znaleziono departamentu dla grupy ${groupNumber}`);
     }
@@ -368,27 +431,37 @@ async function recalculatePosition(position) {
     window.formsManager.setCurrentRootPath(groupNumber);
     window.formsManager.setCurrentGroup(groupNumber);
 
-    // Generuj formularz w trybie edit z istniejącymi wartościami.
-    // Trzeci/czwarty argument to istniejące values/valuesToDisplay → preFill,
-    // editFlag=true → fillFields() przepisuje values do inputów po wygenerowaniu.
-    const [inputs, newValues, newValuesToDisplay] = await generateForm(
-        version, groupNumber, values, valuesToDisplay, true, lang, false
-    );
+    // Generuj formularz w trybie edit — identycznie jak admin_edit_form.js.
+    // editFlag=true: fillFields() pre-fill inputs ze starych values.
+    // Używamy latestVersion — nowe parametry z aktualnego schematu są uwzględniane.
+    const result = await generateForm(latestVersion, groupNumber, values, valuesToDisplay, true, lang);
+    if (!result) throw new Error(`Nie udało się wygenerować formularza (v${latestVersion}, gr=${groupNumber})`);
 
-    // Wymuś pełne przeliczenie — generateForm w trybie edit tylko wypełnia inputy,
-    // nie przelicza skryptów/formuł. Symuluję zmianę pierwszego parametru żeby
-    // updateProcedure przeszedł przez cały graf zależności (skrypty + formuły).
-    // Klucz musi:
-    //  - istnieć w window.params (lista parametrów schematu)
-    //  - mieć powiązany input
-    //  - nie być meta-kluczem typu KOLOR___DESCRIPTION lub KOLOR___TITLE
+    const [inputs, newValues, newValuesToDisplay] = result;
+
+    // ---- forceRecalculation (identyczne z admin_edit_form.js) ----
+
+    // Zeruj wszystkie parametry kalkulowane/formułowe przed wymuszeniem przeliczenia.
+    // Stare wartości zapisane w DB (np. CENA=96.75) mogą powodować skróty w skryptach
+    // cennikowych — zerowanie gwarantuje że scripts liczą od zera jak przy nowej pozycji.
     const paramsList = window.params || [];
+    for (const p of paramsList) {
+        if (!p?.NAME) continue;
+        if (p.SCRIPTS !== '<NULL>' || p.FORMULA !== '<NULL>') {
+            newValues[p.NAME] = 0;
+            if (inputs[p.NAME]) inputs[p.NAME].value = 0;
+        }
+    }
+
+    // Wybieramy pierwszy param użytkownika (nie kalkulowany) z realną wartością
+    // jako trigger — kalkulowane są wynikami, nie wejściami.
     let firstName = null;
     for (const p of paramsList) {
         if (!p?.NAME) continue;
         if (p.NAME.includes('___')) continue;
         if (!inputs[p.NAME]) continue;
-        if (newValues[p.NAME] === undefined || newValues[p.NAME] === '') continue;
+        if (p.SCRIPTS !== '<NULL>' || p.FORMULA !== '<NULL>') continue;
+        if (newValues[p.NAME] === undefined || newValues[p.NAME] === '' || newValues[p.NAME] === 0) continue;
         firstName = p.NAME;
         break;
     }
@@ -404,6 +477,16 @@ async function recalculatePosition(position) {
         console.warn(`[recalculate] Pozycja ${position.id}: nie znaleziono parametru do wymuszenia przeliczenia`);
     }
     await waitForCalculations();
+
+    // ---- post-processing (identyczne z admin_edit_form.js) ----
+
+    // Synchronizuj locked/sub flagi ze stanu po obliczeniach. buildValuesToDisplay
+    // ustawia te flagi tylko przy tworzeniu nowego wpisu — dla istniejących wpisów
+    // (przekazanych przez valuesToDisplay) trzeba je zaktualizować ręcznie.
+    syncLockedAndSubFlags(newValuesToDisplay);
+
+    // Dla adminów generateForm pomija tworzenie inputów SUB___. Uzupełniamy je ręcznie.
+    syncSubPriceDisplayEntries(newValuesToDisplay);
 
     const total = getTotal(newValuesToDisplay);
     const jsonValuesToDisplay = JSON.stringify(Array.from(newValuesToDisplay.entries()));

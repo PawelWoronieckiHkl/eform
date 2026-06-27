@@ -112,7 +112,16 @@
     "recalculate_saving": "enregistrement...",
     "recalculate_no_positions": "Aucune position à recalculer",
     "recalculate_no_id": "ID de commande manquant",
-    "recalculate_tooltip": "Recalculer toutes les positions"
+    "recalculate_tooltip": "Recalculer toutes les positions",
+    "set_discount_for_order": "Définir une remise pour la commande",
+    "order_value": "Valeur de la commande",
+    "current_discount": "Remise actuelle",
+    "percent_discount": "Remise en pourcentage",
+    "amount_discount": "Remise en montant",
+    "discount_amount": "Montant de la remise",
+    "total_after_discount": "Montant après remise",
+    "apply_discount": "Appliquer la remise",
+    "discount": "Remise"
   },
   "orders": {
     "title": "Vos commandes",

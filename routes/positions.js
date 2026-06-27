@@ -18,6 +18,16 @@ const { ordersManager } = require('../utils/saveOrdersOutput.js');
 const { file } = require('pdfkit');
 const { log } = require('../utils/logging');
 const { recalcAndSaveMaxProdDays } = require('../services/productionDays');
+
+async function isOrderSent(orderId) {
+  const status = await db.getOrderStatus(orderId);
+  return status === 'sent';
+}
+
+function sentOrderPath(orderId) {
+  return `/orders/history/order/${orderId}`;
+}
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
@@ -241,6 +251,20 @@ router.get('/:positionId/edit/', requireLogin, loadEmployeePermissions, filterPr
     return res.status(400).json({
       success: false,
     })
+  }
+})
+
+router.get('/:positionId/admin-redit/', requireLogin, async (req, res) => {
+  if (!req.session.user?.isAdmin) {
+    return res.status(403).render('no-permission.njk');
+  }
+  let result = await db.getPosition(req.params.positionId);
+  if (result) {
+    let orderId = result.order_id;
+    return res.render('admin_edit_position.njk', { position: result, orderId: orderId, hidePrices: false })
+  }
+  else {
+    return res.status(400).json({ success: false })
   }
 })
 

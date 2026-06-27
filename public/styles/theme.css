@@ -245,7 +245,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Animated background mesh */
+/* Static background mesh */
 body::before {
     content: '';
     position: fixed;
@@ -259,8 +259,6 @@ body::before {
         radial-gradient(ellipse at 40% 80%, rgba(124, 143, 163, 0.03) 0%, transparent 50%);
     z-index: -1;
     pointer-events: none;
-    animation: gradient-shift 20s ease infinite;
-    background-size: 200% 200%;
 }
 
 [data-theme="dark"] body::before {
@@ -425,7 +423,6 @@ button:not(.has-tooltip)::after {
 }
 
 button:hover {
-    transform: translateY(-1px);
     box-shadow: var(--shadow-md);
     border-color: var(--border-strong);
 }
@@ -493,7 +490,6 @@ button.btn-primary:hover {
     cursor: pointer;
 }
 .action-btn-show-all:hover {
-    transform: translateY(-2px);
     box-shadow: var(--shadow-md), 0 4px 16px var(--brand-primary-glow);
     color: var(--text-on-brand);
 }
@@ -656,7 +652,6 @@ button.btn-primary:hover {
 
 .order-card:hover {
     box-shadow: var(--shadow-card-hover);
-    transform: translateY(-4px) scale(1.005);
     border-color: var(--color-success-border);
 }
 
@@ -675,7 +670,6 @@ button.btn-primary:hover {
 
 .history-order-card:hover {
     box-shadow: var(--shadow-card-hover);
-    transform: translateY(-4px) scale(1.005);
 }
 
 .order-id {
@@ -743,7 +737,6 @@ button.btn-primary:hover {
 .login-box button:hover {
     animation: gradient-shift 3s ease infinite;
     box-shadow: var(--shadow-lg), 0 6px 30px var(--brand-primary-glow);
-    transform: translateY(-2px);
 }
 
 /* ============================================
@@ -1369,6 +1362,38 @@ dialog,
 [data-theme="dark"] .btn-primary,
 [data-theme="dark"] button.btn-primary {
     box-shadow: var(--shadow-sm), 0 2px 12px var(--brand-primary-glow) !important;
+}
+
+/* ============================================
+   DARK MODE — Sub-param containers
+   ============================================ */
+[data-theme="dark"] .price-row:not(.sub-params-locked-row) .sub-params-container {
+    background: rgba(94, 110, 130, 0.15) !important;
+    border-color: rgba(94, 110, 130, 0.35) !important;
+}
+
+[data-theme="dark"] .p-price {
+    background-color: rgba(94, 110, 130, 0.25) !important;
+}
+
+[data-theme="dark"] .sub-params-row.sub-params-locked-row .sub-params-container,
+[data-theme="dark"] .mobile-sub-params-locked:not(.mobile-item-prices) {
+    background: rgba(180, 140, 60, 0.12) !important;
+    border-color: rgba(180, 140, 60, 0.30) !important;
+    border-left-color: rgba(180, 140, 60, 0.55) !important;
+}
+
+/* ============================================
+   DARK MODE — Total price elements
+   ============================================ */
+[data-theme="dark"] .total-price .total {
+    background: var(--bg-surface-raised) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+[data-theme="dark"] .total-price .total.gold.price-label {
+    background: rgba(180, 140, 60, 0.15) !important;
+    border-color: rgba(180, 140, 60, 0.35) !important;
 }
 
 /* ============================================

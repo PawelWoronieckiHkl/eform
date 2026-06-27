@@ -107,7 +107,18 @@
                                 {% endif %}
                             {% endblock %}
                             {% block new_pos_btn %}{% endblock %}
-                            {% block send_order_btn %}{% endblock %}
+                            {% block send_order_btn %}
+                                {% if admin %}
+                                    <div class="d-flex justify-content-end w-100 p-2">
+                                        <button class="btn btn-sm"
+                                            style="background:#fff3cd;border:1px solid #ffc107;color:#664d03;font-size:0.8rem;"
+                                            data-order-id="{{ orderDetails.id }}"
+                                            onclick="adminToggleOrderStatus(this)">
+                                            &#9881; Cofnij do aktywnych
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            {% endblock %}
                             {% block order_space %}
                                 <div class="floating-history-order">
                                 {% endblock %}
@@ -115,6 +126,34 @@
                                     <script type='module' src="/scripts/order.js"></script>
                                     <script src="/scripts/mobileCards.js"></script>
                                     <script type='module' src="/scripts/order_sent.js"></script>
+                                    {% if admin %}
+                                    <script>
+                                    async function adminToggleOrderStatus(btn) {
+                                        btn.disabled = true;
+                                        try {
+                                            const orderId = btn.dataset.orderId;
+                                            const res = await fetch(`/orders/order/${orderId}/toggle-status`, {
+                                                method: 'PATCH',
+                                                headers: { 'Content-Type': 'application/json' }
+                                            });
+                                            const data = await res.json();
+                                            if (data.success) {
+                                                if (data.status === 'sent') {
+                                                    location.href = `/orders/history/order/${orderId}`;
+                                                } else {
+                                                    location.href = `/orders/order/${orderId}`;
+                                                }
+                                            } else {
+                                                alert('B\u0142\u0105d: ' + (data.message || 'Nieznany b\u0142\u0105d'));
+                                                btn.disabled = false;
+                                            }
+                                        } catch (e) {
+                                            alert('B\u0142\u0105d po\u0142\u0105czenia');
+                                            btn.disabled = false;
+                                        }
+                                    }
+                                    </script>
+                                    {% endif %}
                                 {% endblock %}
                                 {% block edit_order_btn %}{% endblock %}
                                 {% block estimatedProdDate %}{% endblock estimatedProdDate %}

@@ -167,7 +167,7 @@ export async function showDiscountModal() {
     
     const amountFinalAmount = createElement('div', {
         class: ['discount-final-amount'],
-        text: `Kwota po rabacie: ${getTotal().toFixed(2)} €`,
+        text: `${t('order.total_after_discount')}: ${getTotal().toFixed(2)} €`,
         id: 'amount-final-amount',
         style: 'display: none;'
     }, amountSection);
@@ -191,7 +191,7 @@ export async function showDiscountModal() {
 
         if (value > 0) {
             amountFinalAmount.style.display = 'block';
-            amountFinalAmount.textContent = `Kwota po rabacie: ${finalAmount.toFixed(2)} €`;
+            amountFinalAmount.textContent = `${t('order.total_after_discount')}: ${finalAmount.toFixed(2)} €`;
         } else {
             amountFinalAmount.style.display = 'none';
         }
@@ -336,7 +336,7 @@ export async function fetchCurrentDiscount() {
 
 export async function updateDiscountDisplay() {
     const totalContainer = document.getElementById('total-container');
-    if (totalContainer?.dataset.pricesUnlocked !== 'true') {
+    if (!totalContainer) {
         return;
     }
 

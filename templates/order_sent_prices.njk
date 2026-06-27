@@ -20,7 +20,18 @@
                         {% block btns_head %}{% endblock %}
                         {% block pos_btns %}{% endblock %}
                         {% block new_pos_btn %}{% endblock %}
-                        {% block send_order_btn %}{% endblock %}
+                        {% block send_order_btn %}
+                            {% if admin %}
+                                <div class="d-flex justify-content-end w-100 p-2">
+                                    <button class="btn btn-sm"
+                                        style="background:#fff3cd;border:1px solid #ffc107;color:#664d03;font-size:0.8rem;"
+                                        data-order-id="{{ orderDetails.id }}"
+                                        onclick="adminToggleOrderStatus(this)">
+                                        &#9881; Cofnij do aktywnych
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% endblock %}
                         {% block order_space %}
                             <div class="floating-history-order">
                             {% endblock %}

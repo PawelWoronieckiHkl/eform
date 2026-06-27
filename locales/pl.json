@@ -112,7 +112,16 @@
     "recalculate_saving": "zapisywanie...",
     "recalculate_no_positions": "Brak pozycji do przeliczenia",
     "recalculate_no_id": "Brak ID zamówienia",
-    "recalculate_tooltip": "Przelicz wszystkie pozycje"
+    "recalculate_tooltip": "Przelicz wszystkie pozycje",
+    "set_discount_for_order": "Ustaw rabat dla zamówienia",
+    "order_value": "Wartość zamówienia",
+    "current_discount": "Aktualny rabat",
+    "percent_discount": "Rabat procentowy",
+    "amount_discount": "Rabat kwotowy",
+    "discount_amount": "Kwota rabatu",
+    "total_after_discount": "Kwota po rabacie",
+    "apply_discount": "Zastosuj rabat",
+    "discount": "Rabat"
   },
   "orders": {
     "title": "Twoje Zamówienia",

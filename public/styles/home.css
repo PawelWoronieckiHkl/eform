@@ -42,7 +42,6 @@
 }
 .order-card:hover {
   box-shadow: var(--shadow-card-hover);
-  transform: translateY(-4px) scale(1.01);
   border-color: var(--color-success-border);
 }
 .order-card:hover::after {
@@ -156,7 +155,6 @@
 }
 .history-order-card:hover {
   box-shadow: var(--shadow-card-hover);
-  transform: translateY(-4px) scale(1.01);
 }
 .extra-info-parrent {
   height: 60vh;

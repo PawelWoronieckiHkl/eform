@@ -203,6 +203,10 @@
                                                                                                                     <img src="/img/duplicate.png" class='icon' alt="{{ __('order.edit') }}"></button>
                                                                                                                     <a class="action-btn action-btn-edit me-1 p-1 edit-position-btn has-tooltip" data-tooltip="{{ __('order.edit_pos') }}" href="/position/{{ rowObj.item.id }}/edit?id={{ rowObj.item.id }}" onclick="event.stopPropagation()">
                                                                                                                         <img src="/img/edit-text.png" alt="{{ __('order.edit') }}"></a>
+                                                                                                                        {% if admin %}
+                                                                                                                        <a class="action-btn action-btn-edit me-1 p-1 has-tooltip" style="background:#fff3cd;border:1px solid #ffc107;" data-tooltip="Edytuj (admin — najnowszy formularz)" href="/position/{{ rowObj.item.id }}/admin-redit" onclick="event.stopPropagation()">
+                                                                                                                            <img src="/img/edit-text.png" alt="Admin re-edit"><span style="font-size:0.65em;color:#664d03;margin-left:2px;">ADM</span></a>
+                                                                                                                        {% endif %}
                                                                                                                         <button class="action-btn action-btn-delete p-1 delete-position-btn has-tooltip" data-tooltip="{{ __('order.delete_pos') }}" type="button" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
                                                                                                                             <img src="/img/delete.png" alt="{{ __('order.delete') }}"/>
                                                                                                                         </button>
@@ -416,6 +420,15 @@
                                                                                                                                 onclick="event.stopPropagation()">
                                                                                                                                 {{ __('order.edit') }}
                                                                                                                             </a>
+                                                                                                                            {% if admin %}
+                                                                                                                            <a
+                                                                                                                                class="action-btn action-btn-edit"
+                                                                                                                                style="background:#fff3cd;border:1px solid #ffc107;color:#664d03;"
+                                                                                                                                href="/position/{{ rowObj.item.id }}/admin-redit"
+                                                                                                                                onclick="event.stopPropagation()">
+                                                                                                                                Edytuj (ADM)
+                                                                                                                            </a>
+                                                                                                                            {% endif %}
                                                                                                                             <button class="action-btn action-btn-delete delete-position-btn" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
                                                                                                                                 {{ __('order.delete') }}
                                                                                                                             </button>
@@ -500,6 +513,18 @@
                                                                                                     {% endif %}
                                                                                                     </div>
                                                                                                 {% endif %}
+                                                                                                {% if admin %}
+                                                                                                    <div class="d-flex justify-content-end w-100 mt-1">
+                                                                                                        <button class="btn btn-sm admin-toggle-status-btn"
+                                                                                                            style="background:#fff3cd;border:1px solid #ffc107;color:#664d03;font-size:0.8rem;"
+                                                                                                            data-order-id="{{ orderDetails.id }}"
+                                                                                                            data-current-status="{{ orderDetails.status }}"
+                                                                                                            onclick="adminToggleOrderStatus(this)">
+                                                                                                            &#9881;
+                                                                                                            {% if orderDetails.status == 'sent' %}Cofnij do aktywnych{% else %}Oznacz jako wysłane{% endif %}
+                                                                                                        </button>
+                                                                                                    </div>
+                                                                                                {% endif %}
                                                                                             {% endblock %}
                                                                                         </div>
                                                                                     {% else %}
@@ -535,5 +560,33 @@
                                                                     <script src="/scripts/mobileCards.js"></script>
                                                                     {% if owner or admin %}
                                                                     <script type='module' src="/scripts/recalculateOrder.js"></script>
+                                                                    {% endif %}
+                                                                    {% if admin %}
+                                                                    <script>
+                                                                    async function adminToggleOrderStatus(btn) {
+                                                                        btn.disabled = true;
+                                                                        try {
+                                                                            const orderId = btn.dataset.orderId;
+                                                                            const res = await fetch(`/orders/order/${orderId}/toggle-status`, {
+                                                                                method: 'PATCH',
+                                                                                headers: { 'Content-Type': 'application/json' }
+                                                                            });
+                                                                            const data = await res.json();
+                                                                            if (data.success) {
+                                                                                if (data.status === 'sent') {
+                                                                                    location.href = `/orders/history/order/${orderId}`;
+                                                                                } else {
+                                                                                    location.href = `/orders/order/${orderId}`;
+                                                                                }
+                                                                            } else {
+                                                                                alert('Błąd: ' + (data.message || 'Nieznany błąd'));
+                                                                                btn.disabled = false;
+                                                                            }
+                                                                        } catch (e) {
+                                                                            alert('Błąd połączenia');
+                                                                            btn.disabled = false;
+                                                                        }
+                                                                    }
+                                                                    </script>
                                                                     {% endif %}
                                                                 {% endblock scripts %}

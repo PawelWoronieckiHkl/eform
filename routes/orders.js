@@ -1331,5 +1331,24 @@ router.get('/import-log', requireLogin, async (req, res) => {
     }
 });
 
+router.patch('/order/:orderId/toggle-status', requireLogin, async (req, res) => {
+    if (!req.session.user?.isAdmin) {
+        return res.status(403).json({ success: false, message: 'Brak uprawnień' });
+    }
+    try {
+        const orderId = req.params.orderId;
+        const current = await db.getOrderStatus(orderId);
+        if (!current) {
+            return res.status(404).json({ success: false, message: 'Zamówienie nie istnieje' });
+        }
+        const newStatus = current === 'sent' ? 'active' : 'sent';
+        await db.changeOrderStatus(orderId, newStatus);
+        return res.json({ success: true, status: newStatus });
+    } catch (error) {
+        log('Error toggling order status:', error);
+        return res.status(500).json({ success: false, message: 'Błąd serwera' });
+    }
+});
+
 
 module.exports = router;

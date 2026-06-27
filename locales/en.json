@@ -112,7 +112,16 @@
     "recalculate_saving": "saving...",
     "recalculate_no_positions": "No positions to recalculate",
     "recalculate_no_id": "Missing order ID",
-    "recalculate_tooltip": "Recalculate all positions"
+    "recalculate_tooltip": "Recalculate all positions",
+    "set_discount_for_order": "Set discount for order",
+    "order_value": "Order value",
+    "current_discount": "Current discount",
+    "percent_discount": "Percentage discount",
+    "amount_discount": "Amount discount",
+    "discount_amount": "Discount amount",
+    "total_after_discount": "Total after discount",
+    "apply_discount": "Apply discount",
+    "discount": "Discount"
   },
   "orders": {
     "title": "Your Orders",

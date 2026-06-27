@@ -112,7 +112,16 @@
     "recalculate_saving": "wird gespeichert...",
     "recalculate_no_positions": "Keine Positionen zum Neuberechnen",
     "recalculate_no_id": "Bestell-ID fehlt",
-    "recalculate_tooltip": "Alle Positionen neu berechnen"
+    "recalculate_tooltip": "Alle Positionen neu berechnen",
+    "set_discount_for_order": "Rabatt für Bestellung festlegen",
+    "order_value": "Bestellwert",
+    "current_discount": "Aktueller Rabatt",
+    "percent_discount": "Prozentualer Rabatt",
+    "amount_discount": "Betraglicher Rabatt",
+    "discount_amount": "Rabattbetrag",
+    "total_after_discount": "Betrag nach Rabatt",
+    "apply_discount": "Rabatt anwenden",
+    "discount": "Rabatt"
   },
   "orders": {
     "title": "Ihre Bestellungen",
