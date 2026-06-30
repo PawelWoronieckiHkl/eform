@@ -340,6 +340,12 @@ export async function updateDiscountDisplay() {
         return;
     }
 
+    if (totalContainer.dataset.pricesUnlocked === 'true') {
+        const discontSpace = document.getElementById('discount-space');
+        if (discontSpace) discontSpace.remove();
+        return;
+    }
+
     const discountInfo = await fetchCurrentDiscount()
     let type = '';
     if (discountInfo.type == 'percentage') {

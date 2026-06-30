@@ -8,10 +8,10 @@
         <link rel="stylesheet" href="/styles/mobile/order_details.css">
             <link rel="stylesheet" href="/styles/dialog.css">
                 <link rel="stylesheet" href="/styles/mobile/dialog.css">
-                    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.min.js"></script>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+                    <script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+                    <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+                    <script defer src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.min.js"></script>
+                    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
                 {% endblock head %}
                 {% block key_nav %}
                     window.history.back()
@@ -547,7 +547,7 @@
                                                                                     </div>
                                                                                 </dialog>
                                                                             </div>
-                                                                            <div id="print-template-container" style="display:none;!important">
+                                                                            <div id="print-template-container" style="display:none !important; content-visibility: hidden;">
                                                                                 {% block print_template %}
                                                                                     {% include 'order_to_print.njk' %}
                                                                                 {% endblock %}

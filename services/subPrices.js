@@ -122,7 +122,7 @@ function buildPdfSendDataTotals({
       total: subTotals.subVisible && subTotals.subVisible !== 0
         ? `${__('order.total')}: ${subTotals.subVisible}€` : null,
       total_hidden: subTotals.subLocked && subTotals.subLocked !== 0
-        ? `${__('order.total_hidden')}: ${subTotals.subLocked}€` : null
+        ? `${__('order.total_hidden')}: ${subTotals.subLocked}€ netto` : null
     };
   }
 
@@ -132,7 +132,7 @@ function buildPdfSendDataTotals({
       total: totalPrice?.visible && Number(totalPrice.visible) !== 0
         ? `${__('order.total')}: ${totalPrice.visible}€` : null,
       total_hidden: subTotals.subLocked && subTotals.subLocked !== 0
-        ? `${__('order.total_hidden')}: ${subTotals.subLocked}€` : null
+        ? `${__('order.total_hidden')}: ${subTotals.subLocked}€ netto` : null
     };
   }
 
@@ -142,9 +142,9 @@ function buildPdfSendDataTotals({
   }
   if (showGoldPrices) {
     if (totalPrice?.hidden && Number(totalPrice.hidden) !== 0) {
-      result.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€`;
+      result.total_hidden = `${__('order.total_hidden')}: ${totalPrice.hidden}€ netto`;
     } else if (totalPrice?.visible && Number(totalPrice.visible) !== 0) {
-      result.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€`;
+      result.total_hidden = `${__('order.total_hidden')}: ${totalPrice.visible}€ netto`;
     }
   }
   return result;

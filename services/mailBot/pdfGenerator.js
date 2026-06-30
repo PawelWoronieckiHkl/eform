@@ -29,7 +29,7 @@ async function generateExcel(orderData) {
   return buffer;
 }
 
-async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData, orderIdx, prices = true, maxProdDays = 0, showGoldPrices = true, clientView = false, showBoth = false) {
+async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData, orderIdx, prices = true, maxProdDays = 0, showGoldPrices = true, clientView = false, showBoth = false, discountInfo = null) {
   log('zaczynam', logoPath)
   const logoBase64 = fs.readFileSync(logoPath, { encoding: 'base64' });
   const logoDataUri = `data:image/png;base64,${logoBase64}`;
@@ -87,7 +87,8 @@ async function generatePdf(orderData, cleanOrderItems, lang, logoPath, sendData,
     totalQuantity: totalQuantity,
     showGoldPrices: showGoldPrices,
     clientView: clientView,
-    showBoth: showBoth
+    showBoth: showBoth,
+    discountInfo: discountInfo
   });
 
   // Prevent single-letter orphans: replace space after single-letter word with non-breaking space

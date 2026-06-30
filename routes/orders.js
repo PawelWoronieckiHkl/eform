@@ -723,8 +723,16 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
                 translate: __
             }));
         } else {
-            sendData.total = null;
+            // Visible total mirrors page behaviour — always shown; hidden/gold prices excluded
             sendData.total_hidden = null;
+            if (isClientView) {
+                sendData.total = totalPrice.subVisible && totalPrice.subVisible !== 0
+                    ? `${__('order.total')}: ${totalPrice.subVisible}€` : null;
+            } else if (totalPrice?.visible && Number(totalPrice.visible) !== 0) {
+                sendData.total = `${__('order.total')}: ${totalPrice.visible}€`;
+            } else {
+                sendData.total = null;
+            }
         }
 
         const currentUser = ownerService.getCurrentUser(req);
@@ -733,13 +741,14 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
         const photoFile = await db.getUserLogo(currentUser?.pin);
         const logoPath = path.join(__dirname, '../img/', photoFile);
         const isShort = req.params.short === 'true';
+        const discountInfo = !shouldShowPrices ? await getPriceAfterDiscount(req.params.orderId) : null;
 
         let pdfBuffer;
 
         if (!isShort) {
             // Ujednolicona logika PDF — ten sam template (order-pdf.njk) co w sendMail
             const orderIdx = await db.getUserOrderId(req.params.orderId);
-            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, shouldShowPrices, maxProdDays, true, isClientView, showBothInPdf);
+            pdfBuffer = await generatePdf(order.orderDetails, cleanOrderItems, lang, logoPath, sendData, orderIdx, shouldShowPrices, maxProdDays, true, isClientView, showBothInPdf, discountInfo);
         } else {
             // Short PDF — osobny template order_to_print_short.njk
             let logoDataUri = null;
@@ -778,6 +787,7 @@ router.get('/orderpdf/:orderId/:showPrices?/:short?', requireLogin, checkOrderOw
                 clientView: isClientView,
                 showBoth: showBothInPdf,
                 hasSubPrices,
+                discountInfo,
             });
 
             const { chromium } = require('playwright');

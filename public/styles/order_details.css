@@ -5,7 +5,6 @@
     margin: 20px 10px 25px 10px;
     box-shadow: var(--shadow-card);
     background: var(--bg-glass-strong);
-    backdrop-filter: blur(var(--blur-sm));
     transition: all var(--transition-base);
     animation: fadeInUp 0.4s var(--ease-out-expo) both;
 }

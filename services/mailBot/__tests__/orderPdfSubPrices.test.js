@@ -164,9 +164,9 @@ test('PDF totals match page logic for client vs showBoth modes', async () => {
   });
 
   assert.equal(clientTotals.total, `order.total: ${SUB_SUMA_VISIBLE}€`);
-  assert.equal(clientTotals.total_hidden, `order.total_hidden: ${SUB_SUMA_LOCKED}€`);
+  assert.equal(clientTotals.total_hidden, `order.total_hidden: ${SUB_SUMA_LOCKED}€ netto`);
   assert.equal(ownerTotals.total, `order.total: ${REGULAR_SUMA}€`);
-  assert.equal(ownerTotals.total_hidden, `order.total_hidden: ${SUB_SUMA_LOCKED}€`);
+  assert.equal(ownerTotals.total_hidden, `order.total_hidden: ${SUB_SUMA_LOCKED}€ netto`);
 });
 
 test('PDF and orderService expose the same SUB values for each position', async () => {

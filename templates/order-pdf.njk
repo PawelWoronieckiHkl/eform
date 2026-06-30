@@ -71,6 +71,14 @@
             <div style="margin-top: 5px; font-weight: bold;">
               {{ __('order.total_items') }}: <span class="pdf-val">{{ globalIndex - 1 }}</span>
             </div>
+            {% if not prices and discountInfo and discountInfo.type != 'none' %}
+              <div style="margin-top: 12px; font-weight: bold; background: rgba(235, 232, 75, 0.8); color: #333; padding: 6px 14px; border-radius: 6px; display: inline-block;">
+                {{ __('order.discount') }}: <span class="pdf-val">{{ discountInfo.discountValue }}{% if discountInfo.type == 'percentage' %}%{% else %} €{% endif %}</span>
+              </div>
+              <div style="margin-top: 5px; font-weight: bold; background: rgba(235, 232, 75, 0.8); color: #333; padding: 6px 14px; border-radius: 6px; display: inline-block;">
+                {{ __('order.total_after_discount') }}: <span class="pdf-val">{{ discountInfo.result }} €</span>
+              </div>
+            {% endif %}
             {% block scripts %}
               <script type='module' src='/scripts/base.js'></script>
             {% endblock %}

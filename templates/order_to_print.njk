@@ -348,6 +348,20 @@
                     </div>
                 </div>
             {% endif %}
+            {% if not prices and discountInfo and discountInfo.type != 'none' %}
+                <div style='padding-right: 10%;'>
+                    <div class="total-price d-flex justify-content-end align-items-center col-12">
+                        <span class='total price-label col-3 text-center' style="background: rgba(235,232,75,0.8); color: #333; font-weight: bold;">
+                            {{ __('order.discount') }}: <span class="pdf-val">{{ discountInfo.discountValue }}{% if discountInfo.type == 'percentage' %}%{% else %} €{% endif %}</span>
+                        </span>
+                    </div>
+                    <div class="total-price d-flex justify-content-end align-items-center col-12">
+                        <span class='total price-label col-3 text-center' style="background: rgba(235,232,75,0.8); color: #333; font-weight: bold;">
+                            {{ __('order.total_after_discount') }}: <span class="pdf-val">{{ discountInfo.result }} €</span>
+                        </span>
+                    </div>
+                </div>
+            {% endif %}
     <div class='client-details'>
         <div class="order-details">
             <h3 class='header-3'>{{ __('order.client_data') }}</h3>

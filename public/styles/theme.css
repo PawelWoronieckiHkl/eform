@@ -245,29 +245,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Static background mesh */
-body::before {
-    content: '';
-    position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background:
-        radial-gradient(ellipse at 20% 50%, rgba(94, 110, 130, 0.04) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(107, 157, 173, 0.04) 0%, transparent 50%),
-        radial-gradient(ellipse at 40% 80%, rgba(124, 143, 163, 0.03) 0%, transparent 50%);
-    z-index: -1;
-    pointer-events: none;
-}
-
-[data-theme="dark"] body::before {
-    background:
-        radial-gradient(ellipse at 20% 50%, rgba(94, 110, 130, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(107, 157, 173, 0.05) 0%, transparent 50%),
-        radial-gradient(ellipse at 40% 80%, rgba(124, 143, 163, 0.04) 0%, transparent 50%);
-}
-
 ::selection {
     background: var(--brand-primary);
     color: var(--text-on-brand);
@@ -349,7 +326,6 @@ textarea {
     border: 1.5px solid var(--border-input);
     border-radius: var(--radius-md);
     background-color: var(--bg-input);
-    backdrop-filter: blur(var(--blur-sm));
     color: var(--text-primary);
     transition: all var(--transition-fast);
     outline: none;
@@ -500,8 +476,6 @@ button.btn-primary:hover {
 .container {
     position: relative;
     background: var(--bg-glass-strong);
-    backdrop-filter: blur(var(--blur-md));
-    -webkit-backdrop-filter: blur(var(--blur-md));
     border: 1px solid var(--border-default);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-card);
@@ -582,7 +556,6 @@ button.btn-primary:hover {
    ============================================ */
 .table {
     background: var(--bg-glass-strong);
-    backdrop-filter: blur(var(--blur-sm));
     box-shadow: var(--shadow-card);
     border-radius: var(--radius-xl);
     border-collapse: separate;
@@ -640,7 +613,6 @@ button.btn-primary:hover {
 .order-card {
     position: relative;
     background: var(--bg-glass-strong);
-    backdrop-filter: blur(var(--blur-sm));
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-card);
     border: 1px solid var(--border-default);
@@ -658,7 +630,6 @@ button.btn-primary:hover {
 .history-order-card {
     position: relative;
     background: var(--bg-glass-strong);
-    backdrop-filter: blur(var(--blur-sm));
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-card);
     border: 1px solid var(--border-default);
@@ -946,7 +917,6 @@ dialog::backdrop {
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-card);
     background: var(--bg-glass-strong);
-    backdrop-filter: blur(var(--blur-sm));
     transition: all var(--transition-base);
     animation: fadeInUp 0.4s var(--ease-out-expo) both;
 }
@@ -995,7 +965,6 @@ dialog::backdrop {
    ============================================ */
 .admin-btn {
     background: var(--bg-glass-strong) !important;
-    backdrop-filter: blur(var(--blur-sm)) !important;
     color: var(--text-primary) !important;
     border: 1.5px solid var(--border-default) !important;
     border-radius: var(--radius-md) !important;

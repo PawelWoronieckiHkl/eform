@@ -112,7 +112,7 @@ test('buildPdfSendDataTotals — client view uses SUB totals', () => {
     translate: (key) => key
   });
   assert.equal(totals.total, `order.total: ${SUB_SUMA_VISIBLE}€`);
-  assert.equal(totals.total_hidden, `order.total_hidden: ${SUB_SUMA_LOCKED}€`);
+  assert.equal(totals.total_hidden, `order.total_hidden: ${SUB_SUMA_LOCKED}€ netto`);
 });
 
 test('buildPdfSendDataTotals — showBoth uses regular visible + SUB locked total', () => {
@@ -124,7 +124,7 @@ test('buildPdfSendDataTotals — showBoth uses regular visible + SUB locked tota
     translate: (key) => key
   });
   assert.equal(totals.total, `order.total: ${REGULAR_SUMA}€`);
-  assert.equal(totals.total_hidden, `order.total_hidden: ${SUB_SUMA_LOCKED}€`);
+  assert.equal(totals.total_hidden, `order.total_hidden: ${SUB_SUMA_LOCKED}€ netto`);
 });
 
 test('buildPdfSendDataTotals — regular view uses order total from DB', () => {
@@ -137,7 +137,7 @@ test('buildPdfSendDataTotals — regular view uses order total from DB', () => {
     showGoldPrices: true
   });
   assert.equal(totals.total, `order.total: ${REGULAR_SUMA}€`);
-  assert.equal(totals.total_hidden, 'order.total_hidden: 120€');
+  assert.equal(totals.total_hidden, 'order.total_hidden: 120€ netto');
 });
 
 test('buildPdfSendDataTotals — regular view without gold prices hides total_hidden (mail/HKL)', () => {
