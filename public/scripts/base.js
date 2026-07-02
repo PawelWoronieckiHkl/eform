@@ -360,6 +360,8 @@ async function getConfigNum() {
 
 function getEmp() {
     let empBtn = document.getElementById('employee-panel-nav-btn');
+    let mobileEmpItem = document.getElementById('mobile-employee-panel-item');
+    let mobileEmpLink = document.getElementById('mobile-employee-panel-link');
     let UserNameDiv = document.getElementById('user-info');
 
     if (empBtn) {
@@ -374,10 +376,13 @@ function getEmp() {
                 if (data.success && !data.isEmployee) {
                     empBtn.classList.remove('d-none');
                     empBtn.href = data?.path ?? '/';
+                    if (mobileEmpItem) mobileEmpItem.classList.remove('d-none');
+                    if (mobileEmpLink) mobileEmpLink.href = data?.path ?? '/';
                     window.isEmployee = data.isEmployee
 
                 } else {
                     empBtn.classList.add('d-none');
+                    if (mobileEmpItem) mobileEmpItem.classList.add('d-none');
                     createElement(
                         'div',
                         {
@@ -393,6 +398,7 @@ function getEmp() {
             .catch(err => {
                 console.error('Błąd pobierania statusu pracownika:', err);
                 empBtn.classList.add('d-none');
+                if (mobileEmpItem) mobileEmpItem.classList.add('d-none');
             });
     }
 }
@@ -404,6 +410,12 @@ getUserName()
 
 
 document.addEventListener('DOMContentLoaded', function () {
+    // ── Mobile back button ──────────────────────────────────────
+    const mobileBackBtn = document.getElementById('mobile-back-btn');
+    if (mobileBackBtn && window.location.pathname !== '/') {
+        mobileBackBtn.classList.remove('d-none');
+    }
+
     const lastUserBtn = document.getElementById('last-user-btn')
     const navToggleBtn = document.getElementById('navToggleBtn');
     const desktopNav = document.querySelector('.desktop-nav');

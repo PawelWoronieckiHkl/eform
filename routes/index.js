@@ -115,8 +115,11 @@ router.get("/", requireLogin, async (req, res) => {
     ordersSent = await db.getGroupShopOrders(groupShopId, 4, 0, true) || [];
   } else {
     user = await db.getUserData(currentUser.pin);
-    orders = await db.getUserOrders(user.id, 4, 0);
-    ordersSent = await db.getUserOrders(user.id, 4, 0, true);
+    const employeeId = req.session.user?.isEmployee && !req.session.employeePermissions?.can_see_all_orders
+      ? (req.session.employee?.id ?? null)
+      : null;
+    orders = await db.getUserOrders(user.id, 4, 0, false, false, employeeId);
+    ordersSent = await db.getUserOrders(user.id, 4, 0, true, false, employeeId);
   }
 
   let organizations = [];

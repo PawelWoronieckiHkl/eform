@@ -92,6 +92,32 @@
         align-items: center;
         gap: 8px;
     }
+    .mobile-back-btn {
+        background: var(--bg-glass-strong, rgba(255,255,255,0.8));
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--border-default);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-left: auto;
+        margin-right: 12px;
+        flex-shrink: 0;
+        transition: background 0.2s ease, transform 0.15s ease;
+    }
+    .mobile-back-btn:active {
+        transform: scale(0.92);
+        background: var(--bg-active);
+    }
+    .mobile-back-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        display: block;
+    }
     .mobile-rm-card {
         box-shadow: none !important;
         border: none !important;

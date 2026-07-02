@@ -26,7 +26,9 @@
                     </div>
                     <div class="employees-container">
                         {% if employees and employees.length > 0 %}
-                            <div class="table-responsive">
+
+                            {# ── DESKTOP: tabela ────────────────────────────────── #}
+                            <div class="table-responsive d-none d-md-block">
                                 <table class="table table-hover table-bordered employee-table">
                                     <thead class="table-light">
                                         <tr>
@@ -45,7 +47,7 @@
                                     </thead>
                                     <tbody>
                                         {% for employee in employees %}
-                                            <tr data-employee-id="{{ employee.id }}">
+                                            <tr class="employee-row" data-employee-id="{{ employee.id }}">
                                                 <td>{{ loop.index }}</td>
                                                 <td>{{ employee.name }}</td>
                                                 <td>{{ employee.surname }}</td>
@@ -101,6 +103,99 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            {# ── MOBILE: accordion ──────────────────────────────── #}
+                            <div class="accordion d-md-none" id="employeeAccordion">
+                                {% for employee in employees %}
+                                    <div class="accordion-item employee-row employee-card" data-employee-id="{{ employee.id }}">
+                                        <h2 class="accordion-header" id="empHeading{{ employee.id }}">
+                                            <button class="accordion-button collapsed employee-accordion-btn" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#empCollapse{{ employee.id }}"
+                                                aria-expanded="false"
+                                                aria-controls="empCollapse{{ employee.id }}">
+                                                <span class="emp-card-name">
+                                                    <i class="fas fa-user me-2 emp-card-icon"></i>
+                                                    {{ employee.name }} {{ employee.surname }}
+                                                </span>
+                                            </button>
+                                        </h2>
+                                        <div id="empCollapse{{ employee.id }}" class="accordion-collapse collapse"
+                                            aria-labelledby="empHeading{{ employee.id }}"
+                                            data-bs-parent="#employeeAccordion">
+                                            <div class="accordion-body emp-card-body">
+
+                                                <dl class="emp-info-list">
+                                                    <dt>{{ __('employee.login') or 'Login' }}</dt>
+                                                    <dd>{{ employee.login }}</dd>
+
+                                                    <dt>{{ __('employee.phone') or 'Telefon' }}</dt>
+                                                    <dd>{{ employee.phone or '-' }}</dd>
+
+                                                    <dt>{{ __('employee.last_login') or 'Ostatnie logowanie' }}</dt>
+                                                    <dd>{{ employee.last_login or __('employee.never') or 'Nigdy' }}</dd>
+                                                </dl>
+
+                                                <div class="emp-permissions">
+                                                    <p class="emp-permissions-title">{{ __('employee.permissions') or 'Uprawnienia' }}</p>
+
+                                                    <label class="emp-permission-row">
+                                                        <input type="checkbox" class="form-check-input permission-toggle"
+                                                            data-employee-id="{{ employee.id }}"
+                                                            data-permission="can_send_orders"
+                                                            {% if employee.can_send_orders %}checked{% endif %}>
+                                                        <span>{{ __('employee.can_send_orders') or 'Wysyłanie zamówień' }}</span>
+                                                    </label>
+
+                                                    <label class="emp-permission-row">
+                                                        <input type="checkbox" class="form-check-input permission-toggle"
+                                                            data-employee-id="{{ employee.id }}"
+                                                            data-permission="can_see_prices"
+                                                            {% if employee.can_see_prices %}checked{% endif %}>
+                                                        <span>{{ __('employee.can_see_prices') or 'Widoczność cen' }}</span>
+                                                    </label>
+
+                                                    <label class="emp-permission-row">
+                                                        <span>{{ __('employee.price_factor') or 'Faktor cen' }}</span>
+                                                        <input type="number" class="form-control form-control-sm price-factor-input emp-factor-input"
+                                                            data-employee-id="{{ employee.id }}"
+                                                            value="{{ employee.price_factor or '1.00' }}"
+                                                            min="0.01" max="99.99" step="0.01"
+                                                            {% if not employee.can_see_prices %}disabled{% endif %}>
+                                                    </label>
+
+                                                    <label class="emp-permission-row">
+                                                        <input type="checkbox" class="form-check-input permission-toggle"
+                                                            data-employee-id="{{ employee.id }}"
+                                                            data-permission="can_see_all_orders"
+                                                            {% if employee.can_see_all_orders %}checked{% endif %}>
+                                                        <span>{{ __('employee.can_see_all_orders') or 'Wszystkie zamówienia' }}</span>
+                                                    </label>
+                                                </div>
+
+                                                <div class="emp-card-actions">
+                                                    <a href="/user/employee/{{ employee.id }}/orders" class="action-btn action-btn-view-orders w-100 justify-content-center">
+                                                        <i class="fas fa-shopping-cart me-2"></i>
+                                                        {{ __('employee.view_orders') or 'Zobacz zamówienia' }}
+                                                    </a>
+                                                    <div class="d-flex gap-2 mt-2">
+                                                        <a href="/user/employee/edit/{{ employee.id }}" class="action-btn action-btn-edit edit-employee-btn flex-grow-1 justify-content-center" data-id="{{ employee.id }}" data-name="{{ employee.name }} {{ employee.surname }}">
+                                                            <i class="fas fa-edit me-2"></i>
+                                                            {{ __('employee.edit') or 'Edytuj' }}
+                                                        </a>
+                                                        <button class="action-btn action-btn-delete delete-employee-btn flex-grow-1 justify-content-center" data-id="{{ employee.id }}" data-name="{{ employee.name }} {{ employee.surname }}">
+                                                            <i class="fas fa-trash me-2"></i>
+                                                            {{ __('employee.delete') or 'Usuń' }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
                         {% else %}
                             <div class="alert" role="alert">
                                 <i class="fas fa-info-circle"></i>

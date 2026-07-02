@@ -175,6 +175,97 @@
         padding: 1.5rem;
     }
 }
+
+/* ── Mobile accordion cards ─────────────────────────────────── */
+.employee-card {
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md) !important;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+}
+.employee-accordion-btn {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 0.875rem 1rem;
+    border: none;
+    border-radius: 0 !important;
+}
+.employee-accordion-btn:not(.collapsed) {
+    background: var(--bg-surface-sunken);
+    color: var(--brand-primary);
+    box-shadow: none;
+}
+.employee-accordion-btn::after {
+    filter: var(--icon-filter, none);
+}
+.emp-card-icon {
+    color: var(--text-tertiary);
+    font-size: 0.95rem;
+}
+.emp-card-body {
+    background: var(--bg-surface);
+    padding: 1rem;
+}
+.emp-info-list {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+.emp-info-list dt {
+    color: var(--text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+}
+.emp-info-list dd {
+    margin: 0;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+.emp-permissions {
+    background: var(--bg-surface-sunken);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+.emp-permissions-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    margin-bottom: 0.5rem;
+}
+.emp-permission-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border-default);
+    cursor: pointer;
+    width: 100%;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+.emp-permission-row:last-child {
+    border-bottom: none;
+}
+.emp-factor-input {
+    max-width: 90px;
+    margin-left: auto;
+}
+.emp-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.emp-card-actions .action-btn {
+    display: flex;
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+}
 .alert-info {
     padding: 2rem;
 }

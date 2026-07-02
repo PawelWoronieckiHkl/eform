@@ -45,13 +45,8 @@ confirmBtn.addEventListener('click', async () => {
         if (result.success) {
             showToast('success', result.message || 'Pracownik został usunięty');
 
-            
-            const row = document.querySelector(`tr[data-employee-id="${employeeToDelete}"]`);
-            if (row) {
-                row.remove();
-            }
+            document.querySelectorAll(`[data-employee-id="${employeeToDelete}"].employee-row`).forEach(el => el.remove());
 
-            
             const remainingRows = document.querySelectorAll('.employee-table tbody tr');
             if (remainingRows.length === 0) {
                 location.reload(); 
@@ -85,7 +80,7 @@ document.querySelectorAll('.permission-toggle').forEach(checkbox => {
         const value = e.target.checked ? '1' : '0';
 
         // Zbierz aktualny stan wszystkich trzech uprawnień dla tego pracownika
-        const row = e.target.closest('tr');
+        const row = e.target.closest('.employee-row');
         const checkboxes = row.querySelectorAll('.permission-toggle');
         const permissions = {};
         checkboxes.forEach(cb => {

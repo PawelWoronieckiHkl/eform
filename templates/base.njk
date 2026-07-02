@@ -84,6 +84,9 @@
             <a class="navbar-brand" href="/">
                 <img alt="logo " class="logo">
             </a>
+            <button id="mobile-back-btn" type="button" class="mobile-back-btn d-none" onclick="window.history.back()" aria-label="{{ __('base.back_button') }}">
+                <img src="/img/go-back-arrow.png" class="mobile-back-icon" alt="">
+            </button>
             <button
                 class="navbar-toggler"
                 type="button"
@@ -96,8 +99,11 @@
             </button>
             <div class="collapse navbar-collapse" id="mobileNav">
                 <ul class="nav flex-column">
+                    <li class="nav-item context-button d-none" id="mobile-context-item">
+                        <a href="/orders/clear-context" class="nav-link">{{ __('base.turn_off_context') }}</a>
+                    </li>
                     <li class="nav-item">
-                        <a href="/orders/add-order" class="nav-link">{{ __('base.new_order') }}</a>
+                        <a href="/orders/add-order" class="nav-link fw-bold">{{ __('base.new_order') }}</a>
                     </li>
                     <li class="nav-item">
                         <a href="/orders" class="nav-link">{{ __('base.your_orders') }}</a>
@@ -105,8 +111,36 @@
                     <li class="nav-item">
                         <a href="/orders/history" class="nav-link">{{ __('base.orders_history') }}</a>
                     </li>
+                    <li class="nav-item d-none" id="mobile-employee-panel-item">
+                        <a href="#" id="mobile-employee-panel-link" class="nav-link">{{ __('base.employee_panel') }}</a>
+                    </li>
+                    {% if isGroup %}
+                        <li class="nav-item">
+                            <a href="/group/panel" class="nav-link">{{ __('group.panel_title') }}</a>
+                        </li>
+                    {% endif %}
+                    {% if owner and not admin %}
+                        <li class="nav-item mt-2">
+                            <label for="mobileUserSelect" class="nav-link pb-0">{{ __('orders.users_list') }}</label>
+                            <div class="px-3">
+                                <input type="text" id="mobileUserSelect" class="dropdown-input w-100" placeholder="{{ __('orders.select_user') }}" autocomplete="off"/>
+                                <div id="mobileUserDropdown" class="dropdown-menu custom-dropdown">
+                                    <div class="dropdown-item context-button">
+                                        <a href="/orders/clear-context" class="context-button">
+                                            <span>{{ __('base.turn_off_context') }}</span>
+                                        </a>
+                                    </div>
+                                    {% if users %}
+                                        {% for user in users %}
+                                            <div class="dropdown-item pt-5 pb-5" data-value="{{ user.ident }}">{{ user.ident }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
-                        <a href="#" id="mobile-logout-link" class="nav-link" style="text-decoration: none;">
+                        <a href="#" id="mobile-logout-link" data-action="logout" class="nav-link" style="text-decoration: none;">
                             {{ __('base.logout') }}
                         </a>
                     </li>
