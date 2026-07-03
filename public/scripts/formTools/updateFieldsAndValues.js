@@ -415,6 +415,9 @@ export async function updateFieldStates(params, inputs, values, displayValues, g
         let param = params.find(p => p.NAME === key);
         if (!param) continue;
 
+        // Manual-override params are typed by the user; never recompute them here.
+        if (window.manualParams && window.manualParams.has(key)) continue;
+
         const hasSource = param.SOURCE != "<NULL>" && param.NAME != param.SOURCE;
         const hasFormula = param.FORMULA != "<NULL>" && !(window.skipCountParams.includes(param.NAME)) && !disabledParams.has(param.NAME);
 

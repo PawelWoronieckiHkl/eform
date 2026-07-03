@@ -739,6 +739,53 @@ dialog::backdrop {
     font-size: var(--text-sm) !important;
 }
 
+/* Manual-override toggle for MULTI calculated params */
+[class*="-select-area"] .manual-override-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+[class*="-select-area"] .manual-override-checkbox {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    accent-color: var(--brand-primary);
+    cursor: pointer;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+[class*="-select-area"] .manual-override-label {
+    font-size: var(--text-xs) !important;
+    line-height: 1.2 !important;
+    color: var(--text-secondary) !important;
+    cursor: pointer;
+    user-select: none;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap;
+}
+
+.input-form.manual-active {
+    border-color: var(--brand-primary);
+    background: var(--bg-surface);
+}
+
+[class*="-select-area"] .manual-range-hint {
+    grid-column: 1 / -1;
+    width: 100%;
+    font-size: var(--text-xs) !important;
+    font-weight: 500;
+    color: var(--color-error);
+    margin-top: 2px;
+    padding: 0 !important;
+}
+
 /* ============================================
    LANGUAGE SWITCHER — Pill style
    ============================================ */

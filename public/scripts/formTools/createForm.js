@@ -13,6 +13,93 @@ export function processCommissionInput(labelValue = false) {
     hiddenClass.style.setProperty('display', 'block', 'important');
 }
 
+/** A param whose value is produced automatically (by FORMULA or SOURCE script), not typed by the user. */
+export function isCalculatedParam(param) {
+    if (!param) return false;
+    const hasFormula = param.FORMULA && param.FORMULA !== '<NULL>';
+    const hasSource = param.SOURCE && param.SOURCE !== '<NULL>' && param.SOURCE !== param.NAME;
+    return !!(hasFormula || hasSource);
+}
+
+/** Whether a param is currently in manual-override mode (user typed value, calc ignored). */
+export function isManualOverride(paramName) {
+    return !!(window.manualParams && window.manualParams.has(paramName));
+}
+
+/**
+ * Force a numeric <input> to accept whole numbers only — no decimals.
+ * Idempotent: safe to call multiple times on the same input.
+ */
+export function enforceIntegerInput(input) {
+    if (!input || input._intEnforced) return;
+    input._intEnforced = true;
+    input.step = '1';
+    input.inputMode = 'numeric';
+    input.addEventListener('input', function () {
+        // Keep digits and a single leading minus; strip decimal points and anything else.
+        let sanitized = this.value.replace(/[^0-9-]/g, '').replace(/(?!^)-/g, '');
+        if (sanitized !== this.value) this.value = sanitized;
+    });
+    input.addEventListener('keydown', function (event) {
+        if (['.', ',', 'e', 'E', '+'].includes(event.key)) {
+            event.preventDefault();
+        }
+    });
+}
+
+/**
+ * MULTI + calculated params get a checkbox that lets the user override the computed value.
+ * Checked  → input becomes an editable numeric field; recalculation ignores this param.
+ * Unchecked → input goes back to read-only calculated mode and is recomputed.
+ */
+function createManualOverrideToggle(param, input, parrent) {
+    if (!window.manualParams) window.manualParams = new Set();
+
+    // Range hint shown above the checkbox when a manually typed value fails min/max validation.
+    const rangeHint = createElement('div', { class: ['manual-range-hint'] }, parrent);
+    rangeHint.style.display = 'none';
+    input._manualHint = rangeHint;
+
+    const row = createElement('div', { class: ['manual-override-row'] }, parrent);
+    const checkbox = createElement('input', {
+        type: 'checkbox',
+        id: `${param.NAME}__manual`,
+        class: ['manual-override-checkbox']
+    }, row);
+    createElement('label', {
+        for: `${param.NAME}__manual`,
+        text: t('form.manual_override'),
+        class: ['manual-override-label']
+    }, row);
+
+    const enableManual = () => {
+        window.manualParams.add(param.NAME);
+        input.disabled = false;
+        input.readOnly = false;
+        input.type = 'number';
+        enforceIntegerInput(input);
+        input.classList.add('manual-active');
+        input.focus();
+    };
+
+    const disableManual = () => {
+        window.manualParams.delete(param.NAME);
+        input.disabled = true;
+        input.classList.remove('manual-active', 'invalid-input');
+        rangeHint.style.display = 'none';
+        rangeHint.textContent = '';
+        if (typeof window.recalcManualParam === 'function') {
+            window.recalcManualParam(param.NAME);
+        }
+    };
+
+    checkbox.addEventListener('change', () => {
+        checkbox.checked ? enableManual() : disableManual();
+    });
+
+    return checkbox;
+}
+
 export async function getPossibleValues(dictValues, values) {
     logFunctionName('getPossibleValues')
     const possibleElements = [];
@@ -134,11 +221,7 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
     if (param.TYPE === "numeric") {
         input.type = "number";
-        input.addEventListener('input', function (event) {
-            if (isNaN(this.value)) {
-                this.value = this.value.replace(/[^0-9.-]/g, '');
-            }
-        });
+        enforceIntegerInput(input);
     }
     else {
         input.type = "text";
@@ -270,6 +353,9 @@ export function createInputField(param, options, groupNumber, filters, allOption
 
     createLabelWithInfo();
     parrent.appendChild(input);
+    if (param.MULTI == 'true' && isCalculatedParam(param)) {
+        createManualOverrideToggle(param, input, parrent);
+    }
     parrent.appendChild(createElement('br'));
     return input;
 

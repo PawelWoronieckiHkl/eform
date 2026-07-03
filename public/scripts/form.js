@@ -64,6 +64,7 @@ export async function generateForm(
   window.constValues = {};
   window.lockedParams = [];
   window.subParams = [];
+  window.manualParams = new Set();
   window.formDisplayValues = displayValues;
   if (editFlag && displayValues?.size) {
     restoreLockedParamsFromDisplayValues(displayValues);
@@ -441,6 +442,14 @@ export async function generateForm(
   window.allOptionsByParameter = allOptionsByParameter;
   setupFileRemovalListener(params, inputs, values, displayValues);
 
+  // Recompute a single calculated param after leaving manual-override mode.
+  window.recalcManualParam = async (name) => {
+    await updateProcedure({
+      ...COMMON_PARAMS, options, name, value: values?.[name] ?? '', tagName: 'INPUT', filters,
+      flags: { updateInputs: true, buildValues: true, updateStates: true }
+    });
+  };
+
   return [inputs, values, displayValues, shortJson];
 }
 
@@ -676,6 +685,7 @@ function applyPriceFactor(params, inputs, values) {
   if (!factor || factor === 1.0 || window.hidePrices) return;
 
   for (const param of params) {
+    if (window.manualParams && window.manualParams.has(param.NAME)) continue;
     if ((param.LISTROW == '2' || param.LISTSUM == 'true') && inputs[param.NAME]) {
       const originalValue = parseFloat(values[param.NAME]);
       if (!isNaN(originalValue) && originalValue !== 0) {

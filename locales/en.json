@@ -169,7 +169,8 @@
     "status_low": "Low stock",
     "status_critical": "Critical stock",
     "validation_error": "Check the correctness of the values",
-    "reset_filters": "Reset filters"
+    "reset_filters": "Reset filters",
+    "manual_override": "Enter manually"
   },
   "employee": {
     "panel_title": "Employee Management",

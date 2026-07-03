@@ -359,7 +359,16 @@ export function setInputValid(input, isValid, min, max, mode = 'error') {
             res = false;
             inputFlags[input.name] = false;
             input.classList.add("invalid-input");
-            label.textContent = `min: ${min} - max: ${max}`;
+            const rangeText = `min: ${min} - max: ${max}`;
+
+            // Manual-override fields show the allowed range in a dedicated div under the checkbox.
+            if (input._manualHint) {
+                input._manualHint.textContent = rangeText;
+                input._manualHint.style.display = '';
+                return res;
+            }
+
+            label.textContent = rangeText;
 
 
         } else {
@@ -374,6 +383,10 @@ export function setInputValid(input, isValid, min, max, mode = 'error') {
 
     } else {
 
+        if (input._manualHint) {
+            input._manualHint.textContent = '';
+            input._manualHint.style.display = 'none';
+        }
         parent.classList.remove('input-with-icon');
     }
 
