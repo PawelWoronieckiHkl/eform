@@ -53,6 +53,7 @@ export function enforceIntegerInput(input) {
  * Unchecked → input goes back to read-only calculated mode and is recomputed.
  */
 function createManualOverrideToggle(param, input, parrent) {
+    if (!(window.currentUserIdent ?? '').toUpperCase().startsWith('KN_')) return;
     if (!window.manualParams) window.manualParams = new Set();
 
     // Range hint shown above the checkbox when a manually typed value fails min/max validation.

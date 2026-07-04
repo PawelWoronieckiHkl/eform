@@ -62,6 +62,18 @@ function hasValue(value) {
   return value !== undefined && value !== null && value !== '';
 }
 
+// Sentinels the form uses for "no value / no selection". They must never reach
+// the rendered order: e.g. `SZEROKOSC_DACH="<NULL>"` on the price row (row 2)
+// otherwise duplicates the real width/height label with an empty value.
+const NO_VALUE_SENTINELS = new Set(['<NONE>', '<NULL>']);
+
+function stripSentinelValue(entry) {
+  if (entry && typeof entry === 'object' && NO_VALUE_SENTINELS.has(String(entry.option_value))) {
+    return { ...entry, option_value: '' };
+  }
+  return entry;
+}
+
 function hasImportValue(importValues, paramName) {
   if (!importValues || !Object.prototype.hasOwnProperty.call(importValues, paramName)) {
     return false;
@@ -121,11 +133,11 @@ function isMandatoryLockedElRabatParam(paramName) {
   return paramName === 'DOPLATA_EL_RABAT' || paramName === 'SUB___DOPLATA_EL_RABAT';
 }
 
-function finalizeDisplayEntry(entry, paramName) {
-  if (!entry || typeof entry !== 'object') return entry;
-  if (isLockedRabatParam(paramName) || isMandatoryLockedElRabatParam(paramName)) {
-    return { ...entry, locked: true };
-  }
+function finalizeDisplayEntry(entry) {
+  // Faithful to formTools: `locked` is set exclusively by hideLocked() from
+  // lockedParams. The server must never re-derive it from param-name heuristics
+  // (e.g. "contains RABAT"), otherwise it diverges from the real form output.
+  // Kept as a pass-through so displayValueRebuilder's import stays valid.
   return entry;
 }
 
@@ -207,10 +219,6 @@ function isPriceLikeParam(paramName, paramMeta, existingEntry, formMeta) {
 }
 
 function resolveLocked(paramName, existingEntry, formMeta) {
-  if (isLockedRabatParam(paramName)) {
-    return true;
-  }
-
   // HASLO-gated params stay hidden in skipCountParams until unlocked.
   if (isSkippedCountParam(paramName, formMeta)) {
     return existingEntry?.locked === true;
@@ -422,12 +430,8 @@ function shouldOmitDisplayEntry(entry, paramName, values, formMeta) {
 }
 
 function mergeEntry(baseEntry, existingEntry, paramName, importValues, paramMeta, formMeta, safeValues) {
-  if (shouldHideDisplayEntry(paramName, safeValues, formMeta)) {
-    return buildHiddenSkippedEntry(baseEntry, existingEntry, paramName, formMeta);
-  }
-
   if (!existingEntry || typeof existingEntry !== 'object') {
-    return finalizeDisplayEntry(baseEntry, paramName);
+    return baseEntry;
   }
 
   const imported = hasImportValue(importValues, paramName);
@@ -440,7 +444,10 @@ function mergeEntry(baseEntry, existingEntry, paramName, importValues, paramMeta
 
   if (!priceLike && imported && hasValue(baseEntry.option_value)) {
     merged.option_value = baseEntry.option_value;
-  } else if (!hasValue(merged.option_value) && hasValue(baseEntry.option_value)) {
+  } else if (!priceLike && !hasValue(merged.option_value) && hasValue(baseEntry.option_value)) {
+    // Price values are computed by the real form (engine/browser). When it leaves
+    // a price field empty — e.g. an invisible POW cleared by clearDisabledValues —
+    // that emptiness is intentional, so we must not refill it from the raw values.
     merged.option_value = baseEntry.option_value;
   }
 
@@ -465,12 +472,7 @@ function mergeEntry(baseEntry, existingEntry, paramName, importValues, paramMeta
     merged.listsum = baseEntry.listsum;
   }
 
-  // Playwright leaves hidden price fields at row 0 — promote back to LISTROW 2.
-  if (priceLike && baseEntry.row === '2' && String(merged.row) === '0') {
-    merged.row = '2';
-  }
-
-  return finalizeDisplayEntry(merged, paramName);
+  return merged;
 }
 
 async function getProductGroupName(groupNumber, lang) {
@@ -542,27 +544,42 @@ async function buildDisplayValuesFromDictionary({
     ...Object.keys(existing)
   ], formMeta);
 
+  // The real form (engine/browser) decides which params get a display entry: it
+  // only emits the ones active for this configuration. When we have that
+  // authoritative set, we mirror it exactly and never invent extra entries from
+  // formMeta/values (e.g. inactive SUB___DOPLATA_EL_RABAT surcharges or price
+  // fields for options the customer did not choose), which the form omitted.
+  const hasAuthoritativeSet = Object.keys(existing).length > 0;
+
   for (const paramName of names) {
+    const existingEntry = existing[paramName];
+    const paramMeta = paramMetaMap[paramName] || null;
+    if (hasAuthoritativeSet && !(paramName in existing)) {
+      continue;
+    }
     const aliasKey = `${paramName}_ALIAS`;
     const titleKey = `${paramName}___TITLE`;
-    const paramMeta = paramMetaMap[paramName] || null;
-    const existingEntry = existing[paramName];
     const priceLikeEarly = isPriceLikeParam(paramName, paramMeta, existingEntry, formMeta);
     const rawValue = priceLikeEarly
       ? safeValues[paramName]
       : (hasImportValue(safeImportValues, paramName)
         ? safeImportValues[paramName]
         : safeValues[paramName]);
-    const hiddenEntry = shouldHideDisplayEntry(paramName, safeValues, formMeta);
     const priceLike = isPriceLikeParam(paramName, paramMeta, existingEntry, formMeta);
     const locked = resolveLocked(paramName, existingEntry, formMeta);
     const sub = resolveSub(paramName, existingEntry, formMeta);
     const row = resolveRow(paramName, safeValues, existingEntry, paramMeta, locked, safeImportValues, formMeta);
-    const paramDescription = paramsDict[paramName] || safeValues[titleKey] || paramName;
-
-    if (hiddenEntry) {
-      continue;
-    }
+    // The group-specific, already-translated label produced by the real form
+    // (engine/browser) is authoritative — e.g. "CENA HKL [€] netto". The generic
+    // translation dictionary carries a single label per param name across ALL
+    // groups (e.g. "CENA DET. [€] brutto"), so it must only be a fallback, never
+    // an override. `stubDisplayEntries` seeds param_description with the raw param
+    // name, which we treat as "no real label" and translate via the dictionary.
+    const existingParamDesc = existingEntry && existingEntry.param_description;
+    const hasGroupSpecificLabel = hasValue(existingParamDesc) && existingParamDesc !== paramName;
+    const paramDescription = hasGroupSpecificLabel
+      ? existingParamDesc
+      : (paramsDict[paramName] || (hasValue(existingParamDesc) ? existingParamDesc : '') || safeValues[titleKey] || paramName);
 
     let optionValue = '';
     let optionDescription = '';
@@ -593,8 +610,12 @@ async function buildDisplayValuesFromDictionary({
       });
 
       const rawValueKey = stringifyValue(rawValue);
-      if (rawValueKey === '<NONE>' && !optionDescription) {
+      // `<NONE>` is the "no selection" sentinel. The real form renders it as an
+      // empty value (no card, no price row). Emitting the literal "<NONE>" — or
+      // pairing it with a description — produces a bogus config card.
+      if (rawValueKey === '<NONE>' || optionValue === '<NONE>') {
         optionValue = '';
+        optionDescription = '';
       }
     }
 
@@ -623,32 +644,19 @@ async function buildDisplayValuesFromDictionary({
       formMeta,
       safeValues
     );
-    if (!shouldOmitDisplayEntry(merged, paramName, safeValues, formMeta)) {
-      output[paramName] = merged;
-    }
+    // Faithful to formTools: the real form keeps every param in formDisplayValues.
+    // Visibility is decided by the template (empty value / row '0' / locked), never
+    // by dropping entries here. Dropping is what made prices vanish and reordered
+    // the remaining rows in the imported view.
+    output[paramName] = stripSentinelValue(merged);
   }
 
   for (const [key, value] of Object.entries(existing)) {
     if (output[key]) continue;
-    let finalized = finalizeDisplayEntry(value, key);
-    const paramMeta = paramMetaMap[key] || null;
-    const priceListRow = resolvePriceListRow(key, finalized, paramMeta, formMeta);
-    if (priceListRow !== null && String(finalized.row) === '0') {
-      finalized = { ...finalized, row: priceListRow };
-    }
-    if (!shouldOmitDisplayEntry(finalized, key, safeValues, formMeta)) {
-      output[key] = finalized;
-    }
+    output[key] = stripSentinelValue(finalizeDisplayEntry(value));
   }
 
-  const filtered = {};
-  for (const [key, entry] of Object.entries(output)) {
-    if (!shouldOmitDisplayEntry(entry, key, safeValues, formMeta)) {
-      filtered[key] = entry;
-    }
-  }
-
-  return orderDisplayValues(filtered, shortJson, existingKeyOrder);
+  return orderDisplayValues(output, shortJson, existingKeyOrder);
 }
 
 module.exports = {

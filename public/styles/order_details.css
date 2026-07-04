@@ -237,12 +237,14 @@ html.nav-collapsed #order-nav {
 }
 
 .order-table {
+    position: relative;
     width: max-content;
     table-layout: auto;
     border-collapse: separate;
     border-spacing: 0;
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    /* NOTE: no `overflow: hidden` here — it would turn the table into its own
+       scroll container and break `position: sticky` on the frozen columns. */
     box-shadow: var(--shadow-card);
     background: var(--bg-glass-strong);
     backdrop-filter: blur(var(--blur-sm));
@@ -280,7 +282,6 @@ html.nav-collapsed #order-nav {
 
 .order-table tbody tr:not(.price-row):not(.prod-time-row):not(.sub-params-row):hover {
     background: var(--bg-hover);
-    transform: translateX(4px);
     box-shadow: inset 3px 0 0 var(--brand-primary);
 }
 
@@ -291,7 +292,6 @@ html.nav-collapsed #order-nav {
 
 .order-table tbody tr:not(.price-row):not(.prod-time-row):not(.sub-params-row):hover+.price-row {
     background: var(--bg-hover);
-    transform: translateX(4px);
     box-shadow: inset 3px 0 0 var(--brand-primary);
 }
 
@@ -364,6 +364,12 @@ html.nav-collapsed #order-nav {
     cursor: default !important;
 }
 
+.prod-time-row td {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
 .sub-params-row,
 .price-row {
     background: transparent !important;
@@ -382,18 +388,21 @@ html.nav-collapsed #order-nav {
 
 .sub-params-cell {
     padding: 6px 12px !important;
+    position: sticky;
+    left: 0;
+    z-index: 2;
 }
 
 .sub-params-container {
-    display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items:flex-start;
     gap: 8px 16px;
     border-radius: var(--radius-sm);
     padding: 8px 12px;
     font-family: var(--font-sans);
     font-size: var(--text-sm);
-    max-width: fit-content !important;
+    width: fit-content;
+    max-width: fit-content;
 }
 
 /* SUB___ — teal accent */
@@ -572,7 +581,7 @@ html.nav-collapsed #order-nav {
     padding: 10px 12px;
     font-size: 16px;
     text-align: left;
-    width: max-content;
+    width: fit-content;
 }
 
 .prod-time-label {
@@ -888,4 +897,82 @@ html.nav-collapsed #order-nav {
 .table td.d-flex {
     white-space: nowrap;
     min-width: fit-content;
+}
+
+/* ============================================
+   Frozen (sticky) first three columns
+   --------------------------------------------
+   In the horizontally scrollable order table the
+   first three columns (action, index and the first
+   parameter) stay pinned while the remaining columns
+   scroll horizontally. Left offsets are computed at
+   runtime in /scripts/stickyColumns.js because column
+   widths are dynamic, and exposed as the
+   --sticky-left-* custom properties on each table. */
+
+/* Header cells of the first three columns */
+.order-table thead th:nth-child(1),
+.order-table thead th:nth-child(2),
+.order-table thead th:nth-child(3) {
+    position: sticky;
+    z-index: 4;
+    background: var(--bg-surface-sunken);
+}
+
+/* Body cells of the first three columns.
+   Full-width detail rows (prices, sub-params, production
+   time, status) span every column and must keep scrolling,
+   so they are excluded from the freeze. */
+.order-table tbody > tr:not(.price-row):not(.sub-params-row):not(.sub-params-locked-row):not(.prod-time-row):not(.status-row) > :nth-child(1),
+.order-table tbody > tr:not(.price-row):not(.sub-params-row):not(.sub-params-locked-row):not(.prod-time-row):not(.status-row) > :nth-child(2),
+.order-table tbody > tr:not(.price-row):not(.sub-params-row):not(.sub-params-locked-row):not(.prod-time-row):not(.status-row) > :nth-child(3) {
+    position: sticky;
+    z-index: 3;
+    background: var(--bg-surface-solid);
+}
+
+/* Left offsets (fallback to 0 before the script runs) */
+.order-table thead th:nth-child(1),
+.order-table tbody > tr > :nth-child(1) {
+    left: var(--sticky-left-1, 0);
+}
+
+.order-table thead th:nth-child(2),
+.order-table tbody > tr > :nth-child(2) {
+    left: var(--sticky-left-2, 0);
+}
+
+.order-table thead th:nth-child(3),
+.order-table tbody > tr > :nth-child(3) {
+    left: var(--sticky-left-3, 0);
+}
+
+/* Visual boundary between the frozen block and the scrolling columns. */
+.order-table thead th:nth-child(3),
+.order-table tbody > tr:not(.price-row):not(.sub-params-row):not(.sub-params-locked-row):not(.prod-time-row):not(.status-row) > :nth-child(3) {
+    border-right: 2px solid var(--border-strong);
+}
+
+/* Detail rows (.price-row, .sub-params-row, .sub-params-locked-row,
+   .prod-time-row, .status-row) each contain a single <td colspan="100%">.
+   The cell spans the full table width, so pinning the cell itself does
+   nothing — instead the inner content block (.sub-params-container /
+   .prod-time-row-cell) is made sticky (left:0, width:fit-content) so it
+   stays glued to the left edge while the wide cell scrolls with the table.
+   The cell just needs to allow overflow so the sticky child can escape. */
+.order-table tbody > tr.price-row > td,
+.order-table tbody > tr.sub-params-row > td,
+.order-table tbody > tr.sub-params-locked-row > td,
+.order-table tbody > tr.prod-time-row > td,
+.order-table tbody > tr.status-row > td {
+    overflow: visible;
+}
+
+/* Keep the frozen cells opaque on row hover, otherwise the scrolling
+   columns would show through them (the row hover rule sets cell
+   backgrounds to transparent). */
+.order-table tbody > tr:not(.price-row):not(.sub-params-row):not(.sub-params-locked-row):not(.prod-time-row):not(.status-row):hover > :nth-child(1),
+.order-table tbody > tr:not(.price-row):not(.sub-params-row):not(.sub-params-locked-row):not(.prod-time-row):not(.status-row):hover > :nth-child(2),
+.order-table tbody > tr:not(.price-row):not(.sub-params-row):not(.sub-params-locked-row):not(.prod-time-row):not(.status-row):hover > :nth-child(3) {
+    background: var(--bg-surface-sunken);
 }

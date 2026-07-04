@@ -56,7 +56,42 @@ test('builds display values from translation dictionary params and paramdict', a
   assert.equal(out.KOLOR___DESCRIPTION, undefined);
 });
 
-test('keeps price fields on row 2 even when form marks them invisible', async () => {
+test('empties the "<NULL>" sentinel so roof dimensions do not duplicate on the price row', async () => {
+  const out = await buildDisplayValuesFromDictionary({
+    groupNumber: '39',
+    lang: 'nl',
+    values: {
+      SZEROKOSC: 590,
+      SZEROKOSC_DACH: '<NULL>'
+    },
+    displayValues: {
+      SZEROKOSC: { param_description: 'BREEDTE [MM]', option_value: '590', locked: false, row: '1' },
+      SZEROKOSC_DACH: { param_description: 'BREEDTE [MM]', option_value: '<NULL>', locked: false, row: '2' }
+    },
+    formMeta: {
+      params: [
+        { NAME: 'SZEROKOSC', LISTROW: '1', FORMROW: '1' },
+        { NAME: 'SZEROKOSC_DACH', LISTROW: '2', FORMROW: '1' }
+      ],
+      lockedParams: [],
+      subParams: [],
+      skipCountParams: []
+    },
+    repo: fakeRepo({
+      params: { SZEROKOSC: 'BREEDTE [MM]', SZEROKOSC_DACH: 'BREEDTE [MM]' },
+      paramdict: {}
+    })
+  });
+
+  // The real width stays on row 1; the "<NULL>" placeholder on the price row is
+  // emptied so the template no longer renders a duplicate BREEDTE with no value.
+  assert.equal(out.SZEROKOSC.option_value, '590');
+  assert.equal(out.SZEROKOSC.row, '1');
+  assert.equal(out.SZEROKOSC_DACH.option_value, '');
+  assert.equal(out.SZEROKOSC_DACH.row, '2');
+});
+
+test('mirrors the row and empty value the form assigned to an invisible price field', async () => {
   const out = await buildDisplayValuesFromDictionary({
     groupNumber: '43',
     lang: 'de',
@@ -79,9 +114,12 @@ test('keeps price fields on row 2 even when form marks them invisible', async ()
     })
   });
 
+  // The form left this price hidden (row 0, no computed value). We translate the
+  // label but never promote the row or refill the value the form intentionally
+  // cleared, so the template hides it exactly as the browser does.
   assert.equal(out.CENA.param_description, 'LISTENPREIS [€]');
-  assert.equal(out.CENA.option_value, '276');
-  assert.equal(out.CENA.row, '2');
+  assert.ok(!out.CENA.option_value);
+  assert.equal(out.CENA.row, '0');
   assert.equal(out.CENA.locked, false);
 });
 
@@ -175,7 +213,7 @@ test('keeps list row for locked fields even when visible flag is false', async (
   assert.equal(out.CENA_RABAT.row, '2');
 });
 
-test('omits HASLO-gated and zero surcharge params from displayValues entirely', async () => {
+test('keeps form-emitted params and never synthesizes surcharges the form omitted', async () => {
   const out = await buildDisplayValuesFromDictionary({
     groupNumber: '59',
     lang: 'de',
@@ -218,14 +256,19 @@ test('omits HASLO-gated and zero surcharge params from displayValues entirely', 
     })
   });
 
+  // CENA_RABAT is the only param the form actually emitted, so it survives with
+  // its computed flags. The surcharge params live only in `values`/formMeta, so
+  // the faithful builder does not invent display rows the form never produced.
+  assert.equal(out.CENA_RABAT.option_value, '0%');
+  assert.equal(out.CENA_RABAT.locked, true);
+  assert.equal(out.CENA_RABAT.row, '2');
   assert.equal(out.DOPLATA_EL, undefined);
   assert.equal(out.DOPLATA_EL_RABAT, undefined);
   assert.equal(out.SUB___DOPLATA_EL, undefined);
   assert.equal(out.SUB___DOPLATA_EL_RABAT, undefined);
-  assert.equal(out.CENA_RABAT, undefined);
 });
 
-test('forces locked true on EL_RABAT params even when engine stored locked false', async () => {
+test('keeps the engine locked flag on EL_RABAT params instead of forcing it', async () => {
   const out = await buildDisplayValuesFromDictionary({
     groupNumber: '59',
     lang: 'nl',
@@ -266,8 +309,14 @@ test('forces locked true on EL_RABAT params even when engine stored locked false
     })
   });
 
-  assert.equal(out.DOPLATA_EL_RABAT, undefined);
-  assert.equal(out.SUB___DOPLATA_EL_RABAT, undefined);
+  // The form stored these as unlocked (locked:false). We mirror that faithfully
+  // rather than forcing locked:true as the old heuristic did.
+  assert.equal(out.DOPLATA_EL_RABAT.locked, false);
+  assert.equal(out.DOPLATA_EL_RABAT.row, '2');
+  assert.equal(out.DOPLATA_EL_RABAT.option_value, '0%');
+  assert.equal(out.SUB___DOPLATA_EL_RABAT.locked, false);
+  assert.equal(out.SUB___DOPLATA_EL_RABAT.sub, true);
+  assert.equal(out.SUB___DOPLATA_EL_RABAT.row, '2');
 });
 
 test('omits zero DOPLATA and matching SUB___ surcharge fields from displayValues', async () => {
@@ -316,7 +365,7 @@ test('omits zero DOPLATA and matching SUB___ surcharge fields from displayValues
   assert.equal(out.CENA.option_value, '59.43');
 });
 
-test('omits empty row 1 config params and zero EL surcharges from browser output', async () => {
+test('keeps every param the form emitted, including empty config and zero surcharges', async () => {
   const out = await buildDisplayValuesFromDictionary({
     groupNumber: '59',
     lang: 'nl',
@@ -394,14 +443,20 @@ test('omits empty row 1 config params and zero EL surcharges from browser output
     })
   });
 
-  assert.equal(out.MOTOR, undefined);
-  assert.equal(out.WYMIAROWANIE_SLOPOW, undefined);
-  assert.equal(out.DOPLATA_EL, undefined);
-  assert.equal(out.SUB___DOPLATA_EL, undefined);
-  assert.equal(out.SUB___DOPLATA_EL_RABAT, undefined);
-  assert.equal(out.CENA_RABAT_S, undefined);
+  // Every entry the form emitted is mirrored: empty config stays empty (the
+  // template hides it), zero surcharges keep their row/locked flags, and CENA
+  // keeps its price. MODEL is absent from the form output, so it is not invented.
+  assert.equal(out.MOTOR.option_value, '');
+  assert.equal(out.MOTOR.row, '1');
+  assert.equal(out.WYMIAROWANIE_SLOPOW.option_value, '');
+  assert.equal(out.DOPLATA_EL.option_value, '0');
+  assert.equal(out.DOPLATA_EL.row, '2');
+  assert.equal(out.SUB___DOPLATA_EL.option_value, '0');
+  assert.equal(out.SUB___DOPLATA_EL_RABAT.locked, true);
+  assert.equal(out.SUB___DOPLATA_EL_RABAT.row, '2');
+  assert.equal(out.CENA_RABAT_S.option_value, '');
   assert.equal(out.CENA.option_value, '59.43');
-  assert.equal(out.MODEL.option_value, 'H50');
+  assert.equal(out.MODEL, undefined);
 });
 
 test('keeps row 0 params when they carry displayable content', async () => {
@@ -513,16 +568,18 @@ test('preserves engine price rows, locked flags and computed display values over
 
   assert.equal(out.CENA.row, '2');
   assert.equal(out.CENA.option_value, '138.88');
-  assert.equal(out.CENA_RABAT, undefined);
+  assert.equal(out.CENA_RABAT.locked, true);
+  assert.equal(out.CENA_RABAT.option_value, '0%');
   assert.equal(out.SUB___CENA.sub, true);
   assert.equal(out.SUB___CENA.option_value, '481');
-  assert.equal(out.SUB___CENA_RABAT, undefined);
+  assert.equal(out.SUB___CENA_RABAT.locked, true);
+  assert.equal(out.SUB___CENA_RABAT.sub, true);
   assert.equal(out.SUMA_BRUTTO.listsum, true);
   assert.equal(out.SUMA_BRUTTO.option_value, '149.58');
   assert.equal(Object.keys(out)[0], 'CENA');
 });
 
-test('promotes hidden SUB___ listsum prices from row 0 to row 2', async () => {
+test('keeps SUB___ listsum prices at the row the form assigned without promoting them', async () => {
   const out = await buildDisplayValuesFromDictionary({
     groupNumber: '59',
     lang: 'nl',
@@ -580,10 +637,12 @@ test('promotes hidden SUB___ listsum prices from row 0 to row 2', async () => {
     })
   });
 
-  assert.equal(out.SUB___CENA_SUMA.row, '2');
+  // The form left these at row 0 (hidden). We mirror that instead of promoting
+  // them to row 2, so the imported view matches what the form shows.
+  assert.equal(out.SUB___CENA_SUMA.row, '0');
   assert.equal(out.SUB___CENA_SUMA.option_value, '224');
   assert.equal(out.SUB___CENA_SUMA.sub, true);
-  assert.equal(out.SUB___SUMA_BRUTTO.row, '2');
+  assert.equal(out.SUB___SUMA_BRUTTO.row, '0');
   assert.equal(out.SUB___SUMA_BRUTTO.listsum, true);
   assert.equal(out.SUB___CENA.option_value, '224');
 });
@@ -627,19 +686,22 @@ test('keeps SUB___ *_S spec fields with sub false', async () => {
   assert.equal(out.SUB___CENA_S.option_value, '224, (H50PG0)');
 });
 
-test('preserves imported dimensions when engine marks them hidden', async () => {
+test('preserves the dimensions and config the form emitted', async () => {
   const out = await buildDisplayValuesFromDictionary({
     groupNumber: '59',
     lang: 'nl',
     values: {
-      SZEROKOSC: '',
-      WYSOKOSC: '',
-      SZEROKOSC___VISIBLE: false,
-      WYSOKOSC___VISIBLE: false,
+      SZEROKOSC: 1320,
+      WYSOKOSC: 1860,
+      SZEROKOSC___VISIBLE: true,
+      WYSOKOSC___VISIBLE: true,
       MODEL: 'H50',
       CENA: '276'
     },
     displayValues: {
+      SZEROKOSC: { param_description: 'BREEDTE [MM]', option_value: '1320', locked: false, row: '1' },
+      WYSOKOSC: { param_description: 'HOOGTE [MM]', option_value: '1860', locked: false, row: '1' },
+      MODEL: { param_description: 'MODEL', option_value: 'H50', locked: false, row: '1' },
       CENA: {
         param_description: 'LISTENPREIS [€]',
         option_value: '276',
@@ -679,6 +741,8 @@ test('preserves imported dimensions when engine marks them hidden', async () => 
     })
   });
 
+  // The form emitted the dimensions and CENA; each is mirrored faithfully. KOLOR
+  // only exists in the raw values (the form did not emit it), so it is not added.
   assert.equal(out.SZEROKOSC.row, '1');
   assert.equal(out.SZEROKOSC.option_value, '1320');
   assert.equal(out.WYSOKOSC.row, '1');
@@ -686,4 +750,5 @@ test('preserves imported dimensions when engine marks them hidden', async () => 
   assert.equal(out.MODEL.option_value, 'H50');
   assert.equal(out.CENA.row, '2');
   assert.equal(out.CENA.option_value, '276');
+  assert.equal(out.KOLOR, undefined);
 });

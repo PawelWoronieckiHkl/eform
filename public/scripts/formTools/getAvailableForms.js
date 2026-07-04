@@ -27,6 +27,7 @@ export class FormsManager {
         this.postAllPaths()
 
         this.clientData = await this.getOwner();
+        window.currentUserIdent = this.clientData?.userIdent ?? '';
         console.log('DEBUG CLIENT DATA', this.clientData, this.departments, this.paths)
         return objects;
     }

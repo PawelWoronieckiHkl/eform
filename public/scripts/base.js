@@ -452,8 +452,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    const desktopLogoutLink = document.querySelector('[data-action="logout"]');
-    const mobileLogoutLink = document.getElementById('mobile-logout-link');
+    const logoutLinks = document.querySelectorAll('[data-action="logout"]');
 
     function handleLogout(event) {
         event.preventDefault();
@@ -466,13 +465,9 @@ document.addEventListener('DOMContentLoaded', function () {
         form.submit();
     }
 
-    if (desktopLogoutLink) {
-        desktopLogoutLink.addEventListener('click', handleLogout);
-    }
-
-    if (mobileLogoutLink) {
-        mobileLogoutLink.addEventListener('click', handleLogout);
-    }
+    logoutLinks.forEach((link) => {
+        link.addEventListener('click', handleLogout);
+    });
 });
 
 function getLocalStorageUsers() {
