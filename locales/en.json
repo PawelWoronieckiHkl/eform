@@ -121,7 +121,15 @@
     "discount_amount": "Discount amount",
     "total_after_discount": "Total after discount",
     "apply_discount": "Apply discount",
-    "discount": "Discount"
+    "discount": "Discount",
+    "link_position": "Select for linking",
+    "link_selected": "Link selected",
+    "unlink_selected": "Unlink selected",
+    "link_clear_selection": "Deselect all",
+    "link_positions_count": "selected",
+    "link_positions_hint": "Select at least 2 positions that will hang next to each other",
+    "link_success": "Positions linked",
+    "unlink_success": "Link removed"
   },
   "orders": {
     "title": "Your Orders",

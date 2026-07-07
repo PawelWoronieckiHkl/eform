@@ -1341,6 +1341,30 @@ router.get('/import-log', requireLogin, async (req, res) => {
     }
 });
 
+router.patch('/order/:orderId/link-positions', requireLogin, checkOrderOwnership, async (req, res) => {
+    try {
+        const { positionIds, unlink = false } = req.body;
+        if (!Array.isArray(positionIds) || positionIds.length < 2) {
+            return res.status(400).json({ success: false, message: 'Zaznacz co najmniej 2 pozycje' });
+        }
+        const ids = positionIds.map(id => parseInt(id)).filter(id => !isNaN(id));
+        if (ids.length < 2) {
+            return res.status(400).json({ success: false, message: 'Nieprawidłowe ID pozycji' });
+        }
+        if (await rejectSentOrderMutation(res, req.params.orderId, req)) return;
+        if (unlink) {
+            await db.clearLinkGroup(ids);
+        } else {
+            const { randomUUID } = require('crypto');
+            await db.setLinkGroup(ids, randomUUID());
+        }
+        return res.json({ success: true });
+    } catch (err) {
+        log('Error linking positions:', err);
+        return res.status(500).json({ success: false, message: 'Błąd serwera' });
+    }
+});
+
 router.patch('/order/:orderId/toggle-status', requireLogin, async (req, res) => {
     if (!req.session.user?.isAdmin) {
         return res.status(403).json({ success: false, message: 'Brak uprawnień' });

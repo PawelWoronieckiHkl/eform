@@ -121,7 +121,15 @@
     "discount_amount": "Montant de la remise",
     "total_after_discount": "Montant après remise",
     "apply_discount": "Appliquer la remise",
-    "discount": "Remise"
+    "discount": "Remise",
+    "link_position": "Sélectionner pour liaison",
+    "link_selected": "Lier les sélectionnés",
+    "unlink_selected": "Délier les sélectionnés",
+    "link_clear_selection": "Tout désélectionner",
+    "link_positions_count": "sélectionnés",
+    "link_positions_hint": "Sélectionnez au moins 2 positions qui seront accrochées ensemble",
+    "link_success": "Positions liées",
+    "unlink_success": "Liaison supprimée"
   },
   "orders": {
     "title": "Vos commandes",

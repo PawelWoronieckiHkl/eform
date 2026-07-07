@@ -121,7 +121,15 @@
     "discount_amount": "Kortingsbedrag",
     "total_after_discount": "Bedrag na korting",
     "apply_discount": "Korting toepassen",
-    "discount": "Korting"
+    "discount": "Korting",
+    "link_position": "Selecteer voor koppeling",
+    "link_selected": "Geselecteerde koppelen",
+    "unlink_selected": "Koppeling opheffen",
+    "link_clear_selection": "Alles deselecteren",
+    "link_positions_count": "geselecteerd",
+    "link_positions_hint": "Selecteer minimaal 2 posities die naast elkaar hangen",
+    "link_success": "Posities gekoppeld",
+    "unlink_success": "Koppeling verwijderd"
   },
   "orders": {
     "title": "Uw bestellingen",

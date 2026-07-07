@@ -411,6 +411,20 @@ async function movePositionDown(positionId) {
     }
 }
 
+async function setLinkGroup(positionIds, linkGroupId) {
+    if (!positionIds || positionIds.length === 0) return;
+    const placeholders = positionIds.map(() => '?').join(',');
+    const query = `UPDATE order_item SET link_group = ? WHERE id IN (${placeholders})`;
+    return await updateQuery(query, [linkGroupId, ...positionIds]);
+}
+
+async function clearLinkGroup(positionIds) {
+    if (!positionIds || positionIds.length === 0) return;
+    const placeholders = positionIds.map(() => '?').join(',');
+    const query = `UPDATE order_item SET link_group = NULL WHERE id IN (${placeholders})`;
+    return await updateQuery(query, positionIds);
+}
+
 module.exports = {
     insertNewForm,
     getPosition,
@@ -434,5 +448,7 @@ module.exports = {
     reindexOrderPositions,
     updateAttachments,
     setPositionIdx,
-    getAttachments
+    getAttachments,
+    setLinkGroup,
+    clearLinkGroup
 }

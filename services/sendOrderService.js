@@ -69,7 +69,8 @@ class OrderSender {
                 commission: item?.commision ?? "",
                 parameters: sortedFilteredObj,
                 comment: item.comment,
-                asortment: item.asrotment_group_number
+                asortment: item.asrotment_group_number,
+                link_group: item?.link_group ?? null
             })
 
             this.shortItems.push({

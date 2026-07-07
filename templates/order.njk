@@ -210,6 +210,11 @@
                                                                                                                         <button class="action-btn action-btn-delete p-1 delete-position-btn has-tooltip" data-tooltip="{{ __('order.delete_pos') }}" type="button" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
                                                                                                                             <img src="/img/delete.png" alt="{{ __('order.delete') }}"/>
                                                                                                                         </button>
+                                                                                                                        <button class="link-pos-toggle-btn ms-1{% if rowObj.item.link_group %} has-link-group{% endif %}" type="button"
+                                                                                                                            data-id="{{ rowObj.item.id }}"
+                                                                                                                            data-link-group="{{ rowObj.item.link_group or '' }}"
+                                                                                                                            onclick="event.stopPropagation()"
+                                                                                                                            title="{{ __('order.link_position') }}">&#128279;</button>
                                                                                                                     {% endblock %}
                                                                                                                 </td>
                                                                                                                 <th scope="row" class='order-idx' data-id="{{ rowObj.item.id }}" data-idx='{{ globalIndex }}'>{{ globalIndex }}</th>
@@ -432,6 +437,11 @@
                                                                                                                             <button class="action-btn action-btn-delete delete-position-btn" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
                                                                                                                                 {{ __('order.delete') }}
                                                                                                                             </button>
+                                                                                                                            <button class="link-pos-toggle-btn link-pos-toggle-btn--mobile{% if rowObj.item.link_group %} has-link-group{% endif %}" type="button"
+                                                                                                                                data-id="{{ rowObj.item.id }}"
+                                                                                                                                data-link-group="{{ rowObj.item.link_group or '' }}"
+                                                                                                                                onclick="event.stopPropagation()"
+                                                                                                                                title="{{ __('order.link_position') }}">&#128279; {{ __('order.link_position') }}</button>
                                                                                                                         </div>
                                                                                                                     </div>
                                                                                                                 {% endfor %}
@@ -535,6 +545,18 @@
                                                                                     {% endif %}
                                                                                 </div>
                                                                             </div>
+                                                                            <div id="link-positions-bar" class="link-positions-bar" aria-live="polite" aria-atomic="true" data-order-id="{{ orderDetails.id }}">
+                                                                                <div class="link-bar-icon">&#128279;</div>
+                                                                                <div class="link-bar-body">
+                                                                                    <p class="link-bar-hint">{{ __('order.link_positions_hint') }}</p>
+                                                                                    <p class="link-bar-count"><strong id="link-count-label">0</strong> {{ __('order.link_positions_count') }}</p>
+                                                                                </div>
+                                                                                <div class="link-bar-actions">
+                                                                                    <button id="link-selected-btn" class="btn btn-primary btn-sm" disabled>&#128279; {{ __('order.link_selected') }}</button>
+                                                                                    <button id="unlink-selected-btn" class="btn btn-outline-danger btn-sm" disabled>&#9986; {{ __('order.unlink_selected') }}</button>
+                                                                                    <button id="clear-link-selection-btn" class="btn btn-outline-secondary btn-sm">{{ __('order.link_clear_selection') }}</button>
+                                                                                </div>
+                                                                            </div>
                                                                             <div id='dialog-container'>
                                                                                 <dialog id='dialog-space'></dialog>
                                                                                 <dialog id="delete-dialog">
@@ -558,6 +580,7 @@
                                                                 {% block scripts %}
                                                                     <script type='module' src="/scripts/order.js"></script>
                                                                     <script src="/scripts/mobileCards.js"></script>
+                    <script src="/scripts/linkPositions.js"></script>
                                                                     <script src="/scripts/stickyColumns.js"></script>
                                                                     {% if owner or admin %}
                                                                     <script type='module' src="/scripts/recalculateOrder.js"></script>

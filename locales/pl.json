@@ -121,7 +121,15 @@
     "discount_amount": "Kwota rabatu",
     "total_after_discount": "Kwota po rabacie",
     "apply_discount": "Zastosuj rabat",
-    "discount": "Rabat"
+    "discount": "Rabat",
+    "link_position": "Zaznacz do połączenia",
+    "link_selected": "Połącz zaznaczone",
+    "unlink_selected": "Rozłącz zaznaczone",
+    "link_clear_selection": "Odznacz wszystkie",
+    "link_positions_count": "zaznaczonych",
+    "link_positions_hint": "Wybierz min. 2 pozycje, które będą wisieć obok siebie",
+    "link_success": "Pozycje zostały połączone",
+    "unlink_success": "Połączenie zostało usunięte"
   },
   "orders": {
     "title": "Twoje Zamówienia",
