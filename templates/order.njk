@@ -35,6 +35,8 @@
                                                 <img class='ico' src="/img/edit-text.png" alt="{{ __('orders.edit') }}"></a>
                                             </div>
                                             <div id="generate-container-mobile">
+                                                <button class="btn open-link-manager-btn" type="button" aria-label="{{ __('order.link_manager_title') }}">
+                                                    <span style="font-size:22px;">&#128279;</span></button>
                                                 {% if not isGroup and not isGroupShop and not hidePrices and (not hasSubPriceToggle or showCatalogPrices) %}
                                                 <button id="unlockBtn" class="btn">
                                                     <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
@@ -90,6 +92,9 @@
                                                                     <span  style="display:inline-flex; align-items:center; justify-content:center; font-size:24px;"><img  class="icon" src="/img/recalculate.png" alt=""></span>
                                                                 </button>
                                                                 {% endif %}
+                                                                <button class="btn has-tooltip open-link-manager-btn" data-tooltip="{{ __('order.link_manager_title') }}" type="button">
+                                                                    <span style="display:inline-flex; align-items:center; justify-content:center; font-size:22px;">&#128279;</span>
+                                                                </button>
                                                                 {% if not isGroup and not isGroupShop and not hidePrices %}
                                                                 <button class="btn has-tooltip" data-tooltip="{{ __('base.give_discount_tooltip') }}" id='discount-btn'>
                                                                     <img src="/img/sale.png" alt="sale icon" class='icon'></button>
@@ -177,7 +182,7 @@
                                                                                                 {% for rowObj in table.rows %}
                                                                                                     {% set itemHasSubPrices = rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
                                                                                                     {% block item_redirect %}
-                                                                                                        <tr style="cursor: pointer display:grid" onclick="window.location.href='/position/{{ rowObj.item.id }}'">
+                                                                                                        <tr style="cursor: pointer display:grid" data-id="{{ rowObj.item.id }}" data-link-group="{{ rowObj.item.link_group or '' }}" onclick="window.location.href='/position/{{ rowObj.item.id }}'">
                                                                                                         {% endblock %}
                                                                                                         {% block pos_btns %}
                                                                                                             <td class="d-flex align-items-center">
@@ -210,11 +215,6 @@
                                                                                                                         <button class="action-btn action-btn-delete p-1 delete-position-btn has-tooltip" data-tooltip="{{ __('order.delete_pos') }}" type="button" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
                                                                                                                             <img src="/img/delete.png" alt="{{ __('order.delete') }}"/>
                                                                                                                         </button>
-                                                                                                                        <button class="link-pos-toggle-btn ms-1{% if rowObj.item.link_group %} has-link-group{% endif %}" type="button"
-                                                                                                                            data-id="{{ rowObj.item.id }}"
-                                                                                                                            data-link-group="{{ rowObj.item.link_group or '' }}"
-                                                                                                                            onclick="event.stopPropagation()"
-                                                                                                                            title="{{ __('order.link_position') }}">&#128279;</button>
                                                                                                                     {% endblock %}
                                                                                                                 </td>
                                                                                                                 <th scope="row" class='order-idx' data-id="{{ rowObj.item.id }}" data-idx='{{ globalIndex }}'>{{ globalIndex }}</th>
@@ -312,7 +312,7 @@
                                                                                                     {% for rowObj in table.rows %}
                                                                                                         {% set mobileIndex = mobileIndex + 1 %}
                                                                                                         {% set itemHasSubPrices = rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
-                                                                                                        <div class="mobile-item-card" data-position-url="/position/{{ rowObj.item.id }}">
+                                                                                                        <div class="mobile-item-card" data-position-url="/position/{{ rowObj.item.id }}" data-id="{{ rowObj.item.id }}" data-link-group="{{ rowObj.item.link_group or '' }}">
                                                                                                             <div class="mobile-item-header">
                                                                                                                 <div class="mobile-item-basic">
                                                                                                                     <span class="mobile-item-name">{{ rowObj.item.commision | truncate(25, true, "...") or "-" }}</span>
@@ -437,11 +437,6 @@
                                                                                                                             <button class="action-btn action-btn-delete delete-position-btn" data-id="{{ rowObj.item.id }}" data-href="/position/{{ rowObj.item.id }}/delete" onclick="event.stopPropagation()">
                                                                                                                                 {{ __('order.delete') }}
                                                                                                                             </button>
-                                                                                                                            <button class="link-pos-toggle-btn link-pos-toggle-btn--mobile{% if rowObj.item.link_group %} has-link-group{% endif %}" type="button"
-                                                                                                                                data-id="{{ rowObj.item.id }}"
-                                                                                                                                data-link-group="{{ rowObj.item.link_group or '' }}"
-                                                                                                                                onclick="event.stopPropagation()"
-                                                                                                                                title="{{ __('order.link_position') }}">&#128279; {{ __('order.link_position') }}</button>
                                                                                                                         </div>
                                                                                                                     </div>
                                                                                                                 {% endfor %}
@@ -545,18 +540,51 @@
                                                                                     {% endif %}
                                                                                 </div>
                                                                             </div>
-                                                                            <div id="link-positions-bar" class="link-positions-bar" aria-live="polite" aria-atomic="true" data-order-id="{{ orderDetails.id }}">
-                                                                                <div class="link-bar-icon">&#128279;</div>
-                                                                                <div class="link-bar-body">
-                                                                                    <p class="link-bar-hint">{{ __('order.link_positions_hint') }}</p>
-                                                                                    <p class="link-bar-count"><strong id="link-count-label">0</strong> {{ __('order.link_positions_count') }}</p>
+                                                                            <dialog id="link-manager-dialog" class="link-manager" data-order-id="{{ orderDetails.id }}">
+                                                                                <div class="lm-panel">
+                                                                                    <div class="lm-header">
+                                                                                        <h3 class="lm-title">&#128279; {{ __('order.link_manager_title') }}</h3>
+                                                                                        <button type="button" class="lm-close" data-close aria-label="{{ __('order.cancel') }}">&times;</button>
+                                                                                    </div>
+                                                                                    <p class="lm-hint">{{ __('order.link_manager_hint') }}</p>
+                                                                                    <div class="lm-body">
+                                                                                        <div class="lm-zone lm-unlinked-zone">
+                                                                                            <div class="lm-zone-head">
+                                                                                                <span class="lm-zone-title">{{ __('order.link_unlinked') }}</span>
+                                                                                                <button type="button" class="lm-move-here lm-unlinked-move" title="{{ __('order.link_move_here') }}">&#8615;</button>
+                                                                                            </div>
+                                                                                            <div class="lm-cards" id="lm-unlinked"></div>
+                                                                                        </div>
+                                                                                        <div class="lm-groups" id="lm-groups"></div>
+                                                                                    </div>
+                                                                                    <div class="lm-footer">
+                                                                                        <button type="button" class="btn btn-outline-primary btn-sm" id="lm-add-group">&#10133; {{ __('order.link_new_group') }}</button>
+                                                                                        <span class="lm-spacer"></span>
+                                                                                        <button type="button" class="btn btn-secondary btn-sm" data-close>{{ __('order.cancel') }}</button>
+                                                                                        <button type="button" class="btn btn-primary btn-sm" id="lm-save">{{ __('order.link_save') }}</button>
+                                                                                    </div>
                                                                                 </div>
-                                                                                <div class="link-bar-actions">
-                                                                                    <button id="link-selected-btn" class="btn btn-primary btn-sm" disabled>&#128279; {{ __('order.link_selected') }}</button>
-                                                                                    <button id="unlink-selected-btn" class="btn btn-outline-danger btn-sm" disabled>&#9986; {{ __('order.unlink_selected') }}</button>
-                                                                                    <button id="clear-link-selection-btn" class="btn btn-outline-secondary btn-sm">{{ __('order.link_clear_selection') }}</button>
-                                                                                </div>
-                                                                            </div>
+                                                                                <template id="lm-group-template">
+                                                                                    <div class="lm-zone lm-group-zone">
+                                                                                        <div class="lm-zone-head">
+                                                                                            <span class="lm-zone-title">{{ __('order.link_group_label') }}</span>
+                                                                                            <button type="button" class="lm-move-here" title="{{ __('order.link_move_here') }}">&#8615;</button>
+                                                                                            <button type="button" class="lm-zone-del" title="{{ __('order.link_delete_group') }}">&#128465;</button>
+                                                                                        </div>
+                                                                                        <div class="lm-cards"></div>
+                                                                                    </div>
+                                                                                </template>
+                                                                            </dialog>
+                                                                            <script>
+                                                                                window.__orderPositions = [
+                                                                                    {%- for table in cleanOrderItems -%}
+                                                                                        {%- for rowObj in table.rows -%}
+                                                                                            { "id": {{ rowObj.item.id }}, "name": {{ (rowObj.item.commision or '') | dump | safe }}, "group": {{ (rowObj.item.group_name or '') | dump | safe }}, "department": {{ (rowObj.item.department or '') | dump | safe }}, "linkGroup": {{ (rowObj.item.link_group or '') | dump | safe }} },
+                                                                                        {%- endfor -%}
+                                                                                    {%- endfor -%}
+                                                                                ];
+                                                                                window.__linkI18n = { groupLabel: {{ __('order.link_group_label') | dump | safe }} };
+                                                                            </script>
                                                                             <div id='dialog-container'>
                                                                                 <dialog id='dialog-space'></dialog>
                                                                                 <dialog id="delete-dialog">

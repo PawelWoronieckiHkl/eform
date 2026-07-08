@@ -129,7 +129,15 @@
     "link_positions_count": "zaznaczonych",
     "link_positions_hint": "Wybierz min. 2 pozycje, które będą wisieć obok siebie",
     "link_success": "Pozycje zostały połączone",
-    "unlink_success": "Połączenie zostało usunięte"
+    "unlink_success": "Połączenie zostało usunięte",
+    "link_manager_title": "Zarządzaj połączeniami",
+    "link_manager_hint": "Przeciągnij pozycje do grup, aby połączyć te, które mają wisieć obok siebie. Grupa musi mieć min. 2 pozycje.",
+    "link_unlinked": "Niepołączone",
+    "link_new_group": "Nowa grupa",
+    "link_save": "Zapisz",
+    "link_group_label": "Grupa",
+    "link_move_here": "Przenieś zaznaczone tutaj",
+    "link_delete_group": "Usuń grupę"
   },
   "orders": {
     "title": "Twoje Zamówienia",

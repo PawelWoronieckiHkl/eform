@@ -129,7 +129,15 @@
     "link_positions_count": "geselecteerd",
     "link_positions_hint": "Selecteer minimaal 2 posities die naast elkaar hangen",
     "link_success": "Posities gekoppeld",
-    "unlink_success": "Koppeling verwijderd"
+    "unlink_success": "Koppeling verwijderd",
+    "link_manager_title": "Koppelingen beheren",
+    "link_manager_hint": "Sleep posities in groepen om de posities die bij elkaar horen te koppelen. Een groep heeft minstens 2 posities nodig.",
+    "link_unlinked": "Niet gekoppeld",
+    "link_new_group": "Nieuwe groep",
+    "link_save": "Opslaan",
+    "link_group_label": "Groep",
+    "link_move_here": "Selectie hierheen verplaatsen",
+    "link_delete_group": "Groep verwijderen"
   },
   "orders": {
     "title": "Uw bestellingen",

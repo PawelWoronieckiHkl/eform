@@ -2557,3 +2557,17 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
 === 2026-07-07 10:35:01 - Start ===
 === 2026-07-07 10:35:01 - Dodawanie zmian do commita ===
+[main 98d76b3] Automatic commit 2026-07-07 10:35
+ 15 files changed, 20590 insertions(+), 9 deletions(-)
+ create mode 100644 migration_link_group.sql
+ create mode 100644 public/scripts/linkPositions.js
+=== 2026-07-07 10:35:01 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   32e42ca..98d76b3  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-07-07 10:35:04 - Koniec ===
+=== 2026-07-07 12:00:01 - Start ===
+=== 2026-07-07 12:00:01 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-07-08 10:35:01 - Start ===
+=== 2026-07-08 10:35:01 - Dodawanie zmian do commita ===

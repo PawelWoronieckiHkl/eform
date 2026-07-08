@@ -129,7 +129,15 @@
     "link_positions_count": "sélectionnés",
     "link_positions_hint": "Sélectionnez au moins 2 positions qui seront accrochées ensemble",
     "link_success": "Positions liées",
-    "unlink_success": "Liaison supprimée"
+    "unlink_success": "Liaison supprimée",
+    "link_manager_title": "Gérer les liaisons",
+    "link_manager_hint": "Faites glisser les positions dans des groupes pour lier celles qui doivent rester ensemble. Un groupe doit contenir au moins 2 positions.",
+    "link_unlinked": "Non liées",
+    "link_new_group": "Nouveau groupe",
+    "link_save": "Enregistrer",
+    "link_group_label": "Groupe",
+    "link_move_here": "Déplacer la sélection ici",
+    "link_delete_group": "Supprimer le groupe"
   },
   "orders": {
     "title": "Vos commandes",

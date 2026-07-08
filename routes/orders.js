@@ -1365,6 +1365,32 @@ router.patch('/order/:orderId/link-positions', requireLogin, checkOrderOwnership
     }
 });
 
+router.put('/order/:orderId/link-groups', requireLogin, checkOrderOwnership, async (req, res) => {
+    try {
+        const { allIds, groups } = req.body;
+        if (!Array.isArray(allIds) || !Array.isArray(groups)) {
+            return res.status(400).json({ success: false, message: 'Nieprawidłowe dane' });
+        }
+        if (await rejectSentOrderMutation(res, req.params.orderId, req)) return;
+
+        const cleanAll = allIds.map(id => parseInt(id)).filter(id => !isNaN(id));
+        // reset every position first so removed links are cleared
+        if (cleanAll.length) await db.clearLinkGroup(cleanAll);
+
+        const { randomUUID } = require('crypto');
+        for (const group of groups) {
+            if (!Array.isArray(group)) continue;
+            const ids = group.map(id => parseInt(id)).filter(id => !isNaN(id));
+            if (ids.length < 2) continue;
+            await db.setLinkGroup(ids, randomUUID());
+        }
+        return res.json({ success: true });
+    } catch (err) {
+        log('Error saving link groups:', err);
+        return res.status(500).json({ success: false, message: 'Błąd serwera' });
+    }
+});
+
 router.patch('/order/:orderId/toggle-status', requireLogin, async (req, res) => {
     if (!req.session.user?.isAdmin) {
         return res.status(403).json({ success: false, message: 'Brak uprawnień' });

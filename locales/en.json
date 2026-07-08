@@ -129,7 +129,15 @@
     "link_positions_count": "selected",
     "link_positions_hint": "Select at least 2 positions that will hang next to each other",
     "link_success": "Positions linked",
-    "unlink_success": "Link removed"
+    "unlink_success": "Link removed",
+    "link_manager_title": "Manage links",
+    "link_manager_hint": "Drag positions into groups to link the ones that should hang together. A group needs at least 2 positions.",
+    "link_unlinked": "Unlinked",
+    "link_new_group": "New group",
+    "link_save": "Save",
+    "link_group_label": "Group",
+    "link_move_here": "Move selected here",
+    "link_delete_group": "Delete group"
   },
   "orders": {
     "title": "Your Orders",
