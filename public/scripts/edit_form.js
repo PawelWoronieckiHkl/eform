@@ -66,7 +66,20 @@ async function init() {
 
     const version = position.ver;
     const values = position.json_parameters;
-    const valuesToDisplayList = JSON.parse(position.json_parameters_desc)
+    // json_parameters_desc comes back either as a JSON string (normal orders)
+    // or as an already-parsed array (imported orders, MySQL JSON column).
+    let valuesToDisplayList = position.json_parameters_desc;
+    if (typeof valuesToDisplayList === 'string') {
+        try {
+            valuesToDisplayList = JSON.parse(valuesToDisplayList);
+            if (typeof valuesToDisplayList === 'string') {
+                valuesToDisplayList = JSON.parse(valuesToDisplayList);
+            }
+        } catch {
+            valuesToDisplayList = [];
+        }
+    }
+    if (!Array.isArray(valuesToDisplayList)) valuesToDisplayList = [];
     const valuesToDisplay = new Map(valuesToDisplayList);
     const comment = position.comment;
     const lang = position.lang

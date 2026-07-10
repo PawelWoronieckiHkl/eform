@@ -250,9 +250,13 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
     }
 
     // Filter out meta-fields from values before persisting — they pollute displayValues.
+    // Only drop the dictionary/label meta suffixes (___DICT/___TITLE/___VISIBLE/
+    // ___DESCRIPTION). SUB___* keys are real sub-price parameters and MUST be kept,
+    // otherwise the sub prices (and, via getTotal, the main total) compute to 0.
+    const META_SUFFIX = /___(DICT|TITLE|VISIBLE|DESCRIPTION)$/;
     const cleanValues = {};
     for (const [k, v] of Object.entries(canonicalParams)) {
-      if (k.includes('___')) continue;
+      if (META_SUFFIX.test(k)) continue;
       if (k.endsWith('_ALIAS_DESCRIPTION')) continue;
       cleanValues[k] = v;
     }

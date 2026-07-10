@@ -376,25 +376,31 @@ router.post('/favorites/toggle', requireLogin, async (req, res) => {
 router.get('/:positionId', requireLogin, async (req, res) => {
   let result = await db.getPosition(req.params.positionId);
 
-  // `json_parameters_desc` is normally stored DOUBLE-encoded by
-  // db/positions.insertNewForm (the browser pre-stringifies the Map.entries
-  // array, then the DB layer JSON.stringify's it again). The first parse here
-  // returns the inner JSON string, the second turns it into the actual array.
-  // Some legacy rows hold a stringified object literal (`"[object Object]"`)
-  // which would otherwise crash JSON.parse and the whole request — fall back
-  // to an empty array so the page still renders.
+  // `json_parameters_desc` is a MySQL JSON column, so mysql2 may hand it back
+  // either as a JS string (the canonical DOUBLE-encoded shape written by
+  // insertNewForm / updatePosition) or as an already-parsed array/object (the
+  // shape imported orders end up with after displayValueRebuilder). Calling
+  // JSON.parse() on the latter throws and used to blank the whole page, so we
+  // only parse when we actually have a string and otherwise use the value as-is.
   let parametersDesc = [];
-  if (result && result.json_parameters_desc) {
+  if (result && result.json_parameters_desc != null) {
     try {
-      parametersDesc = JSON.parse(result.json_parameters_desc);
-      if (typeof parametersDesc === 'string') {
-        parametersDesc = JSON.parse(parametersDesc);
+      let raw = result.json_parameters_desc;
+      if (typeof raw === 'string') {
+        raw = JSON.parse(raw);
+        if (typeof raw === 'string') {
+          raw = JSON.parse(raw);
+        }
       }
+      parametersDesc = raw;
       // Older imported rows may store a plain object {KEY: {...}} instead of
       // the canonical Map.entries array. Normalize so the template's
       // `for param in parameters` loop always sees [key, value] pairs.
       if (parametersDesc && !Array.isArray(parametersDesc) && typeof parametersDesc === 'object') {
         parametersDesc = Object.entries(parametersDesc);
+      }
+      if (!Array.isArray(parametersDesc)) {
+        parametersDesc = [];
       }
     } catch (err) {
       log(`position ${req.params.positionId}: invalid json_parameters_desc - ${err.message}`);

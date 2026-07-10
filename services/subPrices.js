@@ -97,8 +97,15 @@ function resolveSubPricePdfView(req, hasSubPrices) {
     (sessionUser?.isAdmin && !!contextUser)
   );
 
+  // Użytkownik grupowy (np. TCN — klient HKL z rolą "group"): na stronie sub params
+  // są sterowane togglem showSub niezależnie od organizacji (isGroup and showSub).
+  // isGroup jest liczone tak samo jak w widoku (routes/orders.js): sesja LUB kontekst.
+  // PDF ma odwzorować ten sam widok — ceny zwykłe + sub params, gdy odkryte.
+  const isGroup = sessionUser?.isGroup || contextUser?.isGroup || false;
+  const groupShowBoth = isGroup && showSubActive && hasSubPrices;
+
   const isClientView = (isPureClient || (hasSubToggle && !showSubActive)) && hasSubPrices;
-  const showBoth = hasSubToggle && showSubActive && hasSubPrices;
+  const showBoth = (hasSubToggle && showSubActive && hasSubPrices) || groupShowBoth;
 
   return { isClientView, showBoth, hasSubToggle, isPureClient, showSubActive, nonHklOrg };
 }

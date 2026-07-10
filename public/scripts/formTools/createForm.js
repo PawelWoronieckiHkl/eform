@@ -661,7 +661,9 @@ export function hideParams(params, inputs) {
         let input = inputs[param.NAME]
 
         if (param.FORMROW == '0') {
-            input.parentElement.style.display = 'none'
+            if (input && input.parentElement) {
+                input.parentElement.style.display = 'none'
+            }
         }
 
 

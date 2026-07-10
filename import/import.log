@@ -228191,3 +228191,1060 @@ Preflight crashed: FTPError: 530 Login authentication failed
 }
 [2026-07-09T08:34:44.475Z] OrderImport daemon: cycle error: 530 Login authentication failed
 [2026-07-09T08:34:44.475Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:35:05.379Z] OrderImport daemon: cycle start
+[2026-07-09T08:35:05.381Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:35:13.872Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:35:13.872Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:35:35.399Z] OrderImport daemon: cycle start
+[2026-07-09T08:35:35.399Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:35:46.698Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:35:46.698Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:36:05.411Z] OrderImport daemon: cycle start
+[2026-07-09T08:36:05.412Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:36:14.913Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:36:14.913Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:36:35.431Z] OrderImport daemon: cycle start
+[2026-07-09T08:36:35.431Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:36:45.367Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:36:45.367Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:37:05.447Z] OrderImport daemon: cycle start
+[2026-07-09T08:37:05.447Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:37:14.749Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:37:14.749Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:37:35.463Z] OrderImport daemon: cycle start
+[2026-07-09T08:37:35.463Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:37:46.256Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:37:46.256Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:38:05.473Z] OrderImport daemon: cycle start
+[2026-07-09T08:38:05.473Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:38:16.528Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:38:16.528Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:38:35.475Z] OrderImport daemon: cycle start
+[2026-07-09T08:38:35.475Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:38:45.141Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:38:45.141Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:39:05.493Z] OrderImport daemon: cycle start
+[2026-07-09T08:39:05.493Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:39:15.318Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:39:15.318Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:39:35.499Z] OrderImport daemon: cycle start
+[2026-07-09T08:39:35.499Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:39:43.575Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:39:43.575Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:40:05.519Z] OrderImport daemon: cycle start
+[2026-07-09T08:40:05.519Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:40:15.232Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:40:15.232Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:40:35.524Z] OrderImport daemon: cycle start
+[2026-07-09T08:40:35.524Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:40:45.163Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:40:45.163Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:41:05.524Z] OrderImport daemon: cycle start
+[2026-07-09T08:41:05.524Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:41:15.055Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:41:15.055Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:41:35.531Z] OrderImport daemon: cycle start
+[2026-07-09T08:41:35.531Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:41:45.061Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:41:45.061Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:42:05.551Z] OrderImport daemon: cycle start
+[2026-07-09T08:42:05.551Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:42:16.106Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:42:16.106Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:42:35.571Z] OrderImport daemon: cycle start
+[2026-07-09T08:42:35.571Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:42:45.059Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:42:45.059Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:43:05.591Z] OrderImport daemon: cycle start
+[2026-07-09T08:43:05.591Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:43:14.197Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:43:14.197Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:43:35.597Z] OrderImport daemon: cycle start
+[2026-07-09T08:43:35.598Z] OrderImport daemon: cycle start
+Preflight crashed: FTPError: 530 Login authentication failed
+    at FTPContext._onControlSocketData (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:283:39)
+    at Socket.<anonymous> (/home/pawel/projects/eform-project/eform/node_modules/basic-ftp/dist/FtpContext.js:127:44)
+    at Socket.emit (node:events:507:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 530
+}
+[2026-07-09T08:43:46.075Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:43:46.075Z] OrderImport daemon: cycle error: 530 Login authentication failed
+[2026-07-09T08:44:05.613Z] OrderImport daemon: cycle start
+[2026-07-09T08:44:05.613Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:44:06.564Z] OrderImport: found 0 file(s)
+[2026-07-09T08:44:06.564Z] OrderImport: nothing to do.
+[2026-07-09T08:44:06.564Z] OrderImport: found 0 file(s)
+[2026-07-09T08:44:06.564Z] OrderImport: nothing to do.
+[2026-07-09T08:44:35.642Z] OrderImport daemon: cycle start
+[2026-07-09T08:44:35.642Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:44:36.506Z] OrderImport: found 0 file(s)
+[2026-07-09T08:44:36.507Z] OrderImport: nothing to do.
+[2026-07-09T08:44:36.506Z] OrderImport: found 0 file(s)
+[2026-07-09T08:44:36.507Z] OrderImport: nothing to do.
+[2026-07-09T08:45:05.663Z] OrderImport daemon: cycle start
+[2026-07-09T08:45:05.663Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:45:06.894Z] OrderImport: found 0 file(s)
+[2026-07-09T08:45:06.894Z] OrderImport: nothing to do.
+[2026-07-09T08:45:06.894Z] OrderImport: found 0 file(s)
+[2026-07-09T08:45:06.894Z] OrderImport: nothing to do.
+[2026-07-09T08:45:35.691Z] OrderImport daemon: cycle start
+[2026-07-09T08:45:35.691Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:45:36.607Z] OrderImport: found 0 file(s)
+[2026-07-09T08:45:36.607Z] OrderImport: nothing to do.
+[2026-07-09T08:45:36.607Z] OrderImport: nothing to do.
+[2026-07-09T08:45:36.607Z] OrderImport: found 0 file(s)
+[2026-07-09T08:46:05.719Z] OrderImport daemon: cycle start
+[2026-07-09T08:46:05.719Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:46:06.624Z] OrderImport: found 0 file(s)
+[2026-07-09T08:46:06.624Z] OrderImport: nothing to do.
+[2026-07-09T08:46:06.624Z] OrderImport: found 0 file(s)
+[2026-07-09T08:46:06.624Z] OrderImport: nothing to do.
+[2026-07-09T08:46:35.747Z] OrderImport daemon: cycle start
+[2026-07-09T08:46:35.747Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:46:36.698Z] OrderImport: found 0 file(s)
+[2026-07-09T08:46:36.698Z] OrderImport: nothing to do.
+[2026-07-09T08:46:36.698Z] OrderImport: found 0 file(s)
+[2026-07-09T08:46:36.698Z] OrderImport: nothing to do.
+[2026-07-09T08:47:05.774Z] OrderImport daemon: cycle start
+[2026-07-09T08:47:05.775Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:47:06.715Z] OrderImport: found 0 file(s)
+[2026-07-09T08:47:06.715Z] OrderImport: nothing to do.
+[2026-07-09T08:47:06.715Z] OrderImport: found 0 file(s)
+[2026-07-09T08:47:06.715Z] OrderImport: nothing to do.
+[2026-07-09T08:47:35.801Z] OrderImport daemon: cycle start
+[2026-07-09T08:47:35.801Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:47:36.712Z] OrderImport: found 0 file(s)
+[2026-07-09T08:47:36.712Z] OrderImport: nothing to do.
+[2026-07-09T08:47:36.712Z] OrderImport: found 0 file(s)
+[2026-07-09T08:47:36.712Z] OrderImport: nothing to do.
+[2026-07-09T08:48:05.828Z] OrderImport daemon: cycle start
+[2026-07-09T08:48:05.828Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:48:06.725Z] OrderImport: found 0 file(s)
+[2026-07-09T08:48:06.725Z] OrderImport: nothing to do.
+[2026-07-09T08:48:06.725Z] OrderImport: found 0 file(s)
+[2026-07-09T08:48:06.725Z] OrderImport: nothing to do.
+[2026-07-09T08:48:35.855Z] OrderImport daemon: cycle start
+[2026-07-09T08:48:35.855Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:48:36.864Z] OrderImport: found 0 file(s)
+[2026-07-09T08:48:36.865Z] OrderImport: nothing to do.
+[2026-07-09T08:48:36.865Z] OrderImport: found 0 file(s)
+[2026-07-09T08:48:36.865Z] OrderImport: nothing to do.
+[2026-07-09T08:49:05.883Z] OrderImport daemon: cycle start
+[2026-07-09T08:49:05.883Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:49:06.789Z] OrderImport: found 0 file(s)
+[2026-07-09T08:49:06.789Z] OrderImport: nothing to do.
+[2026-07-09T08:49:06.789Z] OrderImport: found 0 file(s)
+[2026-07-09T08:49:06.789Z] OrderImport: nothing to do.
+[2026-07-09T08:49:35.892Z] OrderImport daemon: cycle start
+[2026-07-09T08:49:35.892Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:49:36.792Z] OrderImport: found 0 file(s)
+[2026-07-09T08:49:36.792Z] OrderImport: nothing to do.
+[2026-07-09T08:49:36.792Z] OrderImport: found 0 file(s)
+[2026-07-09T08:49:36.792Z] OrderImport: nothing to do.
+[2026-07-09T08:50:05.901Z] OrderImport daemon: cycle start
+[2026-07-09T08:50:05.901Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:50:06.807Z] OrderImport: found 0 file(s)
+[2026-07-09T08:50:06.807Z] OrderImport: nothing to do.
+[2026-07-09T08:50:06.807Z] OrderImport: found 0 file(s)
+[2026-07-09T08:50:06.807Z] OrderImport: nothing to do.
+[2026-07-09T08:50:35.905Z] OrderImport daemon: cycle start
+[2026-07-09T08:50:35.905Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:50:36.813Z] OrderImport: found 0 file(s)
+[2026-07-09T08:50:36.813Z] OrderImport: nothing to do.
+[2026-07-09T08:50:36.813Z] OrderImport: found 0 file(s)
+[2026-07-09T08:50:36.813Z] OrderImport: nothing to do.
+[2026-07-09T08:51:05.928Z] OrderImport daemon: cycle start
+[2026-07-09T08:51:05.928Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:51:06.840Z] OrderImport: found 0 file(s)
+[2026-07-09T08:51:06.841Z] OrderImport: nothing to do.
+[2026-07-09T08:51:06.841Z] OrderImport: found 0 file(s)
+[2026-07-09T08:51:06.841Z] OrderImport: nothing to do.
+[2026-07-09T08:51:35.955Z] OrderImport daemon: cycle start
+[2026-07-09T08:51:35.955Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:51:36.919Z] OrderImport: found 0 file(s)
+[2026-07-09T08:51:36.919Z] OrderImport: nothing to do.
+[2026-07-09T08:51:36.919Z] OrderImport: found 0 file(s)
+[2026-07-09T08:51:36.919Z] OrderImport: nothing to do.
+[2026-07-09T08:52:05.961Z] OrderImport daemon: cycle start
+[2026-07-09T08:52:05.962Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:52:06.924Z] OrderImport: found 0 file(s)
+[2026-07-09T08:52:06.924Z] OrderImport: nothing to do.
+[2026-07-09T08:52:06.924Z] OrderImport: found 0 file(s)
+[2026-07-09T08:52:06.924Z] OrderImport: nothing to do.
+[2026-07-09T08:52:35.989Z] OrderImport daemon: cycle start
+[2026-07-09T08:52:35.989Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:52:37.000Z] OrderImport: found 0 file(s)
+[2026-07-09T08:52:37.000Z] OrderImport: nothing to do.
+[2026-07-09T08:52:37.000Z] OrderImport: found 0 file(s)
+[2026-07-09T08:52:37.000Z] OrderImport: nothing to do.
+[2026-07-09T08:53:06.016Z] OrderImport daemon: cycle start
+[2026-07-09T08:53:06.016Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:53:06.985Z] OrderImport: found 0 file(s)
+[2026-07-09T08:53:06.985Z] OrderImport: nothing to do.
+[2026-07-09T08:53:06.985Z] OrderImport: found 0 file(s)
+[2026-07-09T08:53:06.985Z] OrderImport: nothing to do.
+[2026-07-09T08:53:36.018Z] OrderImport daemon: cycle start
+[2026-07-09T08:53:36.018Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:53:36.965Z] OrderImport: found 0 file(s)
+[2026-07-09T08:53:36.965Z] OrderImport: nothing to do.
+[2026-07-09T08:53:36.965Z] OrderImport: found 0 file(s)
+[2026-07-09T08:53:36.965Z] OrderImport: nothing to do.
+[2026-07-09T08:54:06.019Z] OrderImport daemon: cycle start
+[2026-07-09T08:54:06.019Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:54:06.989Z] OrderImport: found 0 file(s)
+[2026-07-09T08:54:06.990Z] OrderImport: nothing to do.
+[2026-07-09T08:54:06.990Z] OrderImport: found 0 file(s)
+[2026-07-09T08:54:06.990Z] OrderImport: nothing to do.
+[2026-07-09T08:54:36.047Z] OrderImport daemon: cycle start
+[2026-07-09T08:54:36.047Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:54:37.006Z] OrderImport: found 0 file(s)
+[2026-07-09T08:54:37.006Z] OrderImport: nothing to do.
+[2026-07-09T08:54:37.006Z] OrderImport: nothing to do.
+[2026-07-09T08:54:37.006Z] OrderImport: found 0 file(s)
+[2026-07-09T08:55:06.075Z] OrderImport daemon: cycle start
+[2026-07-09T08:55:06.075Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:55:07.069Z] OrderImport: found 0 file(s)
+[2026-07-09T08:55:07.069Z] OrderImport: nothing to do.
+[2026-07-09T08:55:07.069Z] OrderImport: nothing to do.
+[2026-07-09T08:55:07.069Z] OrderImport: found 0 file(s)
+[2026-07-09T08:55:36.103Z] OrderImport daemon: cycle start
+[2026-07-09T08:55:36.103Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:55:37.040Z] OrderImport: found 0 file(s)
+[2026-07-09T08:55:37.040Z] OrderImport: nothing to do.
+[2026-07-09T08:55:37.040Z] OrderImport: found 0 file(s)
+[2026-07-09T08:55:37.040Z] OrderImport: nothing to do.
+[2026-07-09T08:56:06.132Z] OrderImport daemon: cycle start
+[2026-07-09T08:56:06.132Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:56:07.159Z] OrderImport: found 0 file(s)
+[2026-07-09T08:56:07.159Z] OrderImport: nothing to do.
+[2026-07-09T08:56:07.159Z] OrderImport: found 0 file(s)
+[2026-07-09T08:56:07.159Z] OrderImport: nothing to do.
+[2026-07-09T08:56:36.140Z] OrderImport daemon: cycle start
+[2026-07-09T08:56:36.140Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:56:37.045Z] OrderImport: found 0 file(s)
+[2026-07-09T08:56:37.045Z] OrderImport: nothing to do.
+[2026-07-09T08:56:37.045Z] OrderImport: found 0 file(s)
+[2026-07-09T08:56:37.045Z] OrderImport: nothing to do.
+[2026-07-09T08:57:06.149Z] OrderImport daemon: cycle start
+[2026-07-09T08:57:06.149Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:57:07.085Z] OrderImport: found 0 file(s)
+[2026-07-09T08:57:07.085Z] OrderImport: nothing to do.
+[2026-07-09T08:57:07.085Z] OrderImport: found 0 file(s)
+[2026-07-09T08:57:07.085Z] OrderImport: nothing to do.
+[2026-07-09T08:57:36.175Z] OrderImport daemon: cycle start
+[2026-07-09T08:57:36.175Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:57:37.076Z] OrderImport: found 0 file(s)
+[2026-07-09T08:57:37.076Z] OrderImport: nothing to do.
+[2026-07-09T08:57:37.076Z] OrderImport: found 0 file(s)
+[2026-07-09T08:57:37.076Z] OrderImport: nothing to do.
+[2026-07-09T08:58:06.202Z] OrderImport daemon: cycle start
+[2026-07-09T08:58:06.202Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:58:07.109Z] OrderImport: found 0 file(s)
+[2026-07-09T08:58:07.109Z] OrderImport: nothing to do.
+[2026-07-09T08:58:07.109Z] OrderImport: nothing to do.
+[2026-07-09T08:58:07.109Z] OrderImport: found 0 file(s)
+[2026-07-09T08:58:36.227Z] OrderImport daemon: cycle start
+[2026-07-09T08:58:36.227Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:58:37.120Z] OrderImport: found 0 file(s)
+[2026-07-09T08:58:37.120Z] OrderImport: nothing to do.
+[2026-07-09T08:58:37.120Z] OrderImport: found 0 file(s)
+[2026-07-09T08:58:37.120Z] OrderImport: nothing to do.
+[2026-07-09T08:59:06.256Z] OrderImport daemon: cycle start
+[2026-07-09T08:59:06.257Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:59:07.202Z] OrderImport: found 0 file(s)
+[2026-07-09T08:59:07.202Z] OrderImport: nothing to do.
+[2026-07-09T08:59:07.202Z] OrderImport: found 0 file(s)
+[2026-07-09T08:59:07.202Z] OrderImport: nothing to do.
+[2026-07-09T08:59:36.278Z] OrderImport daemon: cycle start
+[2026-07-09T08:59:36.278Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T08:59:37.196Z] OrderImport: found 0 file(s)
+[2026-07-09T08:59:37.196Z] OrderImport: nothing to do.
+[2026-07-09T08:59:37.196Z] OrderImport: found 0 file(s)
+[2026-07-09T08:59:37.196Z] OrderImport: nothing to do.
+[2026-07-09T09:00:06.296Z] OrderImport daemon: cycle start
+[2026-07-09T09:00:06.296Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:00:07.435Z] OrderImport: found 0 file(s)
+[2026-07-09T09:00:07.435Z] OrderImport: nothing to do.
+[2026-07-09T09:00:07.435Z] OrderImport: found 0 file(s)
+[2026-07-09T09:00:07.435Z] OrderImport: nothing to do.
+[2026-07-09T09:00:36.323Z] OrderImport daemon: cycle start
+[2026-07-09T09:00:36.323Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:00:37.269Z] OrderImport: found 0 file(s)
+[2026-07-09T09:00:37.269Z] OrderImport: nothing to do.
+[2026-07-09T09:00:37.269Z] OrderImport: nothing to do.
+[2026-07-09T09:00:37.269Z] OrderImport: found 0 file(s)
+[2026-07-09T09:01:06.327Z] OrderImport daemon: cycle start
+[2026-07-09T09:01:06.327Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:01:07.281Z] OrderImport: found 0 file(s)
+[2026-07-09T09:01:07.281Z] OrderImport: nothing to do.
+[2026-07-09T09:01:07.281Z] OrderImport: found 0 file(s)
+[2026-07-09T09:01:07.281Z] OrderImport: nothing to do.
+[2026-07-09T09:01:36.347Z] OrderImport daemon: cycle start
+[2026-07-09T09:01:36.347Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:01:37.301Z] OrderImport: found 0 file(s)
+[2026-07-09T09:01:37.302Z] OrderImport: nothing to do.
+[2026-07-09T09:01:37.302Z] OrderImport: found 0 file(s)
+[2026-07-09T09:01:37.302Z] OrderImport: nothing to do.
+[2026-07-09T09:02:06.375Z] OrderImport daemon: cycle start
+[2026-07-09T09:02:06.375Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:02:07.323Z] OrderImport: found 0 file(s)
+[2026-07-09T09:02:07.323Z] OrderImport: nothing to do.
+[2026-07-09T09:02:07.323Z] OrderImport: found 0 file(s)
+[2026-07-09T09:02:07.323Z] OrderImport: nothing to do.
+[2026-07-09T09:02:36.403Z] OrderImport daemon: cycle start
+[2026-07-09T09:02:36.403Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:02:37.398Z] OrderImport: found 0 file(s)
+[2026-07-09T09:02:37.398Z] OrderImport: nothing to do.
+[2026-07-09T09:02:37.398Z] OrderImport: found 0 file(s)
+[2026-07-09T09:02:37.398Z] OrderImport: nothing to do.
+[2026-07-09T09:03:06.431Z] OrderImport daemon: cycle start
+[2026-07-09T09:03:06.431Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:03:07.353Z] OrderImport: found 0 file(s)
+[2026-07-09T09:03:07.353Z] OrderImport: nothing to do.
+[2026-07-09T09:03:07.353Z] OrderImport: found 0 file(s)
+[2026-07-09T09:03:07.353Z] OrderImport: nothing to do.
+[2026-07-09T09:03:36.459Z] OrderImport daemon: cycle start
+[2026-07-09T09:03:36.459Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:03:37.363Z] OrderImport: found 0 file(s)
+[2026-07-09T09:03:37.364Z] OrderImport: nothing to do.
+[2026-07-09T09:03:37.363Z] OrderImport: found 0 file(s)
+[2026-07-09T09:03:37.364Z] OrderImport: nothing to do.
+[2026-07-09T09:04:06.476Z] OrderImport daemon: cycle start
+[2026-07-09T09:04:06.476Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:04:07.419Z] OrderImport: found 0 file(s)
+[2026-07-09T09:04:07.419Z] OrderImport: nothing to do.
+[2026-07-09T09:04:07.419Z] OrderImport: found 0 file(s)
+[2026-07-09T09:04:07.419Z] OrderImport: nothing to do.
+[2026-07-09T09:04:36.488Z] OrderImport daemon: cycle start
+[2026-07-09T09:04:36.488Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:04:37.383Z] OrderImport: found 0 file(s)
+[2026-07-09T09:04:37.383Z] OrderImport: nothing to do.
+[2026-07-09T09:04:37.383Z] OrderImport: found 0 file(s)
+[2026-07-09T09:04:37.383Z] OrderImport: nothing to do.
+[2026-07-09T09:05:06.515Z] OrderImport daemon: cycle start
+[2026-07-09T09:05:06.515Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:05:07.461Z] OrderImport: found 0 file(s)
+[2026-07-09T09:05:07.461Z] OrderImport: nothing to do.
+[2026-07-09T09:05:07.461Z] OrderImport: found 0 file(s)
+[2026-07-09T09:05:07.461Z] OrderImport: nothing to do.
+[2026-07-09T09:05:36.519Z] OrderImport daemon: cycle start
+[2026-07-09T09:05:36.519Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:05:37.539Z] OrderImport: found 0 file(s)
+[2026-07-09T09:05:37.539Z] OrderImport: nothing to do.
+[2026-07-09T09:05:37.539Z] OrderImport: found 0 file(s)
+[2026-07-09T09:05:37.539Z] OrderImport: nothing to do.
+[2026-07-09T09:06:06.547Z] OrderImport daemon: cycle start
+[2026-07-09T09:06:06.547Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:06:07.469Z] OrderImport: found 0 file(s)
+[2026-07-09T09:06:07.469Z] OrderImport: nothing to do.
+[2026-07-09T09:06:07.469Z] OrderImport: found 0 file(s)
+[2026-07-09T09:06:07.469Z] OrderImport: nothing to do.
+[2026-07-09T09:06:36.551Z] OrderImport daemon: cycle start
+[2026-07-09T09:06:36.552Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:06:37.454Z] OrderImport: found 0 file(s)
+[2026-07-09T09:06:37.454Z] OrderImport: nothing to do.
+[2026-07-09T09:06:37.454Z] OrderImport: found 0 file(s)
+[2026-07-09T09:06:37.454Z] OrderImport: nothing to do.
+[2026-07-09T09:07:06.579Z] OrderImport daemon: cycle start
+[2026-07-09T09:07:06.579Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:07:07.467Z] OrderImport: found 0 file(s)
+[2026-07-09T09:07:07.467Z] OrderImport: nothing to do.
+[2026-07-09T09:07:07.467Z] OrderImport: found 0 file(s)
+[2026-07-09T09:07:07.467Z] OrderImport: nothing to do.
+[2026-07-09T09:07:36.607Z] OrderImport daemon: cycle start
+[2026-07-09T09:07:36.607Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:07:37.499Z] OrderImport: found 0 file(s)
+[2026-07-09T09:07:37.499Z] OrderImport: nothing to do.
+[2026-07-09T09:07:37.499Z] OrderImport: found 0 file(s)
+[2026-07-09T09:07:37.499Z] OrderImport: nothing to do.
+[2026-07-09T09:08:06.626Z] OrderImport daemon: cycle start
+[2026-07-09T09:08:06.626Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:08:07.552Z] OrderImport: found 0 file(s)
+[2026-07-09T09:08:07.552Z] OrderImport: nothing to do.
+[2026-07-09T09:08:07.552Z] OrderImport: found 0 file(s)
+[2026-07-09T09:08:07.552Z] OrderImport: nothing to do.
+[2026-07-09T09:08:36.651Z] OrderImport daemon: cycle start
+[2026-07-09T09:08:36.651Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:08:37.546Z] OrderImport: found 0 file(s)
+[2026-07-09T09:08:37.546Z] OrderImport: nothing to do.
+[2026-07-09T09:08:37.546Z] OrderImport: found 0 file(s)
+[2026-07-09T09:08:37.546Z] OrderImport: nothing to do.
+[2026-07-09T09:09:06.661Z] OrderImport daemon: cycle start
+[2026-07-09T09:09:06.661Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:09:07.559Z] OrderImport: found 0 file(s)
+[2026-07-09T09:09:07.559Z] OrderImport: nothing to do.
+[2026-07-09T09:09:07.559Z] OrderImport: found 0 file(s)
+[2026-07-09T09:09:07.559Z] OrderImport: nothing to do.
+[2026-07-09T09:09:36.660Z] OrderImport daemon: cycle start
+[2026-07-09T09:09:36.660Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:09:37.579Z] OrderImport: found 0 file(s)
+[2026-07-09T09:09:37.579Z] OrderImport: nothing to do.
+[2026-07-09T09:09:37.579Z] OrderImport: found 0 file(s)
+[2026-07-09T09:09:37.579Z] OrderImport: nothing to do.
+[2026-07-09T09:10:06.686Z] OrderImport daemon: cycle start
+[2026-07-09T09:10:06.686Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:10:07.651Z] OrderImport: found 0 file(s)
+[2026-07-09T09:10:07.651Z] OrderImport: nothing to do.
+[2026-07-09T09:10:07.651Z] OrderImport: found 0 file(s)
+[2026-07-09T09:10:07.651Z] OrderImport: nothing to do.
+[2026-07-09T09:10:36.711Z] OrderImport daemon: cycle start
+[2026-07-09T09:10:36.711Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:10:37.644Z] OrderImport: found 0 file(s)
+[2026-07-09T09:10:37.644Z] OrderImport: nothing to do.
+[2026-07-09T09:10:37.644Z] OrderImport: found 0 file(s)
+[2026-07-09T09:10:37.644Z] OrderImport: nothing to do.
+[2026-07-09T09:11:06.733Z] OrderImport daemon: cycle start
+[2026-07-09T09:11:06.733Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:11:07.671Z] OrderImport: found 0 file(s)
+[2026-07-09T09:11:07.671Z] OrderImport: nothing to do.
+[2026-07-09T09:11:07.671Z] OrderImport: found 0 file(s)
+[2026-07-09T09:11:07.671Z] OrderImport: nothing to do.
+[2026-07-09T09:11:36.760Z] OrderImport daemon: cycle start
+[2026-07-09T09:11:36.760Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:11:37.661Z] OrderImport: found 0 file(s)
+[2026-07-09T09:11:37.661Z] OrderImport: nothing to do.
+[2026-07-09T09:11:37.661Z] OrderImport: found 0 file(s)
+[2026-07-09T09:11:37.661Z] OrderImport: nothing to do.
+[2026-07-09T09:12:06.768Z] OrderImport daemon: cycle start
+[2026-07-09T09:12:06.768Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:12:07.699Z] OrderImport: found 0 file(s)
+[2026-07-09T09:12:07.699Z] OrderImport: nothing to do.
+[2026-07-09T09:12:07.699Z] OrderImport: found 0 file(s)
+[2026-07-09T09:12:07.699Z] OrderImport: nothing to do.
+[2026-07-09T09:12:36.796Z] OrderImport daemon: cycle start
+[2026-07-09T09:12:36.796Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:12:37.678Z] OrderImport: found 0 file(s)
+[2026-07-09T09:12:37.678Z] OrderImport: nothing to do.
+[2026-07-09T09:12:37.678Z] OrderImport: found 0 file(s)
+[2026-07-09T09:12:37.678Z] OrderImport: nothing to do.
+[2026-07-09T09:13:06.824Z] OrderImport daemon: cycle start
+[2026-07-09T09:13:06.824Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:13:07.755Z] OrderImport: found 0 file(s)
+[2026-07-09T09:13:07.755Z] OrderImport: nothing to do.
+[2026-07-09T09:13:07.755Z] OrderImport: found 0 file(s)
+[2026-07-09T09:13:07.755Z] OrderImport: nothing to do.
+[2026-07-09T09:13:36.851Z] OrderImport daemon: cycle start
+[2026-07-09T09:13:36.851Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:13:37.794Z] OrderImport: found 0 file(s)
+[2026-07-09T09:13:37.794Z] OrderImport: nothing to do.
+[2026-07-09T09:13:37.794Z] OrderImport: found 0 file(s)
+[2026-07-09T09:13:37.794Z] OrderImport: nothing to do.
+[2026-07-09T09:14:06.880Z] OrderImport daemon: cycle start
+[2026-07-09T09:14:06.880Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:14:07.769Z] OrderImport: found 0 file(s)
+[2026-07-09T09:14:07.769Z] OrderImport: nothing to do.
+[2026-07-09T09:14:07.769Z] OrderImport: found 0 file(s)
+[2026-07-09T09:14:07.769Z] OrderImport: nothing to do.
+[2026-07-09T09:14:36.907Z] OrderImport daemon: cycle start
+[2026-07-09T09:14:36.907Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:14:37.834Z] OrderImport: found 0 file(s)
+[2026-07-09T09:14:37.834Z] OrderImport: nothing to do.
+[2026-07-09T09:14:37.834Z] OrderImport: found 0 file(s)
+[2026-07-09T09:14:37.834Z] OrderImport: nothing to do.
+[2026-07-09T09:15:06.930Z] OrderImport daemon: cycle start
+[2026-07-09T09:15:06.930Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:15:07.938Z] OrderImport: found 0 file(s)
+[2026-07-09T09:15:07.938Z] OrderImport: nothing to do.
+[2026-07-09T09:15:07.938Z] OrderImport: found 0 file(s)
+[2026-07-09T09:15:07.938Z] OrderImport: nothing to do.
+[2026-07-09T09:15:36.959Z] OrderImport daemon: cycle start
+[2026-07-09T09:15:36.959Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:15:37.893Z] OrderImport: found 0 file(s)
+[2026-07-09T09:15:37.894Z] OrderImport: nothing to do.
+[2026-07-09T09:15:37.894Z] OrderImport: found 0 file(s)
+[2026-07-09T09:15:37.894Z] OrderImport: nothing to do.
+[2026-07-09T09:16:06.988Z] OrderImport daemon: cycle start
+[2026-07-09T09:16:06.988Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:16:07.893Z] OrderImport: found 0 file(s)
+[2026-07-09T09:16:07.893Z] OrderImport: nothing to do.
+[2026-07-09T09:16:07.893Z] OrderImport: found 0 file(s)
+[2026-07-09T09:16:07.893Z] OrderImport: nothing to do.
+[2026-07-09T09:16:37.008Z] OrderImport daemon: cycle start
+[2026-07-09T09:16:37.008Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:16:37.922Z] OrderImport: found 0 file(s)
+[2026-07-09T09:16:37.922Z] OrderImport: nothing to do.
+[2026-07-09T09:16:37.922Z] OrderImport: found 0 file(s)
+[2026-07-09T09:16:37.922Z] OrderImport: nothing to do.
+[2026-07-09T09:17:07.035Z] OrderImport daemon: cycle start
+[2026-07-09T09:17:07.035Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:17:07.993Z] OrderImport: found 0 file(s)
+[2026-07-09T09:17:07.993Z] OrderImport: nothing to do.
+[2026-07-09T09:17:07.993Z] OrderImport: found 0 file(s)
+[2026-07-09T09:17:07.993Z] OrderImport: nothing to do.
+[2026-07-09T09:17:37.056Z] OrderImport daemon: cycle start
+[2026-07-09T09:17:37.056Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:17:37.999Z] OrderImport: found 0 file(s)
+[2026-07-09T09:17:37.999Z] OrderImport: nothing to do.
+[2026-07-09T09:17:37.999Z] OrderImport: nothing to do.
+[2026-07-09T09:17:37.999Z] OrderImport: found 0 file(s)
+[2026-07-09T09:18:07.068Z] OrderImport daemon: cycle start
+[2026-07-09T09:18:07.068Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:18:08.004Z] OrderImport: found 0 file(s)
+[2026-07-09T09:18:08.004Z] OrderImport: nothing to do.
+[2026-07-09T09:18:08.004Z] OrderImport: found 0 file(s)
+[2026-07-09T09:18:08.004Z] OrderImport: nothing to do.
+[2026-07-09T09:18:37.075Z] OrderImport daemon: cycle start
+[2026-07-09T09:18:37.075Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:18:37.958Z] OrderImport: found 0 file(s)
+[2026-07-09T09:18:37.959Z] OrderImport: nothing to do.
+[2026-07-09T09:18:37.959Z] OrderImport: found 0 file(s)
+[2026-07-09T09:18:37.959Z] OrderImport: nothing to do.
+[2026-07-09T09:19:07.103Z] OrderImport daemon: cycle start
+[2026-07-09T09:19:07.103Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:19:08.024Z] OrderImport: found 0 file(s)
+[2026-07-09T09:19:08.024Z] OrderImport: nothing to do.
+[2026-07-09T09:19:08.024Z] OrderImport: found 0 file(s)
+[2026-07-09T09:19:08.024Z] OrderImport: nothing to do.
+[2026-07-09T09:19:37.132Z] OrderImport daemon: cycle start
+[2026-07-09T09:19:37.132Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:19:38.043Z] OrderImport: found 0 file(s)
+[2026-07-09T09:19:38.043Z] OrderImport: nothing to do.
+[2026-07-09T09:19:38.043Z] OrderImport: found 0 file(s)
+[2026-07-09T09:19:38.043Z] OrderImport: nothing to do.
+[2026-07-09T09:20:07.159Z] OrderImport daemon: cycle start
+[2026-07-09T09:20:07.161Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:20:08.084Z] OrderImport: found 0 file(s)
+[2026-07-09T09:20:08.084Z] OrderImport: nothing to do.
+[2026-07-09T09:20:08.084Z] OrderImport: found 0 file(s)
+[2026-07-09T09:20:08.084Z] OrderImport: nothing to do.
+[2026-07-09T09:20:37.187Z] OrderImport daemon: cycle start
+[2026-07-09T09:20:37.198Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:20:38.533Z] OrderImport: found 0 file(s)
+[2026-07-09T09:20:38.533Z] OrderImport: nothing to do.
+[2026-07-09T09:20:38.533Z] OrderImport: found 0 file(s)
+[2026-07-09T09:20:38.533Z] OrderImport: nothing to do.
+[2026-07-09T09:21:07.215Z] OrderImport daemon: cycle start
+[2026-07-09T09:21:07.216Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:21:08.501Z] OrderImport: found 0 file(s)
+[2026-07-09T09:21:08.501Z] OrderImport: nothing to do.
+[2026-07-09T09:21:08.501Z] OrderImport: found 0 file(s)
+[2026-07-09T09:21:08.501Z] OrderImport: nothing to do.
+[2026-07-09T09:21:37.244Z] OrderImport daemon: cycle start
+[2026-07-09T09:21:37.244Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:21:38.160Z] OrderImport: found 0 file(s)
+[2026-07-09T09:21:38.160Z] OrderImport: nothing to do.
+[2026-07-09T09:21:38.160Z] OrderImport: found 0 file(s)
+[2026-07-09T09:21:38.160Z] OrderImport: nothing to do.
+[2026-07-09T09:22:07.272Z] OrderImport daemon: cycle start
+[2026-07-09T09:22:07.273Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:22:08.199Z] OrderImport: found 0 file(s)
+[2026-07-09T09:22:08.199Z] OrderImport: nothing to do.
+[2026-07-09T09:22:08.199Z] OrderImport: found 0 file(s)
+[2026-07-09T09:22:08.199Z] OrderImport: nothing to do.
+[2026-07-09T09:22:37.299Z] OrderImport daemon: cycle start
+[2026-07-09T09:22:37.299Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:22:38.234Z] OrderImport: found 0 file(s)
+[2026-07-09T09:22:38.234Z] OrderImport: nothing to do.
+[2026-07-09T09:22:38.234Z] OrderImport: found 0 file(s)
+[2026-07-09T09:22:38.234Z] OrderImport: nothing to do.
+[2026-07-09T09:23:07.311Z] OrderImport daemon: cycle start
+[2026-07-09T09:23:07.311Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:23:08.268Z] OrderImport: found 0 file(s)
+[2026-07-09T09:23:08.269Z] OrderImport: nothing to do.
+[2026-07-09T09:23:08.269Z] OrderImport: found 0 file(s)
+[2026-07-09T09:23:08.269Z] OrderImport: nothing to do.
+[2026-07-09T09:23:37.333Z] OrderImport daemon: cycle start
+[2026-07-09T09:23:37.334Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:23:38.288Z] OrderImport: found 0 file(s)
+[2026-07-09T09:23:38.288Z] OrderImport: nothing to do.
+[2026-07-09T09:23:38.288Z] OrderImport: found 0 file(s)
+[2026-07-09T09:23:38.288Z] OrderImport: nothing to do.
+[2026-07-09T09:24:07.355Z] OrderImport daemon: cycle start
+[2026-07-09T09:24:07.355Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:24:08.260Z] OrderImport: found 0 file(s)
+[2026-07-09T09:24:08.260Z] OrderImport: nothing to do.
+[2026-07-09T09:24:08.260Z] OrderImport: nothing to do.
+[2026-07-09T09:24:08.260Z] OrderImport: found 0 file(s)
+[2026-07-09T09:24:37.383Z] OrderImport daemon: cycle start
+[2026-07-09T09:24:37.383Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:24:38.457Z] OrderImport: found 0 file(s)
+[2026-07-09T09:24:38.457Z] OrderImport: nothing to do.
+[2026-07-09T09:24:38.457Z] OrderImport: found 0 file(s)
+[2026-07-09T09:24:38.457Z] OrderImport: nothing to do.
+[2026-07-09T09:25:07.411Z] OrderImport daemon: cycle start
+[2026-07-09T09:25:07.412Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:25:08.323Z] OrderImport: found 0 file(s)
+[2026-07-09T09:25:08.323Z] OrderImport: nothing to do.
+[2026-07-09T09:25:08.323Z] OrderImport: found 0 file(s)
+[2026-07-09T09:25:08.323Z] OrderImport: nothing to do.
+[2026-07-09T09:25:37.439Z] OrderImport daemon: cycle start
+[2026-07-09T09:25:37.439Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:25:38.344Z] OrderImport: found 0 file(s)
+[2026-07-09T09:25:38.344Z] OrderImport: nothing to do.
+[2026-07-09T09:25:38.344Z] OrderImport: found 0 file(s)
+[2026-07-09T09:25:38.344Z] OrderImport: nothing to do.
+[2026-07-09T09:26:07.464Z] OrderImport daemon: cycle start
+[2026-07-09T09:26:07.464Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:26:08.409Z] OrderImport: found 0 file(s)
+[2026-07-09T09:26:08.409Z] OrderImport: nothing to do.
+[2026-07-09T09:26:08.409Z] OrderImport: found 0 file(s)
+[2026-07-09T09:26:08.409Z] OrderImport: nothing to do.
+[2026-07-09T09:26:37.488Z] OrderImport daemon: cycle start
+[2026-07-09T09:26:37.488Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:26:38.445Z] OrderImport: found 0 file(s)
+[2026-07-09T09:26:38.445Z] OrderImport: nothing to do.
+[2026-07-09T09:26:38.445Z] OrderImport: found 0 file(s)
+[2026-07-09T09:26:38.445Z] OrderImport: nothing to do.
+[2026-07-09T09:27:07.490Z] OrderImport daemon: cycle start
+[2026-07-09T09:27:07.490Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:27:08.423Z] OrderImport: found 0 file(s)
+[2026-07-09T09:27:08.423Z] OrderImport: nothing to do.
+[2026-07-09T09:27:08.423Z] OrderImport: found 0 file(s)
+[2026-07-09T09:27:08.423Z] OrderImport: nothing to do.
+[2026-07-09T09:27:37.515Z] OrderImport daemon: cycle start
+[2026-07-09T09:27:37.515Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:27:38.493Z] OrderImport: found 0 file(s)
+[2026-07-09T09:27:38.493Z] OrderImport: nothing to do.
+[2026-07-09T09:27:38.493Z] OrderImport: found 0 file(s)
+[2026-07-09T09:27:38.493Z] OrderImport: nothing to do.
+[2026-07-09T09:28:07.543Z] OrderImport daemon: cycle start
+[2026-07-09T09:28:07.543Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:28:08.446Z] OrderImport: found 0 file(s)
+[2026-07-09T09:28:08.447Z] OrderImport: nothing to do.
+[2026-07-09T09:28:08.446Z] OrderImport: found 0 file(s)
+[2026-07-09T09:28:08.447Z] OrderImport: nothing to do.
+[2026-07-09T09:28:37.571Z] OrderImport daemon: cycle start
+[2026-07-09T09:28:37.571Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:28:38.465Z] OrderImport: found 0 file(s)
+[2026-07-09T09:28:38.465Z] OrderImport: nothing to do.
+[2026-07-09T09:28:38.465Z] OrderImport: found 0 file(s)
+[2026-07-09T09:28:38.465Z] OrderImport: nothing to do.
+[2026-07-09T09:29:07.597Z] OrderImport daemon: cycle start
+[2026-07-09T09:29:07.597Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:29:08.514Z] OrderImport: found 0 file(s)
+[2026-07-09T09:29:08.514Z] OrderImport: nothing to do.
+[2026-07-09T09:29:08.514Z] OrderImport: found 0 file(s)
+[2026-07-09T09:29:08.514Z] OrderImport: nothing to do.
+[2026-07-09T09:29:37.626Z] OrderImport daemon: cycle start
+[2026-07-09T09:29:37.631Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:29:38.853Z] OrderImport: found 0 file(s)
+[2026-07-09T09:29:38.853Z] OrderImport: nothing to do.
+[2026-07-09T09:29:38.853Z] OrderImport: found 0 file(s)
+[2026-07-09T09:29:38.853Z] OrderImport: nothing to do.
+[2026-07-09T09:30:07.653Z] OrderImport daemon: cycle start
+[2026-07-09T09:30:07.664Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:30:09.029Z] OrderImport: found 0 file(s)
+[2026-07-09T09:30:09.029Z] OrderImport: nothing to do.
+[2026-07-09T09:30:09.029Z] OrderImport: found 0 file(s)
+[2026-07-09T09:30:09.029Z] OrderImport: nothing to do.
+[2026-07-09T09:30:37.658Z] OrderImport daemon: cycle start
+[2026-07-09T09:30:37.671Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:30:39.206Z] OrderImport: found 0 file(s)
+[2026-07-09T09:30:39.207Z] OrderImport: nothing to do.
+[2026-07-09T09:30:39.206Z] OrderImport: found 0 file(s)
+[2026-07-09T09:30:39.207Z] OrderImport: nothing to do.
+[2026-07-09T09:31:07.658Z] OrderImport daemon: cycle start
+[2026-07-09T09:31:07.670Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:31:08.976Z] OrderImport: found 0 file(s)
+[2026-07-09T09:31:08.976Z] OrderImport: nothing to do.
+[2026-07-09T09:31:08.976Z] OrderImport: found 0 file(s)
+[2026-07-09T09:31:08.976Z] OrderImport: nothing to do.
+[2026-07-09T09:31:37.682Z] OrderImport daemon: cycle start
+[2026-07-09T09:31:37.695Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:31:39.044Z] OrderImport: found 0 file(s)
+[2026-07-09T09:31:39.045Z] OrderImport: nothing to do.
+[2026-07-09T09:31:39.044Z] OrderImport: found 0 file(s)
+[2026-07-09T09:31:39.045Z] OrderImport: nothing to do.
+[2026-07-09T09:32:07.711Z] OrderImport daemon: cycle start
+[2026-07-09T09:32:07.720Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:32:08.952Z] OrderImport: found 0 file(s)
+[2026-07-09T09:32:08.953Z] OrderImport: nothing to do.
+[2026-07-09T09:32:08.952Z] OrderImport: found 0 file(s)
+[2026-07-09T09:32:08.953Z] OrderImport: nothing to do.
+[2026-07-09T09:32:37.736Z] OrderImport daemon: cycle start
+[2026-07-09T09:32:37.752Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:32:38.941Z] OrderImport: found 0 file(s)
+[2026-07-09T09:32:38.942Z] OrderImport: nothing to do.
+[2026-07-09T09:32:38.941Z] OrderImport: found 0 file(s)
+[2026-07-09T09:32:38.942Z] OrderImport: nothing to do.
+[2026-07-09T09:33:07.764Z] OrderImport daemon: cycle start
+[2026-07-09T09:33:07.776Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:33:08.973Z] OrderImport: found 0 file(s)
+[2026-07-09T09:33:08.973Z] OrderImport: nothing to do.
+[2026-07-09T09:33:08.973Z] OrderImport: found 0 file(s)
+[2026-07-09T09:33:08.973Z] OrderImport: nothing to do.
+[2026-07-09T09:33:37.791Z] OrderImport daemon: cycle start
+[2026-07-09T09:33:37.793Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:33:39.014Z] OrderImport: found 0 file(s)
+[2026-07-09T09:33:39.014Z] OrderImport: nothing to do.
+[2026-07-09T09:33:39.014Z] OrderImport: found 0 file(s)
+[2026-07-09T09:33:39.014Z] OrderImport: nothing to do.
+[2026-07-09T09:34:07.820Z] OrderImport daemon: cycle start
+[2026-07-09T09:34:07.820Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:34:09.008Z] OrderImport: found 0 file(s)
+[2026-07-09T09:34:09.009Z] OrderImport: nothing to do.
+[2026-07-09T09:34:09.009Z] OrderImport: found 0 file(s)
+[2026-07-09T09:34:09.009Z] OrderImport: nothing to do.
+[2026-07-09T09:34:37.842Z] OrderImport daemon: cycle start
+[2026-07-09T09:34:37.842Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:34:38.954Z] OrderImport: found 0 file(s)
+[2026-07-09T09:34:38.954Z] OrderImport: nothing to do.
+[2026-07-09T09:34:38.954Z] OrderImport: found 0 file(s)
+[2026-07-09T09:34:38.954Z] OrderImport: nothing to do.
+[2026-07-09T09:35:08.246Z] OrderImport daemon: cycle start
+[2026-07-09T09:35:09.558Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:35:47.944Z] OrderImport: found 0 file(s)
+[2026-07-09T09:35:47.944Z] OrderImport: nothing to do.
+[2026-07-09T09:35:47.944Z] OrderImport: found 0 file(s)
+[2026-07-09T09:35:47.944Z] OrderImport: nothing to do.
+[2026-07-09T09:36:16.550Z] OrderImport daemon: cycle start
+[2026-07-09T09:36:16.551Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:36:17.470Z] OrderImport: found 0 file(s)
+[2026-07-09T09:36:17.470Z] OrderImport: nothing to do.
+[2026-07-09T09:36:17.470Z] OrderImport: found 0 file(s)
+[2026-07-09T09:36:17.470Z] OrderImport: nothing to do.
+[2026-07-09T09:36:46.572Z] OrderImport daemon: cycle start
+[2026-07-09T09:36:46.572Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:36:47.512Z] OrderImport: found 0 file(s)
+[2026-07-09T09:36:47.512Z] OrderImport: nothing to do.
+[2026-07-09T09:36:47.512Z] OrderImport: found 0 file(s)
+[2026-07-09T09:36:47.512Z] OrderImport: nothing to do.
+[2026-07-09T09:37:16.600Z] OrderImport daemon: cycle start
+[2026-07-09T09:37:16.600Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:37:17.497Z] OrderImport: found 0 file(s)
+[2026-07-09T09:37:17.497Z] OrderImport: nothing to do.
+[2026-07-09T09:37:17.497Z] OrderImport: found 0 file(s)
+[2026-07-09T09:37:17.497Z] OrderImport: nothing to do.
+[2026-07-09T09:37:46.627Z] OrderImport daemon: cycle start
+[2026-07-09T09:37:46.627Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:37:47.715Z] OrderImport: found 0 file(s)
+[2026-07-09T09:37:47.715Z] OrderImport: nothing to do.
+[2026-07-09T09:37:47.715Z] OrderImport: found 0 file(s)
+[2026-07-09T09:37:47.715Z] OrderImport: nothing to do.
+[2026-07-09T09:38:16.652Z] OrderImport daemon: cycle start
+[2026-07-09T09:38:16.652Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:38:17.573Z] OrderImport: found 0 file(s)
+[2026-07-09T09:38:17.573Z] OrderImport: nothing to do.
+[2026-07-09T09:38:17.573Z] OrderImport: nothing to do.
+[2026-07-09T09:38:17.573Z] OrderImport: found 0 file(s)
+[2026-07-09T09:38:46.655Z] OrderImport daemon: cycle start
+[2026-07-09T09:38:46.655Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:38:47.572Z] OrderImport: found 0 file(s)
+[2026-07-09T09:38:47.573Z] OrderImport: nothing to do.
+[2026-07-09T09:38:47.573Z] OrderImport: found 0 file(s)
+[2026-07-09T09:38:47.573Z] OrderImport: nothing to do.
+[2026-07-09T09:39:16.683Z] OrderImport daemon: cycle start
+[2026-07-09T09:39:16.683Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:39:17.606Z] OrderImport: found 0 file(s)
+[2026-07-09T09:39:17.606Z] OrderImport: nothing to do.
+[2026-07-09T09:39:17.606Z] OrderImport: found 0 file(s)
+[2026-07-09T09:39:17.606Z] OrderImport: nothing to do.
+[2026-07-09T09:39:46.712Z] OrderImport daemon: cycle start
+[2026-07-09T09:39:46.713Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:39:47.660Z] OrderImport: found 0 file(s)
+[2026-07-09T09:39:47.660Z] OrderImport: nothing to do.
+[2026-07-09T09:39:47.660Z] OrderImport: found 0 file(s)
+[2026-07-09T09:39:47.660Z] OrderImport: nothing to do.
+[2026-07-09T09:40:16.717Z] OrderImport daemon: cycle start
+[2026-07-09T09:40:16.718Z] OrderImport daemon: cycle start
+Preflight: brak plikow do sprawdzenia.
+[2026-07-09T09:40:17.664Z] OrderImport: found 0 file(s)
+[2026-07-09T09:40:17.664Z] OrderImport: nothing to do.
+[2026-07-09T09:40:17.664Z] OrderImport: found 0 file(s)
+[2026-07-09T09:40:17.664Z] OrderImport: nothing to do.
+[2026-07-09T10:09:41.059Z] OrderImport daemon started pid=4154156 node=v23.10.0 interval=30s
+[2026-07-09T10:09:41.059Z] OrderImport daemon: cycle start
+[2026-07-09T10:09:42.017Z] OrderImport: found 0 file(s)
+[2026-07-09T10:09:42.017Z] OrderImport: nothing to do.
+[2026-07-09T11:51:11.809Z] OrderImport: found 1 file(s)
+[2026-07-09T11:51:14.351Z] calculatePrices failed for group 39: Cannot read properties of undefined (reading 'parentElement') — falling back to getFormMeta + stub
+[2026-07-09T11:51:14.936Z] calculatePrices failed for group 39: Cannot read properties of undefined (reading 'parentElement') — falling back to getFormMeta + stub
+[2026-07-09T11:51:15.496Z] calculatePrices failed for group 39: Cannot read properties of undefined (reading 'parentElement') — falling back to getFormMeta + stub
+[2026-07-09T11:51:16.034Z] calculatePrices failed for group 39: Cannot read properties of undefined (reading 'parentElement') — falling back to getFormMeta + stub
+[2026-07-09T11:51:16.589Z] calculatePrices failed for group 39: Cannot read properties of undefined (reading 'parentElement') — falling back to getFormMeta + stub
+[2026-07-09T11:51:17.195Z] calculatePrices failed for group 39: Cannot read properties of undefined (reading 'parentElement') — falling back to getFormMeta + stub
+[2026-07-09T11:51:17.720Z] calculatePrices failed for group 39: Cannot read properties of undefined (reading 'parentElement') — falling back to getFormMeta + stub
+[2026-07-09T11:51:18.001Z] Imported order id=2747 for user=TCN positions=7
+[2026-07-09T11:51:41.897Z] browserRecalculator: order 2747 → OK: Przeliczono 7 pozycji
+[2026-07-09T11:51:42.014Z] Import: restored import params on 7 position(s) for order 2747
+[2026-07-09T11:51:43.871Z] Import+recalculate OK for order 2747
+[2026-07-09T13:56:12.029Z] OrderImport: found 1 file(s)
+[2026-07-09T13:56:25.881Z] Imported order id=2750 for user=TCN positions=7
+[2026-07-09T13:56:51.955Z] browserRecalculator: order 2750 → OK: Przeliczono 7 pozycji
+[2026-07-09T13:56:52.133Z] Import: restored import params on 7 position(s) for order 2750
+[2026-07-09T13:56:54.055Z] Import+recalculate OK for order 2750

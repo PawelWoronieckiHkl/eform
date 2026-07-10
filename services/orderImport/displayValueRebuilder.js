@@ -90,7 +90,11 @@ async function rebuildDisplayValuesForOrder(orderId) {
       }
 
       if (changed) {
-        const wire = JSON.stringify(entries);
+        // Store DOUBLE-encoded (a JSON string scalar) to match the shape written
+        // by insertNewForm/updatePosition. `json_parameters_desc` is a MySQL JSON
+        // column, so writing the bare wire array would make it read back as an
+        // array and break readers that expect the canonical string form.
+        const wire = JSON.stringify(JSON.stringify(entries));
         await conn.query(
           'UPDATE order_item SET json_parameters_desc = ? WHERE id = ?',
           [wire, pos.id]
@@ -133,9 +137,11 @@ async function rebuildDisplayValuesForOrder(orderId) {
         const rebuiltWire = displayValuesToWireFormat(rebuilt);
         const currentWire = displayValuesToWireFormat(displayObject);
         if (rebuiltWire !== currentWire) {
+          // Double-encode (JSON string scalar) so the JSON column reads back as a
+          // string, consistent with insertNewForm and the non-imported flow.
           await conn.query(
             'UPDATE order_item SET json_parameters_desc = ? WHERE id = ?',
-            [rebuiltWire, pos.id]
+            [JSON.stringify(rebuiltWire), pos.id]
           );
         }
       }

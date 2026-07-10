@@ -657,7 +657,12 @@ export function getTotal(displayValues) {
   const totalObj = {};
   for (let [key, value] of displayValues) {
     if (value?.listsum) {
-      if (value?.sub) {
+      // SUB___* params are always sub-price rows, even when the engine leaves
+      // their `sub` flag unset (e.g. imported orders where SUB inputs aren't
+      // generated). Without this, a SUB___ listsum row would overwrite the real
+      // total/total_hidden via the assignments below.
+      const isSub = value?.sub || (typeof key === 'string' && key.startsWith('SUB___'));
+      if (isSub) {
         // sub params: use assignment like total/total_hidden so that SUB___CENA_RABAT
         // (the discounted price, defined after SUB___CENA) overwrites rather than accumulates.
         // Accumulation caused double-counting when both SUB___CENA and SUB___CENA_RABAT had listsum=true.

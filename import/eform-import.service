@@ -1,0 +1,21 @@
+[Unit]
+Description=eForm order-import daemon (orders-in -> DB)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pawel
+Group=pawel
+WorkingDirectory=/home/pawel/projects/eform-project/eform
+Environment=ORDER_IMPORT_STANDALONE=1
+# Optional: override cycle interval (seconds), default 30
+# Environment=ORDER_IMPORT_INTERVAL_SEC=30
+ExecStart=/home/pawel/.nvm/versions/node/v23.10.0/bin/node /home/pawel/projects/eform-project/eform/scripts/orderImportDaemon.js
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/pawel/projects/eform-project/eform/import/import.log
+StandardError=append:/home/pawel/projects/eform-project/eform/import/import.log
+
+[Install]
+WantedBy=multi-user.target

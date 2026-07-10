@@ -181,7 +181,13 @@ async function init() {
         // to see all rows and recalculate from scratch.
         let oldValuesToDisplay = new Map();
         try {
-            const parsed = JSON.parse(position.json_parameters_desc);
+            // json_parameters_desc may arrive as a JSON string (normal orders) or
+            // as an already-parsed array (imported orders, MySQL JSON column).
+            let parsed = position.json_parameters_desc;
+            if (typeof parsed === 'string') {
+                parsed = JSON.parse(parsed);
+                if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+            }
             if (Array.isArray(parsed)) {
                 oldValuesToDisplay = new Map(parsed);
                 for (const entry of oldValuesToDisplay.values()) {
