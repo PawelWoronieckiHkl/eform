@@ -10,8 +10,10 @@
         {{ __('edit_order.title') }}
       </a>
     {% endblock %}
+    {% if not isHklClient %}
     <button id="lockBtn" class="btn">
       <img src="/img/open-padlock.png" alt="padlock icon" class='icon'></button>
+    {% endif %}
       <button class="btn has-tooltip" data-lock='true' data-tooltip="{{ __('base.generate_short_pdf_tooltip') }}" id='short-print-button'>
         <img src="/img/pdf-short.png" alt="pdf icon" class='icon'></button>
         {% if admin and availableLanguages %}
@@ -236,6 +238,54 @@
                           </td>
                         </tr>
                       {% endif %}
+                      {% set itemHasSubVals = rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                      {% if (isClient or hasSubPriceToggle or canViewSubPrices or viewAsOrganization) and not itemHasSubVals and total %}
+                        <tr class="price-row">
+                          <td colspan="100%" class="sub-params-cell">
+                            <div class="sub-params-container">
+                              {% for header in table.headers2 %}
+                                {% if (not(header in rowObj.item.lockedParams)) %}
+                                  {% set value = rowObj.row.row2[header] %}
+                                  {% if value and value != '-' and value != '' %}
+                                    <span class="sub-param-item">
+                                      <span class="sub-param-label">{{ header }}:</span>
+                                      <b class="sub-param-value">{{ value }}</b>
+                                    </span>
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="price-row sub-params-locked-row">
+                          <td colspan="100%" class="sub-params-cell">
+                            <div class="sub-params-container">
+                              {% for header in table.headers1 %}
+                                {% if (header in rowObj.item.lockedParams) %}
+                                  {% set lockedVal = rowObj.row.row1[header] or rowObj.row.row2[header] %}
+                                  {% if lockedVal and lockedVal != '-' and lockedVal != '' %}
+                                    <span class="sub-param-item gold">
+                                      <span class="sub-param-label">{{ header }}:</span>
+                                      <b class="sub-param-value">{{ lockedVal }}</b>
+                                    </span>
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                              {% for header in table.headers2 %}
+                                {% if (header in rowObj.item.lockedParams) %}
+                                  {% set value = rowObj.row.row1[header] or rowObj.row.row2[header] %}
+                                  {% if value and value != '-' and value != '' %}
+                                    <span class="sub-param-item gold">
+                                      <span class="sub-param-label">{{ header }}:</span>
+                                      <b class="sub-param-value">{{ value }}</b>
+                                    </span>
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                            </div>
+                          </td>
+                        </tr>
+                      {% endif %}
                       {% set itemProdDays = itemProductionDays[rowObj.item.id] %}
                       <tr class="prod-time-row">
                         <td colspan="100%">
@@ -347,6 +397,43 @@
                                       {% endfor %}
                                     </div>
                                   {% endif %}
+                                  {% set itemHasSubValsM = rowObj.item.subParamValues and rowObj.item.subParamValues.length > 0 %}
+                                  {% if (isClient or hasSubPriceToggle or canViewSubPrices or viewAsOrganization) and not itemHasSubValsM and total %}
+                                    <div class="mobile-sub-params mobile-item-prices" style="display: block;">
+                                      {% for header in table.headers2 %}
+                                        {% if not(header in rowObj.item.lockedParams) %}
+                                          {% set value = rowObj.row.row2[header] %}
+                                          {% if value and value != '-' and value != '' %}
+                                            <div class="mobile-sub-param-item">
+                                              <strong>{{ header }}:</strong> <b class="sub-param-value">{{ value }}</b>
+                                            </div>
+                                          {% endif %}
+                                        {% endif %}
+                                      {% endfor %}
+                                    </div>
+                                    <div class="mobile-sub-params mobile-sub-params-locked" style="display: block;">
+                                      {% for header in table.headers1 %}
+                                        {% if (header in rowObj.item.lockedParams) %}
+                                          {% set lockedVal = rowObj.row.row1[header] or rowObj.row.row2[header] %}
+                                          {% if lockedVal and lockedVal != '-' and lockedVal != '' %}
+                                            <div class="mobile-sub-param-item gold">
+                                              <strong>{{ header }}:</strong> <b class="sub-param-value">{{ lockedVal }}</b>
+                                            </div>
+                                          {% endif %}
+                                        {% endif %}
+                                      {% endfor %}
+                                      {% for header in table.headers2 %}
+                                        {% if (header in rowObj.item.lockedParams) %}
+                                          {% set value = rowObj.row.row1[header] or rowObj.row.row2[header] %}
+                                          {% if value and value != '-' and value != '' %}
+                                            <div class="mobile-sub-param-item gold">
+                                              <strong>{{ header }}:</strong> <b class="sub-param-value">{{ value }}</b>
+                                            </div>
+                                          {% endif %}
+                                        {% endif %}
+                                      {% endfor %}
+                                    </div>
+                                  {% endif %}
                                   {% if rowObj.item.comment %}
                                     <div class="mobile-item-comment">
                                       <strong>{{ __('order.comment') }}:</strong>
@@ -437,7 +524,7 @@
                               <div class="total-price d-flex justify-content-end align-items-center col-12">
                                 <span class='total price-label col-3 text-center'>
                                   {% if totalPrice.visible != '0.00' %}
-                                    HKL{{ __('order.total') }}: {{ totalPrice.visible }}&#8364;</span>
+                                    {% if not (isClient or hasSubPriceToggle or canViewSubPrices or viewAsOrganization) %}HKL{% endif %}{{ __('order.total') }}: {{ totalPrice.visible }}&#8364;</span>
                                 {% else %}
                                   {{ __('order.according_to_price') }}</span>
                               {% endif %}

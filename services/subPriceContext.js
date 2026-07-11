@@ -49,6 +49,14 @@ function applySubPriceLocals(req, res) {
       && Number(sessionUser.orgId) !== 3;
   }
 
+  // Pure HKL client (organization_id === 3, not owner/admin/employee) — no price padlock.
+  const isHklClient = !!sessionUser
+    && !sessionUser.isOwner
+    && !sessionUser.isAdmin
+    && !sessionUser.isEmployee
+    && sessionUser.orgId != null
+    && Number(sessionUser.orgId) === 3;
+
   const showSub = sessionUser?.showSubParams || false;
   const hasSubPriceToggle = nonHklOrg && (
     (sessionUser?.isOwner && !sessionUser?.isAdmin) ||
@@ -65,6 +73,7 @@ function applySubPriceLocals(req, res) {
   res.locals.canViewSubPrices = canViewSubPrices;
   res.locals.viewAsOrganization = viewAsOrganization;
   res.locals.isClient = isClient;
+  res.locals.isHklClient = isHklClient;
   res.locals.showSub = showSub;
   res.locals.hasSubPriceToggle = hasSubPriceToggle;
   res.locals.showCatalogPrices = showCatalogPrices;

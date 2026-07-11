@@ -37,7 +37,7 @@
                                             <div id="generate-container-mobile">
                                                 <button class="btn open-link-manager-btn" type="button" aria-label="{{ __('order.link_manager_title') }}">
                                                     <span style="font-size:22px;">&#128279;</span></button>
-                                                {% if not isGroup and not isGroupShop and not hidePrices and (not hasSubPriceToggle or showCatalogPrices) %}
+                                                {% if not isGroup and not isGroupShop and not hidePrices and not isHklClient and (not hasSubPriceToggle or showCatalogPrices) %}
                                                 <button id="unlockBtn" class="btn">
                                                     <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                 {% endif %}
@@ -99,7 +99,7 @@
                                                                 <button class="btn has-tooltip" data-tooltip="{{ __('base.give_discount_tooltip') }}" id='discount-btn'>
                                                                     <img src="/img/sale.png" alt="sale icon" class='icon'></button>
                                                                 {% endif %}
-                                                                    {% if not isGroup and not isGroupShop and not hidePrices and (not hasSubPriceToggle or showCatalogPrices) %}
+                                                                    {% if not isGroup and not isGroupShop and not hidePrices and not isHklClient and (not hasSubPriceToggle or showCatalogPrices) %}
                                                                     <button id="unlockBtn" class="btn">
                                                                         <img src="/img/padlock.png" alt="padlock icon" class='icon'></button>
                                                                     {% endif %}
@@ -455,7 +455,7 @@
                                                                                                                         {% endif %}
                                                                                                                     {% else %}
                                                                                                                         {% if totalPrice.visible != '0.00' %}
-                                                                                                                        HKL {{ __('order.total') }}: {{ totalPrice.visible | applyFactor(priceFactor) }}&#8364;
+                                                                                                                        {% if not (isClient or hasSubPriceToggle or canViewSubPrices or viewAsOrganization) %}HKL {% endif %}{{ __('order.total') }}: {{ totalPrice.visible | applyFactor(priceFactor) }}&#8364;
                                                                                                                         {% else %}
                                                                                                                             {{ __('order.according_to_price') }}
                                                                                                                         {% endif %}
