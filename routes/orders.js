@@ -1012,7 +1012,8 @@ router.post('/send/:orderId', requireLogin, checkOrderOwnership, loadEmployeePer
         log(orderDetails?.contact_info_id, 'ORDER DETAILS CONTACT INFO ID @@@@@@@@@@@@@@@@@')
         if (orderDetails?.contact_info_id) {
             const contactInfo = await db.getMailById(orderDetails.contact_info_id);
-            confirmationEmail = contactInfo?.email || mail.user_email;
+        // confirmationEmail = contactInfo?.email || mail.user_email;
+            confirmationEmail = mail.user_email;
         } else {
             confirmationEmail = mail.user_email;
         }
