@@ -520,6 +520,12 @@
                                                                                                 {% endif %}
                                                                                                 {% if admin %}
                                                                                                     <div class="d-flex justify-content-end w-100 mt-1">
+                                                                                                        <button class="btn btn-sm admin-send-production-btn me-2"
+                                                                                                            style="background:#d1e7dd;border:1px solid #198754;color:#0f5132;font-size:0.8rem;"
+                                                                                                            data-order-id="{{ orderDetails.id }}"
+                                                                                                            onclick="adminSendToProduction(this)">
+                                                                                                            &#128736; Wyślij na produkcję
+                                                                                                        </button>
                                                                                                         <button class="btn btn-sm admin-toggle-status-btn"
                                                                                                             style="background:#fff3cd;border:1px solid #ffc107;color:#664d03;font-size:0.8rem;"
                                                                                                             data-order-id="{{ orderDetails.id }}"
@@ -637,6 +643,34 @@
                                                                         } catch (e) {
                                                                             alert('Błąd połączenia');
                                                                             btn.disabled = false;
+                                                                        }
+                                                                    }
+
+                                                                    async function adminSendToProduction(btn) {
+                                                                        if (!confirm('Wysłać zamówienie na produkcję? Status zostanie zmieniony na „wysłane", wygenerowany PDF produkcyjny i wysłany mail.')) {
+                                                                            return;
+                                                                        }
+                                                                        const originalText = btn.innerHTML;
+                                                                        btn.disabled = true;
+                                                                        btn.innerHTML = 'Wysyłanie…';
+                                                                        try {
+                                                                            const orderId = btn.dataset.orderId;
+                                                                            const res = await fetch(`/orders/order/${orderId}/send-to-production`, {
+                                                                                method: 'POST',
+                                                                                headers: { 'Content-Type': 'application/json' }
+                                                                            });
+                                                                            const data = await res.json();
+                                                                            if (data.success) {
+                                                                                location.href = data.redirect || `/orders/history/order/${orderId}`;
+                                                                            } else {
+                                                                                alert('Błąd: ' + (data.message || 'Nieznany błąd'));
+                                                                                btn.disabled = false;
+                                                                                btn.innerHTML = originalText;
+                                                                            }
+                                                                        } catch (e) {
+                                                                            alert('Błąd połączenia');
+                                                                            btn.disabled = false;
+                                                                            btn.innerHTML = originalText;
                                                                         }
                                                                     }
                                                                     </script>

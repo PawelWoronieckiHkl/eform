@@ -1412,4 +1412,35 @@ router.patch('/order/:orderId/toggle-status', requireLogin, async (req, res) => 
 });
 
 
+router.post('/order/:orderId/send-to-production', requireLogin, async (req, res) => {
+    if (!req.session.user?.isAdmin) {
+        return res.status(403).json({ success: false, message: 'Brak uprawnień' });
+    }
+    try {
+        const orderId = req.params.orderId;
+        const ownerIdent = await db.getOrderOwnerIdent(orderId);
+        if (!ownerIdent) {
+            return res.status(404).json({ success: false, message: 'Nie znaleziono właściciela zamówienia' });
+        }
+        const user = await db.getUserByIdent(ownerIdent);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Nie znaleziono danych klienta' });
+        }
+        const lang = await db.getLanguage(user.pin);
+        const { sendImportedOrder } = require('../services/orderImport/sendAfterImport');
+        const result = await sendImportedOrder({ orderId, user, lang });
+        if (result.sent) {
+            return res.json({ success: true, message: 'Zamówienie wysłane na produkcję', redirect: `/orders/history/order/${orderId}` });
+        }
+        if (result.skipped) {
+            return res.json({ success: false, message: `Pominięto wysyłkę: ${result.skipped}` });
+        }
+        return res.status(500).json({ success: false, message: result.error || 'Nie udało się wysłać zamówienia na produkcję' });
+    } catch (error) {
+        log('Error sending order to production:', error);
+        return res.status(500).json({ success: false, message: 'Błąd serwera' });
+    }
+});
+
+
 module.exports = router;
