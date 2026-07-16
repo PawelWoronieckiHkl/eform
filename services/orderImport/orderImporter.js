@@ -20,6 +20,7 @@ const orders = () => require('../../db/orders');
 const positions = () => require('../../db/positions');
 const itemBuilder = () => require('../itemBuilder');
 const formEngine = () => require('../formEngine');
+const translationRepo = () => require('../translationDict/dbRepository');
 const { translateParametersToCanonical } = require('./parameterTranslator');
 const { validateParameterValues } = require('./optionValidator');
 const {
@@ -28,6 +29,42 @@ const {
   getDepartmentName
 } = require('./displayValueBuilder');
 const log = (...args) => require('../../utils/logging').log(...args);
+
+/**
+ * Seed `<PARAM>___DESCRIPTION` from our `translation_dictionary` (paramdict) for
+ * every base param value that doesn't already carry one.
+ *
+ * Why: per-client price scripts (param-CENA-*.js) pick the price group by reading
+ * e.g. `KOLOR___DESCRIPTION` and matching a "#N" tag. When that description is
+ * absent (e.g. a colour that isn't in the client's loaded option collection), the
+ * price silently computes to 0 and the position shows "Według cennika". The import
+ * JSON does carry a `___DESCRIPTION`, but the sender's price-group tag can differ
+ * from ours, so we source it from our dictionary — the agreed source of truth — and
+ * inject it into json_parameters so the post-import browser recalc prices correctly.
+ *
+ * @param {object} values      Mutated in place; base-param descriptions added.
+ * @param {object} paramdict   `{ paramName: { valueKey: description } }`.
+ * @returns {object} the same `values` object.
+ */
+function seedDictionaryDescriptions(values, paramdict) {
+  if (!values || !paramdict) return values;
+  for (const [key, val] of Object.entries(values)) {
+    if (key.includes('___')) continue;      // skip meta keys (___DESCRIPTION/___DICT/…)
+    if (key.endsWith('_ALIAS')) continue;    // alias values are handled via base param
+    if (val === undefined || val === null || val === '') continue;
+    if (typeof val === 'object') continue;
+    const descKey = `${key}___DESCRIPTION`;
+    // Never clobber a description the engine already resolved.
+    if (values[descKey] !== undefined && values[descKey] !== '') continue;
+    const byValue = paramdict[key];
+    if (!byValue) continue;
+    const desc = byValue[String(val)];
+    if (desc !== undefined && desc !== null && desc !== '') {
+      values[descKey] = desc;
+    }
+  }
+  return values;
+}
 
 function readQuantity(parameters) {
   if (!parameters) return 1;
@@ -188,7 +225,25 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
   const displayBuilder = deps.displayBuilder || buildDisplayValuesFromDictionary;
   const groupNameResolver = deps.groupNameResolver || getProductGroupName;
   const departmentNameResolver = deps.departmentNameResolver || getDepartmentName;
+  const dictRepo = deps.translationRepo || translationRepo();
   const logger = deps.log || log;
+
+  // Per-group+lang paramdict cache so we hit translation_dictionary once per
+  // group even when an order has many items of the same product.
+  const paramdictCache = new Map();
+  async function getParamdict(groupNumber) {
+    const cacheKey = `${groupNumber}::${lang || 'pl'}`;
+    if (paramdictCache.has(cacheKey)) return paramdictCache.get(cacheKey);
+    let paramdict = {};
+    try {
+      const dict = await dictRepo.getGroupTranslations(groupNumber, lang || 'pl');
+      paramdict = (dict && dict.paramdict) || {};
+    } catch (err) {
+      logger(`seedDictionaryDescriptions: getGroupTranslations failed for group ${groupNumber}: ${err.message}`);
+    }
+    paramdictCache.set(cacheKey, paramdict);
+    return paramdict;
+  }
 
   if (!payload || !user) {
     throw new Error('importResolvedOrder: payload and user are required');
@@ -261,6 +316,11 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
       cleanValues[k] = v;
     }
 
+    // Re-attach `<PARAM>___DESCRIPTION` price-group tags from our dictionary so
+    // the price scripts can resolve the price group (see seedDictionaryDescriptions).
+    const paramdict = await getParamdict(groupNumber);
+    seedDictionaryDescriptions(cleanValues, paramdict);
+
     // Run the full server-side form engine (singlePass) to get authoritative
     // row/locked/sub/listsum and real prices. Falls back to lightweight
     // getFormMeta + stubs when the engine fails (e.g. missing group scripts).
@@ -291,6 +351,9 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
     }
 
     const persistedValues = buildPersistedParameters(cleanValues, priced.values);
+    // Guarantee the price-group descriptions survive into json_parameters — the
+    // post-import browser recalc reads them to select the correct price group.
+    seedDictionaryDescriptions(persistedValues, paramdict);
 
     // Persist displayValues in the same wire format the browser sends:
     // JSON.stringify(Array.from(map.entries())). insertNewForm will JSON.stringify
@@ -366,5 +429,6 @@ module.exports = {
   extractImportParams,
   restoreParametersAfterRecalc,
   snapshotOrderParameters,
-  restoreOrderParametersAfterRecalc
+  restoreOrderParametersAfterRecalc,
+  seedDictionaryDescriptions
 };

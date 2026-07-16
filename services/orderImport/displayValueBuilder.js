@@ -388,7 +388,23 @@ function orderDisplayValues(output, shortJson, existingKeyOrder) {
     shortJson.order.forEach(add);
   }
   Object.keys(output).forEach(add);
-  return ordered;
+
+  // Faithful to the UI-created form output: config params (row=1) first, then
+  // price rows (row=2), then hidden (row=0). Without this, imports whose
+  // authoritative browser-recalc set only emits price entries would list every
+  // price before any config field, breaking the preview layout.
+  const rowRank = (entry) => {
+    const row = entry && entry.row !== undefined ? String(entry.row) : '1';
+    if (row === '1') return 0;
+    if (row === '2') return 1;
+    return 2;
+  };
+  const sorted = {};
+  const keys = Object.keys(ordered);
+  const indexed = keys.map((k, i) => ({ k, i, rank: rowRank(ordered[k]) }));
+  indexed.sort((a, b) => a.rank - b.rank || a.i - b.i);
+  for (const { k } of indexed) sorted[k] = ordered[k];
+  return sorted;
 }
 
 function buildHiddenSkippedEntry(baseEntry, existingEntry, paramName, formMeta) {
@@ -555,7 +571,16 @@ async function buildDisplayValuesFromDictionary({
     const existingEntry = existing[paramName];
     const paramMeta = paramMetaMap[paramName] || null;
     if (hasAuthoritativeSet && !(paramName in existing)) {
-      continue;
+      // The post-import browser recalc's `getTotal` returns ONLY the price row
+      // entries (CENA, SUMA_BRUTTO, SUB___*, POW, OPIS_*). If we treat that as
+      // the full authoritative set, every configuration param the user actually
+      // ordered (MODEL, KOLOR, SZEROKOSC, WYSOKOSC, BLENDA…) is dropped from
+      // json_parameters_desc, leaving the order preview blank. Let import-only
+      // configuration params (non-price, present in the source JSON) through so
+      // they still appear in the config card.
+      const isImportConfig = hasImportValue(safeImportValues, paramName)
+        && !isPriceLikeParam(paramName, paramMeta, existingEntry, formMeta);
+      if (!isImportConfig) continue;
     }
     const aliasKey = `${paramName}_ALIAS`;
     const titleKey = `${paramName}___TITLE`;

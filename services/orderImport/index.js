@@ -84,6 +84,7 @@ async function processOneFile(fileName) {
     orderId: null,
     sent: false,
     sendError: null,
+    warnings: [],
     error: null
   };
 
@@ -177,6 +178,27 @@ async function processOneFile(fileName) {
           log(`Import+recalculate OK for order ${importResult.orderId}`);
         } else {
           log(`WARN: import OK but recalculate failed for order ${importResult.orderId}: ${recalcResult.message}`);
+          result.warnings.push(`Przeliczanie w przeglądarce nie powiodło się: ${recalcResult.message}`);
+        }
+
+        // Flag positions that still price to 0 despite the import — these need a
+        // manual price-group review before the order is sent to the client.
+        try {
+          const { selectQuery } = require('../../db/core');
+          const zeroRows = await selectQuery(
+            `SELECT orderpos, unit_price FROM order_item
+             WHERE order_id = ? AND (unit_price IS NULL OR unit_price = 0)
+             ORDER BY orderpos`,
+            importResult.orderId
+          );
+          if (zeroRows && zeroRows.length > 0) {
+            const positionsList = zeroRows.map((r) => `#${r.orderpos}`).join(', ');
+            const msg = `Pozycje z ceną 0 (do sprawdzenia grupy cenowej): ${positionsList}`;
+            result.warnings.push(msg);
+            log(`WARN: order ${importResult.orderId} has ${zeroRows.length} zero-price position(s): ${positionsList}`);
+          }
+        } catch (zeroErr) {
+          log(`WARN: zero-price check failed for order ${importResult.orderId}: ${zeroErr.message}`);
         }
       } catch (recalcErr) {
         log(`WARN: import OK but recalculate error for order ${importResult.orderId}: ${recalcErr.message}`);

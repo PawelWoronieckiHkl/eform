@@ -14,8 +14,11 @@ Environment=ORDER_IMPORT_STANDALONE=1
 ExecStart=/home/pawel/.nvm/versions/node/v23.10.0/bin/node /home/pawel/projects/eform-project/eform/scripts/orderImportDaemon.js
 Restart=always
 RestartSec=5
-StandardOutput=append:/home/pawel/projects/eform-project/eform/import/import.log
-StandardError=append:/home/pawel/projects/eform-project/eform/import/import.log
+# Daemon already writes import/import.log itself (utils/logging saveLogToFile).
+# Send stdout/stderr to the journal so `journalctl -u eform-import` works and
+# import.log is not written twice.
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target

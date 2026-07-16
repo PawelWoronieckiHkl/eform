@@ -43,13 +43,16 @@ function buildHtml(results) {
       : (r.sendError
         ? `<span style="color:#c0392b;">⚠ ${escHtml(r.sendError)}</span>`
         : '<span style="color:#888;">—</span>');
+    const warnings = Array.isArray(r.warnings) && r.warnings.length > 0
+      ? `<span style="color:#c0392b;">⚠ ${r.warnings.map(escHtml).join('<br>')}</span>`
+      : '—';
     okRows += `
       <tr>
         <td style="padding:4px 8px;border:1px solid #ccc;">${escHtml(r.file)}</td>
         <td style="padding:4px 8px;border:1px solid #ccc;color:#1a7a1a;">✅ sukces</td>
         <td style="padding:4px 8px;border:1px solid #ccc;">${r.orderId ?? '—'}</td>
         <td style="padding:4px 8px;border:1px solid #ccc;">${sendStatus}</td>
-        <td style="padding:4px 8px;border:1px solid #ccc;">—</td>
+        <td style="padding:4px 8px;border:1px solid #ccc;">${warnings}</td>
       </tr>`;
   }
 
@@ -81,7 +84,7 @@ function buildHtml(results) {
         <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Status</th>
         <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Order ID</th>
         <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Wysyłka</th>
-        <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Błąd</th>
+        <th style="padding:6px 8px;border:1px solid #ccc;text-align:left;">Błąd / Uwagi</th>
       </tr>
     </thead>
     <tbody>${allRows}</tbody>
