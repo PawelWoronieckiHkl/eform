@@ -35,6 +35,7 @@ const { dataDir } = require('../../config');
 const { buildHarnessHtml } = require('./harnessHtml');
 const { FormEngineResourceLoader, PUBLIC_DIR } = require('./resourceLoader');
 const { getBundle } = require('./bundler');
+const { getClientScripts, loadClientAliases } = require('./clientScripts');
 const path = require('path');
 const fs = require('fs');
 
@@ -76,7 +77,7 @@ function defaultTranslate(key) {
 }
 
 function installPreloadGlobals(window, opts) {
-  const { lang, isGroup, isGroupShop, langs } = opts;
+  const { lang, isGroup, isGroupShop, langs, orgIdent, userIdent } = opts;
 
   window.t = defaultTranslate;
   window.langs = langs || ['pl', 'en', 'de', 'fr', 'nl'];
@@ -120,12 +121,30 @@ function installPreloadGlobals(window, opts) {
     options: {}, clear: toastrNoop, remove: toastrNoop
   };
 
-  // formsManager is normally provided by main.js (per-tenant client mappings).
-  // Engine path doesn't need real client overrides — return inert defaults.
+  // formsManager is normally populated by main.js/edit_form.js BEFORE
+  // generateForm() runs: it logs in, calls /user/owner/ to learn the
+  // session's org/client identity, then reads prod.txt's PARAM_SCRIPTS
+  // column to resolve per-client price scripts (see selectPrices() in
+  // dataLoader.js). The engine has no login session, so we resolve the same
+  // [path, scripts] pair directly from disk given the caller-supplied
+  // orgIdent/userIdent (see clientScripts.js for why this matters — without
+  // it, any param whose SCRIPTS is the literal 'true' never gets its SOURCE
+  // resolved and silently prices as blank/0).
   window.formsManager = {
-    loadDataPerClient: async () => ({}),
-    getClientScripts: async () => null,
-    getOrgIdent: async () => '',
+    loadDataPerClient: async (group) => loadClientAliases({
+      groupNumber: group || window.tempGroupNumber,
+      lang,
+      orgIdent,
+      userIdent
+    }),
+    getClientScripts: async () => getClientScripts({
+      groupNumber: window.tempGroupNumber,
+      lang,
+      orgIdent,
+      userIdent
+    }),
+    getOrgIdent: async () => orgIdent || '',
+    getUserIdent: async () => userIdent || '',
     getAliases: () => ({ file: null }),
     getAvailableForms: async () => [],
     getGroups: async () => [],
@@ -252,6 +271,10 @@ function loadEngine(window) {
  * @param {string} [opts.uid]       - Forced UID; otherwise a synthetic one.
  * @param {boolean} [opts.isGroup]
  * @param {boolean} [opts.isGroupShop]
+ * @param {string} [opts.orgIdent]  - Order owner's organization.ident (e.g. "HKL"),
+ *                                    used to resolve per-client price scripts.
+ * @param {string} [opts.userIdent] - Order owner's user.ident (e.g. "TCN"),
+ *                                    used to resolve per-client price scripts.
  * @returns {Promise<{window, dispose: () => void, PUBLIC_DIR: string}>}
  */
 async function bootEngine(opts = {}) {
@@ -294,7 +317,9 @@ async function bootEngine(opts = {}) {
     lang: opts.lang || 'pl',
     langs: opts.langs,
     isGroup: opts.isGroup,
-    isGroupShop: opts.isGroupShop
+    isGroupShop: opts.isGroupShop,
+    orgIdent: opts.orgIdent,
+    userIdent: opts.userIdent
   });
   patchFetch(window, { uid: opts.uid });
 

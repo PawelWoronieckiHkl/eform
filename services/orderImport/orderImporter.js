@@ -331,7 +331,12 @@ async function importResolvedOrder({ payload, user, lang, deps = {} }) {
         version,
         lang,
         values: cleanValues,
-        singlePass: true
+        singlePass: true,
+        // Required to resolve per-client price scripts (SCRIPTS === 'true' params,
+        // e.g. CENA for TCN) — see services/formEngine/clientScripts.js. Without
+        // these the script never loads and the price silently persists as blank/0.
+        orgIdent: user.org_ident,
+        userIdent: user.ident
       });
     } catch (calcErr) {
       logger(`calculatePrices failed for group ${groupNumber}: ${calcErr.message} — falling back to getFormMeta + stub`);

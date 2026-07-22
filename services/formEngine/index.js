@@ -347,15 +347,23 @@ function stubDisplayEntries(values) {
  * @param {object} opts.values            Canonical {paramName: value} map.
  * @param {object} [opts.displayValues]   Pre-existing display values (for edit).
  * @param {string} [opts.uid]             Override UID; otherwise synthetic.
+ * @param {string} [opts.orgIdent]        Order owner's organization.ident — required
+ *                                        to resolve per-client price scripts (see
+ *                                        clientScripts.js); without it, params whose
+ *                                        SCRIPTS is the literal 'true' price as blank/0.
+ * @param {string} [opts.userIdent]       Order owner's user.ident (see opts.orgIdent).
  * @returns {Promise<{values, displayValues, total, shortJson}>}
  */
 async function calculatePrices(opts) {
-  const { groupNumber, version, lang, values = {}, displayValues = null, uid, singlePass = false } = opts || {};
+  const {
+    groupNumber, version, lang, values = {}, displayValues = null, uid, singlePass = false,
+    orgIdent, userIdent
+  } = opts || {};
   if (!groupNumber || !version) {
     throw new Error('formEngine.calculatePrices: groupNumber and version are required');
   }
 
-  const env = await bootEngine({ lang: lang || 'pl', uid });
+  const env = await bootEngine({ lang: lang || 'pl', uid, orgIdent, userIdent });
 
   try {
     const initialDisplayValues = displayValues
@@ -524,6 +532,7 @@ async function recalculatePosition(positionId, overrides = {}) {
   // Lazy require — keeps the module free of DB side-effects at load time so
   // tests can run without a live MySQL pool.
   const { getPosition, updatePosition } = require('../../db/positions');
+  const { selectQuery } = require('../../db/core');
 
   const row = await getPosition(positionId);
   if (!row) throw new Error(`recalculatePosition: position ${positionId} not found`);
@@ -543,12 +552,34 @@ async function recalculatePosition(positionId, overrides = {}) {
   }
   const lang = overrides.lang || row.lang || 'pl';
 
+  // Resolve the position owner's org/client identity so per-client price
+  // scripts (SCRIPTS === 'true') can be found — see clientScripts.js.
+  let orgIdent = overrides.orgIdent;
+  let userIdent = overrides.userIdent;
+  if (!orgIdent || !userIdent) {
+    const owner = await selectQuery(
+      `SELECT u.ident AS user_ident, o.ident AS org_ident
+       FROM order_item oi
+       JOIN \`order\` ord ON ord.id = oi.order_id
+       JOIN user u ON u.id = ord.user_id
+       LEFT JOIN organization o ON o.id = u.organization_id
+       WHERE oi.id = ?`,
+      positionId
+    );
+    if (owner && owner[0]) {
+      userIdent = userIdent || owner[0].user_ident;
+      orgIdent = orgIdent || owner[0].org_ident;
+    }
+  }
+
   const result = await calculatePrices({
     groupNumber,
     version,
     lang,
     values,
-    displayValues
+    displayValues,
+    orgIdent,
+    userIdent
   });
 
   await updatePosition(
