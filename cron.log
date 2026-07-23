@@ -2743,3 +2743,19 @@ Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „ori
 Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
 === 2026-07-22 10:35:01 - Start ===
 === 2026-07-22 10:35:01 - Dodawanie zmian do commita ===
+[main 8255a95] Automatic commit 2026-07-22 10:35
+ 10 files changed, 10853 insertions(+), 12 deletions(-)
+ create mode 100644 PROJECT_OVERVIEW.md
+ create mode 100755 "json_przyk\305\202ad/1784194239209_HKL_TCN_271980_1_20260716_113003.json"
+ create mode 100755 "json_przyk\305\202ad/HKL_Maxsol_323.json"
+ create mode 100644 services/formEngine/clientScripts.js
+=== 2026-07-22 10:35:02 - Wysyłanie do origin/main ===
+To https://github.com/PawelWoronieckiHkl/eform.git
+   5323e64..8255a95  main -> main
+Gałąź „main” ustawiona na śledzenie zdalnej gałęzi „main” z „origin”.
+=== 2026-07-22 10:35:05 - Koniec ===
+=== 2026-07-22 12:00:01 - Start ===
+=== 2026-07-22 12:00:01 - Brak zdefiniowanego origin i GIT_REMOTE ===
+Brak zdalnego repozytorium do wypchnięcia. Ustaw GIT_REMOTE lub dodaj origin ręcznie.
+=== 2026-07-23 10:35:01 - Start ===
+=== 2026-07-23 10:35:01 - Dodawanie zmian do commita ===
