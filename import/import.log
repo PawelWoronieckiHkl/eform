@@ -328101,3 +328101,9 @@ Item[3] (group=59): Parametr "KOLOR_TEXT": wartość "LK" nie znaleziona w trans
 [2026-07-27T08:18:58.855Z] OrderImport daemon: cycle start
 [2026-07-27T08:18:59.773Z] OrderImport: found 0 file(s)
 [2026-07-27T08:18:59.773Z] OrderImport: nothing to do.
+[2026-07-27T08:19:28.880Z] OrderImport daemon: cycle start
+[2026-07-27T08:19:29.799Z] OrderImport: found 0 file(s)
+[2026-07-27T08:19:29.799Z] OrderImport: nothing to do.
+[2026-07-27T08:19:58.904Z] OrderImport daemon: cycle start
+[2026-07-27T08:19:59.820Z] OrderImport: found 0 file(s)
+[2026-07-27T08:19:59.820Z] OrderImport: nothing to do.
