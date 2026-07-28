@@ -601,17 +601,19 @@ export async function applySubPriceFieldVisibility(groupNumber) {
 }
 
 export function buildCommentSpace(destinationNode, comment = '') {
+  const hasComment = comment.trim() !== '';
+
   const showCommentButton = createElement('button', {
     type: 'button',
-    text: `${t('form.add_comment_button')}`,
+    text: hasComment ? `${t('form.hide_comment_button')}` : `${t('form.add_comment_button')}`,
     id: 'show-comment-button',
     class: ['btn', 'btn-link'],
   }, document.getElementById('buttons-space'))
 
   const MAX_LENGTH = 250;
 
-  
-  const commentDiv = createElement('div', { class: ['comment-space', 'col-12', 'd-none'] }, destinationNode);
+
+  const commentDiv = createElement('div', { class: ['comment-space', 'col-12'].concat(hasComment ? [] : ['d-none']) }, destinationNode);
 
   
   createElement('label', {

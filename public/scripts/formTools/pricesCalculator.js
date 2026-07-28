@@ -81,10 +81,23 @@ export function checkIfPriceIsCorrect(values, inputs, displayValues) {
     });
     const hasValidValues = checkParams.length === 0 || checkParams.every(p => !wrongValues.includes(values[p]));
 
-    const hasZero = priceParams.some(paramName => {
-        const value = values[paramName];
-        return value == '0' || value == 0;
-    });
+    // Only consider a price param when the current form actually defines/renders
+    // it. SUMA_BRUTTO is a real computed param (FORMULA=CENA_SUMA*ILOSC) in some
+    // groups but doesn't exist at all in others (e.g. group 39) — there it's just
+    // a leftover legacy key that import payloads always carry as "" (the sender's
+    // export always includes it, computed or not). A brand-new position created in
+    // the app never sets that key at all (values['SUMA_BRUTTO'] stays undefined,
+    // which fails the `== 0` check), but an imported order explicitly sets it to
+    // "" (which passes `"" == 0`) — so without this filter, every imported order
+    // in a group without SUMA_BRUTTO was unconditionally flagged as "price
+    // missing" and had its real, correctly-computed prices replaced by the
+    // "Według cennika" placeholder, regardless of whether CENA/DOPLATA were fine.
+    const hasZero = priceParams
+        .filter(paramName => inputs[paramName] !== undefined)
+        .some(paramName => {
+            const value = values[paramName];
+            return value == '0' || value == 0;
+        });
 
     if (hasValidValues) {
         setTimeout(() => {
