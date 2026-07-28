@@ -14,6 +14,7 @@ import { showToast } from "/scripts/components/toast.js";
 import { validateAllFieldsOnSubmit } from '/scripts/formTools/validateUtils.js'
 import { checkIfPriceIsCorrect } from '/scripts/formTools/pricesCalculator.js'
 import { startSpin, stopSpin } from "/scripts/components/hourglass.js";
+import { isCalculatedParam } from "/scripts/formTools/createForm.js";
 
 const MAX_WAIT_MS = 30000;
 
@@ -75,32 +76,35 @@ function waitForCalculations() {
 }
 
 async function forceRecalculation(inputs, values) {
-    // Reset all calculated/formula param values to 0 before triggering
-    // recalculation.  In a brand-new position every calculated param starts at
-    // 0 (form.js:!editFlag branch).  In admin-redit they hold the old saved
-    // values; if the price script reads values['CENA'] and takes a shortcut
+    // Reset all calculated (FORMULA/SOURCE-script) param values to 0 before
+    // triggering recalculation. In a brand-new position every calculated param
+    // starts at 0 (form.js:!editFlag branch). In admin-redit they hold the old
+    // saved values; if a price script reads values['CENA'] and takes a shortcut
     // path (e.g. rounding) when it is already > 0, the stale value causes
-    // incorrect results.  Zeroing them mirrors the initial state so scripts
-    // always compute from scratch.
+    // incorrect results. Zeroing them mirrors the initial state so scripts
+    // always compute from scratch — saved prices are never trusted, only
+    // recomputed ones. isCalculatedParam (SOURCE or FORMULA) is used here
+    // rather than the SCRIPTS field, since most price params reference their
+    // script only through SOURCE and leave SCRIPTS '<NULL>'.
     const paramsList = window.params || [];
     for (const p of paramsList) {
         if (!p?.NAME) continue;
-        if (p.SCRIPTS !== '<NULL>' || p.FORMULA !== '<NULL>') {
+        if (isCalculatedParam(p)) {
             values[p.NAME] = 0;
             if (inputs[p.NAME]) inputs[p.NAME].value = 0;
         }
     }
 
     // Find the first *user-input* param that has a non-empty value — it must
-    // not be a calculated/formula param (those were just zeroed and will be
+    // not be a calculated param (those were just zeroed and will be
     // recomputed as dependencies).
     let firstName = null;
     for (const p of paramsList) {
         if (!p?.NAME) continue;
         if (p.NAME.includes('___')) continue;
         if (!inputs[p.NAME]) continue;
-        // Skip calculated/formula params — they should be results, not triggers
-        if (p.SCRIPTS !== '<NULL>' || p.FORMULA !== '<NULL>') continue;
+        // Skip calculated params — they should be results, not triggers
+        if (isCalculatedParam(p)) continue;
         if (values[p.NAME] === undefined || values[p.NAME] === '' || values[p.NAME] === 0) continue;
         firstName = p.NAME;
         break;

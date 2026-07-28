@@ -261,6 +261,14 @@ router.get('/:positionId/admin-redit/', requireLogin, async (req, res) => {
   let result = await db.getPosition(req.params.positionId);
   if (result) {
     let orderId = result.order_id;
+    // Recalculation needs the order owner's client context (org/user ident)
+    // to resolve the correct per-client price script/alias collection —
+    // without it the browser falls back to the admin's own context and
+    // picks the wrong pricing collection (e.g. PG3 instead of the client's PG4).
+    const ownerIdent = await db.getOrderOwnerIdent(orderId);
+    if (ownerIdent) {
+      await ownerService.setContextUserByIdent(req, ownerIdent);
+    }
     return res.render('admin_edit_position.njk', { position: result, orderId: orderId, hidePrices: false })
   }
   else {
